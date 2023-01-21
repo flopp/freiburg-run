@@ -386,13 +386,76 @@
         "series": ["Markgräfler Cup 2023"]
     },
 
-
     {
-        "time": "UNBEKANNT",
+        "time": "UNBEKANNT (vermutlich 07.10.2023)",
+        "url": "https://www.lfv-schutterwald.de/herbstlauf.html",
+        "name": "Herbstlauf",
+        "details": "10k",
+        "geo": "48.459730,7.872831",
+        "location": "Schutterwald"
+    },
+    {
+        "time": "UNBEKANNT (vermutlich 22.10.2023 - BLV)",
+        "url": "https://stadt.breisach.de/de/ip/event/136/12134/23496/Rimsinger_Tuniberg_Panoramalauf",
+        "name": "Rimsinger Tuniberg Panoramalauf",
+        "details": "",
+        "geo": "47.977061,7.666745",
+        "location": "Oberrimsingen"
+    },
+    {
+        "time": "UNBEKANNT (vermutlich 28.10.2023 - BLV)",
+        "url": "https://www.turnverein-endingen.com/7-crosslauf-am-samstag-22-10-2022-in-endingen-1-lauf-breisgauer-citysport-2022/",
+        "name": "Crosslauf Endingen",
+        "details": "",
+        "geo": "48.141292,7.699903",
+        "location": "Endingen"
+    },
+    {
+        "time": "UNBEKANNT (vermutlich 18.11.2023)",
         "url": "https://www.stadtlauf.ch/",
         "name": "40. Basler Stadtlauf",
         "details": "5.5k",
         "geo": "47.556419,7.591667",
         "location": "Basel, CH"
+    },
+    {
+        "time": "UNBEKANNT (vermutlich 18.11.2023)",
+        "url": "https://tvg05.de/crosslauf-19/",
+        "name": "Crosslauf Gundelfigen",
+        "details": "",
+        "geo": "48.040651,7.879569",
+        "location": "Gundelfingen"
+    },
+    {
+        "time": "UNBEKANNT (vermutlich 19.11.2023 - BLV)",
+        "url": "http://www.tvriegel.com/index.php/crosslauf-2022",
+        "name": "Riegeler Crosslauf \"Rund um den Michaelsberg\"",
+        "details": "8.1k, 2.9k",
+        "geo": "48.148275,7.750307",
+        "location": "Riegel"
+    },
+    {
+        "time": "UNBEKANNT (vermutlich 2.12.2023 oder 9.12.2023 - BLV)",
+        "url": "https://www.lac-freiburg.de/termine/crosslauf-am-opfinger-see/",
+        "name": "Crosslauf Opfinger See",
+        "details": "",
+        "geo": "47.999395,7.752829",
+        "location": "Opfinger See, Freiburg"
+    },
+    {
+        "time": "UNBEKANNT",
+        "url": "https://www.hs-furtwangen.de/veranstaltungen/hfu-black-forest-run/",
+        "name": "HFU Black Forest Run",
+        "details": "HM, 10k",
+        "geo": "48.051338,8.207388",
+        "location": "Furtwangen"
+    },
+    {
+        "time": "UNBEKANNT",
+        "url": "https://www.emmendingen.de/leben-wohnen/kultur-freizeit/emmendinger-stadtlauf",
+        "name": "13. Emmendinger Stadtlauf",
+        "details": "10k, 4k",
+        "geo": "48.120260,7.849404",
+        "location": "Emmendingen"
     }
 ]
