@@ -1,0 +1,398 @@
+[
+    {
+        "time": "Jeden Samstag",
+        "url": "https://www.parkrun.com.de/dietenbach",
+        "name": "Dietenbach parkrun",
+        "details": "5k",
+        "geo": "48.001291,7.806459",
+        "location": "Dietenbachpark, Freiburg",
+        "series": ["parkrun"]
+    },
+    {
+        "time": "Jeden Samstag",
+        "url": "https://www.parkrun.com.de/dreilaendergarten/",
+        "name": "Dreiländergarten parkrun",
+        "details": "5k",
+        "geo": "47.586582,7.610140",
+        "location": "Weil am Rhein",
+        "series": ["parkrun"]
+    },
+    {
+        "time": "Verschiedene Termine",
+        "url": "https://marathon.africa/",
+        "name": "MDM Marathons (Freiburg)",
+        "details": "Charity-Laufgruppe",
+        "geo": "",
+        "location": "Freiburg"
+    },
+    {
+        "time": "15.01.2023",
+        "url": "https://allmendlauf.de/",
+        "name": "31. Teninger Allmendlauf",
+        "details": "10k",
+        "geo": "48.121933,7.817164",
+        "location": "Teningen",
+        "series": []
+    },
+    {
+        "time": "12.03.2023",
+        "url": "https://www.tv-ihringen.de/internationaler-kaiserstuhllauf-2023.html",
+        "name": "36. Internationaler Kaisterstuhllauf",
+        "details": "17.8k, 9.7k",
+        "geo": "48.043849,7.650070",
+        "location": "Ihringen",
+        "series": []
+    },
+    {
+        "time": "18.03.2023",
+        "url": "https://www.athletics-web.info/sulzburg/index.htm",
+        "name": "27. Sulzburger Frühlingslauf",
+        "details": "10.2k",
+        "geo": "47.840512,7.708365",
+        "location": "Sulzburg",
+        "series": ["Markgräfler Cup 2023"]
+    },
+    {
+        "time": "19.03.2023",
+        "url": "https://www.trailpetitballon.fr/",
+        "name": "Trail du Petit Ballon",
+        "details": "53k, 42k, 24k, 13k",
+        "geo": "47.956915,7.299405",
+        "location": "Rouffach, FR",
+        "series": []
+    },
+    {
+        "time": "26.03.2023",
+        "url": "https://www.mein-freiburgmarathon.de/",
+        "name": "Freiburg Marathon",
+        "details": "MA, HM, 10k",
+        "geo": "48.014609,7.839904",
+        "location": "Freiburg",
+        "series": []
+    },
+    {
+        "time": "16.04.2023",
+        "url": "https://www.tv-rheinweiler.com/rheinauenlauf/rheinauenlauf-2023/",
+        "name": "27. Rheinweiler Rheinauenlauf",
+        "details": "10k, 5k",
+        "geo": "47.706336,7.526584",
+        "location": "Rheinweiler",
+        "series": []
+    },
+    {
+        "time": "22.04.2023",
+        "url": "http://panoramalauf.scmuenstertal.de/",
+        "name": "24. Münstertäler Panoramalauf",
+        "details": "10k",
+        "geo": "47.877639,7.728634",
+        "location": "Münstertal",
+        "series": ["Markgräfler Cup 2023"]
+    },
+    {
+        "time": "22.04.2023",
+        "url": "https://www.lauftreff-unterkirnach.de/weihermooslauf/",
+        "name": "Weihermooslauf",
+        "details": "10.6k",
+        "geo": "48.077014,8.362135",
+        "location": "Unterkirnach",
+        "series": ["Intersport Denzer Cup 2023"]
+    },
+    {
+        "time": "29.04.2023",
+        "url": "https://tv-buehlertal.de/bgv-hundsecklauf/",
+        "name": "Hundseckberglauf",
+        "details": "9.9k (776hm)",
+        "geo": "48.686188,8.188651",
+        "location": "Bühlertal",
+        "series": ["Schwarzwald Berglauf Pokal 2023"]
+    },
+    {
+        "time": "29.04.2023",
+        "url": "https://eveeno.com/545634247",
+        "name": "9. Wiesentäler Wasserlauf",
+        "details": "59k (auch Teilstrecken)",
+        "geo": "47.856435,8.026430",
+        "location": "Wiesental",
+        "series": []
+    },
+    {
+        "time": "30.04.2023",
+        "url": "https://www.genusslaeufer.de/content/programm.php",
+        "name": "Genusslauf Müllheim",
+        "details": "HM, 10.8k",
+        "geo": "47.801179,7.635498",
+        "location": "Müllheim",
+        "series": []
+    },
+    {
+        "time": "06.05.2023",
+        "url": "http://kandelberglauf.de/",
+        "name": "Kandelberglauf",
+        "details": "12.2k (940hm)",
+        "geo": "48.093669,7.961065",
+        "location": "Waldkirch",
+        "series": ["Schwarzwald Berglauf Pokal 2023"]
+    },
+    {
+        "time": "13.05.2023",
+        "url": "https://www.schluchseelauf.com/",
+        "name": "37. Schluchseelauf 10k",
+        "details": "10.4k",
+        "geo": "47.815604,8.181370",
+        "location": "Schluchsee",
+        "series": []
+    },
+    {
+        "time": "14.05.2023",
+        "url": "https://www.schluchseelauf.com/",
+        "name": "37. Schluchseelauf",
+        "details": "18.2k",
+        "geo": "47.815604,8.181370",
+        "location": "Schluchsee",
+        "series": []
+    },
+    {
+        "time": "17.05.2023",
+        "url": "https://lg-buggingen.de/bugginger-feierabendlauf/",
+        "name": "5. Bugginger Feierabendlauf",
+        "details": "10k",
+        "geo": "47.855567,7.632494",
+        "location": "Buggingen",
+        "series": ["Markgräfler Cup 2023"]
+    },
+    {
+        "time": "21.05.2023",
+        "url": "https://3laenderlauf.org/",
+        "name": "3Länderlauf",
+        "details": "HM, 10k",
+        "geo": "47.558104,7.587827",
+        "location": "Basel, CH",
+        "series": []
+    },
+    {
+        "time": "21.05.2023",
+        "url": "https://www.rainforestrun-freiburg.de",
+        "name": "4. Rainforest Run Freiburg",
+        "details": "7.8k, 5.2k",
+        "geo": "47.984935,7.853540",
+        "location": "Freiburg",
+        "series": []
+    },
+    {
+        "time": "24.05.2023",
+        "url": "https://www.sportweiss.com/events/sport-weis-lauf/",
+        "name": "11. Sport Weiß Lauf",
+        "details": "10k",
+        "geo": "48.134762,8.414884",
+        "location": "Königsfeld im Schwarzwald",
+        "series": ["Intersport Denzer Cup 2023"]
+    },
+    {
+        "time": "17.06.2023",
+        "url": "https://www.fcreiselfingen.de/index.php/veranstaltungen/lauf-an-der-wutach",
+        "name": "22. Lauf an der Wutach",
+        "details": "10k",
+        "geo": "47.848861,8.353863",
+        "location": "Reiselfingen",
+        "series": ["Intersport Denzer Cup 2023"]
+    },
+    {
+        "time": "18.06.2023",
+        "url": "https://blauenlauf.de/",
+        "name": "Blauenlauf",
+        "details": "9.8k (950hm)",
+        "geo": "47.800296,7.636169",
+        "location": "Müllheim",
+        "series": []
+    },
+    {
+        "time": "18.06.2023",
+        "url": "https://eichberglauf.de/",
+        "name": "16. Eichberglauf",
+        "details": "20.4k (250hm), 4k",
+        "geo": "48.048853,7.947761",
+        "location": "Glottertal",
+        "series": ["Schwarzwald-Laufcup 2023"]
+    },
+    {
+        "time": "22.06.2023",
+        "url": "https://www.b2run.de/run/de/de/freiburg/index.html",
+        "name": "B2Run Freiburg",
+        "details": "5.2k",
+        "geo": "48.020688,7.830999",
+        "location": "Freiburg",
+        "series": []
+    },
+    {
+        "time": "23.06.2023",
+        "url": "",
+        "name": "Mitternachtslauf Biengen",
+        "details": "9k",
+        "geo": "47.938643,7.689764",
+        "location": "Biengen",
+        "series": ["Markgräfler Cup 2023"]
+    },
+    {
+        "time": "01.07.2023",
+        "url": "https://www.sz-breitnau.de/xtrailrun/",
+        "name": "X-Trail-Run",
+        "details": "19.6k (740hm), 9.4k (300hm)",
+        "geo": "47.939581,8.078910",
+        "location": "Breitnau",
+        "series": []
+    },
+    {
+        "time": "01.07.2023",
+        "url": "https://www.st-georgen.de/Startseite/Freizeit+_+Kultur/stadtfestlauf.html",
+        "name": "11. Stadtfestlauf",
+        "details": "10.5k",
+        "geo": "48.125685,8.332068",
+        "location": "St. Georgen im Schwarzwald",
+        "series": ["Intersport Denzer Cup 2023"]
+    },
+    {
+        "time": "01.07.2023",
+        "url": "https://www.st-georgen.de/Startseite/Freizeit+_+Kultur/stadtfestlauf.html",
+        "name": "ebmpapst-Halbmarathon",
+        "details": "HM",
+        "geo": "48.125685,8.332068",
+        "location": "St. Georgen im Schwarzwald",
+        "series": []
+    },
+    {
+        "time": "08.07.2023",
+        "url": "http://panoramalauf.sv-doeggingen.de/",
+        "name": "11. Panoramalauf",
+        "details": "10.8k",
+        "geo": "47.898154,8.423799",
+        "location": "Döggingen",
+        "series": ["Intersport Denzer Cup 2023"]
+    },
+    {
+        "time": "08.07.2023",
+        "url": "https://www.24hlauf-freiburg.de/",
+        "name": "24h-Lauf für Kinderrechte",
+        "details": "24h, Staffel",
+        "geo": "48.012377,7.818607",
+        "location": "Seeparkstadion, Freiburg",
+        "series": []
+    },
+    {
+        "time": "09.07.2023",
+        "url": "http://rosskopflauf.de/",
+        "name": "17. Rosskopflauf",
+        "details": "18.4k (560hm), 10k (280hm)",
+        "geo": "48.051453,7.904642",
+        "location": "Heuweiler",
+        "series": ["Schwarzwald Berglauf Pokal 2023", "Schwarzwald-Laufcup 2023"]
+    },
+    {
+        "time": "14.07.2023",
+        "url": "https://www.firmenlauf-lahr.de/",
+        "name": "Firmenlauf Lahr",
+        "details": "5k",
+        "geo": "48.331572,7.838128",
+        "location": "Lahr",
+        "series": []
+    },
+    {
+        "time": "22.07.2023",
+        "url": "https://www.totemannberglauf.de/",
+        "name": "Tote Mann Berglauf",
+        "details": "10.4k (750hm)",
+        "geo": "47.933621,7.952638",
+        "location": "Oberried",
+        "series": ["Schwarzwald Berglauf Pokal 2023"]
+    },
+    {
+        "time": "26.07.2023",
+        "url": "http://lauftreff-pfohren.de/volkslauf-rund-um-pfohren/",
+        "name": "21. Volkslauf \"Rund um Pfohren\"",
+        "details": "10k",
+        "geo": "47.937867,8.555210",
+        "location": "Pfohren",
+        "series": ["Intersport Denzer Cup 2023"]
+    },
+    {
+        "time": "16.09.2023",
+        "url": "http://www.belchenberglauf.tus-schoenau.de/",
+        "name": "Belchen Berglauf",
+        "details": "11.4k (824hm)",
+        "geo": "47.787194,7.891263",
+        "location": "Schönau",
+        "series": ["Schwarzwald Berglauf Pokal 2023"]
+    },
+    {
+        "time": "30.09.2023",
+        "url": "https://www.trailrun-masters.de/",
+        "name": "Black Forest Trailrun Masters 1",
+        "details": "59k (2600hm), 13k (600hm)",
+        "geo": "48.174006,8.068964",
+        "location": "Elzach",
+        "series": []
+    },
+    {
+        "time": "01.10.2023",
+        "url": "https://www.trailrun-masters.de/",
+        "name": "Black Forest Trailrun Masters 2",
+        "details": "38k (800hm), 21k (400hm)",
+        "geo": "48.174006,8.068964",
+        "location": "Elzach",
+        "series": []
+    },
+    {
+        "time": "03.10.2023",
+        "url": "",
+        "name": "Altstadtlauf Staufen",
+        "details": "6k",
+        "geo": "47.881589,7.731514",
+        "location": "Staufen",
+        "series": ["Markgräfler Cup 2023"]
+    },
+    {
+        "time": "03.10.2023",
+        "url": "https://mwf-records.com/",
+        "name": "TrailRUN21",
+        "details": "20.7k (700hm), 10.7k (410hm)",
+        "geo": "48.350916,8.084338",
+        "location": "Zell am Harmersbach",
+        "series": []
+    },
+    {
+        "time": "07.10.2023",
+        "url": "https://www.schwarzwaldmarathon.de/",
+        "name": "55. Schwarzwaldmarathon 10k/5k",
+        "details": "10k, 5k",
+        "geo": "47.928169,8.450353",
+        "location": "Bräunlingen",
+        "series": []
+    },
+    {
+        "time": "08.10.2023",
+        "url": "https://www.schwarzwaldmarathon.de/",
+        "name": "55. Schwarzwaldmarathon",
+        "details": "MA, HM, Staffel",
+        "geo": "47.928169,8.450353",
+        "location": "Bräunlingen",
+        "series": []
+    },
+    {
+        "time": "31.12.2023",
+        "url": "http://www.silvesterlauf-britzingen.de/",
+        "name": "Silvesterlauf Britzingen",
+        "details": "10k",
+        "geo": "47.827588, 7.673785",
+        "location": "Britzingen",
+        "series": ["Markgräfler Cup 2023"]
+    },
+
+
+    {
+        "time": "UNBEKANNT",
+        "url": "https://www.stadtlauf.ch/",
+        "name": "40. Basler Stadtlauf",
+        "details": "5.5k",
+        "geo": "47.556419,7.591667",
+        "location": "Basel, CH"
+    }
+]

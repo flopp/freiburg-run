@@ -1,0 +1,42 @@
+{{template "header.html" .}}
+
+<section class="section">
+    <div class="container">
+        <div id="map"></div>
+        
+        <div class="b-table">
+            <div class="table-wrapper has-mobile-cards">
+                <table class="table is-fullwidth is-narrow">
+                    <thead>
+                        <tr>
+                            <th>Zeit</th>
+                            <th>Veranstaltung</th>
+                            <th>Ort</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{range .Events}}
+                        <tr class="event" data-geo="{{.Geo}}" data-name="{{.Name}}" data-location="{{.Location}}">
+                            <td data-label="Zeit">
+                                {{.Time}}
+                            </td>
+                            <td data-label="Veranstaltung">
+                                <a href="{{.Url}}" target="_blank">{{.Name}}</a>
+                            </td>
+                            <td data-label="Ort">
+                                {{.Location}}
+                            </td>
+                            <td data-label="Details">
+                                {{.Details}}
+                            </td>
+                        </tr>
+                        {{end}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+{{template "footer.html" .}}
