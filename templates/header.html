@@ -5,6 +5,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
         <title>{{.Title}} - freiburg.run</title>
         <description>Liste von Laufveranstaltungen in Raum Freiburg / Südbaden</description>
+        <link rel="icon" type="image/png" href="favison.png" />
+        <meta name="theme-color" content="#3e8ed0">
         {{range .CssFiles}}
         <link rel="stylesheet" href="{{.}}"/>
         {{end}}
@@ -13,7 +15,7 @@
         <nav class="navbar is-info is-fixed-top z-top" role="navigation" aria-label="main navigation">
             <div class="navbar-brand">
                 <a class="navbar-item" href="index.html">
-                    freiburg.run
+                    <strong>freiburg.run</strong>
                 </a>
 
                 <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
