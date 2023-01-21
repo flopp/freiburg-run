@@ -208,6 +208,7 @@ func main() {
 	}
 
 	copyHash("static/favicon.png", "favison.png")
+	copyHash("static/freiburg-run.svg", "images/freiburg-run.svg")
 
 	js_files := make([]string, 0)
 	js_files = append(js_files, downloadHash("https://unpkg.com/leaflet@1.9.3/dist/leaflet.js", "leaflet-HASH.js"))
