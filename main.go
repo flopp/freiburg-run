@@ -40,13 +40,14 @@ type EventData struct {
 }
 
 type TemplateData struct {
-	Title     string
-	Nav       string
-	Canonical string
-	Timestamp string
-	Events    []EventData
-	JsFiles   []string
-	CssFiles  []string
+	Title         string
+	Nav           string
+	Canonical     string
+	Timestamp     string
+	Events        []EventData
+	EventsPending []EventData
+	JsFiles       []string
+	CssFiles      []string
 }
 
 func check(err error) {
@@ -212,6 +213,7 @@ func main() {
 	*/
 
 	events_extended := make([]EventData, 0)
+	events_pending := make([]EventData, 0)
 	for _, e := range events {
 		sd := make([]Series, 0)
 		for _, s := range e.Series {
@@ -230,7 +232,11 @@ func main() {
 		ed := EventData{
 			e.Name, e.Time, e.Location, e.Geo, e.Details, e.Url, sd,
 		}
-		events_extended = append(events_extended, ed)
+		if !strings.Contains(ed.Time, "UNBEKANNT") {
+			events_extended = append(events_extended, ed)
+		} else {
+			events_pending = append(events_pending, ed)
+		}
 	}
 
 	genSitemap("sitemap.xml")
@@ -259,6 +265,7 @@ func main() {
 		"https://freiburg.run/",
 		timestamp,
 		events_extended,
+		events_pending,
 		js_files,
 		css_files,
 	}

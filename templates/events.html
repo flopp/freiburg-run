@@ -55,6 +55,57 @@
                 </table>
             </div>
         </div>
+
+        {{if .EventsPending}}
+        <div class="notification is-danger is-light mt-5">
+            Bei folgenden Events ist noch nicht klar, ob oder wann genau sie stattfinden werden.
+        </div>
+        <div class="b-table">
+            <div class="table-wrapper has-mobile-cards">
+                <table class="table is-fullwidth is-narrow">
+                    <thead>
+                        <tr>
+                            <th>Datum</th>
+                            <th>Veranstaltung</th>
+                            <th>Ort</th>
+                            <th>Details</th>
+                            <th>Serie</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{range .EventsPending}}
+                        <tr class="event" data-geo="{{.Geo}}" data-name="{{.Name}}" data-location="{{.Location}}">
+                            <td data-label="Datum">
+                                {{.Time}}
+                            </td>
+                            <td data-label="Veranstaltung">
+                                <a href="{{.Url}}" target="_blank">{{.Name}}</a>
+                            </td>
+                            <td data-label="Ort">
+                                {{.Location}}
+                            </td>
+                            {{if .Series}}
+                            <td data-label="Details">
+                                {{.Details}}
+                            </td>
+                            <td data-label="Serie">
+                                {{range .Series}}
+                                <a href="{{.Url}}" target="_blank">{{.Name}}</a>
+                                {{end}}
+                            </td>
+                            {{else}}
+                            <td data-label="Details">
+                                {{.Details}}
+                            </td>
+                            <td></td>
+                            {{end}}
+                        </tr>
+                        {{end}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {{end}}
     </div>
 </section>
 
