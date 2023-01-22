@@ -151,19 +151,10 @@
         "location": "Basel"
     },
     {
-        "time": "13.05.2023",
-        "url": "https://www.schluchseelauf.com/",
-        "name": "37. Schluchseelauf 10k",
-        "details": "10.4k",
-        "geo": "47.815604,8.181370",
-        "location": "Schluchsee",
-        "series": []
-    },
-    {
-        "time": "14.05.2023",
+        "time": "13.05.2023 & 14.05.2023",
         "url": "https://www.schluchseelauf.com/",
         "name": "37. Schluchseelauf",
-        "details": "18.2k",
+        "details": "18.2k, 10.4k",
         "geo": "47.815604,8.181370",
         "location": "Schluchsee",
         "series": []
@@ -340,19 +331,10 @@
         "series": ["Schwarzwald Berglauf Pokal 2023"]
     },
     {
-        "time": "30.09.2023",
+        "time": "30.09.2023 & 01.10.2023",
         "url": "https://www.trailrun-masters.de/",
-        "name": "Black Forest Trailrun Masters 1",
-        "details": "59k (2600hm), 13k (600hm)",
-        "geo": "48.174006,8.068964",
-        "location": "Elzach",
-        "series": []
-    },
-    {
-        "time": "01.10.2023",
-        "url": "https://www.trailrun-masters.de/",
-        "name": "Black Forest Trailrun Masters 2",
-        "details": "38k (800hm), 21k (400hm)",
+        "name": "Black Forest Trailrun Masters",
+        "details": "Tag 1: 59k (2600hm), 13k (600hm), Tag 2: 38k (800hm), 21k (400hm)",
         "geo": "48.174006,8.068964",
         "location": "Elzach",
         "series": []
