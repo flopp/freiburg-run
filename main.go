@@ -42,6 +42,7 @@ type EventData struct {
 type TemplateData struct {
 	Title     string
 	Nav       string
+	Canonical string
 	Timestamp string
 	Events    []EventData
 	JsFiles   []string
@@ -228,6 +229,7 @@ func main() {
 	data := TemplateData{
 		"Laufveranstaltungen im Raum Freiburg / Südbaden 2023",
 		"events",
+		"https://freiburg.run/",
 		timestamp,
 		events_extended,
 		js_files,
@@ -237,12 +239,15 @@ func main() {
 	executeTemplate("events", ".out/index.html", data)
 	data.Nav = "datenschutz"
 	data.Title = "Datenschutz"
+	data.Canonical = "https://freiburg.run/datenschutz.html"
 	executeTemplate("datenschutz", ".out/datenschutz.html", data)
 	data.Nav = "impressum"
 	data.Title = "Impressum"
+	data.Canonical = "https://freiburg.run/impressum.html"
 	executeTemplate("impressum", ".out/impressum.html", data)
 	data.Nav = "info"
 	data.Title = "Info"
+	data.Canonical = "https://freiburg.run/info.html"
 	executeTemplate("info", ".out/info.html", data)
 
 	/*
