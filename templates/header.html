@@ -4,9 +4,24 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
         <title>{{.Title}} - freiburg.run</title>
-        <meta name="description" content="Liste von Laufveranstaltungen in Raum Freiburg / Südbaden" />
-        <link rel="icon" type="image/png" href="favison.png" />
+        <meta name="description" content="Liste von Laufveranstaltungen in Raum Freiburg / Südbaden 2023" />
+        <link rel="icon" type="image/png" href="favicon.png" />
         <meta name="theme-color" content="#3e8ed0">
+        
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="https://freiburg.run/">
+        <meta property="og:title" content="{{.Title}} - freiburg.run">
+        <meta property="og:description" content="Liste von Laufveranstaltungen in Raum Freiburg / Südbaden 2023">
+        <meta property="og:image" content="images/events2023.png">
+
+        <!-- Twitter -->
+        <meta property="twitter:card" content="summary_large_image">
+        <meta property="twitter:url" content="https://freiburg.run/">
+        <meta property="twitter:title" content="{{.Title}} - freiburg.run">
+        <meta property="twitter:description" content="Liste von Laufveranstaltungen in Raum Freiburg / Südbaden 2023">
+        <meta property="twitter:image" content="images/events2023.png">
+
         {{range .CssFiles}}
         <link rel="stylesheet" href="{{.}}"/>
         {{end}}

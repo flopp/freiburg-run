@@ -207,8 +207,9 @@ func main() {
 		events_extended = append(events_extended, ed)
 	}
 
-	copyHash("static/favicon.png", "favison.png")
+	copyHash("static/favicon.png", "favicon.png")
 	copyHash("static/freiburg-run.svg", "images/freiburg-run.svg")
+	copyHash("static/events2023.png", "images/events2023.png")
 
 	js_files := make([]string, 0)
 	js_files = append(js_files, downloadHash("https://unpkg.com/leaflet@1.9.3/dist/leaflet.js", "leaflet-HASH.js"))
@@ -225,7 +226,7 @@ func main() {
 	downloadHash("https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png", "images/marker-shadow.png")
 
 	data := TemplateData{
-		"Laufveranstaltungen",
+		"Laufveranstaltungen im Raum Freiburg / Südbaden 2023",
 		"events",
 		timestamp,
 		events_extended,
