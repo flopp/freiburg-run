@@ -152,6 +152,31 @@ func executeTemplate(templateName string, fileName string, data TemplateData) {
 	}
 }
 
+func genSitemap(fileName string) {
+	makeDir(".out")
+	f, err := os.Create(filepath.Join(".out", fileName))
+	check(err)
+
+	defer f.Close()
+
+	timestamp := time.Now().Format("2006-01-02")
+
+	f.WriteString(`<?xml version="1.0" encoding="UTF-8"?>`)
+	f.WriteString(`<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`)
+
+	f.WriteString(`<url>`)
+	f.WriteString(`<loc>http://freiburg.run/</loc>`)
+	f.WriteString(fmt.Sprintf(`<lastmod>%s</lastmod>`, timestamp))
+	f.WriteString(`</url>`)
+
+	f.WriteString(`<url>`)
+	f.WriteString(`<loc>http://freiburg.run/info.html</loc>`)
+	f.WriteString(fmt.Sprintf(`<lastmod>%s</lastmod>`, timestamp))
+	f.WriteString(`</url>`)
+
+	f.WriteString(`</urlset>`)
+}
+
 func main() {
 	timestamp := time.Now().Format("2006-01-02 15:04:05")
 
@@ -208,6 +233,8 @@ func main() {
 		events_extended = append(events_extended, ed)
 	}
 
+	genSitemap("sitemap.xml")
+	copyHash("static/robots.txt", "robots.txt")
 	copyHash("static/favicon.png", "favicon.png")
 	copyHash("static/freiburg-run.svg", "images/freiburg-run.svg")
 	copyHash("static/events2023.png", "images/events2023.png")
