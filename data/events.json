@@ -80,6 +80,15 @@
         "series": []
     },
     {
+        "time": "01.04.2023",
+        "url": "https://widgets.yolawo.de/w/0/bookables/637f4c6ac6b2aa3516b6b63a",
+        "name": "FT-Crosstriathlon 2023",
+        "details": "1000 m Schwimmen, 17.7k Mountain-Bike, 7.7k Trailrun",
+        "geo": "47.990004,7.886258",
+        "location": "Freiburg",
+        "series": []
+    },
+    {
         "time": "16.04.2023",
         "url": "https://www.tv-rheinweiler.com/rheinauenlauf/rheinauenlauf-2023/",
         "name": "27. Rheinweiler Rheinauenlauf",
@@ -274,6 +283,14 @@
         "geo": "48.125685,8.332068",
         "location": "St. Georgen im Schwarzwald",
         "series": []
+    },
+    {
+        "time": "02.07.2023",
+        "url": "https://www.triteamfreiburg.de/freiburg-triathlon",
+        "name": "Freiburg Triathlon",
+        "details": "",
+        "geo": "48.010528,7.818104",
+        "location": "Seepark, Freiburg"
     },
     {
         "time": "08.07.2023",
