@@ -450,7 +450,7 @@
         "location": "Opfinger See, Freiburg"
     },
     {
-        "time": "UNBEKANNT",
+        "time": "UNBEKANNT (Anfrage läuft)",
         "url": "https://www.hs-furtwangen.de/veranstaltungen/hfu-black-forest-run/",
         "name": "HFU Black Forest Run",
         "details": "HM, 10k",
@@ -458,7 +458,7 @@
         "location": "Furtwangen"
     },
     {
-        "time": "UNBEKANNT",
+        "time": "UNBEKANNT (Anfrage läuft)",
         "url": "https://www.freiburger-laufnacht.de/",
         "name": "Freiburger LaufNacht",
         "details": "1.3k",
@@ -466,7 +466,7 @@
         "location": "Freiburg"
     },
     {
-        "time": "UNBEKANNT",
+        "time": "UNBEKANNT (Anfrage läuft)",
         "url": "https://www.charity-walk.info/staedte/freiburg/",
         "name": "Charity Walk & Run",
         "details": "10k, 5k",
