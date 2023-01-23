@@ -16,6 +16,14 @@
         "location": "Schulzentrum, Kirchzarten"
     },
     {
+        "time": "Dienstag 19:00",
+        "url": "https://tv-st-peter.de/laufen/",
+        "name": "Lauftreff TV St. Peter",
+        "details": "10k-12k, 1h",
+        "geo": "48.015980,8.033897",
+        "location": "St. Peter"
+    },
+    {
         "time": "Mittwoch 18:30",
         "url": "https://lauftreff-schoenberg.jimdofree.com/",
         "name": "Lauftreff Schönberg",
