@@ -154,6 +154,13 @@ func executeTemplate(templateName string, fileName string, data TemplateData) {
 	}
 }
 
+func genSitemapEntry(f *os.File, url string, timeStamp string) {
+	f.WriteString(`<url>`)
+	f.WriteString(fmt.Sprintf(`<loc>%s</loc>`, url))
+	f.WriteString(fmt.Sprintf(`<lastmod>%s</lastmod>`, timeStamp))
+	f.WriteString(`</url>`)
+}
+
 func genSitemap(fileName string) {
 	makeDir(".out")
 	f, err := os.Create(filepath.Join(".out", fileName))
@@ -166,15 +173,9 @@ func genSitemap(fileName string) {
 	f.WriteString(`<?xml version="1.0" encoding="UTF-8"?>`)
 	f.WriteString(`<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`)
 
-	f.WriteString(`<url>`)
-	f.WriteString(`<loc>http://freiburg.run/</loc>`)
-	f.WriteString(fmt.Sprintf(`<lastmod>%s</lastmod>`, timestamp))
-	f.WriteString(`</url>`)
-
-	f.WriteString(`<url>`)
-	f.WriteString(`<loc>http://freiburg.run/info.html</loc>`)
-	f.WriteString(fmt.Sprintf(`<lastmod>%s</lastmod>`, timestamp))
-	f.WriteString(`</url>`)
+	genSitemapEntry(f, "https://freiburg.run/", timestamp)
+	genSitemapEntry(f, "https://freiburg.run/lauftreffs.html", timestamp)
+	genSitemapEntry(f, "https://freiburg.run/info.html", timestamp)
 
 	f.WriteString(`</urlset>`)
 }
@@ -273,6 +274,7 @@ func main() {
 	executeTemplate("events", ".out/index.html", data)
 	data.Nav = "groups"
 	data.Title = "Lauftreffs"
+	data.Canonical = "https://freiburg.run/lauftreffs.html"
 	executeTemplate("groups", ".out/lauftreffs.html", data)
 	data.Nav = "datenschutz"
 	data.Title = "Datenschutz"
