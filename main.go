@@ -46,6 +46,7 @@ type TemplateData struct {
 	Timestamp     string
 	Events        []EventData
 	EventsPending []EventData
+	Groups        []EventData
 	JsFiles       []string
 	CssFiles      []string
 }
@@ -195,22 +196,20 @@ func main() {
 		panic(err)
 	}
 
-	/*
-		groups_data, err := os.ReadFile("data/groups.json")
-		check(err)
-		groups := make([]Event, 0)
-		if err := json.Unmarshal(groups_data, &groups); err != nil {
-			panic(err)
-		}
+	groups_data, err := os.ReadFile("data/groups.json")
+	check(err)
+	groups := make([]Event, 0)
+	if err := json.Unmarshal(groups_data, &groups); err != nil {
+		panic(err)
+	}
 
-		groups_extended := make([]EventData, 0)
-		for _, e := range groups {
-			ed := EventData{
-				e.Name, e.Time, e.Location, e.Geo, e.Details, e.Url, nil,
-			}
-			groups_extended = append(groups_extended, ed)
+	groups_extended := make([]EventData, 0)
+	for _, e := range groups {
+		ed := EventData{
+			e.Name, e.Time, e.Location, e.Geo, e.Details, e.Url, nil,
 		}
-	*/
+		groups_extended = append(groups_extended, ed)
+	}
 
 	events_extended := make([]EventData, 0)
 	events_pending := make([]EventData, 0)
@@ -266,11 +265,15 @@ func main() {
 		timestamp,
 		events_extended,
 		events_pending,
+		groups_extended,
 		js_files,
 		css_files,
 	}
 
 	executeTemplate("events", ".out/index.html", data)
+	data.Nav = "groups"
+	data.Title = "Lauftreffs"
+	executeTemplate("groups", ".out/lauftreffs.html", data)
 	data.Nav = "datenschutz"
 	data.Title = "Datenschutz"
 	data.Canonical = "https://freiburg.run/datenschutz.html"
@@ -283,16 +286,4 @@ func main() {
 	data.Title = "Info"
 	data.Canonical = "https://freiburg.run/info.html"
 	executeTemplate("info", ".out/info.html", data)
-
-	/*
-		data2 := TemplateData{
-			"Lauftreffs",
-			"groups",
-			timestamp,
-			groups_extended,
-			js_files,
-			css_files,
-		}
-		executeTemplate("groups", ".out/lauftreffs.html", data2)
-	*/
 }

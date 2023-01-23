@@ -2,6 +2,12 @@
 
 <section class="section">
     <div class="container">
+        <div class="notification is-info is-light">
+            Liste von Lauftreffs und Laufgruppen im Raum Freiburg / Südbaden.
+            <br />
+            Ist ein Eintrag fehlerhaft oder fehlt eine Lauftreff? - bitte <a href="info.html#kontakt">melden</a>. 
+        </div>
+
         <div id="map"></div>
         
         <div class="b-table">
@@ -16,7 +22,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {{range .Events}}
+                        {{range .Groups}}
                         <tr class="event" data-geo="{{.Geo}}" data-name="{{.Name}}" data-location="{{.Location}}">
                             <td data-label="Zeit">
                                 {{.Time}}

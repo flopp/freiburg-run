@@ -16,12 +16,19 @@
         "location": "Schulzentrum, Kirchzarten"
     },
     {
-        "time": "Mittwoch 18:90",
+        "time": "Mittwoch 18:30",
         "url": "https://lauftreff-schoenberg.jimdofree.com/",
         "name": "Lauftreff Schönberg",
         "details": "10k-12k",
         "geo": "47.976150,7.818848",
         "location": "Vauban, Freiburg"
+    },
+    {
+        "time": "Mittwoch 18:30",
+        "url": "https://www.facebook.com/groups/3617153031644843",
+        "name": "Trailrunning Lauftreff Freiburg",
+        "details": "Wechselnde Treffpunkte & Strecken",
+        "location": "Freiburg"
     },
     {
         "time": "Samstag 9:00",
@@ -38,5 +45,13 @@
         "details": "5k",
         "geo": "47.586582,7.610140",
         "location": "Dreiländergarten, Weil am Rhein"
+    },
+    {
+        "time": "Bei Vollmond, 20:30",
+        "url": "https://www.facebook.com/groups/874201872664516",
+        "name": "Gutenachtlauf Freiburg",
+        "details": "5k",
+        "geo": "47.990940,7.848231",
+        "location": "Alnatura, Kajo, Freiburg"
     }
 ]

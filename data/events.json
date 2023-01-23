@@ -18,15 +18,6 @@
         "series": ["parkrun"]
     },
     {
-        "time": "Bei Vollmond",
-        "url": "https://www.facebook.com/groups/874201872664516",
-        "name": "Gutenachtlauf Freiburg",
-        "details": "5k",
-        "geo": "47.990940,7.848231",
-        "location": "Freiburg",
-        "series": ["Gutenachtlauf"]
-    },
-    {
         "time": "Verschiedene Termine",
         "url": "https://marathon.africa/",
         "name": "MDM Marathons (Freiburg)",
