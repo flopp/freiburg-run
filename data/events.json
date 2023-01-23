@@ -20,7 +20,7 @@
     {
         "time": "Bei Vollmond",
         "url": "https://www.facebook.com/groups/874201872664516",
-        "name": "Gutenachtlauf Freiurg",
+        "name": "Gutenachtlauf Freiburg",
         "details": "5k",
         "geo": "47.990940,7.848231",
         "location": "Freiburg",
@@ -241,6 +241,14 @@
         "series": ["Markgräfler Cup 2023"]
     },
     {
+        "time": "30.06.2023",
+        "url": "https://www.emmendingen.de/leben-wohnen/kultur-freizeit/emmendinger-stadtlauf",
+        "name": "13. Emmendinger Stadtlauf",
+        "details": "10k, 4k",
+        "geo": "48.120260,7.849404",
+        "location": "Emmendingen"
+    },
+    {
         "time": "01.07.2023",
         "url": "https://www.sz-breitnau.de/xtrailrun/",
         "name": "X-Trail-Run",
@@ -451,14 +459,6 @@
     },
     {
         "time": "UNBEKANNT",
-        "url": "https://www.emmendingen.de/leben-wohnen/kultur-freizeit/emmendinger-stadtlauf",
-        "name": "13. Emmendinger Stadtlauf",
-        "details": "10k, 4k",
-        "geo": "48.120260,7.849404",
-        "location": "Emmendingen"
-    },
-    {
-        "time": "UNBEKANNT",
         "url": "https://www.freiburger-laufnacht.de/",
         "name": "Freiburger LaufNacht",
         "details": "1.3k",
@@ -472,5 +472,13 @@
         "details": "10k, 5k",
         "geo": "48.012251,7.814668",
         "location": "Seepark, Freiburg"
+    },
+    {
+        "time": "UNBEKANNT",
+        "url": "https://stadtlauf.lv-ettenheim.de/",
+        "name": "Ettenheimer Stadtlauf",
+        "details": "10k",
+        "geo": "48.253602,7.812069",
+        "location": "Ettenheim"
     }
 ]
