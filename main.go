@@ -242,6 +242,8 @@ func main() {
 	genSitemap("sitemap.xml")
 	copyHash("static/robots.txt", "robots.txt")
 	copyHash("static/favicon.png", "favicon.png")
+	copyHash("static/favicon.ico", "favicon.ico")
+	copyHash("static/apple-touch-icon.png", "apple-touch-icon.png")
 	copyHash("static/freiburg-run.svg", "images/freiburg-run.svg")
 	copyHash("static/events2023.png", "images/events2023.png")
 

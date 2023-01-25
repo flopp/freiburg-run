@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /datenschutz.html
+Allow: /impressum.html
+
+Sitemap: https://freiburg.run/sitemap.xml
