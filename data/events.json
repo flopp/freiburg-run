@@ -397,7 +397,10 @@
         "name": "HFU Black Forest Run",
         "details": "HM, 10k",
         "geo": "48.051338,8.207388",
-        "location": "Furtwangen"
+        "location": "Furtwangen",
+        "reports": [
+            {"name": "Laufbericht 2018 (pandarennt)", "url": "https://pandarennt.wordpress.com/2019/09/26/wing_furtwangen/"}
+        ]
     },
     {
         "time": "31.12.2023",

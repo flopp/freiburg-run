@@ -14,7 +14,7 @@ import (
 	"time"
 )
 
-type Series struct {
+type NameUrl struct {
 	Name string
 	Url  string
 }
@@ -27,6 +27,7 @@ type Event struct {
 	Details  string
 	Url      string
 	Series   []string
+	Reports  []NameUrl
 }
 
 type EventData struct {
@@ -36,7 +37,8 @@ type EventData struct {
 	Geo      string
 	Details  string
 	Url      string
-	Series   []Series
+	Series   []NameUrl
+	Reports  []NameUrl
 }
 
 type TemplateData struct {
@@ -185,7 +187,7 @@ func main() {
 
 	series_data, err := os.ReadFile("data/series.json")
 	check(err)
-	series := make([]Series, 0)
+	series := make([]NameUrl, 0)
 	if err := json.Unmarshal(series_data, &series); err != nil {
 		panic(err)
 	}
@@ -207,7 +209,7 @@ func main() {
 	groups_extended := make([]EventData, 0)
 	for _, e := range groups {
 		ed := EventData{
-			e.Name, e.Time, e.Location, e.Geo, e.Details, e.Url, nil,
+			e.Name, e.Time, e.Location, e.Geo, e.Details, e.Url, nil, e.Reports,
 		}
 		groups_extended = append(groups_extended, ed)
 	}
@@ -215,7 +217,7 @@ func main() {
 	events_extended := make([]EventData, 0)
 	events_pending := make([]EventData, 0)
 	for _, e := range events {
-		sd := make([]Series, 0)
+		sd := make([]NameUrl, 0)
 		for _, s := range e.Series {
 			found := false
 			for _, s2 := range series {
@@ -230,7 +232,7 @@ func main() {
 			}
 		}
 		ed := EventData{
-			e.Name, e.Time, e.Location, e.Geo, e.Details, e.Url, sd,
+			e.Name, e.Time, e.Location, e.Geo, e.Details, e.Url, sd, e.Reports,
 		}
 		if !strings.Contains(ed.Time, "UNBEKANNT") {
 			events_extended = append(events_extended, ed)
