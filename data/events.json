@@ -127,7 +127,8 @@
         "details": "59k (auch Teilstrecken)",
         "geo": "47.856435,8.026430",
         "location": "Wiesental",
-        "series": []
+        "series": [],
+        "reports": [{"name": "Film 2022", "url": "https://www.youtube.com/watch?v=kum8o6e8IMc"}]
     },
     {
         "time": "30.04.2023",
@@ -263,26 +264,17 @@
         "geo": "47.939581,8.078910",
         "location": "Breitnau",
         "series": [],
-        "reports": [{"name": "Laufbericht 2015 (laufkater)", "url": "https://laufkater.wordpress.com/2015/06/14/trail-debut-bei-deutschlands-hartestem-halbmarathon-der-salomon-x-trail-run-in-breitnau-2015/"}]
+        "reports": [{"name": "Video 2022 (Matthias)", "url": "https://www.youtube.com/watch?v=ravou8tWO8c"}, {"name": "Laufbericht 2015 (laufkater)", "url": "https://laufkater.wordpress.com/2015/06/14/trail-debut-bei-deutschlands-hartestem-halbmarathon-der-salomon-x-trail-run-in-breitnau-2015/"}]
     },
     {
         "time": "01.07.2023",
         "url": "https://www.st-georgen.de/Startseite/Freizeit+_+Kultur/stadtfestlauf.html",
         "name": "11. Stadtfestlauf",
-        "details": "10.5k",
+        "details": "HM, 10.5k, 5k",
         "geo": "48.125685,8.332068",
         "location": "St. Georgen im Schwarzwald",
         "series": ["Intersport Denzer Cup 2023"],
         "reports": [{"name": "Laufbericht 2018 (pandarennt)", "url": "https://pandarennt.wordpress.com/2019/02/21/stadtfestlauf2018/"}]
-    },
-    {
-        "time": "01.07.2023",
-        "url": "https://www.st-georgen.de/Startseite/Freizeit+_+Kultur/stadtfestlauf.html",
-        "name": "ebmpapst-Halbmarathon",
-        "details": "HM",
-        "geo": "48.125685,8.332068",
-        "location": "St. Georgen im Schwarzwald",
-        "series": []
     },
     {
         "time": "02.07.2023",
@@ -310,6 +302,14 @@
         "geo": "48.012377,7.818607",
         "location": "Seeparkstadion, Freiburg",
         "series": []
+    },
+    {
+        "time": "08.07.2023",
+        "url": "https://www.hochschwarzwald.de/veranstaltungen-hochschwarzwald/triathlon-schluchsee",
+        "name": "Schluchsee Triathlon",
+        "details": "",
+        "geo": "47.815604,8.181370",
+        "Location": "Schluchsee"
     },
     {
         "time": "09.07.2023",
@@ -386,23 +386,14 @@
         "series": []
     },
     {
-        "time": "07.10.2023",
+        "time": "07.10.2023 & 08.10.2023",
         "url": "https://www.schwarzwaldmarathon.de/",
-        "name": "55. Schwarzwaldmarathon 10k/5k",
-        "details": "10k, 5k",
+        "name": "55. Schwarzwaldmarathon",
+        "details": "MA, HM, 10k, 5k",
         "geo": "47.928169,8.450353",
         "location": "Bräunlingen",
         "series": [],
         "reports": [{"name": "Laufbericht 2018 (pandarennt)", "url": "https://pandarennt.wordpress.com/2019/09/18/schwarzwaldmarathon/"}]
-    },
-    {
-        "time": "08.10.2023",
-        "url": "https://www.schwarzwaldmarathon.de/",
-        "name": "55. Schwarzwaldmarathon",
-        "details": "MA, HM, Staffel",
-        "geo": "47.928169,8.450353",
-        "location": "Bräunlingen",
-        "series": []
     },
     {
         "time": "28.10.2023 (Vorläufig bestätigt)",
