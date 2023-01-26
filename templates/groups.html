@@ -35,6 +35,10 @@
                             </td>
                             <td data-label="Details">
                                 {{.Details}}
+                                {{if .Reports}}<br />{{end}}
+                                {{range .Reports}}
+                                <a class="tag is-link is-light" href="{{.Url}}" target="_blank">{{.Name}}</a>
+                                {{end}}
                             </td>
                         </tr>
                         {{end}}

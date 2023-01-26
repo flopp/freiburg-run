@@ -34,19 +34,20 @@
                             <td data-label="Ort">
                                 {{.Location}}
                             </td>
-                            {{if .Series}}
                             <td data-label="Details">
                                 {{.Details}}
+                                {{if .Reports}}<br />{{end}}
+                                {{range .Reports}}
+                                <a class="tag is-link is-light" href="{{.Url}}" target="_blank">{{.Name}}</a>
+                                {{end}}
                             </td>
+                            {{if .Series}}
                             <td data-label="Serie">
                                 {{range .Series}}
-                                <a href="{{.Url}}" target="_blank">{{.Name}}</a>
+                                <a class="tag is-link is-light" href="{{.Url}}" target="_blank">{{.Name}}</a>
                                 {{end}}
                             </td>
                             {{else}}
-                            <td data-label="Details">
-                                {{.Details}}
-                            </td>
                             <td></td>
                             {{end}}
                         </tr>

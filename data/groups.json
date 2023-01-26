@@ -5,7 +5,8 @@
         "name": "Ryzon Running Unit",
         "details": "Lauf-ABC, 7k, 1h",
         "geo": "47.991659,7.879987",
-        "location": "Sandfangbrücke, Freiburg"
+        "location": "Sandfangbrücke, Freiburg",
+        "reports": [{"name": "Blogbeitrag (flopp)", "url": "https://running.flopp.net/2023/01/15/ryzon-running-unit-freiburg/"}]
     },
     {
         "time": "Dienstag 18:30",
@@ -13,7 +14,8 @@
         "name": "Lauftreff SV Kirchzarten",
         "details": "10k-12k, 1h",
         "geo": "47.958797,7.956797",
-        "location": "Schulzentrum, Kirchzarten"
+        "location": "Schulzentrum, Kirchzarten",
+        "reports": [{"name": "Blogbeitrag (flopp)", "url": "https://running.flopp.net/2023/01/24/lauftreff-des-sv-kirchzarten/"}]
     },
     {
         "time": "Dienstag 19:00",
@@ -44,7 +46,8 @@
         "name": "Dietenbach parkrun",
         "details": "5k",
         "geo": "48.001291,7.806459",
-        "location": "Dietenbachpark, Freiburg"
+        "location": "Dietenbachpark, Freiburg",
+        "reports": [{"name": "Blogbeitrag (flopp)", "url": "https://running.flopp.net/2022/11/06/dietenbach-parkrun/"}]
     },
     {
         "time": "Samstag 9:00",

@@ -6,7 +6,8 @@
         "details": "5k",
         "geo": "48.001291,7.806459",
         "location": "Dietenbachpark, Freiburg",
-        "series": ["parkrun"]
+        "series": ["parkrun"],
+        "reports": [{"name": "Blogbeitrag (flopp)", "url": "https://running.flopp.net/2022/11/06/dietenbach-parkrun/"}]
     },
     {
         "time": "Jeden Samstag",
@@ -32,7 +33,7 @@
         "details": "10k",
         "geo": "48.121933,7.817164",
         "location": "Teningen",
-        "series": []
+        "reports": [{"name": "Laufbericht 2019 (pandarennt)", "url": "https://pandarennt.wordpress.com/2019/12/28/allmendlauf-teningen/"}]
     },
     {
         "time": "12.03.2023",
@@ -41,7 +42,8 @@
         "details": "17.8k, 9.7k",
         "geo": "48.043849,7.650070",
         "location": "Ihringen",
-        "series": []
+        "series": [],
+        "reports": [{"name": "Laufbericht 2017 (flopp)", "url": "https://running.flopp.net/2017/03/13/kaiserstuhllauf-2017/"}]
     },
     {
         "time": "18.03.2023",
@@ -50,7 +52,8 @@
         "details": "10.2k",
         "geo": "47.840512,7.708365",
         "location": "Sulzburg",
-        "series": ["Markgräfler Cup 2023"]
+        "series": ["Markgräfler Cup 2023"],
+        "reports": [{"name": "Laufbericht 2022 (MRC)", "url": "https://markgraeflerrunnersclub.de/en/events/2022/fruehlingslauf-in-sulzburg"}]
     },
     {
         "time": "19.03.2023",
@@ -59,7 +62,8 @@
         "details": "53k, 42k, 24k, 13k",
         "geo": "47.956915,7.299405",
         "location": "Rouffach, FR",
-        "series": []
+        "series": [],
+        "reports": [{"name": "Laufbericht 2018 (TrailAway)", "url": "https://www.trailaway.de/trail-du-petit-ballon-2018/"}]
     },
     {
         "time": "26.03.2023",
@@ -104,7 +108,8 @@
         "details": "10.6k",
         "geo": "48.077014,8.362135",
         "location": "Unterkirnach",
-        "series": ["Intersport Denzer Cup 2023"]
+        "series": ["Intersport Denzer Cup 2023"],
+        "reports": [{"name": "Laufbericht 2019 (pandarennt)", "url": "https://pandarennt.wordpress.com/2019/12/30/weihermooslauf/"}]
     },
     {
         "time": "29.04.2023",
@@ -140,7 +145,8 @@
         "details": "12.2k (940hm)",
         "geo": "48.093669,7.961065",
         "location": "Waldkirch",
-        "series": ["Schwarzwald Berglauf Pokal 2023"]
+        "series": ["Schwarzwald Berglauf Pokal 2023"],
+        "reports": [{"name": "Laufbericht 2014 (Bike Run Fun)", "url": "https://www.bike-run-fun.de/legendaerer-kandelberglauf/"}]
     },
     {
         "time": "07.05.2023",
@@ -157,7 +163,8 @@
         "details": "18.2k, 10.4k",
         "geo": "47.815604,8.181370",
         "location": "Schluchsee",
-        "series": []
+        "series": [],
+        "reports": [{"name": "Laufbericht 2014 (laufkater)", "url": "https://laufkater.wordpress.com/2014/05/12/blowing-in-the-wind-der-schluchseelauf-2014/"}]
     },
     {
         "time": "17.05.2023",
@@ -255,7 +262,8 @@
         "details": "19.6k (740hm), 9.4k (300hm)",
         "geo": "47.939581,8.078910",
         "location": "Breitnau",
-        "series": []
+        "series": [],
+        "reports": [{"name": "Laufbericht 2015 (laufkater)", "url": "https://laufkater.wordpress.com/2015/06/14/trail-debut-bei-deutschlands-hartestem-halbmarathon-der-salomon-x-trail-run-in-breitnau-2015/"}]
     },
     {
         "time": "01.07.2023",
@@ -264,7 +272,8 @@
         "details": "10.5k",
         "geo": "48.125685,8.332068",
         "location": "St. Georgen im Schwarzwald",
-        "series": ["Intersport Denzer Cup 2023"]
+        "series": ["Intersport Denzer Cup 2023"],
+        "reports": [{"name": "Laufbericht 2018 (pandarennt)", "url": "https://pandarennt.wordpress.com/2019/02/21/stadtfestlauf2018/"}]
     },
     {
         "time": "01.07.2023",
@@ -290,7 +299,8 @@
         "details": "10.8k",
         "geo": "47.898154,8.423799",
         "location": "Döggingen",
-        "series": ["Intersport Denzer Cup 2023"]
+        "series": ["Intersport Denzer Cup 2023"],
+        "reports": [{"name": "Laufbericht 2018 (pandarennt)", "url": "https://pandarennt.wordpress.com/2019/07/08/panoramalauf2018/"}]
     },
     {
         "time": "08.07.2023",
@@ -308,7 +318,8 @@
         "details": "18.4k (560hm), 10k (280hm)",
         "geo": "48.051453,7.904642",
         "location": "Heuweiler",
-        "series": ["Schwarzwald Berglauf Pokal 2023", "Schwarzwald-Laufcup 2023"]
+        "series": ["Schwarzwald Berglauf Pokal 2023", "Schwarzwald-Laufcup 2023"],
+        "reports": [{"name": "Laufbericht 2017 (flopp)", "url": "https://running.flopp.net/2017/07/22/rosskopflauf-2017/"}]
     },
     {
         "time": "14.07.2023",
@@ -335,7 +346,8 @@
         "details": "10k",
         "geo": "47.937867,8.555210",
         "location": "Pfohren",
-        "series": ["Intersport Denzer Cup 2023"]
+        "series": ["Intersport Denzer Cup 2023"],
+        "reports": [{"name": "Laufbericht 2018 (pandarennt)", "url": "https://pandarennt.wordpress.com/2019/07/11/rundumpfohren/"}]
     },
     {
         "time": "16.09.2023",
@@ -380,7 +392,8 @@
         "details": "10k, 5k",
         "geo": "47.928169,8.450353",
         "location": "Bräunlingen",
-        "series": []
+        "series": [],
+        "reports": [{"name": "Laufbericht 2018 (pandarennt)", "url": "https://pandarennt.wordpress.com/2019/09/18/schwarzwaldmarathon/"}]
     },
     {
         "time": "08.10.2023",
