@@ -112,6 +112,15 @@
         "reports": [{"name": "Laufbericht 2019 (pandarennt)", "url": "https://pandarennt.wordpress.com/2019/12/30/weihermooslauf/"}]
     },
     {
+        "time": "22.04.2023",
+        "url": "https://www.tv-biberach.de/termine/termin/biberacher-laufevent-10-km-2.html",
+        "name": "51. Biberacher Straßenlauf",
+        "details": "10k, 5k",
+        "geo": "48.343500,8.028828",
+        "location": "Biberach (Baden)"
+
+    },
+    {
         "time": "29.04.2023",
         "url": "https://tv-buehlertal.de/bgv-hundsecklauf/",
         "name": "Hundseckberglauf",
@@ -489,11 +498,27 @@
         "location": "Seepark, Freiburg"
     },
     {
+        "time": "UNBEKANNT (Anfrage läuft)",
+        "url": "http://www.tus-badenweiler.de/index.php/veranstaltungen/nikolauslauf/ausschreibung-nikolauslauf",
+        "name": "Nikolauslauf Badenweiler",
+        "details": "9.7k",
+        "geo": "47.807851,7.674090",
+        "location": "Badenweiler"
+    },
+    {
         "time": "UNBEKANNT",
         "url": "https://stadtlauf.lv-ettenheim.de/",
         "name": "Ettenheimer Stadtlauf",
         "details": "10k",
         "geo": "48.253602,7.812069",
         "location": "Ettenheim"
+    },
+    {
+        "time": "UNBEKANNT",
+        "url": "https://hallenmarathon-pfohren.de/",
+        "name": "Hallenmarathon Pfohren",
+        "details": "MA",
+        "geo": "47.920045,8.645586",
+        "location": "Geisingen"
     }
 ]
