@@ -392,6 +392,14 @@
         "series": []
     },
     {
+        "time": "28.10.2023 (Vorläufig bestätigt)",
+        "url": "https://www.hs-furtwangen.de/veranstaltungen/hfu-black-forest-run/",
+        "name": "HFU Black Forest Run",
+        "details": "HM, 10k",
+        "geo": "48.051338,8.207388",
+        "location": "Furtwangen"
+    },
+    {
         "time": "31.12.2023",
         "url": "http://www.silvesterlauf-britzingen.de/",
         "name": "Silvesterlauf Britzingen",
@@ -456,14 +464,6 @@
         "details": "",
         "geo": "47.999395,7.752829",
         "location": "Opfinger See, Freiburg"
-    },
-    {
-        "time": "UNBEKANNT (Anfrage läuft)",
-        "url": "https://www.hs-furtwangen.de/veranstaltungen/hfu-black-forest-run/",
-        "name": "HFU Black Forest Run",
-        "details": "HM, 10k",
-        "geo": "48.051338,8.207388",
-        "location": "Furtwangen"
     },
     {
         "time": "UNBEKANNT (Anfrage läuft)",
