@@ -546,5 +546,13 @@
         "details": "HM, 10k, 5k",
         "geo": "48.252170,7.450190",
         "location": "Sélestat, FR"
+    },
+    {
+        "time": "UNBEKANNT (Anfrage läuft)",
+        "url": "https://svh-b.com/event/8-freundschaftslauf-2022/",
+        "name": "Freundschaftslauf",
+        "details": "11.7k, 5.7k, 7.4k Nordic Walking",
+        "geo": "47.938125,7.622495",
+        "location": "Hartheim"
     }
 ]
