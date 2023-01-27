@@ -80,5 +80,13 @@
         "details": "5k",
         "geo": "47.990940,7.848231",
         "location": "Alnatura, Kajo, Freiburg"
+    },
+    {
+        "time": "Verschiedene Termine",
+        "url": "https://marathon.africa/",
+        "name": "MDM Marathons (Freiburg)",
+        "details": "Charity-Laufgruppe",
+        "geo": "",
+        "location": "Freiburg"
     }
 ]
