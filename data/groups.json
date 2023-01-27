@@ -1,5 +1,12 @@
 [
     {
+        "time": "Montag, Mittwoch, Freitag 6:45",
+        "url": "https://www.laufen.de/dlv-treffs/details/162",
+        "name": "Freiburg Aktiv Lauftreff",
+        "geo": "47.996504,7.839324",
+        "location": "Radstation, Freiburg"
+    },
+    {
         "time": "Montag 18:00",
         "url": "https://www.fitmitkim.com/running-unit",
         "name": "Ryzon Running Unit",
