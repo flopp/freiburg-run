@@ -277,7 +277,7 @@ func main() {
 
 	executeTemplate("events", ".out/index.html", data)
 	data.Nav = "groups"
-	data.Title = "Lauftreffs"
+	data.Title = "Lauftreffs im Raum Freiburg / Südbaden"
 	data.Canonical = "https://freiburg.run/lauftreffs.html"
 	executeTemplate("groups", ".out/lauftreffs.html", data)
 	data.Nav = "datenschutz"
