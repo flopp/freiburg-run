@@ -368,6 +368,15 @@
         "reports": [{"name": "Laufbericht 2018 (pandarennt)", "url": "https://pandarennt.wordpress.com/2019/07/11/rundumpfohren/"}]
     },
     {
+        "time": "10.09.2023",
+        "url": "https://www.wehratallauf.de/",
+        "name": "Wehratallauf",
+        "details": "10.2k",
+        "geo": "47.636680,7.909513",
+        "location": "Wehr",
+        "reports": [{"name": "Laufbericht 2017 (pandarennt)", "url": "https://pandarennt.wordpress.com/2018/08/22/wehratallauf2017/"}]
+    },
+    {
         "time": "16.09.2023",
         "url": "http://www.belchenberglauf.tus-schoenau.de/",
         "name": "Belchen Berglauf",
