@@ -26,6 +26,14 @@
         "location": "St. Peter"
     },
     {
+        "time": "Mittwoch 18:00 & Samstag 17:00",
+        "url": "http://www.tvtiengen.de/abteilung.cfm?ID=4&CFID=60276831&CFTOKEN=4ff61407963b83d8-7E8879D1-D43D-7ED6-C6B012C572EE914C",
+        "name": "Lauftreff Tiengen",
+        "details": "1h",
+        "geo": "47.983761,7.712536",
+        "location": "Tiengen"
+    },
+    {
         "time": "Mittwoch 18:30",
         "url": "https://lauftreff-schoenberg.jimdofree.com/",
         "name": "Lauftreff Schönberg",
