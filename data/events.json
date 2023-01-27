@@ -554,5 +554,13 @@
         "details": "11.7k, 5.7k, 7.4k Nordic Walking",
         "geo": "47.938125,7.622495",
         "location": "Hartheim"
+    },
+    {
+        "time": "UNBEKANNT",
+        "url": "http://csl-neuf-brisach-athletisme.fr/Cross_Neuf_Brisach.php",
+        "name": "Cross de Remparts",
+        "details": "Cross: 8.5k + diverse, Nordic: 11.2k, 9.8k",
+        "geo": "48.015668,7.525039",
+        "location": "Neuf Brisach, FR"
     }
 ]
