@@ -219,7 +219,8 @@
         "details": "10k",
         "geo": "47.848861,8.353863",
         "location": "Reiselfingen",
-        "series": ["Intersport Denzer Cup 2023"]
+        "series": ["Intersport Denzer Cup 2023"],
+        "reports": [{"name": "Laufbericht 2017 (pandarennt)", "url": "https://pandarennt.wordpress.com/2017/07/06/laufanderwutach2017/"}]
     },
     {
         "time": "18.06.2023",
@@ -399,7 +400,9 @@
         "details": "20.7k (700hm), 10.7k (410hm)",
         "geo": "48.350916,8.084338",
         "location": "Zell am Harmersbach",
-        "series": []
+        "series": [],
+        "reports": [{"name": "Laufbericht 2016 (Timo)", "url": "https://timozeiler.com/2016/10/13/start-in-den-trail-herbst-beim-trailrun-21/"}]
+
     },
     {
         "time": "07.10.2023 & 08.10.2023",
