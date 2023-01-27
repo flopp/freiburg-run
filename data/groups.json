@@ -45,8 +45,16 @@
         "time": "Mittwoch 18:30",
         "url": "https://www.facebook.com/groups/3617153031644843",
         "name": "Trailrunning Lauftreff Freiburg",
-        "details": "Wechselnde Treffpunkte & Strecken",
+        "details": "Wechselnde Treffpunkte & Strecken; Organisation via Facebook-Gruppe",
         "location": "Freiburg"
+    },
+    {
+        "time": "Mittwoch 18:30 & Freitag 18:30",
+        "url": "https://lg-buggingen.de/",
+        "name": "Lauftreff der Spvgg 09 Buggingen Seefelden",
+        "geo": "47.847559,7.637456",
+        "details": "",
+        "location": "Buggingen"
     },
     {
         "time": "Samstag 9:00",

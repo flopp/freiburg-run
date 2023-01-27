@@ -46,6 +46,14 @@
         "reports": [{"name": "Laufbericht 2017 (flopp)", "url": "https://running.flopp.net/2017/03/13/kaiserstuhllauf-2017/"}]
     },
     {
+        "time": "12.03.2023",
+        "url": "https://www.semimulhouse.fr/",
+        "name": "5. Semi-Marathon Mulhouse",
+        "details": "HM",
+        "geo": "47.739478,7.321293",
+        "location": "Mulhouse, FR"
+    },
+    {
         "time": "18.03.2023",
         "url": "https://www.athletics-web.info/sulzburg/index.htm",
         "name": "27. Sulzburger Frühlingslauf",
@@ -530,5 +538,13 @@
         "details": "MA",
         "geo": "47.920045,8.645586",
         "location": "Geisingen"
+    },
+    {
+        "time": "UNBEKANNT",
+        "url": "https://www.selestat.fr/se-divertir-a-selestat/les-courses-de-selestat.html",
+        "name": "Les courses de Sélestat",
+        "details": "HM, 10k, 5k",
+        "geo": "48.252170,7.450190",
+        "location": "Sélestat, FR"
     }
 ]

@@ -14,6 +14,20 @@ document.addEventListener('DOMContentLoaded', () => {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
+        var freiburg = [47.996090, 7.849400];
+        L.circle(freiburg, {
+            color: '#3e8ed0',
+            fill: false,
+            weight: 1,
+            radius: 25000
+        }).addTo(map).bindPopup("Freiburg, 25km");
+        L.circle(freiburg, {
+            color: '#3e8ed0',
+            fill: false,
+            weight: 1,
+            radius: 50000
+        }).addTo(map).bindPopup("Freiburg, 50km")
+
         let markers = [];
         document.querySelectorAll(".event").forEach(el => {
             console.log(el.dataset);
