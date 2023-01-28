@@ -16,6 +16,14 @@
         "reports": [{"name": "Blogbeitrag (flopp)", "url": "https://running.flopp.net/2023/01/15/ryzon-running-unit-freiburg/"}]
     },
     {
+        "time": "Montag 18:00",
+        "url": "https://citysport-freiburg.de/2911-2/",
+        "name": "Anfänger-Lauftreff CitySport",
+        "details": "50min",
+        "geo": "47.998153,7.849284",
+        "location": "CtySport, Freiburg"
+    },
+    {
         "time": "Dienstag 18:30",
         "url": "https://svkirchzarten.de/lauftreff/",
         "name": "Lauftreff SV Kirchzarten",
