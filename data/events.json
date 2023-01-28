@@ -39,6 +39,14 @@
     },
     {
         "time": "12.03.2023",
+        "url": "http://www.lcm-rheinfelden.de/lauftag.html",
+        "name": "Rheinfelder Lauftag",
+        "details": "HM, 10k, 4.7k",
+        "geo": "47.557769,7.770542",
+        "location": "Rheinfelden"
+    },
+    {
+        "time": "12.03.2023",
         "url": "https://www.semimulhouse.fr/",
         "name": "5. Semi-Marathon Mulhouse",
         "details": "HM",
