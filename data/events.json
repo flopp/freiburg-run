@@ -272,7 +272,8 @@
         "name": "13. Emmendinger Stadtlauf",
         "details": "10k, 4k",
         "geo": "48.120260,7.849404",
-        "location": "Emmendingen"
+        "location": "Emmendingen",
+        "reports": [{"name": "Laufbericht 2016 (pandarennt)", "url": "https://pandarennt.wordpress.com/2017/06/10/emmendinger10er/"}]
     },
     {
         "time": "01.07.2023",
