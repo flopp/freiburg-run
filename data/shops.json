@@ -1,0 +1,56 @@
+[
+    {
+        "url": "https://citysport-freiburg.de/",
+        "name": "CitySport Freiburg",
+        "geo": "47.998134,7.849326",
+        "location": "Friedrichring 40, Freiburg"
+    },
+    {
+        "url": "https://dertempomacher.de/",
+        "name": "Der Tempomacher",
+        "geo": "47.998103,7.793243",
+        "location": "Rieselfeldallee 31, Freiburg"
+    },
+    {
+        "url": "https://www.drescher-running.de/freiburg",
+        "name": "Drescher Running Outdoor - Freiburg",
+        "geo": "47.993538,7.849400",
+        "location": "Martinsgäßle, Freiburg"
+    },
+    {
+        "url": "https://www.drescher-running.de/loerrach",
+        "name": "Drescher Running Outdoor - Lörrach",
+        "geo": "47.611342,7.659571",
+        "location": "Marktplatz 9, Lörrach"
+    },
+    {
+        "url": "https://www.intersport.de/haendlersuche/sportgeschaefte-baden-wuerttemberg/79199-kirchzarten-intersport-eckmann-1/",
+        "name": "Intersport Eckmann",
+        "geo": "47.969336,7.958404",
+        "location": "Stegener Strasse 14, Kirchzarten"
+    },
+    {
+        "url": "https://www.bohny.de/",
+        "name": "Sport Bohny - Innenstadt",
+        "geo": "47.994239,7.849431",
+        "location": "Kaiser-Joseph-Straße 217, Freiburg"
+    },
+    {
+        "url": "https://www.bohny.de/",
+        "name": "Sport Bohny - Stühlinger",
+        "geo": "47.993025,7.836103",
+        "location": "Klarastraße 100, Freiburg"
+    },
+    {
+        "url": "https://www.drescher-running.de/freiburg",
+        "name": "Sport Kiefer",
+        "geo": "47.989380,7.880305",
+        "location": "Schwarzwaldstraße 173, Freiburg"
+    },
+    {
+        "url": "https://www.sport-service-lahr.de/",
+        "name": "Sport Service Lahr",
+        "geo": "48.342229,7.875767",
+        "location": "Turmstraße 22, Lahr"
+    }
+]

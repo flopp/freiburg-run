@@ -49,6 +49,7 @@ type TemplateData struct {
 	Events        []EventData
 	EventsPending []EventData
 	Groups        []EventData
+	Shops         []EventData
 	JsFiles       []string
 	CssFiles      []string
 }
@@ -177,6 +178,7 @@ func genSitemap(fileName string) {
 
 	genSitemapEntry(f, "https://freiburg.run/", timestamp)
 	genSitemapEntry(f, "https://freiburg.run/lauftreffs.html", timestamp)
+	genSitemapEntry(f, "https://freiburg.run/shops.html", timestamp)
 	genSitemapEntry(f, "https://freiburg.run/info.html", timestamp)
 
 	f.WriteString(`</urlset>`)
@@ -212,6 +214,21 @@ func main() {
 			e.Name, e.Time, e.Location, e.Geo, e.Details, e.Url, nil, e.Reports,
 		}
 		groups_extended = append(groups_extended, ed)
+	}
+
+	shops_data, err := os.ReadFile("data/shops.json")
+	check(err)
+	shops := make([]Event, 0)
+	if err := json.Unmarshal(shops_data, &shops); err != nil {
+		panic(err)
+	}
+
+	shops_extended := make([]EventData, 0)
+	for _, e := range shops {
+		ed := EventData{
+			e.Name, e.Time, e.Location, e.Geo, e.Details, e.Url, nil, e.Reports,
+		}
+		shops_extended = append(shops_extended, ed)
 	}
 
 	events_extended := make([]EventData, 0)
@@ -271,23 +288,33 @@ func main() {
 		events_extended,
 		events_pending,
 		groups_extended,
+		shops_extended,
 		js_files,
 		css_files,
 	}
 
 	executeTemplate("events", ".out/index.html", data)
+
 	data.Nav = "groups"
 	data.Title = "Lauftreffs im Raum Freiburg / Südbaden"
 	data.Canonical = "https://freiburg.run/lauftreffs.html"
 	executeTemplate("groups", ".out/lauftreffs.html", data)
+
+	data.Nav = "shops"
+	data.Title = "Lauf-Shops im Raum Freiburg / Südbaden"
+	data.Canonical = "https://freiburg.run/shops.html"
+	executeTemplate("shops", ".out/shops.html", data)
+
 	data.Nav = "datenschutz"
 	data.Title = "Datenschutz"
 	data.Canonical = "https://freiburg.run/datenschutz.html"
 	executeTemplate("datenschutz", ".out/datenschutz.html", data)
+
 	data.Nav = "impressum"
 	data.Title = "Impressum"
 	data.Canonical = "https://freiburg.run/impressum.html"
 	executeTemplate("impressum", ".out/impressum.html", data)
+
 	data.Nav = "info"
 	data.Title = "Info"
 	data.Canonical = "https://freiburg.run/info.html"
