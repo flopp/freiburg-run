@@ -460,6 +460,14 @@
         "location": "Britzingen",
         "series": ["Markgräfler Cup 2023"]
     },
+    {
+        "time": "31.12.2023",
+        "url": "https://tv-hornberg.de/",
+        "name": "Silvesterlauf Schloss Hornberg",
+        "details": "",
+        "geo": "48.211198,8.228009",
+        "location": "Hornberg"
+    },
 
     {
         "time": "UNBEKANNT (vermutlich 07.10.2023)",
@@ -580,5 +588,21 @@
         "details": "Cross: 8.5k + diverse, Nordic: 11.2k, 9.8k",
         "geo": "48.015668,7.525039",
         "location": "Neuf Brisach, FR"
+    },
+    {
+        "time": "UNBEKANNT",
+        "url": "http://www.kinzigtallauf.de/",
+        "name": "Kinzigtallauf",
+        "details": "10k",
+        "geo": "48.276629,8.087076",
+        "location": "Haslach im Kinzigtal"
+    },
+    {
+        "time": "UNBEKANNT",
+        "url": "https://www.triberg.de/fileadmin/Dateien/Dateien/2._Rathaus_u._Gemeinderat/Wasserfall-Lauf/19_07_FLYER_WASSERFALL-LAUF_2019.pdf",
+        "name": "7. Triberger Wasserfall-Lauf",
+        "details": "8k, 4k, 1k",
+        "geo": "48.128439,8.231399",
+        "location": "Triberg"
     }
 ]
