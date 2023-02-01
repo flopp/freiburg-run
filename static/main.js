@@ -28,14 +28,54 @@ document.addEventListener('DOMContentLoaded', () => {
             radius: 50000
         }).addTo(map).bindPopup("Freiburg, 50km")
 
+        let blueOptions = {
+            iconAnchor: [12, 41],
+            iconRetinaUrl: "images/marker-icon-2x.png",
+            iconSize: [25, 41],
+            iconUrl: "images/marker-icon.png",
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41],
+            shadowUrl: "images/marker-shadow.png",
+            tooltipAnchor: [16, -28],
+        };
+        let blueIcon = L.icon(blueOptions);
+
+        let greyOptions = {
+            iconAnchor: [12, 41],
+            iconRetinaUrl: "images/marker-grey-icon-2x.png",
+            iconSize: [25, 41],
+            iconUrl: "images/marker-grey-icon.png",
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41],
+            shadowUrl: "images/marker-shadow.png",
+            tooltipAnchor: [16, -28],
+        };
+        let greyIcon = L.icon(greyOptions);
+
         let markers = [];
         document.querySelectorAll(".event").forEach(el => {
-            console.log(el.dataset);
+            if (el.dataset.pending === "0") {
+                return;
+            }
             let geo = el.dataset.geo.trim().split(",");
             if (geo.length === 2) {
                 let lat = parseFloat(geo[0]);
                 let lng = parseFloat(geo[1]);
-                let m = L.marker([lat, lng]);
+                let m = L.marker([lat, lng], {icon: greyIcon});
+                markers.push(m);
+                m.addTo(map);
+                m.bindPopup(`${el.dataset.name}<br>${el.dataset.location}<br>NICHT BESTÄTIGT`);
+            }
+        });
+        document.querySelectorAll(".event").forEach(el => {
+            if (el.dataset.pending === "1") {
+                return;
+            }
+            let geo = el.dataset.geo.trim().split(",");
+            if (geo.length === 2) {
+                let lat = parseFloat(geo[0]);
+                let lng = parseFloat(geo[1]);
+                let m = L.marker([lat, lng], {icon: blueIcon});
                 markers.push(m);
                 m.addTo(map);
                 m.bindPopup(`${el.dataset.name}<br>${el.dataset.location}`);
