@@ -23,10 +23,10 @@
                     <tbody>
                         {{range .Shops}}
                         <tr class="event" data-pending="0" data-geo="{{.Geo}}" data-name="{{.Name}}" data-location="{{.Location}}">
-                            <td data-label="Name">
+                            <td class="is-flex-wrap-wrap" data-label="Name">
                                 <a href="{{.Url}}" target="_blank">{{.Name}}</a>
                             </td>
-                            <td data-label="Ort">
+                            <td class="is-flex-wrap-wrap" data-label="Ort">
                                 {{.Location}}
                             </td>
                         </tr>

@@ -26,16 +26,16 @@
                     <tbody>
                         {{range .Events}}
                         <tr class="event" data-pending="0" data-geo="{{.Geo}}" data-name="{{.Name}}" data-location="{{.Location}}">
-                            <td data-label="Datum">
+                            <td class="is-flex-wrap-wrap" data-label="Datum" class="is-flex-wrap-wrap">
                                 {{.Time}}
                             </td>
-                            <td data-label="Veranstaltung">
+                            <td class="is-flex-wrap-wrap" data-label="Veranstaltung" class="is-flex-wrap-wrap">
                                 <a href="{{.Url}}" target="_blank">{{.Name}}</a>
                             </td>
-                            <td data-label="Ort">
+                            <td class="is-flex-wrap-wrap" data-label="Ort" class="is-flex-wrap-wrap">
                                 {{.Location}}
                             </td>
-                            <td data-label="Details">
+                            <td class="is-flex-wrap-wrap" data-label="Details" class="is-flex-wrap-wrap">
                                 {{.Details}}
                                 {{if .Reports}}<br />{{end}}
                                 {{range .Reports}}
@@ -43,7 +43,7 @@
                                 {{end}}
                             </td>
                             {{if .Series}}
-                            <td data-label="Serie">
+                            <td class="is-flex-wrap-wrap" data-label="Serie" class="is-flex-wrap-wrap">
                                 {{range .Series}}
                                 <a class="tag is-link is-light" href="{{.Url}}" target="_blank">{{.Name}}</a>
                                 {{end}}
@@ -79,26 +79,26 @@
                     <tbody>
                         {{range .EventsPending}}
                         <tr class="event" data-pending="1" data-geo="{{.Geo}}" data-name="{{.Name}}" data-location="{{.Location}}">
-                            <td data-label="Datum">
+                            <td class="is-flex-wrap-wrap" data-label="Datum">
                                 {{.Time}}
                             </td>
-                            <td data-label="Veranstaltung">
+                            <td class="is-flex-wrap-wrap" data-label="Veranstaltung">
                                 <a href="{{.Url}}" target="_blank">{{.Name}}</a>
                             </td>
-                            <td data-label="Ort">
+                            <td class="is-flex-wrap-wrap" data-label="Ort">
                                 {{.Location}}
                             </td>
                             {{if .Series}}
-                            <td data-label="Details">
+                            <td class="is-flex-wrap-wrap" data-label="Details">
                                 {{.Details}}
                             </td>
-                            <td data-label="Serie">
+                            <td class="is-flex-wrap-wrap" data-label="Serie">
                                 {{range .Series}}
                                 <a href="{{.Url}}" target="_blank">{{.Name}}</a>
                                 {{end}}
                             </td>
                             {{else}}
-                            <td data-label="Details">
+                            <td class="is-flex-wrap-wrap" data-label="Details">
                                 {{.Details}}
                             </td>
                             <td></td>
