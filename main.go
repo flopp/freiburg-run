@@ -43,6 +43,7 @@ type EventData struct {
 
 type TemplateData struct {
 	Title         string
+	Description   string
 	Nav           string
 	Canonical     string
 	Timestamp     string
@@ -284,6 +285,7 @@ func main() {
 
 	data := TemplateData{
 		"Laufveranstaltungen im Raum Freiburg / Südbaden 2023",
+		"Liste von Laufveranstaltungen, Lauf-Wettkämpfen, Volksläufen 2023 im Raum Freiburg / Südbaden",
 		"events",
 		"https://freiburg.run/",
 		timestamp,
@@ -299,26 +301,31 @@ func main() {
 
 	data.Nav = "groups"
 	data.Title = "Lauftreffs im Raum Freiburg / Südbaden"
+	data.Description = "Liste von Lauftreffs, Laufgruppen, Lauf-Trainingsgruppen im Raum Freiburg / Südbaden"
 	data.Canonical = "https://freiburg.run/lauftreffs.html"
 	executeTemplate("groups", ".out/lauftreffs.html", data)
 
 	data.Nav = "shops"
 	data.Title = "Lauf-Shops im Raum Freiburg / Südbaden"
+	data.Description = "Liste von Lauf-Shops, Geschäften mit Laufschuh-Auswahl im Raum Freiburg / Südbaden"
 	data.Canonical = "https://freiburg.run/shops.html"
 	executeTemplate("shops", ".out/shops.html", data)
 
 	data.Nav = "datenschutz"
 	data.Title = "Datenschutz"
+	data.Description = "Datenschutzerklärung von freiburg.run"
 	data.Canonical = "https://freiburg.run/datenschutz.html"
 	executeTemplate("datenschutz", ".out/datenschutz.html", data)
 
 	data.Nav = "impressum"
 	data.Title = "Impressum"
+	data.Description = "Impressum von freiburg.run"
 	data.Canonical = "https://freiburg.run/impressum.html"
 	executeTemplate("impressum", ".out/impressum.html", data)
 
 	data.Nav = "info"
 	data.Title = "Info"
+	data.Description = "Kontaktmöglichkeiten, aallgemein & technische Informationen über freiburg.run"
 	data.Canonical = "https://freiburg.run/info.html"
 	executeTemplate("info", ".out/info.html", data)
 }
