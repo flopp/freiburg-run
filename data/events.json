@@ -267,6 +267,14 @@
         "series": ["Markgräfler Cup 2023"]
     },
     {
+        "time": "23.06.2023",
+        "url": "https://www.sonnwendlauf-seelbach.de/wp/",
+        "name": "Sonnwendlauf Seelbach",
+        "details": "10k",
+        "geo": "48.310294,7.938255",
+        "location": "Seelbach/Schwarzwald"
+    },
+    {
         "time": "30.06.2023",
         "url": "https://www.emmendingen.de/leben-wohnen/kultur-freizeit/emmendinger-stadtlauf",
         "name": "13. Emmendinger Stadtlauf",
