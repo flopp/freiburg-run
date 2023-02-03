@@ -384,6 +384,15 @@
         "series": []
     },
     {
+        "time": "20.07.2023",
+        "url": "https://trompeterlauf.de/",
+        "name": "Trompeterlauf",
+        "details": "6.2k",
+        "geo": "47.552715,7.948962",
+        "location": "Bad Säckingen",
+        "series": []
+    },
+    {
         "time": "22.07.2023",
         "url": "https://www.totemannberglauf.de/",
         "name": "Tote Mann Berglauf",
@@ -486,6 +495,14 @@
         ]
     },
     {
+        "time": "18.11.2023",
+        "url": "https://www.stadtlauf.ch/",
+        "name": "40. Basler Stadtlauf",
+        "details": "5.5k",
+        "geo": "47.556419,7.591667",
+        "location": "Basel, CH"
+    },
+    {
         "time": "31.12.2023",
         "url": "http://www.silvesterlauf-britzingen.de/",
         "name": "Silvesterlauf Britzingen",
@@ -526,14 +543,6 @@
         "details": "",
         "geo": "48.141292,7.699903",
         "location": "Endingen"
-    },
-    {
-        "time": "UNBEKANNT (vermutlich 18.11.2023)",
-        "url": "https://www.stadtlauf.ch/",
-        "name": "40. Basler Stadtlauf",
-        "details": "5.5k",
-        "geo": "47.556419,7.591667",
-        "location": "Basel, CH"
     },
     {
         "time": "UNBEKANNT (vermutlich 18.11.2023)",
@@ -630,5 +639,21 @@
         "details": "8k, 4k, 1k",
         "geo": "48.128439,8.231399",
         "location": "Triberg"
+    },
+    {
+        "time": "UNBEKANNT",
+        "url": "https://mukoviszidose-ortenau.de/ortenauer-schutzengellauf/",
+        "name": "Ortenauer Schutzengellauf",
+        "details": "",
+        "geo": "",
+        "location": "Zell am Harmersbach"
+    },
+    {
+        "time": "UNBEKANNT",
+        "url": "https://www.ksv-gersbach.de/",
+        "name": "Panoramalauf Gersbach",
+        "details": "",
+        "geo": "47.702340,7.946586",
+        "location": "Gersbach/Schopfheim"
     }
 ]
