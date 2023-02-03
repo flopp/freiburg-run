@@ -267,7 +267,7 @@ func main() {
 	copyHash("static/favicon.ico", "favicon.ico")
 	copyHash("static/apple-touch-icon.png", "apple-touch-icon.png")
 	copyHash("static/freiburg-run.svg", "images/freiburg-run.svg")
-	copyHash("static/events2023.png", "images/events2023.png")
+	copyHash("static/events2023.jpg", "images/events2023.jpg")
 	copyHash("static/marker-grey-icon.png", "images/marker-grey-icon.png")
 	copyHash("static/marker-grey-icon-2x.png", "images/marker-grey-icon-2x.png")
 
