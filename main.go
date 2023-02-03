@@ -142,7 +142,7 @@ func computeHash(fileName string) string {
 		panic(err)
 	}
 
-	return fmt.Sprintf("%x", h.Sum(nil))
+	return fmt.Sprintf("%.8x", h.Sum(nil))
 }
 
 func loadTemplate(name string) *template.Template {
