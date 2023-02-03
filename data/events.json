@@ -125,7 +125,8 @@
         "name": "18. Lauf 'Rund um Wolfach'",
         "details": "50k, Spendenlauf",
         "geo": "48.298011,8.218495",
-        "location": "Wolfach"
+        "location": "Wolfach",
+        "added": "2023-02-03"
 
     },
     {
@@ -281,7 +282,8 @@
         "name": "Sonnwendlauf Seelbach",
         "details": "10k",
         "geo": "48.310294,7.938255",
-        "location": "Seelbach/Schwarzwald"
+        "location": "Seelbach/Schwarzwald",
+        "added": "2023-02-03"
     },
     {
         "time": "30.06.2023",
@@ -381,7 +383,7 @@
         "details": "5k",
         "geo": "48.048681,8.537707",
         "location": "Villingen-Schwennigen",
-        "series": []
+        "added": "2023-02-03"
     },
     {
         "time": "20.07.2023",
@@ -390,7 +392,7 @@
         "details": "6.2k",
         "geo": "47.552715,7.948962",
         "location": "Bad Säckingen",
-        "series": []
+        "added": "2023-02-03"
     },
     {
         "time": "22.07.2023",
@@ -481,7 +483,8 @@
         "name": "Ettenheimer Stadtlauf",
         "details": "10k",
         "geo": "48.253602,7.812069",
-        "location": "Ettenheim"
+        "location": "Ettenheim",
+        "added": "2023-02-03"
     },
     {
         "time": "28.10.2023 (Vorläufig bestätigt)",
@@ -500,7 +503,8 @@
         "name": "40. Basler Stadtlauf",
         "details": "5.5k",
         "geo": "47.556419,7.591667",
-        "location": "Basel, CH"
+        "location": "Basel, CH",
+        "added": "2023-02-03"
     },
     {
         "time": "31.12.2023",

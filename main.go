@@ -28,6 +28,7 @@ type Event struct {
 	Url      string
 	Series   []string
 	Reports  []NameUrl
+	Added    string
 }
 
 type EventData struct {
@@ -39,6 +40,7 @@ type EventData struct {
 	Url      string
 	Series   []NameUrl
 	Reports  []NameUrl
+	Added    string
 }
 
 type TemplateData struct {
@@ -212,7 +214,7 @@ func main() {
 	groups_extended := make([]EventData, 0)
 	for _, e := range groups {
 		ed := EventData{
-			e.Name, e.Time, e.Location, e.Geo, e.Details, e.Url, nil, e.Reports,
+			e.Name, e.Time, e.Location, e.Geo, e.Details, e.Url, nil, e.Reports, e.Added,
 		}
 		groups_extended = append(groups_extended, ed)
 	}
@@ -227,7 +229,7 @@ func main() {
 	shops_extended := make([]EventData, 0)
 	for _, e := range shops {
 		ed := EventData{
-			e.Name, e.Time, e.Location, e.Geo, e.Details, e.Url, nil, e.Reports,
+			e.Name, e.Time, e.Location, e.Geo, e.Details, e.Url, nil, e.Reports, e.Added,
 		}
 		shops_extended = append(shops_extended, ed)
 	}
@@ -250,7 +252,7 @@ func main() {
 			}
 		}
 		ed := EventData{
-			e.Name, e.Time, e.Location, e.Geo, e.Details, e.Url, sd, e.Reports,
+			e.Name, e.Time, e.Location, e.Geo, e.Details, e.Url, sd, e.Reports, e.Added,
 		}
 		if !strings.Contains(ed.Time, "UNBEKANNT") {
 			events_extended = append(events_extended, ed)

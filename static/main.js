@@ -80,6 +80,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 m.addTo(map);
                 m.bindPopup(`${el.dataset.name}<br>${el.dataset.location}`);
             }
+            let added = Date.parse(el.dataset.added);
+            const maxAge = 7 * 86400 * 1000; /* 7 days */
+            if (added !== NaN && (Date.now() - added) < maxAge) {
+                const dateEl = el.children[0];
+                dateEl.classList.add("is-success");
+                dateEl.textContent += " (neu)";
+            }
         });
 
         var group = new L.featureGroup(markers);

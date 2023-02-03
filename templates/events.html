@@ -25,7 +25,7 @@
                     </thead>
                     <tbody>
                         {{range .Events}}
-                        <tr class="event" data-pending="0" data-geo="{{.Geo}}" data-name="{{.Name}}" data-location="{{.Location}}">
+                        <tr class="event" data-pending="0" data-geo="{{.Geo}}" data-name="{{.Name}}" data-location="{{.Location}}" data-added="{{.Added}}">
                             <td class="is-flex-wrap-wrap" data-label="Datum" class="is-flex-wrap-wrap">
                                 {{.Time}}
                             </td>
@@ -78,7 +78,7 @@
                     </thead>
                     <tbody>
                         {{range .EventsPending}}
-                        <tr class="event" data-pending="1" data-geo="{{.Geo}}" data-name="{{.Name}}" data-location="{{.Location}}">
+                        <tr class="event" data-pending="1" data-geo="{{.Geo}}" data-name="{{.Name}}" data-location="{{.Location}}" data-added="{{.Added}}">
                             <td class="is-flex-wrap-wrap" data-label="Datum">
                                 {{.Time}}
                             </td>
