@@ -45,6 +45,7 @@ type EventData struct {
 
 type TemplateData struct {
 	Title         string
+	Type          string
 	Description   string
 	Nav           string
 	Canonical     string
@@ -270,14 +271,18 @@ func main() {
 	copyHash("static/events2023.jpg", "images/events2023.jpg")
 	copyHash("static/marker-grey-icon.png", "images/marker-grey-icon.png")
 	copyHash("static/marker-grey-icon-2x.png", "images/marker-grey-icon-2x.png")
+	copyHash("static/circle-small.png", "images/circle-small.png")
+	copyHash("static/circle-big.png", "images/circle-big.png")
 
 	js_files := make([]string, 0)
 	js_files = append(js_files, downloadHash("https://unpkg.com/leaflet@1.9.3/dist/leaflet.js", "leaflet-HASH.js"))
+	js_files = append(js_files, downloadHash("https://raw.githubusercontent.com/ptma/Leaflet.Legend/master/src/leaflet.legend.js", "leaflet-legend-HASH.js"))
 	js_files = append(js_files, copyHash("static/main.js", "main-HASH.js"))
 
 	css_files := make([]string, 0)
 	css_files = append(css_files, downloadHash("https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css", "bulma-HASH.css"))
 	css_files = append(css_files, downloadHash("https://unpkg.com/leaflet@1.9.3/dist/leaflet.css", "leaflet-HASH.css"))
+	css_files = append(css_files, downloadHash("https://raw.githubusercontent.com/ptma/Leaflet.Legend/master/src/leaflet.legend.css", "leaflet-legend-HASH.css"))
 	css_files = append(css_files, downloadHash("https://raw.githubusercontent.com/justboil/bulma-responsive-tables/master/css/main.min.css", "bulma-responsive-tables-HASH.css"))
 	css_files = append(css_files, copyHash("static/style.css", "style-HASH.css"))
 
@@ -287,6 +292,7 @@ func main() {
 
 	data := TemplateData{
 		"Laufveranstaltungen im Raum Freiburg / Südbaden 2023",
+		"Veranstaltung",
 		"Liste von Laufveranstaltungen, Lauf-Wettkämpfen, Volksläufen 2023 im Raum Freiburg / Südbaden",
 		"events",
 		"https://freiburg.run/",
@@ -303,30 +309,35 @@ func main() {
 
 	data.Nav = "groups"
 	data.Title = "Lauftreffs im Raum Freiburg / Südbaden"
+	data.Type = "Lauftreff"
 	data.Description = "Liste von Lauftreffs, Laufgruppen, Lauf-Trainingsgruppen im Raum Freiburg / Südbaden"
 	data.Canonical = "https://freiburg.run/lauftreffs.html"
 	executeTemplate("groups", ".out/lauftreffs.html", data)
 
 	data.Nav = "shops"
 	data.Title = "Lauf-Shops im Raum Freiburg / Südbaden"
+	data.Type = "Lauf-Shop"
 	data.Description = "Liste von Lauf-Shops, Geschäften mit Laufschuh-Auswahl im Raum Freiburg / Südbaden"
 	data.Canonical = "https://freiburg.run/shops.html"
 	executeTemplate("shops", ".out/shops.html", data)
 
 	data.Nav = "datenschutz"
 	data.Title = "Datenschutz"
+	data.Type = "Datenschutz"
 	data.Description = "Datenschutzerklärung von freiburg.run"
 	data.Canonical = "https://freiburg.run/datenschutz.html"
 	executeTemplate("datenschutz", ".out/datenschutz.html", data)
 
 	data.Nav = "impressum"
 	data.Title = "Impressum"
+	data.Type = "Impressum"
 	data.Description = "Impressum von freiburg.run"
 	data.Canonical = "https://freiburg.run/impressum.html"
 	executeTemplate("impressum", ".out/impressum.html", data)
 
 	data.Nav = "info"
 	data.Title = "Info"
+	data.Type = "Info"
 	data.Description = "Kontaktmöglichkeiten, aallgemein & technische Informationen über freiburg.run"
 	data.Canonical = "https://freiburg.run/info.html"
 	executeTemplate("info", ".out/info.html", data)

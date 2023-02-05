@@ -52,11 +52,13 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         let greyIcon = L.icon(greyOptions);
 
+        let hasPending = false;
         let markers = [];
         document.querySelectorAll(".event").forEach(el => {
             if (el.dataset.pending === "0") {
                 return;
             }
+            hasPending = true;
             let geo = el.dataset.geo.trim().split(",");
             if (geo.length === 2) {
                 let lat = parseFloat(geo[0]);
@@ -88,6 +90,40 @@ document.addEventListener('DOMContentLoaded', () => {
                 dateEl.textContent += " (neu)";
             }
         });
+
+        const itemName = document.querySelector("body").dataset.itemtype;
+        const items = [{
+            label: itemName,
+            type: "image",
+            url: "images/marker-icon.png",
+        }];
+        if (hasPending) {
+            items.push({
+                label: `${itemName} (unbestätigt)`,
+                type: "image",
+                url: "images/marker-grey-icon.png"
+            });
+        }
+        items.push(
+            {
+                label: "25km um Freiburg",
+                type: "image",
+                url: "images/circle-small.png"
+            }, {
+                label: "50km um Freiburg",
+                type: "image",
+                url: "images/circle-big.png"
+            }
+        );
+        const legend = L.control.Legend({
+            title: "Legende",
+            position: "bottomleft",
+            collapsed: true,
+            symbolWidth: 30,
+            opacity: 1,
+            column: 1,
+            legends: items
+        }).addTo(map);
 
         var group = new L.featureGroup(markers);
         map.fitBounds(group.getBounds(), {padding: L.point(40, 40)});
