@@ -513,7 +513,8 @@
         "details": "10k",
         "geo": "47.827588, 7.673785",
         "location": "Britzingen",
-        "series": ["Markgräfler Cup 2023"]
+        "series": ["Markgräfler Cup 2023"],
+        "reports": [{"name": "Laufbericht 2022 (flopp)", "url": "https://running.flopp.net/2023/02/05/silvesterlauf-britzingen-2022-3-teilnahme/"}]
     },
     {
         "time": "31.12.2023",
@@ -659,5 +660,13 @@
         "details": "",
         "geo": "47.702340,7.946586",
         "location": "Gersbach/Schopfheim"
+    },
+    {
+        "time": "UNBEKANNT",
+        "url": "https://www.sportscheck.com/stadtlauf-historie/stadtlauf-historie-freiburg/",
+        "name": "SportScheck Stadtlauf Freiburg",
+        "details": "",
+        "geo": "",
+        "location": "Freiburg"
     }
 ]
