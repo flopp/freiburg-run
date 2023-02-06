@@ -231,6 +231,15 @@
         "series": ["Intersport Denzer Cup 2023"]
     },
     {
+        "time": "03.06.2023",
+        "url": "https://www.charity-walk.info/staedte/freiburg/",
+        "name": "Charity Walk & Run",
+        "details": "10k, 5k",
+        "geo": "48.012251,7.814668",
+        "location": "Seepark, Freiburg",
+        "added": "06.02.2023"
+    },
+    {
         "time": "17.06.2023",
         "url": "https://www.fcreiselfingen.de/index.php/veranstaltungen/lauf-an-der-wutach",
         "name": "22. Lauf an der Wutach",
@@ -580,14 +589,6 @@
         "details": "1.3k",
         "geo": "47.997030,7.854742",
         "location": "Freiburg"
-    },
-    {
-        "time": "UNBEKANNT (Anfrage läuft)",
-        "url": "https://www.charity-walk.info/staedte/freiburg/",
-        "name": "Charity Walk & Run",
-        "details": "10k, 5k",
-        "geo": "48.012251,7.814668",
-        "location": "Seepark, Freiburg"
     },
     {
         "time": "UNBEKANNT (Anfrage läuft)",
