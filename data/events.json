@@ -423,6 +423,14 @@
         "reports": [{"name": "Laufbericht 2018 (pandarennt)", "url": "https://pandarennt.wordpress.com/2019/07/11/rundumpfohren/"}]
     },
     {
+        "time": "20.08.2023",
+        "url": "https://www.breisgau-triathlon.de/",
+        "name": "32. Breisgau Triathlon",
+        "details": "Mitteldistanz, Kurzdistanz",
+        "geo": "48.155175,7.781126",
+        "location": "Malterdingen"
+    },
+    {
         "time": "10.09.2023",
         "url": "https://www.wehratallauf.de/",
         "name": "Wehratallauf",
