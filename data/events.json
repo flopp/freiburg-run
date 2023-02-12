@@ -139,6 +139,15 @@
 
     },
     {
+        "time": "28.04.2023",
+        "url": "https://badduerrheim.de/veranstaltungen/tickets-event-highlights/stirnlampenlauf//",
+        "name": "Bad Dürrheimer Stirnlampenlauf",
+        "details": "8k, 5k Charitylauf",
+        "geo": "48.015849,8.535677",
+        "location": "Bad Dürrheim",
+        "added": "12.02.2023"
+    },
+    {
         "time": "29.04.2023",
         "url": "https://tv-buehlertal.de/bgv-hundsecklauf/",
         "name": "Hundseckberglauf",
@@ -428,7 +437,8 @@
         "name": "32. Breisgau Triathlon",
         "details": "Mitteldistanz, Kurzdistanz",
         "geo": "48.155175,7.781126",
-        "location": "Malterdingen"
+        "location": "Malterdingen",
+        "added": "2023-02-11"
     },
     {
         "time": "10.09.2023",
