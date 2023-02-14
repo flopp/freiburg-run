@@ -281,6 +281,7 @@ func main() {
 	info_time := GetMtime("templates/info.html").Format("2006-01-02 15:04:05")
 
 	genSitemap("sitemap.xml", events_time, groups_time, shops_time, info_time)
+	copyHash("static/.htaccess", ".htaccess")
 	copyHash("static/robots.txt", "robots.txt")
 	copyHash("static/favicon.png", "favicon.png")
 	copyHash("static/favicon.ico", "favicon.ico")
@@ -359,4 +360,11 @@ func main() {
 	data.Description = "Kontaktmöglichkeiten, aallgemein & technische Informationen über freiburg.run"
 	data.Canonical = "https://freiburg.run/info.html"
 	executeTemplate("info", ".out/info.html", data)
+
+	data.Nav = "404"
+	data.Title = "404 - Seite nicht gefunden :("
+	data.Type = ""
+	data.Description = "Fehlerseite von friburg.run"
+	data.Canonical = "https://freiburg.run/404.html"
+	executeTemplate("404", ".out/404.html", data)
 }

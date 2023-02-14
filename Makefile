@@ -8,9 +8,9 @@ build:
 
 .phony: upload
 upload: build
-	scp -r .out/* echeclus.uberspace.de:/var/www/virtual/floppnet/freiburg.run/
-	scp -r .out/* echeclus.uberspace.de:/var/www/virtual/floppnet/fraig.de/
+	scp -r .out/* .out/.htaccess echeclus.uberspace.de:/var/www/virtual/floppnet/freiburg.run/
+	scp -r .out/* .out/.htaccess echeclus.uberspace.de:/var/www/virtual/floppnet/fraig.de/
 
 .phony: upload-test
 upload-test: build
-	scp -r .out/* echeclus.uberspace.de:/var/www/virtual/floppnet/fraig.de/
+	scp -r .out/* .out/.htaccess echeclus.uberspace.de:/var/www/virtual/floppnet/fraig.de/
