@@ -7,6 +7,26 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    const parseGeo = function (s) {
+        const re1 = /\s*N\s*(?<lat>\d+\.\d+)\s+E\s*(?<lng>\d+\.\d+)\s*$/gm;
+        const match1 = re1.exec(s);
+        if (match1 !== null) {
+            let lat = parseFloat(match1.groups.lat);
+            let lng = parseFloat(match1.groups.lng);
+            return [lat, lng];
+        }
+
+        const re2 = /\s*(?<lat>\d+\.\d+)\s*,\s*(?<lng>\d+\.\d+)\s*$/gm;
+        const match2 = re2.exec(s);
+        if (match2 !== null) {
+            let lat = parseFloat(match2.groups.lat);
+            let lng = parseFloat(match2.groups.lng);
+            return [lat, lng];
+        }
+
+        return null;
+    };
+
     if (document.querySelector("#map") !== null) {
         var map = L.map('map').setView([51.505, -0.09], 13);
 
@@ -59,11 +79,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             hasPending = true;
-            let geo = el.dataset.geo.trim().split(",");
-            if (geo.length === 2) {
-                let lat = parseFloat(geo[0]);
-                let lng = parseFloat(geo[1]);
-                let m = L.marker([lat, lng], {icon: greyIcon});
+            let geo = parseGeo(el.dataset.geo);
+            if (geo !== null) {
+                let m = L.marker(geo, {icon: greyIcon});
                 markers.push(m);
                 m.addTo(map);
                 m.bindPopup(`${el.dataset.name}<br>${el.dataset.location}<br>NICHT BESTÄTIGT`);
@@ -73,11 +91,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if (el.dataset.pending === "1") {
                 return;
             }
-            let geo = el.dataset.geo.trim().split(",");
-            if (geo.length === 2) {
-                let lat = parseFloat(geo[0]);
-                let lng = parseFloat(geo[1]);
-                let m = L.marker([lat, lng], {icon: blueIcon});
+            let geo = parseGeo(el.dataset.geo);
+            if (geo !== null) {
+                let m = L.marker(geo, {icon: blueIcon});
                 markers.push(m);
                 m.addTo(map);
                 m.bindPopup(`${el.dataset.name}<br>${el.dataset.location}`);
