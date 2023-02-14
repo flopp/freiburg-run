@@ -161,31 +161,44 @@ func executeTemplate(templateName string, fileName string, data TemplateData) {
 	}
 }
 
+func nl(f *os.File) {
+	f.WriteString("\n")
+}
 func genSitemapEntry(f *os.File, url string, timeStamp string) {
-	f.WriteString(`<url>`)
-	f.WriteString(fmt.Sprintf(`<loc>%s</loc>`, url))
-	f.WriteString(fmt.Sprintf(`<lastmod>%s</lastmod>`, timeStamp))
-	f.WriteString(`</url>`)
+	f.WriteString(`    <url>`)
+	nl(f)
+	f.WriteString(fmt.Sprintf(`        <loc>%s</loc>`, url))
+	nl(f)
+	f.WriteString(fmt.Sprintf(`        <lastmod>%s</lastmod>`, timeStamp))
+	nl(f)
+	f.WriteString(`    </url>`)
+	nl(f)
 }
 
-func genSitemap(fileName string) {
+func genSitemap(fileName, events_time, groups_time, shops_time, info_time string) {
 	makeDir(".out")
 	f, err := os.Create(filepath.Join(".out", fileName))
 	check(err)
 
 	defer f.Close()
 
-	timestamp := time.Now().Format("2006-01-02")
-
 	f.WriteString(`<?xml version="1.0" encoding="UTF-8"?>`)
+	nl(f)
 	f.WriteString(`<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`)
+	nl(f)
 
-	genSitemapEntry(f, "https://freiburg.run/", timestamp)
-	genSitemapEntry(f, "https://freiburg.run/lauftreffs.html", timestamp)
-	genSitemapEntry(f, "https://freiburg.run/shops.html", timestamp)
-	genSitemapEntry(f, "https://freiburg.run/info.html", timestamp)
+	genSitemapEntry(f, "https://freiburg.run/", events_time)
+	genSitemapEntry(f, "https://freiburg.run/lauftreffs.html", groups_time)
+	genSitemapEntry(f, "https://freiburg.run/shops.html", shops_time)
+	genSitemapEntry(f, "https://freiburg.run/info.html", info_time)
 
 	f.WriteString(`</urlset>`)
+}
+
+func GetMtime(filePath string) time.Time {
+	stat, err := os.Stat(filePath)
+	check(err)
+	return stat.ModTime()
 }
 
 func main() {
@@ -204,6 +217,7 @@ func main() {
 	if err := json.Unmarshal(events_data, &events); err != nil {
 		panic(err)
 	}
+	events_time := GetMtime("data/events.json").Format("2006-01-02 15:04:05")
 
 	groups_data, err := os.ReadFile("data/groups.json")
 	check(err)
@@ -211,6 +225,7 @@ func main() {
 	if err := json.Unmarshal(groups_data, &groups); err != nil {
 		panic(err)
 	}
+	groups_time := GetMtime("data/groups.json").Format("2006-01-02 15:04:05")
 
 	groups_extended := make([]EventData, 0)
 	for _, e := range groups {
@@ -226,6 +241,7 @@ func main() {
 	if err := json.Unmarshal(shops_data, &shops); err != nil {
 		panic(err)
 	}
+	shops_time := GetMtime("data/shops.json").Format("2006-01-02 15:04:05")
 
 	shops_extended := make([]EventData, 0)
 	for _, e := range shops {
@@ -262,7 +278,9 @@ func main() {
 		}
 	}
 
-	genSitemap("sitemap.xml")
+	info_time := GetMtime("templates/info.html").Format("2006-01-02 15:04:05")
+
+	genSitemap("sitemap.xml", events_time, groups_time, shops_time, info_time)
 	copyHash("static/robots.txt", "robots.txt")
 	copyHash("static/favicon.png", "favicon.png")
 	copyHash("static/favicon.ico", "favicon.ico")
