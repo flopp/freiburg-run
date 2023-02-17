@@ -110,6 +110,16 @@
         "series": []
     },
     {
+        "time": "19.04.2023",
+        "url": "https://alsacegrandest.utmb.world/de/races-runners/races/UTDC",
+        "name": "Ultra-Trail des Chevaliers",
+        "details": "175k Trail, 6200hm",
+        "geo": "N 48.077752 E 7.357964",
+        "location": "Colmar, FR",
+        "series": [{"name": "UTMB World Series", "url": "https://utmb.world/"}],
+        "added": "17.02.2023"
+    },
+    {
         "time": "22.04.2023",
         "url": "http://panoramalauf.scmuenstertal.de/",
         "name": "24. Münstertäler Panoramalauf",
@@ -713,5 +723,13 @@
         "details": "10k, 5k",
         "geo": "N 48.331504 E 7.919512",
         "location": "Lahr"
+    },
+    {
+        "time": "UNBEKANNT",
+        "url": "https://www.mittsommerlauf-heitersheim.de/",
+        "name": "Mittsommerlauf Heitersheim",
+        "details": "10k",
+        "geo": "N 47.871916 E 7.660217",
+        "location": "Heitersheim"
     }
 ]
