@@ -65,6 +65,15 @@
     },
     {
         "time": "19.03.2023",
+        "url": "http://www.gruettlauf.de/",
+        "name": "23. Grüttlauf",
+        "details": "10k",
+        "geo": "N 47.626854 E 7.662020",
+        "location": "Lörrach",
+        "added": "17.02.2023"
+    },
+    {
+        "time": "19.03.2023",
         "url": "https://www.trailpetitballon.fr/",
         "name": "Trail du Petit Ballon",
         "details": "53k, 42k, 24k, 13k",
