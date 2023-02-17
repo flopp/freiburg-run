@@ -116,7 +116,17 @@
         "details": "175k Trail, 6200hm",
         "geo": "N 48.077752 E 7.357964",
         "location": "Colmar, FR",
-        "series": [{"name": "UTMB World Series", "url": "https://utmb.world/"}],
+        "series": ["UTMB World Series"],
+        "added": "17.02.2023"
+    },
+    {
+        "time": "20.04.2023",
+        "url": "https://alsacegrandest.utmb.world/de/races-runners/races/UTDP",
+        "name": "Ultra-Trail des Païens",
+        "details": "100k Trail, 3820hm",
+        "geo": "N 48.242244 E 7.379981",
+        "location": "Orschwiller, FR",
+        "series": ["UTMB World Series"],
         "added": "17.02.2023"
     },
     {
