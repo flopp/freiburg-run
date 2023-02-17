@@ -468,6 +468,15 @@
         "series": ["Schwarzwald Berglauf Pokal 2023"]
     },
     {
+        "time": "24.09.2023",
+        "url": "https://klosterlauf-schuttern.de/",
+        "name": "6. Klosterlauf Schuttern",
+        "details": "10k",
+        "geo": "N 48.383650 E 7.852462",
+        "location": "Schuttern",
+        "added": "17.02.2023"
+    },
+    {
         "time": "30.09.2023 & 01.10.2023",
         "url": "https://www.trailrun-masters.de/",
         "name": "Black Forest Trailrun Masters",
@@ -696,5 +705,13 @@
         "details": "",
         "geo": "",
         "location": "Freiburg"
+    },
+    {
+        "time": "UNBEKANNT",
+        "url": "https://www.lg-geroldseck-lahr.com/nikolauslauf",
+        "name": "Nikolauslauf Lahr",
+        "details": "10k, 5k",
+        "geo": "N 48.331504 E 7.919512",
+        "location": "Lahr"
     }
 ]
