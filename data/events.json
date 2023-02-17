@@ -70,7 +70,7 @@
         "details": "10k",
         "geo": "N 47.626854 E 7.662020",
         "location": "Lörrach",
-        "added": "17.02.2023"
+        "added": "2023-02-17"
     },
     {
         "time": "19.03.2023",
@@ -117,7 +117,7 @@
         "geo": "N 48.077752 E 7.357964",
         "location": "Colmar, FR",
         "series": ["UTMB World Series"],
-        "added": "17.02.2023"
+        "added": "2023-02-17"
     },
     {
         "time": "20.04.2023",
@@ -127,7 +127,7 @@
         "geo": "N 48.242244 E 7.379981",
         "location": "Orschwiller, FR",
         "series": ["UTMB World Series"],
-        "added": "17.02.2023"
+        "added": "2023-02-17"
     },
     {
         "time": "22.04.2023",
@@ -174,7 +174,7 @@
         "details": "8k, 5k Charitylauf",
         "geo": "48.015849,8.535677",
         "location": "Bad Dürrheim",
-        "added": "12.02.2023"
+        "added": "2023-02-17"
     },
     {
         "time": "29.04.2023",
@@ -275,7 +275,7 @@
         "details": "10k, 5k",
         "geo": "48.012251,7.814668",
         "location": "Seepark, Freiburg",
-        "added": "06.02.2023"
+        "added": "2023-02-06"
     },
     {
         "time": "17.06.2023",
@@ -494,7 +494,7 @@
         "details": "10k",
         "geo": "N 48.383650 E 7.852462",
         "location": "Schuttern",
-        "added": "17.02.2023"
+        "added": "2023-02-17"
     },
     {
         "time": "30.09.2023 & 01.10.2023",
