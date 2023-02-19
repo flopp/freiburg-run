@@ -43,6 +43,14 @@ type EventData struct {
 	Added    string
 }
 
+type ParkrunEventData struct {
+	Index   string
+	Date    string
+	Results string
+	Report  string
+	Photos  string
+}
+
 type TemplateData struct {
 	Title         string
 	Type          string
@@ -54,6 +62,7 @@ type TemplateData struct {
 	EventsPending []EventData
 	Groups        []EventData
 	Shops         []EventData
+	Parkrun       []ParkrunEventData
 	JsFiles       []string
 	CssFiles      []string
 }
@@ -175,7 +184,7 @@ func genSitemapEntry(f *os.File, url string, timeStamp string) {
 	nl(f)
 }
 
-func genSitemap(fileName, events_time, groups_time, shops_time, info_time string) {
+func genSitemap(fileName, events_time, groups_time, shops_time, parkrun_time, info_time string) {
 	makeDir(".out")
 	f, err := os.Create(filepath.Join(".out", fileName))
 	check(err)
@@ -190,6 +199,7 @@ func genSitemap(fileName, events_time, groups_time, shops_time, info_time string
 	genSitemapEntry(f, "https://freiburg.run/", events_time)
 	genSitemapEntry(f, "https://freiburg.run/lauftreffs.html", groups_time)
 	genSitemapEntry(f, "https://freiburg.run/shops.html", shops_time)
+	genSitemapEntry(f, "https://freiburg.run/dietenbach-parkrun.html", parkrun_time)
 	genSitemapEntry(f, "https://freiburg.run/info.html", info_time)
 
 	f.WriteString(`</urlset>`)
@@ -278,9 +288,17 @@ func main() {
 		}
 	}
 
+	parkrun_data, err := os.ReadFile("data/dietenbach-parkrun.json")
+	check(err)
+	parkrun := make([]ParkrunEventData, 0)
+	if err := json.Unmarshal(parkrun_data, &parkrun); err != nil {
+		panic(err)
+	}
+	parkrun_time := GetMtime("data/dietenbach-parkrun.json").Format("2006-01-02 15:04:05")
+
 	info_time := GetMtime("templates/info.html").Format("2006-01-02 15:04:05")
 
-	genSitemap("sitemap.xml", events_time, groups_time, shops_time, info_time)
+	genSitemap("sitemap.xml", events_time, groups_time, shops_time, parkrun_time, info_time)
 	copyHash("static/.htaccess", ".htaccess")
 	copyHash("static/robots.txt", "robots.txt")
 	copyHash("static/favicon.png", "favicon.png")
@@ -320,6 +338,7 @@ func main() {
 		events_pending,
 		groups_extended,
 		shops_extended,
+		parkrun,
 		js_files,
 		css_files,
 	}
@@ -339,6 +358,13 @@ func main() {
 	data.Description = "Liste von Lauf-Shops, Geschäften mit Laufschuh-Auswahl im Raum Freiburg / Südbaden"
 	data.Canonical = "https://freiburg.run/shops.html"
 	executeTemplate("shops", ".out/shops.html", data)
+
+	data.Nav = "parkrun"
+	data.Title = "Dietenbach parkrun - Ergebnisse, Laufberichte, Fotogalerien"
+	data.Type = "Dietenbach parkrun"
+	data.Description = "Dietenbach parkrun - Ergebnisse, Laufberichte, Fotogalerien"
+	data.Canonical = "https://freiburg.run/dietenbach-parkrun.html"
+	executeTemplate("dietenbach-parkrun", ".out/dietenbach-parkrun.html", data)
 
 	data.Nav = "datenschutz"
 	data.Title = "Datenschutz"

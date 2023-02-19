@@ -1,0 +1,56 @@
+{{template "header.html" .}}
+
+<section class="section">
+    <div class="container">
+        <h1 class="title">Dietenbach parkrun - Ergebnisse, Laufberichte, Fotogalerien</h1>
+        <div class="notification is-info is-light">
+            Zu jedem Laufevent des <a href="https://www.parkrun.com.de/dietenbach/" target="_blank">Dietenbach parkrun</a> gibt es neben der Ergebnisliste auch einen Laufbericht und eine Fotogalerie.
+            Auf der parkrun-Hauptseite sind diese sehr schwer zu finden - deshalb liste ich alle Berichte und Fotogalerien hier auf.
+        </div>
+
+        <div class="b-table">
+            <div class="table-wrapper has-mobile-cards">
+                <table class="table is-fullwidth is-narrow">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Datum</th>
+                            <th>Ergebnisse</th>
+                            <th>Laufbericht</th>
+                            <th>Fotogalerie</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{range .Parkrun}}
+                        <tr class="parkrun-event">
+                            <td class="is-flex-wrap-wrap" data-label="#">
+                                {{.Index}}
+                            </td>
+                            <td class="is-flex-wrap-wrap" data-label="Datum">
+                                {{.Date}}
+                            </td>
+                            <td class="is-flex-wrap-wrap" data-label="Ergebnisse">
+                                {{if .Results}}
+                                <a href="{{.Results}}" target="_blank">Ergebnisse #{{.Index}}</a>
+                                {{end}}
+                            </td>
+                            <td class="is-flex-wrap-wrap" data-label="Laufbericht">
+                                {{if .Report}}
+                                <a href="{{.Report}}" target="_blank">Laufbericht #{{.Index}}</a>
+                                {{end}}
+                            </td>
+                            <td class="is-flex-wrap-wrap" data-label="Fotogalerie">
+                                {{if .Photos}}
+                                <a href="{{.Photos}}" target="_blank">Fotogalerie #{{.Index}}</a>
+                                {{end}}
+                            </td>
+                        </tr>
+                        {{end}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+{{template "footer.html" .}}
