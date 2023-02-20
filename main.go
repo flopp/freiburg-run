@@ -212,7 +212,7 @@ func GetMtime(filePath string) time.Time {
 }
 
 func main() {
-	timestamp := time.Now().Format("2006-01-02 15:04:05")
+	timestamp := time.Now().Format("2006-01-02")
 
 	series_data, err := os.ReadFile("data/series.json")
 	check(err)
@@ -227,7 +227,7 @@ func main() {
 	if err := json.Unmarshal(events_data, &events); err != nil {
 		panic(err)
 	}
-	events_time := GetMtime("data/events.json").Format("2006-01-02 15:04:05")
+	events_time := GetMtime("data/events.json").Format("2006-01-02")
 
 	groups_data, err := os.ReadFile("data/groups.json")
 	check(err)
@@ -235,7 +235,7 @@ func main() {
 	if err := json.Unmarshal(groups_data, &groups); err != nil {
 		panic(err)
 	}
-	groups_time := GetMtime("data/groups.json").Format("2006-01-02 15:04:05")
+	groups_time := GetMtime("data/groups.json").Format("2006-01-02")
 
 	groups_extended := make([]EventData, 0)
 	for _, e := range groups {
@@ -251,7 +251,7 @@ func main() {
 	if err := json.Unmarshal(shops_data, &shops); err != nil {
 		panic(err)
 	}
-	shops_time := GetMtime("data/shops.json").Format("2006-01-02 15:04:05")
+	shops_time := GetMtime("data/shops.json").Format("2006-01-02")
 
 	shops_extended := make([]EventData, 0)
 	for _, e := range shops {
@@ -294,9 +294,9 @@ func main() {
 	if err := json.Unmarshal(parkrun_data, &parkrun); err != nil {
 		panic(err)
 	}
-	parkrun_time := GetMtime("data/dietenbach-parkrun.json").Format("2006-01-02 15:04:05")
+	parkrun_time := GetMtime("data/dietenbach-parkrun.json").Format("2006-01-02")
 
-	info_time := GetMtime("templates/info.html").Format("2006-01-02 15:04:05")
+	info_time := GetMtime("templates/info.html").Format("2006-01-02")
 
 	genSitemap("sitemap.xml", events_time, groups_time, shops_time, parkrun_time, info_time)
 	copyHash("static/.htaccess", ".htaccess")
