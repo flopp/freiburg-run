@@ -1,6 +1,13 @@
 #map {
     height: 400px;
     margin-bottom: 1.5rem;
+    margin-right: 2em;
+}
+
+#parkrun-map {
+    height: 400px;
+    margin-bottom: 1.5rem;
+    margin-right: 2em;
 }
 
 .navbar.z-top {
