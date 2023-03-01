@@ -360,9 +360,9 @@ func main() {
 	executeTemplate("shops", ".out/shops.html", data)
 
 	data.Nav = "parkrun"
-	data.Title = "Dietenbach parkrun - Ergebnisse, Laufberichte, Fotogalerien"
+	data.Title = "Dietenbach parkrun - Karte, Ergebnisse, Laufberichte, Fotogalerien"
 	data.Type = "Dietenbach parkrun"
-	data.Description = "Dietenbach parkrun - Ergebnisse, Laufberichte, Fotogalerien"
+	data.Description = "Dietenbach parkrun - Karte, Ergebnisse, Laufberichte, Fotogalerien"
 	data.Canonical = "https://freiburg.run/dietenbach-parkrun.html"
 	executeTemplate("dietenbach-parkrun", ".out/dietenbach-parkrun.html", data)
 
