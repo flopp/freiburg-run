@@ -552,10 +552,10 @@
         "reports": [{"name": "Laufbericht 2018 (pandarennt)", "url": "https://pandarennt.wordpress.com/2019/09/18/schwarzwaldmarathon/"}]
     },
     {
-        "time": "15.10.2023 (Vorläufig bestätigt)",
+        "time": "15.10.2023",
         "url": "https://stadtlauf.lv-ettenheim.de/",
         "name": "Ettenheimer Stadtlauf",
-        "details": "10km",
+        "details": "10km, 4km",
         "geo": "48.253602,7.812069",
         "location": "Ettenheim",
         "added": "2023-02-03"
