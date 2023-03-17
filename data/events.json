@@ -196,6 +196,15 @@
         "reports": [{"name": "Film 2022", "url": "https://www.youtube.com/watch?v=kum8o6e8IMc"}]
     },
     {
+        "time": "29.04.2023",
+        "url": "https://www.lauftreff-pfohren.de/veranstaltungen/feldberglauf",
+        "name": "16. Feldberglauf",
+        "details": "54km, 1200hm, Erlebnislauf in der Gruppe",
+        "geo": "N 47.937557 E 8.555571",
+        "location": "Pfohren",
+        "added": "2023-04-29"
+    },
+    {
         "time": "30.04.2023",
         "url": "https://www.genusslaeufer.de/content/programm.php",
         "name": "Genusslauf Müllheim",
@@ -240,6 +249,15 @@
         "geo": "47.855567,7.632494",
         "location": "Buggingen",
         "series": ["Markgräfler Cup 2023"]
+    },
+    {
+        "time": "20.05.2023",
+        "url": "https://mukoviszidose-ortenau.de/ortenauer-schutzengellauf/",
+        "name": "Ortenauer Schutzengellauf",
+        "details": "1.4km, Spendenlauf",
+        "geo": "N 48.346866 E 8.063793",
+        "location": "Zell am Harmersbach",
+        "added": "2023-03-17"
     },
     {
         "time": "21.05.2023",
@@ -479,6 +497,15 @@
         "added": "2023-02-11"
     },
     {
+        "time": "09.09.2023",
+        "url": "https://www.lauftreff-pfohren.de/veranstaltungen/fuerstenbergsprint",
+        "name": "13. Fürstenberg-Sprint",
+        "details": "6km",
+        "geo": "N 47.907310 E 8.574014",
+        "location": "Neudingen / Fürstenberg",
+        "added": "2023-03-17"
+    },
+    {
         "time": "10.09.2023",
         "url": "https://www.wehratallauf.de/",
         "name": "Wehratallauf",
@@ -570,6 +597,15 @@
         "reports": [
             {"name": "Laufbericht 2018 (pandarennt)", "url": "https://pandarennt.wordpress.com/2019/09/26/wing_furtwangen/"}
         ]
+    },
+    {
+        "time": "12.11.2023",
+        "url": "https://hallenmarathon-pfohren.de/",
+        "name": "6. Hallenmarathon Pfohren",
+        "details": "Marathon, Halbmarathon, 10km, 10km Paarlauf",
+        "geo": "47.920045,8.645586",
+        "location": "Geisingen",
+        "added": "2023-03-17"
     },
     {
         "time": "18.11.2023",
@@ -665,14 +701,6 @@
     },
     {
         "time": "UNBEKANNT",
-        "url": "https://hallenmarathon-pfohren.de/",
-        "name": "Hallenmarathon Pfohren",
-        "details": "MA",
-        "geo": "47.920045,8.645586",
-        "location": "Geisingen"
-    },
-    {
-        "time": "UNBEKANNT",
         "url": "https://www.selestat.fr/se-divertir-a-selestat/les-courses-de-selestat.html",
         "name": "Les courses de Sélestat",
         "details": "HM, 10km, 5km",
@@ -710,14 +738,6 @@
         "details": "8km, 4km, 1km",
         "geo": "48.128439,8.231399",
         "location": "Triberg"
-    },
-    {
-        "time": "UNBEKANNT",
-        "url": "https://mukoviszidose-ortenau.de/ortenauer-schutzengellauf/",
-        "name": "Ortenauer Schutzengellauf",
-        "details": "",
-        "geo": "",
-        "location": "Zell am Harmersbach"
     },
     {
         "time": "UNBEKANNT",
