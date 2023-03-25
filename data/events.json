@@ -61,7 +61,10 @@
         "geo": "47.840512,7.708365",
         "location": "Sulzburg",
         "series": ["Markgräfler Cup 2023"],
-        "reports": [{"name": "Laufbericht 2022 (MRC)", "url": "https://markgraeflerrunnersclub.de/en/events/2022/fruehlingslauf-in-sulzburg"}]
+        "reports": [
+            {"name": "Laufbericht 2022 (MRC)", "url": "https://markgraeflerrunnersclub.de/en/events/2022/fruehlingslauf-in-sulzburg"},
+            {"name": "Laufbericht 2023 (Flopp)", "url": "https://running.flopp.net/2023/03/19/sulzburger-fruehlingslauf-2023-1-teilnahme/"}
+        ]
     },
     {
         "time": "19.03.2023",
@@ -232,6 +235,15 @@
         "location": "Basel"
     },
     {
+        "time": "13.05.2023",
+        "url": "https://www.running-team-ortenau.de/laufnacht/",
+        "name": "Ortenauer Laufnacht",
+        "details": "10km, 5km",
+        "geo": "N 48.545979 E 7.923374",
+        "location": "Willstätt-Sand",
+        "added": "2023-03-23"
+    },
+    {
         "time": "13.05.2023 & 14.05.2023",
         "url": "https://www.schluchseelauf.com/",
         "name": "37. Schluchseelauf",
@@ -367,6 +379,15 @@
         "geo": "48.120260,7.849404",
         "location": "Emmendingen",
         "reports": [{"name": "Laufbericht 2016 (pandarennt)", "url": "https://pandarennt.wordpress.com/2017/06/10/emmendinger10er/"}]
+    },
+    {
+        "time": "30.06.2023",
+        "url": "https://ladv.de/ausschreibung/detail/33968/7.-Sommer-Abend-Lauf-Steinach-%28Ortenaukreis%29.htm",
+        "name": "7. Sommer-Abend-Lauf",
+        "details": "10km, 5km",
+        "geo": "N 48.303636 E 8.056154",
+        "location": "Steinach",
+        "added": "2023-03-23"
     },
     {
         "time": "01.07.2023",
@@ -522,6 +543,15 @@
         "geo": "47.787194,7.891263",
         "location": "Schönau",
         "series": ["Schwarzwald Berglauf Pokal 2023"]
+    },
+    {
+        "time": "17.09.2023",
+        "url": "https://www.marathondecolmar.fr/",
+        "name": "Marathon de Colmar",
+        "details": "MA, HM, 10k, Staffel (2x HM), Team (MA + HM + 10k)",
+        "geo": "N 48.077752 E 7.357964",
+        "location": "Colmar, FR",
+        "added": "2023-03-25"
     },
     {
         "time": "24.09.2023",
