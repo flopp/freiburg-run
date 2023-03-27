@@ -299,15 +299,6 @@
         "series": ["Intersport Denzer Cup 2023"]
     },
     {
-        "time": "03.06.2023",
-        "url": "https://www.charity-walk.info/staedte/freiburg/",
-        "name": "Charity Walk & Run",
-        "details": "10km, 5km",
-        "geo": "48.012251,7.814668",
-        "location": "Seepark, Freiburg",
-        "added": "2023-02-06"
-    },
-    {
         "time": "11.06.2023",
         "url": "https://www.rigolator.com/",
         "name": "Rigolator Triathlon",
@@ -552,6 +543,15 @@
         "geo": "N 48.077752 E 7.357964",
         "location": "Colmar, FR",
         "added": "2023-03-25"
+    },
+    {
+        "time": "23.09.2023",
+        "url": "https://www.charity-walk.info/staedte/freiburg/",
+        "name": "Charity Walk & Run",
+        "details": "10km, 5km",
+        "geo": "48.012251,7.814668",
+        "location": "Seepark, Freiburg",
+        "added": "2023-02-06"
     },
     {
         "time": "24.09.2023",
