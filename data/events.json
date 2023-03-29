@@ -299,6 +299,15 @@
         "series": ["Intersport Denzer Cup 2023"]
     },
     {
+        "time": "02.06.2023",
+        "url": "https://svh-b.com/event/freundschaftslauf-2023/",
+        "name": "9. Freundschaftslauf",
+        "details": "11.7km, 5.7km, 7.4km Nordic Walking",
+        "geo": "47.938125,7.622495",
+        "location": "Hartheim",
+        "added": "2023-03-29"
+    },
+    {
         "time": "11.06.2023",
         "url": "https://www.rigolator.com/",
         "name": "Rigolator Triathlon",
@@ -736,14 +745,6 @@
         "details": "HM, 10km, 5km",
         "geo": "48.252170,7.450190",
         "location": "Sélestat, FR"
-    },
-    {
-        "time": "UNBEKANNT (Anfrage läuft)",
-        "url": "https://svh-b.com/event/8-freundschaftslauf-2022/",
-        "name": "Freundschaftslauf",
-        "details": "11.7km, 5.7km, 7.4km Nordic Walking",
-        "geo": "47.938125,7.622495",
-        "location": "Hartheim"
     },
     {
         "time": "UNBEKANNT",
