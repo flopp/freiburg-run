@@ -22,6 +22,7 @@
                         <tr>
                             <th>#</th>
                             <th>Datum</th>
+                            <th>Spezial</th>
                             <th>Ergebnisse</th>
                             <th>Laufbericht</th>
                             <th>Fotogalerie</th>
@@ -35,6 +36,9 @@
                             </td>
                             <td class="is-flex-wrap-wrap" data-label="Datum">
                                 {{.Date}}
+                            </td>
+                            <td class="is-flex-wrap-wrap" data-label="Spezial">
+                                {{.Special}}
                             </td>
                             <td class="is-flex-wrap-wrap" data-label="Ergebnisse">
                                 {{if .Results}}

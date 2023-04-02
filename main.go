@@ -46,6 +46,7 @@ type EventData struct {
 type ParkrunEventData struct {
 	Index   string
 	Date    string
+	Special string
 	Results string
 	Report  string
 	Photos  string

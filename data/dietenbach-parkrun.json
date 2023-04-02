@@ -1,38 +1,50 @@
 [
     {
-        "index": "73",
-        "date": "1. April 2023",
+        "index": "74",
+        "date": "8. April 2023",
         "results": "",
         "report": "",
-        "photos": ""
+        "photos": "https://photos.app.goo.gl/t8aWaSB5MQAqgmJ58",
+        "special": "Ostern"
+    },
+    {
+        "index": "73",
+        "date": "1. April 2023",
+        "results": "https://www.parkrun.com.de/dietenbach/results/73/",
+        "report": "https://www.parkrun.com.de/dietenbach/news/2023/04/02/laufbericht-73/",
+        "photos": "https://photos.app.goo.gl/sw26LrFji97hQBFG9"
     },
     {
         "index": "72",
         "date": "25. März 2023",
         "results": "https://www.parkrun.com.de/dietenbach/results/72/",
         "report": "https://www.parkrun.com.de/dietenbach/news/2023/03/28/laufbericht-72/",
-        "photos": "https://photos.app.goo.gl/cDKJfTsJfnxupVuf7"
+        "photos": "https://photos.app.goo.gl/cDKJfTsJfnxupVuf7",
+        "special": "Freiburg Marathon"
     },
     {
         "index": "71",
         "date": "18. März 2023",
         "results": "https://parkrun.com.de/dietenbach/results/71",
-        "report": "",
-        "photos": "https://photos.app.goo.gl/v84xPer1P2JeAatb8"
+        "report": "https://www.parkrun.com.de/dietenbach/news/2023/03/22/laufbericht-71/",
+        "photos": "https://photos.app.goo.gl/v84xPer1P2JeAatb8",
+        "special": "Roadrunners Südbaden"
     },
     {
         "index": "70",
         "date": "11. März 2023",
         "results": "https://parkrun.com.de/dietenbach/results/70",
         "report": "https://www.parkrun.com.de/dietenbach/news/2023/03/12/laufbericht-70/",
-        "photos": "https://photos.app.goo.gl/J1Zsj6kREgULuKNJ8"
+        "photos": "https://photos.app.goo.gl/J1Zsj6kREgULuKNJ8",
+        "special": "Internationaler Frauentag"
     },
     {
         "index": "69",
         "date": "4. März 2023",
         "results": "https://parkrun.com.de/dietenbach/results/69",
         "report": "https://www.parkrun.com.de/dietenbach/news/2023/03/05/laufbericht-69/",
-        "photos": "https://photos.app.goo.gl/9iM5MUBDE8Fi9dbH7"
+        "photos": "https://photos.app.goo.gl/9iM5MUBDE8Fi9dbH7",
+        "special": "augenauf Freiburg"
     },
     {
         "index": "68",
@@ -46,7 +58,8 @@
         "date": "18. Februar 2023",
         "results": "https://parkrun.com.de/dietenbach/results/67",
         "report": "https://www.parkrun.com.de/dietenbach/news/2023/02/20/laufbericht-67/",
-        "photos": "https://photos.app.goo.gl/MYy6FTTYD8EiRSwQ9"
+        "photos": "https://photos.app.goo.gl/MYy6FTTYD8EiRSwQ9",
+        "special": "Fasnet"
     },
     {
         "index": "66",
@@ -81,28 +94,32 @@
         "date": "14. Januar 2023",
         "results": "https://parkrun.com.de/dietenbach/results/62",
         "report": "https://www.parkrun.com.de/dietenbach/news/2023/01/19/laufbericht-62/",
-        "photos": "https://photos.app.goo.gl/7kaLk1V1ak3HE1ou6"
+        "photos": "https://photos.app.goo.gl/7kaLk1V1ak3HE1ou6",
+        "special": "AKAVITA-Runners"
     },
     {
         "index": "61",
         "date": "7. Januar 2023",
         "results": "https://parkrun.com.de/dietenbach/results/61",
         "report": "https://www.parkrun.com.de/dietenbach/news/2023/01/12/laufbericht-61/",
-        "photos": "https://photos.app.goo.gl/Z7twRRe3NhAbjEV19"
+        "photos": "https://photos.app.goo.gl/Z7twRRe3NhAbjEV19",
+        "special": "Heiratsantrag"
     },
     {
         "index": "60",
         "date": "31. Dezember 2022",
         "results": "https://parkrun.com.de/dietenbach/results/60",
         "report": "https://www.parkrun.com.de/dietenbach/news/2023/01/03/laufbericht-60/",
-        "photos": "https://photos.app.goo.gl/cV8AnsU6sNtgrrbc6"
+        "photos": "https://photos.app.goo.gl/cV8AnsU6sNtgrrbc6",
+        "special": "Silvester"
     },
     {
         "index": "59",
         "date": "24. Dezember 2022",
         "results": "https://parkrun.com.de/dietenbach/results/59",
         "report": "https://www.parkrun.com.de/dietenbach/news/2022/12/25/laufbericht-59/",
-        "photos": "https://photos.app.goo.gl/wk1dtXVmaS3HnpeTA"
+        "photos": "https://photos.app.goo.gl/wk1dtXVmaS3HnpeTA",
+        "special": "Weihnachten"
     },
     {
         "index": "58",
