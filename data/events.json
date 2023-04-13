@@ -205,7 +205,7 @@
         "details": "54km, 1200hm, Erlebnislauf in der Gruppe",
         "geo": "N 47.937557 E 8.555571",
         "location": "Pfohren",
-        "added": "2023-04-29"
+        "added": "2023-03-29"
     },
     {
         "time": "30.04.2023",
@@ -233,6 +233,15 @@
         "details": "10km, 5km",
         "geo": "47.558222,7.587701",
         "location": "Basel"
+    },
+    {
+        "time": "07.05.2023",
+        "url": "https://www.leichtathletik-offenburg.de/wp/?p=1727",
+        "name": "27. Badenova Lauftag Offenburg",
+        "details": "6km, 3x1km Staffel",
+        "geo": "N 48.468991 E 7.942911",
+        "location": "Offenburg",
+        "added": "2023-04-13"
     },
     {
         "time": "13.05.2023",
