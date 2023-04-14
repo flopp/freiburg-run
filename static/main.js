@@ -6,6 +6,78 @@ var on_load = function(f) {
     }
 }
 
+var update_events = function (show_past) {
+    if (show_past) {
+        document.querySelectorAll(".event").forEach(el => {
+            if (el.dataset.pending === "1") {
+                return;
+            }
+    
+            el.classList.remove("is-hidden");
+        });
+        return;
+    }
+
+    const now = new Date();
+    const nowY = now.getFullYear();
+    const nowM = now.getMonth()+1;
+    const nowD = now.getDate();
+
+    document.querySelectorAll(".event").forEach(el => {
+        if (el.dataset.pending === "1") {
+            return;
+        }
+
+        const dateEl = el.children[0];
+        const dateString = dateEl.textContent;
+        let dateFound = false;
+        let someAfter = false;
+        
+        const dateRegex = /(\d\d)\.(\d\d)\.(\d\d\d\d)/g;
+        const matches = [...dateString.matchAll(dateRegex)];
+        matches.forEach(date => {
+            dateFound = true;
+
+            const y = parseInt(date[3]);
+            if (y > nowY) {
+                someAfter = true;
+                return;
+            }
+            if (y < nowY) {
+                return;
+            }
+
+            const m = parseInt(date[2]);
+            if (m > nowM) {
+                someAfter = true;
+                return;
+            }
+            if (m < nowM) {
+                return;
+            }
+
+            const d = parseInt(date[1]);
+            if (d > nowD) {
+                someAfter = true;
+                return;
+            }
+            if (y == nowD) {
+                someAfter = true;
+            }
+        });
+
+        if (dateFound) {
+            if (someAfter) {
+                el.classList.remove("is-hidden");
+            } else {
+                el.classList.add("is-hidden");
+            }
+        } else {
+            el.classList.remove("is-hidden");
+        }
+    });
+}
+
 var main = () => {
     document.querySelectorAll('.navbar-burger').forEach(el => {
         el.addEventListener('click', () => {
@@ -151,6 +223,15 @@ var main = () => {
 
         var group = new L.featureGroup(markers);
         map.fitBounds(group.getBounds(), {padding: L.point(40, 40)});
+    }
+
+
+    var checkbox = document.querySelector("#show-past-events");
+    if (checkbox !== null) {
+        checkbox.addEventListener('change', (event) => {
+            update_events(checkbox.checked);
+        });
+        update_events(checkbox.checked);
     }
 
     if (document.querySelector("#parkrun-map") !== null) {

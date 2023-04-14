@@ -740,12 +740,12 @@
         "location": "Freiburg"
     },
     {
-        "time": "UNBEKANNT (Anfrage läuft)",
-        "url": "http://www.tus-badenweiler.de/index.php/veranstaltungen/nikolauslauf/ausschreibung-nikolauslauf",
-        "name": "Nikolauslauf Badenweiler",
-        "details": "9.7km",
-        "geo": "47.807851,7.674090",
-        "location": "Badenweiler"
+        "time": "UNBEKANNT (vermutlich 03.12.2023 oder 10.12.2023 - BLV)",
+        "url": "http://www.silvesterlauf-britzingen.de/",
+        "name": "3. Britzinger Nikolauslauf",
+        "details": "U16: 2.2km, U12: 6950m",
+        "geo": "N 47.826505 E 7.675517",
+        "location": "Britzingen"
     },
     {
         "time": "UNBEKANNT",
