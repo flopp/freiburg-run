@@ -217,6 +217,15 @@
         "series": []
     },
     {
+        "time": "30.04.2023",
+        "url": "https://www.tus-ottenheim.de/laufindenMai",
+        "name": "Lauf in den Mai",
+        "details": "10km, 3.3km Spaßstaffel, Bambinilauf",
+        "geo": "N 48.386810 E 7.746434",
+        "location": "Ottenheim",
+        "added": "2023-04-19"
+    },
+    {
         "time": "06.05.2023",
         "url": "http://kandelberglauf.de/",
         "name": "Kandelberglauf",
