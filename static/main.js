@@ -20,8 +20,8 @@ var update_events = function (show_past) {
 
     const now = new Date();
     const nowY = now.getFullYear();
-    const nowM = now.getMonth()+1;
-    const nowD = now.getDate();
+    const nowM = now.getMonth() + 1;
+    const nowD = now.getDate() - 2;
 
     document.querySelectorAll(".event").forEach(el => {
         if (el.dataset.pending === "1") {
