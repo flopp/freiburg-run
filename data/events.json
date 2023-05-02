@@ -397,6 +397,15 @@
         "added": "2023-02-03"
     },
     {
+        "time": "24.06.2023",
+        "url": "https://kinzigcross.de/",
+        "name": "Kinzigcross",
+        "details": "10km, 5km",
+        "geo": "N 48.389399 E 8.031489",
+        "location": "Gengenbach",
+        "added": "2023-05-02"
+    },
+    {
         "time": "30.06.2023",
         "url": "https://www.emmendingen.de/leben-wohnen/kultur-freizeit/emmendinger-stadtlauf",
         "name": "13. Emmendinger Stadtlauf",
@@ -407,7 +416,7 @@
     },
     {
         "time": "30.06.2023",
-        "url": "https://ladv.de/ausschreibung/detail/33968/7.-Sommer-Abend-Lauf-Steinach-%28Ortenaukreis%29.htm",
+        "url": "https://www.svsteinach.de/lauf/",
         "name": "7. Sommer-Abend-Lauf",
         "details": "10km, 5km",
         "geo": "N 48.303636 E 8.056154",

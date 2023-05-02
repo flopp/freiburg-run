@@ -1,17 +1,25 @@
 [
     {
-        "index": "77",
-        "date": "29. April 2023",
+        "index": "78",
+        "date": "6. Mai 2023",
         "results": "",
         "report": "",
-        "photos": "https://photos.app.goo.gl/W46WZo8i1RPc5aif8",
+        "photos": "https://photos.app.goo.gl/TJjBqwbg7ttzHLXU6",
         "special": ""
+    },
+    {
+        "index": "77",
+        "date": "29. April 2023",
+        "results": "https://www.parkrun.com.de/dietenbach/results/77/",
+        "report": "https://www.parkrun.com.de/dietenbach/news/2023/04/30/laufbericht-77/",
+        "photos": "https://photos.app.goo.gl/W46WZo8i1RPc5aif8",
+        "special": "Genusslauf Müllheim"
     },
     {
         "index": "76",
         "date": "22. April 2023",
         "results": "https://www.parkrun.com.de/dietenbach/results/76/",
-        "report": "",
+        "report": "https://www.parkrun.com.de/dietenbach/news/2023/04/23/laufbericht-76/",
         "photos": "https://photos.app.goo.gl/rPrVSGT7KhdAa7Z4A",
         "special": ""
     },
