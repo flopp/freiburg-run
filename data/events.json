@@ -315,6 +315,15 @@
         "series": ["Intersport Denzer Cup 2023"]
     },
     {
+        "time": "24.05.2023",
+        "url": "https://www.facebook.com/events/1557598891401714",
+        "name": "Dynafit Trail2Gether",
+        "details": "18:00 Uhr - 10km, 5km - Trailschuhtest",
+        "geo": "N 47.988981 E 7.891080",
+        "location": "Dreisamstadion, Freiburg",
+        "added": "2023-05-22"
+    },
+    {
         "time": "27.05.2023",
         "url": "https://www.lauftreff-pfohren.de/veranstaltungen/feldberglauf",
         "name": "16. Feldberglauf",
@@ -364,7 +373,7 @@
         "time": "18.06.2023",
         "url": "https://eichberglauf.de/",
         "name": "16. Eichberglauf",
-        "details": "20.4km (250hm), 4km",
+        "details": "10.4km (250hm), 4km",
         "geo": "48.048853,7.947761",
         "location": "Glottertal",
         "series": ["Schwarzwald-Laufcup 2023"]
@@ -380,7 +389,7 @@
     },
     {
         "time": "23.06.2023",
-        "url": "",
+        "url": "https://www.athletics-web.info/mvc/",
         "name": "Mitternachtslauf Biengen",
         "details": "9km",
         "geo": "47.938643,7.689764",
@@ -623,7 +632,7 @@
     },
     {
         "time": "03.10.2023",
-        "url": "",
+        "url": "https://www.athletics-web.info/mvc/",
         "name": "Altstadtlauf Staufen",
         "details": "6km",
         "geo": "47.881589,7.731514",
@@ -672,6 +681,15 @@
         ]
     },
     {
+        "time": "06.11.2023",
+        "url": "https://baselrunningday.ch/",
+        "name": "5. Riehener Lauftag",
+        "details": "10km, 5km, 2.2km",
+        "geo": "N 47.580354 E 7.639318",
+        "location": "Riehen, CH",
+        "added": "2023-06-08"
+    },
+    {
         "time": "12.11.2023",
         "url": "https://hallenmarathon-pfohren.de/",
         "name": "6. Hallenmarathon Pfohren",
@@ -706,6 +724,15 @@
         "details": "",
         "geo": "48.211198,8.228009",
         "location": "Hornberg"
+    },
+    {
+        "time": "07.04.2024",
+        "url": "https://www.mein-freiburgmarathon.de/",
+        "name": "Freiburg Marathon",
+        "details": "MA, HM, 10km",
+        "geo": "48.014609,7.839904",
+        "location": "Freiburg",
+        "added": "2023-07-04"
     },
 
     {

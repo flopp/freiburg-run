@@ -41,6 +41,14 @@
         "reports": [{"name": "Blogbeitrag (flopp)", "url": "https://running.flopp.net/2023/01/24/lauftreff-des-sv-kirchzarten/"}]
     },
     {
+        "time": "Dienstag 18:30",
+        "url": "mailto:Joachim.Vogt@googlemail.com",
+        "name": "Stadtgarten Lauftreff",
+        "details": "11k, verschiedene Routen, Infos: Joachim.Vogt@googlemail.com",
+        "geo": "N 47.997321 E 7.857212",
+        "location": "Café Marcel, Stadtgarten, Freiburg"
+    },
+    {
         "time": "Dienstag 19:00",
         "url": "https://tv-st-peter.de/laufen/",
         "name": "Lauftreff TV St. Peter",

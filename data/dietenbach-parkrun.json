@@ -1,9 +1,33 @@
 [
     {
-        "index": "80",
-        "date": "20. Mai 2023",
+        "index": "83",
+        "date": "10. Juni 2023",
         "results": "",
         "report": "",
+        "photos": "https://photos.app.goo.gl/GK4fYxaLFsWjCms2A",
+        "special": ""
+    },
+    {
+        "index": "82",
+        "date": "03. Juni 2023",
+        "results": "https://www.parkrun.com.de/dietenbach/results/82",
+        "report": "https://www.parkrun.com.de/dietenbach/news/2023/06/04/laufbericht-82/",
+        "photos": "https://photos.app.goo.gl/oeQhS6JiavbbXcgj9",
+        "special": "Picknick"
+    },
+    {
+        "index": "81",
+        "date": "27. Mai 2023",
+        "results": "https://www.parkrun.com.de/dietenbach/results/81",
+        "report": "https://www.parkrun.com.de/dietenbach/news/2023/05/28/laufbericht-81/",
+        "photos": "https://photos.app.goo.gl/TVPs5oJj2hAYqPEc8",
+        "special": ""
+    },
+    {
+        "index": "80",
+        "date": "20. Mai 2023",
+        "results": "https://www.parkrun.com.de/dietenbach/results/80/",
+        "report": "https://www.parkrun.com.de/dietenbach/news/2023/05/22/laufbericht-80/",
         "photos": "https://photos.app.goo.gl/1b4QdiMJzuau9Yd76",
         "special": ""
     },

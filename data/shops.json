@@ -30,6 +30,12 @@
         "location": "Stegener Strasse 14, Kirchzarten"
     },
     {
+        "url": "https://www.mountain-shop.com/de/store/freiburg-86",
+        "name": "Mountain Shop - Freiburg",
+        "geo": "N 47.994440 E 7.851178",
+        "location": "Salzstrasse 13, Freiburg"
+    },
+    {
         "url": "https://www.bohny.de/",
         "name": "Sport Bohny - Innenstadt",
         "geo": "47.994239,7.849431",
