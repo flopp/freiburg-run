@@ -379,6 +379,24 @@
         "series": ["Schwarzwald-Laufcup 2023"]
     },
     {
+        "time": "21.06.2023",
+        "url": "https://ladv.de/ausschreibung/detail/33671/Konstis-Laufnacht-Freiburg.htm",
+        "name": "Konstis Laufnacht",
+        "details": "10km, 5km, 3km, 1km, usw.",
+        "geo": "N 48.012280 E 7.818905",
+        "location": "Seeparkstadion, Freiburg",
+        "added": "2023-06-08"
+    },
+    {
+        "time": "21.06.2023",
+        "url": "https://www.chrischonalauf.ch/",
+        "name": "Chrischonalauf",
+        "details": "10km",
+        "geo": "N 47.575360 E 7.652965",
+        "location": "Riehen, CH",
+        "added": "2023-06-08"
+    },
+    {
         "time": "22.06.2023",
         "url": "https://www.b2run.de/run/de/de/freiburg/index.html",
         "name": "B2Run Freiburg",
@@ -631,6 +649,15 @@
         "location": "Freiburg"
     },
     {
+        "time": "01.10.2023",
+        "url": "https://www.selestat.fr/se-divertir-a-selestat/les-courses-de-selestat/presentation-et-programme.html",
+        "name": "Les courses de Sélestat",
+        "details": "HM, 10km, 5km",
+        "geo": "48.252170,7.450190",
+        "location": "Sélestat, FR",
+        "added": "2023-06-08"
+    },
+    {
         "time": "03.10.2023",
         "url": "https://www.athletics-web.info/mvc/",
         "name": "Altstadtlauf Staufen",
@@ -670,7 +697,7 @@
         "added": "2023-02-03"
     },
     {
-        "time": "28.10.2023 (Vorläufig vom HFU Dekanat bestätigt)",
+        "time": "28.10.2023",
         "url": "https://www.hs-furtwangen.de/veranstaltungen/hfu-black-forest-run/",
         "name": "HFU Black Forest Run",
         "details": "HM, 10km",
@@ -681,8 +708,8 @@
         ]
     },
     {
-        "time": "06.11.2023",
-        "url": "https://baselrunningday.ch/",
+        "time": "05.11.2023",
+        "url": "https://riehenerlauftag.ch/",
         "name": "5. Riehener Lauftag",
         "details": "10km, 5km, 2.2km",
         "geo": "N 47.580354 E 7.639318",
@@ -706,6 +733,15 @@
         "geo": "47.556419,7.591667",
         "location": "Basel, CH",
         "added": "2023-02-03"
+    },
+    {
+        "time": "25.11.2023",
+        "url": "https://www.lg-geroldseck-lahr.com/nikolauslauf",
+        "name": "30. Nikolauslauf Lahr",
+        "details": "10km, 5km + 5.5km Walking",
+        "geo": "N 48.331504 E 7.919512",
+        "location": "Lahr",
+        "added": "2023-06-08"
     },
     {
         "time": "31.12.2023",
@@ -801,14 +837,6 @@
     },
     {
         "time": "UNBEKANNT",
-        "url": "https://www.selestat.fr/se-divertir-a-selestat/les-courses-de-selestat.html",
-        "name": "Les courses de Sélestat",
-        "details": "HM, 10km, 5km",
-        "geo": "48.252170,7.450190",
-        "location": "Sélestat, FR"
-    },
-    {
-        "time": "UNBEKANNT",
         "url": "http://csl-neuf-brisach-athletisme.fr/Cross_Neuf_Brisach.php",
         "name": "Cross de Remparts",
         "details": "Cross: 8.5km + diverse, Nordic: 11.2km, 9.8km",
@@ -846,14 +874,6 @@
         "details": "",
         "geo": "",
         "location": "Freiburg"
-    },
-    {
-        "time": "UNBEKANNT",
-        "url": "https://www.lg-geroldseck-lahr.com/nikolauslauf",
-        "name": "Nikolauslauf Lahr",
-        "details": "10km, 5km",
-        "geo": "N 48.331504 E 7.919512",
-        "location": "Lahr"
     },
     {
         "time": "UNBEKANNT",
