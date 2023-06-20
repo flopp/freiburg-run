@@ -78,6 +78,15 @@ var update_events = function (show_past) {
     });
 }
 
+var toggle_map = function (mapDiv, leafletMap, show) {
+    if (show) {
+        mapDiv.classList.remove("is-hidden");
+        leafletMap.invalidateSize();
+    } else {
+        mapDiv.classList.add("is-hidden");
+    }
+};
+
 var main = () => {
     document.querySelectorAll('.navbar-burger').forEach(el => {
         el.addEventListener('click', () => {
@@ -107,8 +116,11 @@ var main = () => {
         return null;
     };
 
-    if (document.querySelector("#map") !== null) {
+    var mapDiv = document.querySelector("#map");
+    var leafletMap = null;
+    if (mapDiv !== null) {
         var map = L.map('map').setView([51.505, -0.09], 13);
+        leafletMap = map;
 
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -225,17 +237,10 @@ var main = () => {
         map.fitBounds(group.getBounds(), {padding: L.point(40, 40)});
     }
 
-
-    var checkbox = document.querySelector("#show-past-events");
-    if (checkbox !== null) {
-        checkbox.addEventListener('change', (event) => {
-            update_events(checkbox.checked);
-        });
-        update_events(checkbox.checked);
-    }
-
     if (document.querySelector("#parkrun-map") !== null) {
+        mapDiv = document.querySelector("#parkrun-map-wrapper");
         var map = L.map('parkrun-map').setView([48.000548, 7.804842], 15);
+        leafletMap = map;
 
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -454,7 +459,26 @@ var main = () => {
 
         let meetingpoint = L.marker([48.001294,7.806489], {icon: blueIcon});
         meetingpoint.addTo(map);
-        meetingpoint.bindPopup("Treffpunkt / Zielbereich");    }
+        meetingpoint.bindPopup("Treffpunkt / Zielbereich");
+    }
+
+    var checkbox = document.querySelector("#show-past-events");
+    if (checkbox !== null) {
+        checkbox.addEventListener('change', (event) => {
+            update_events(checkbox.checked);
+        });
+        update_events(checkbox.checked);
+    }
+
+    if (mapDiv !== null) {
+        var checkboxMap = document.querySelector("#show-map");
+        if (checkboxMap !== null) {
+            checkboxMap.addEventListener('change', (event) => {
+                toggle_map(mapDiv, leafletMap, checkboxMap.checked);
+            });
+            toggle_map(mapDiv, leafletMap, checkboxMap.checked);
+        }
+    }
 };
 
 on_load(main);

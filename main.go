@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"text/template"
 	"time"
@@ -212,6 +213,21 @@ func GetMtime(filePath string) time.Time {
 	return stat.ModTime()
 }
 
+var geoRe1 = regexp.MustCompile(`^\s*(\d*\.?\d*)\s*,\s*(\d*\.?\d*)\s*$`)
+var geoRe2 = regexp.MustCompile(`^\s*N\s*(\d*\.?\d*)\s*E\s*(\d*\.?\d*)\s*$`)
+
+func parseGeo(s string) string {
+	m := geoRe1.FindStringSubmatch(s)
+	if m != nil {
+		return fmt.Sprintf("%s,%s", m[1], m[2])
+	}
+	m = geoRe2.FindStringSubmatch(s)
+	if m != nil {
+		return fmt.Sprintf("%s,%s", m[1], m[2])
+	}
+	return ""
+}
+
 func main() {
 	timestamp := time.Now().Format("2006-01-02")
 
@@ -241,7 +257,7 @@ func main() {
 	groups_extended := make([]EventData, 0)
 	for _, e := range groups {
 		ed := EventData{
-			e.Name, e.Time, e.Location, e.Geo, e.Details, e.Url, nil, e.Reports, e.Added,
+			e.Name, e.Time, e.Location, parseGeo(e.Geo), e.Details, e.Url, nil, e.Reports, e.Added,
 		}
 		groups_extended = append(groups_extended, ed)
 	}
@@ -257,7 +273,7 @@ func main() {
 	shops_extended := make([]EventData, 0)
 	for _, e := range shops {
 		ed := EventData{
-			e.Name, e.Time, e.Location, e.Geo, e.Details, e.Url, nil, e.Reports, e.Added,
+			e.Name, e.Time, e.Location, parseGeo(e.Geo), e.Details, e.Url, nil, e.Reports, e.Added,
 		}
 		shops_extended = append(shops_extended, ed)
 	}
@@ -280,7 +296,7 @@ func main() {
 			}
 		}
 		ed := EventData{
-			e.Name, e.Time, e.Location, e.Geo, e.Details, e.Url, sd, e.Reports, e.Added,
+			e.Name, e.Time, e.Location, parseGeo(e.Geo), e.Details, e.Url, sd, e.Reports, e.Added,
 		}
 		if !strings.Contains(ed.Time, "UNBEKANNT") {
 			events_extended = append(events_extended, ed)

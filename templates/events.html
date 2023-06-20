@@ -13,6 +13,10 @@
 
         <div id="controls">
             <label class="checkbox">
+                <input type="checkbox" id="show-map">
+                Zeige Karte
+            </label>
+            <label class="checkbox">
                 <input type="checkbox" id="show-past-events">
                 Zeige vergangene Veranstaltungen
             </label>
@@ -40,7 +44,11 @@
                                 <a href="{{.Url}}" target="_blank">{{.Name}}</a>
                             </td>
                             <td class="is-flex-wrap-wrap" data-label="Ort" class="is-flex-wrap-wrap">
+                                {{if .Geo}}
+                                <a href="https://www.google.com/maps/place/{{.Geo}}" target="_blank">{{.Location}}</a>
+                                {{else}}
                                 {{.Location}}
+                                {{end}}
                             </td>
                             <td class="is-flex-wrap-wrap" data-label="Details" class="is-flex-wrap-wrap">
                                 {{.Details}}
@@ -93,7 +101,11 @@
                                 <a href="{{.Url}}" target="_blank">{{.Name}}</a>
                             </td>
                             <td class="is-flex-wrap-wrap" data-label="Ort">
+                                {{if .Geo}}
+                                <a href="https://www.google.com/maps/place/{{.Geo}}" target="_blank">{{.Location}}</a>
+                                {{else}}
                                 {{.Location}}
+                                {{end}}
                             </td>
                             {{if .Series}}
                             <td class="is-flex-wrap-wrap" data-label="Details">

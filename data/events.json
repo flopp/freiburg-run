@@ -361,7 +361,7 @@
         "reports": [{"name": "Laufbericht 2017 (pandarennt)", "url": "https://pandarennt.wordpress.com/2017/07/06/laufanderwutach2017/"}]
     },
     {
-        "time": "18.06.2023",
+        "time": "18.06.2023 (Abgesagt!)",
         "url": "https://blauenlauf.de/",
         "name": "Blauenlauf",
         "details": "9.8km (950hm)",
@@ -406,7 +406,7 @@
         "series": []
     },
     {
-        "time": "23.06.2023",
+        "time": "24.06.2023",
         "url": "https://www.athletics-web.info/mvc/",
         "name": "Mitternachtslauf Biengen",
         "details": "9km",
@@ -558,6 +558,15 @@
         "geo": "47.933621,7.952638",
         "location": "Oberried",
         "series": ["Schwarzwald Berglauf Pokal 2023"]
+    },
+    {
+        "time": "23.07.2023",
+        "url": "https://www.facebook.com/events/1265614767421335",
+        "name": "Sonnenaufgangslauf Feldberg",
+        "details": "15km, Community-Lauf von Drescher Running",
+        "geo": "N 47.875893 E 7.910585",
+        "location": "Notschrei / Felldberg",
+        "added": "2023-06-17"
     },
     {
         "time": "26.07.2023",
@@ -762,6 +771,26 @@
         "location": "Hornberg"
     },
     {
+        "time": "21.01.2024",
+        "url": "https://allmendlauf.de/",
+        "name": "32. Teninger Allmendlauf",
+        "details": "10km",
+        "geo": "48.121933,7.817164",
+        "location": "Teningen",
+        "reports": [{"name": "Laufbericht 2019 (pandarennt)", "url": "https://pandarennt.wordpress.com/2019/12/28/allmendlauf-teningen/"}]
+    },
+    {
+        "time": "17.03.2024",
+        "url": "https://www.trailpetitballon.fr/",
+        "name": "Trail du Petit Ballon",
+        "details": "53km, 42km, 24km, 13km",
+        "geo": "47.956915,7.299405",
+        "location": "Rouffach, FR",
+        "series": [],
+        "reports": [{"name": "Laufbericht 2018 (TrailAway)", "url": "https://www.trailaway.de/trail-du-petit-ballon-2018/"}],
+        "added": "2023-06-17"
+    },
+    {
         "time": "07.04.2024",
         "url": "https://www.mein-freiburgmarathon.de/",
         "name": "Freiburg Marathon",
@@ -770,7 +799,6 @@
         "location": "Freiburg",
         "added": "2023-07-04"
     },
-
     {
         "time": "UNBEKANNT (vermutlich 07.10.2023)",
         "url": "https://www.lfv-schutterwald.de/herbstlauf.html",

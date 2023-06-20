@@ -10,6 +10,13 @@
         </div>
 
         <div id="map"></div>
+
+        <div id="controls">
+            <label class="checkbox">
+                <input type="checkbox" id="show-map">
+                Zeige Karte
+            </label>
+        </div>
         
         <div class="b-table">
             <div class="table-wrapper has-mobile-cards">
@@ -27,7 +34,11 @@
                                 <a href="{{.Url}}" target="_blank">{{.Name}}</a>
                             </td>
                             <td class="is-flex-wrap-wrap" data-label="Ort">
+                                {{if .Geo}}
+                                <a href="https://www.google.com/maps/place/{{.Geo}}" target="_blank">{{.Location}}</a>
+                                {{else}}
                                 {{.Location}}
+                                {{end}}
                             </td>
                         </tr>
                         {{end}}
