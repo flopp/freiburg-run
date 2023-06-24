@@ -406,15 +406,6 @@
         "series": []
     },
     {
-        "time": "24.06.2023",
-        "url": "https://www.athletics-web.info/mvc/",
-        "name": "Mitternachtslauf Biengen",
-        "details": "9km",
-        "geo": "47.938643,7.689764",
-        "location": "Biengen",
-        "series": ["Markgräfler Cup 2023"]
-    },
-    {
         "time": "23.06.2023",
         "url": "https://www.sonnwendlauf-seelbach.de/wp/",
         "name": "Sonnwendlauf Seelbach",
@@ -422,6 +413,15 @@
         "geo": "48.310294,7.938255",
         "location": "Seelbach/Schwarzwald",
         "added": "2023-02-03"
+    },
+    {
+        "time": "24.06.2023",
+        "url": "https://www.athletics-web.info/mvc/",
+        "name": "Mitternachtslauf Biengen",
+        "details": "9km",
+        "geo": "47.938643,7.689764",
+        "location": "Biengen",
+        "series": ["Markgräfler Cup 2023"]
     },
     {
         "time": "24.06.2023",
