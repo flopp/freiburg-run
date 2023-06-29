@@ -31,7 +31,6 @@
                             <th>Veranstaltung</th>
                             <th>Ort</th>
                             <th>Details</th>
-                            <th>Serie</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -57,15 +56,6 @@
                                 <a class="tag is-link is-light" href="{{.Url}}" target="_blank">{{.Name}}</a>
                                 {{end}}
                             </td>
-                            {{if .Series}}
-                            <td class="is-flex-wrap-wrap" data-label="Serie" class="is-flex-wrap-wrap">
-                                {{range .Series}}
-                                <a class="tag is-link is-light" href="{{.Url}}" target="_blank">{{.Name}}</a>
-                                {{end}}
-                            </td>
-                            {{else}}
-                            <td></td>
-                            {{end}}
                         </tr>
                         {{end}}
                     </tbody>
@@ -88,7 +78,6 @@
                             <th>Veranstaltung</th>
                             <th>Ort</th>
                             <th>Details</th>
-                            <th>Serie</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -107,21 +96,9 @@
                                 {{.Location}}
                                 {{end}}
                             </td>
-                            {{if .Series}}
                             <td class="is-flex-wrap-wrap" data-label="Details">
                                 {{.Details}}
                             </td>
-                            <td class="is-flex-wrap-wrap" data-label="Serie">
-                                {{range .Series}}
-                                <a href="{{.Url}}" target="_blank">{{.Name}}</a>
-                                {{end}}
-                            </td>
-                            {{else}}
-                            <td class="is-flex-wrap-wrap" data-label="Details">
-                                {{.Details}}
-                            </td>
-                            <td></td>
-                            {{end}}
                         </tr>
                         {{end}}
                     </tbody>
