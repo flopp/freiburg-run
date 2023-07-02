@@ -72,7 +72,8 @@ var update_events = function (show_past) {
         const dateString = dateEl.textContent;
         let dateFound = false;
         let someAfter = false;
-        
+        /*
+        console.log(dateString);
         parseAllDates(dateString).forEach(date => {
             dateFound = true;
             const day = 24 * 60 * 60 * 1000;
@@ -80,8 +81,8 @@ var update_events = function (show_past) {
                 someAfter = true;
             }
         });
+        */
 
-        /*
         const dateRegex = /(\d\d)\.(\d\d)\.(\d\d\d\d)/g;
         const matches = [...dateString.matchAll(dateRegex)];
         matches.forEach(date => {
@@ -114,7 +115,6 @@ var update_events = function (show_past) {
                 someAfter = true;
             }
         });
-        */
 
         if (dateFound) {
             if (someAfter) {
