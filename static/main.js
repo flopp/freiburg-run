@@ -57,11 +57,7 @@ var update_events = function (show_past) {
     }
 
     const now = new Date();
-    const nowY = now.getFullYear();
-    const nowM = now.getMonth() + 1;
-    const nowD = now.getDate() - 2;
-
-
+    now.setHours(0, 0, 0, 0);
 
     document.querySelectorAll(".event").forEach(el => {
         if (el.dataset.pending === "1") {
@@ -72,46 +68,10 @@ var update_events = function (show_past) {
         const dateString = dateEl.textContent;
         let dateFound = false;
         let someAfter = false;
-        /*
-        console.log(dateString);
+
         parseAllDates(dateString).forEach(date => {
             dateFound = true;
-            const day = 24 * 60 * 60 * 1000;
-            if (date + day > now) {
-                someAfter = true;
-            }
-        });
-        */
-
-        const dateRegex = /(\d\d)\.(\d\d)\.(\d\d\d\d)/g;
-        const matches = [...dateString.matchAll(dateRegex)];
-        matches.forEach(date => {
-            dateFound = true;
-
-            const y = parseInt(date[3]);
-            if (y > nowY) {
-                someAfter = true;
-                return;
-            }
-            if (y < nowY) {
-                return;
-            }
-
-            const m = parseInt(date[2]);
-            if (m > nowM) {
-                someAfter = true;
-                return;
-            }
-            if (m < nowM) {
-                return;
-            }
-
-            const d = parseInt(date[1]);
-            if (d > nowD) {
-                someAfter = true;
-                return;
-            }
-            if (y == nowD) {
+            if (date >= now) {
                 someAfter = true;
             }
         });
