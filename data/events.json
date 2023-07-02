@@ -30,7 +30,9 @@
         "details": "10km",
         "geo": "48.121933,7.817164",
         "location": "Teningen",
-        "reports": [{"name": "Laufbericht 2019 (pandarennt)", "url": "https://pandarennt.wordpress.com/2019/12/28/allmendlauf-teningen/"}]
+        "reports": [
+            {"name": "Laufbericht 2019 (pandarennt)", "url": "https://pandarennt.wordpress.com/2019/12/28/allmendlauf-teningen/"}
+        ]
     },
     {
         "time": "12.03.2023",
@@ -39,7 +41,9 @@
         "details": "17.8km, 9.7km",
         "geo": "48.043849,7.650070",
         "location": "Ihringen",
-        "reports": [{"name": "Laufbericht 2017 (flopp)", "url": "https://running.flopp.net/2017/03/13/kaiserstuhllauf-2017/"}]
+        "reports": [
+            {"name": "Laufbericht 2017 (flopp)", "url": "https://running.flopp.net/2017/03/13/kaiserstuhllauf-2017/"}
+        ]
     },
     {
         "time": "12.03.2023",
@@ -86,7 +90,9 @@
         "details": "53km, 42km, 24km, 13km",
         "geo": "47.956915,7.299405",
         "location": "Rouffach, FR",
-        "reports": [{"name": "Laufbericht 2018 (TrailAway)", "url": "https://www.trailaway.de/trail-du-petit-ballon-2018/"}]
+        "reports": [
+            {"name": "Laufbericht 2018 (TrailAway)", "url": "https://www.trailaway.de/trail-du-petit-ballon-2018/"}
+        ]
     },
     {
         "time": "26.03.2023",
@@ -212,7 +218,9 @@
         "details": "59km (auch Teilstrecken)",
         "geo": "47.856435,8.026430",
         "location": "Wiesental",
-        "reports": [{"name": "Film 2022", "url": "https://www.youtube.com/watch?v=kum8o6e8IMc"}]
+        "reports": [
+            {"name": "Film 2022", "url": "https://www.youtube.com/watch?v=kum8o6e8IMc"}
+        ]
     },
     {
         "time": "30.04.2023",
@@ -276,7 +284,9 @@
         "details": "18.2km, 10.4km",
         "geo": "47.815604,8.181370",
         "location": "Schluchsee",
-        "reports": [{"name": "Laufbericht 2014 (laufkater)", "url": "https://laufkater.wordpress.com/2014/05/12/blowing-in-the-wind-der-schluchseelauf-2014/"}]
+        "reports": [
+            {"name": "Laufbericht 2014 (laufkater)", "url": "https://laufkater.wordpress.com/2014/05/12/blowing-in-the-wind-der-schluchseelauf-2014/"}
+        ]
     },
     {
         "time": "17.05.2023",
@@ -454,7 +464,9 @@
         "details": "10km, 4km",
         "geo": "48.120260,7.849404",
         "location": "Emmendingen",
-        "reports": [{"name": "Laufbericht 2016 (pandarennt)", "url": "https://pandarennt.wordpress.com/2017/06/10/emmendinger10er/"}]
+        "reports": [
+            {"name": "Laufbericht 2016 (pandarennt)", "url": "https://pandarennt.wordpress.com/2017/06/10/emmendinger10er/"}
+        ]
     },
     {
         "time": "30.06.2023",
@@ -472,7 +484,10 @@
         "details": "19.6km (740hm), 9.4km (300hm)",
         "geo": "47.939581,8.078910",
         "location": "Breitnau",
-        "reports": [{"name": "Video 2022 (Matthias)", "url": "https://www.youtube.com/watch?v=ravou8tWO8c"}, {"name": "Laufbericht 2015 (laufkater)", "url": "https://laufkater.wordpress.com/2015/06/14/trail-debut-bei-deutschlands-hartestem-halbmarathon-der-salomon-x-trail-run-in-breitnau-2015/"}]
+        "reports": [
+            {"name": "Video 2022 (Matthias)", "url": "https://www.youtube.com/watch?v=ravou8tWO8c"},
+            {"name": "Laufbericht 2015 (laufkater)", "url": "https://laufkater.wordpress.com/2015/06/14/trail-debut-bei-deutschlands-hartestem-halbmarathon-der-salomon-x-trail-run-in-breitnau-2015/"}
+        ]
     },
     {
         "time": "01.07.2023",
@@ -626,7 +641,9 @@
         "details": "10.2km",
         "geo": "47.636680,7.909513",
         "location": "Wehr",
-        "reports": [{"name": "Laufbericht 2017 (pandarennt)", "url": "https://pandarennt.wordpress.com/2018/08/22/wehratallauf2017/"}]
+        "reports": [
+            {"name": "Laufbericht 2017 (pandarennt)", "url": "https://pandarennt.wordpress.com/2018/08/22/wehratallauf2017/"}
+        ]
     },
     {
         "time": "16.09.2023",
@@ -708,7 +725,9 @@
         "details": "20.7km (700hm), 10.7km (410hm)",
         "geo": "48.350916,8.084338",
         "location": "Zell am Harmersbach",
-        "reports": [{"name": "Laufbericht 2016 (Timo)", "url": "https://timozeiler.com/2016/10/13/start-in-den-trail-herbst-beim-trailrun-21/"}]
+        "reports": [
+            {"name": "Laufbericht 2016 (Timo)", "url": "https://timozeiler.com/2016/10/13/start-in-den-trail-herbst-beim-trailrun-21/"}
+        ]
 
     },
     {
@@ -718,7 +737,9 @@
         "details": "MA, HM, 10km, 5km",
         "geo": "47.928169,8.450353",
         "location": "Bräunlingen",
-        "reports": [{"name": "Laufbericht 2018 (pandarennt)", "url": "https://pandarennt.wordpress.com/2019/09/18/schwarzwaldmarathon/"}]
+        "reports": [
+            {"name": "Laufbericht 2018 (pandarennt)", "url": "https://pandarennt.wordpress.com/2019/09/18/schwarzwaldmarathon/"}
+        ]
     },
     {
         "time": "15.10.2023",
@@ -803,7 +824,9 @@
         "details": "10km",
         "geo": "48.121933,7.817164",
         "location": "Teningen",
-        "reports": [{"name": "Laufbericht 2019 (pandarennt)", "url": "https://pandarennt.wordpress.com/2019/12/28/allmendlauf-teningen/"}]
+        "reports": [
+            {"name": "Laufbericht 2019 (pandarennt)", "url": "https://pandarennt.wordpress.com/2019/12/28/allmendlauf-teningen/"}
+        ]
     },
     {
         "time": "17.03.2024",
@@ -812,7 +835,9 @@
         "details": "53km, 42km, 24km, 13km",
         "geo": "47.956915,7.299405",
         "location": "Rouffach, FR",
-        "reports": [{"name": "Laufbericht 2018 (TrailAway)", "url": "https://www.trailaway.de/trail-du-petit-ballon-2018/"}],
+        "reports": [
+            {"name": "Laufbericht 2018 (TrailAway)", "url": "https://www.trailaway.de/trail-du-petit-ballon-2018/"}
+        ],
         "added": "2023-06-17"
     },
     {

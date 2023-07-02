@@ -4,7 +4,7 @@ all:
 .phony: build
 build:
 	rm -rf .out
-	go run main.go
+	go run main.go -config config.json
 
 .phony: upload
 upload: build
