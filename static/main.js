@@ -120,9 +120,9 @@ var main = () => {
         const re1 = /\s*(?<day>\d\d?)\.(?<month>\d\d?)\.(?<year>\d\d\d\d)\s*$/gm;
         const match1 = re1.exec(s);
         if (match1 !== null) {
-            return Date(
+            return new Date(
                 parseInt(match1.groups.year),
-                parseInt(match1.groups.month),
+                parseInt(match1.groups.month)-1,
                 parseInt(match1.groups.day),
                 0, 0, 0);
         }
@@ -130,9 +130,9 @@ var main = () => {
         const re2 = /\s*(?<year>\d\d\d\d)-(?<month>\d\d)-(?<day>\d\d)\s*$/gm;
         const match2 = re2.exec(s);
         if (match2 !== null) {
-            return Date(
+            return new Date(
                 parseInt(match2.groups.year),
-                parseInt(match2.groups.month),
+                parseInt(match2.groups.month)-1,
                 parseInt(match2.groups.day),
                 0, 0, 0);
         }
