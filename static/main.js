@@ -6,6 +6,44 @@ var on_load = function(f) {
     }
 }
 
+const parseAllDates = function (s) {
+    const dates = new Array();
+    const re = /(?<day>\d\d)\.(?<month>\d\d)\.(?<year>\d\d\d\d)/g;
+    const matches = [...s.matchAll(re)];
+    matches.forEach(m => {
+        dates.push(new Date(
+            parseInt(m.groups.year),
+            parseInt(m.groups.month)-1,
+            parseInt(m.groups.day),
+            0, 0, 0));
+    });
+    return dates;
+};
+
+const parseDate = function (s) {
+    const re1 = /\s*(?<day>\d\d?)\.(?<month>\d\d?)\.(?<year>\d\d\d\d)\s*$/gm;
+    const match1 = re1.exec(s);
+    if (match1 !== null) {
+        return new Date(
+            parseInt(match1.groups.year),
+            parseInt(match1.groups.month)-1,
+            parseInt(match1.groups.day),
+            0, 0, 0);
+    }
+
+    const re2 = /\s*(?<year>\d\d\d\d)-(?<month>\d\d)-(?<day>\d\d)\s*$/gm;
+    const match2 = re2.exec(s);
+    if (match2 !== null) {
+        return new Date(
+            parseInt(match2.groups.year),
+            parseInt(match2.groups.month)-1,
+            parseInt(match2.groups.day),
+            0, 0, 0);
+    }
+
+    return NaN;
+};
+
 var update_events = function (show_past) {
     if (show_past) {
         document.querySelectorAll(".event").forEach(el => {
@@ -23,6 +61,8 @@ var update_events = function (show_past) {
     const nowM = now.getMonth() + 1;
     const nowD = now.getDate() - 2;
 
+
+
     document.querySelectorAll(".event").forEach(el => {
         if (el.dataset.pending === "1") {
             return;
@@ -33,6 +73,15 @@ var update_events = function (show_past) {
         let dateFound = false;
         let someAfter = false;
         
+        parseAllDates(dateString).forEach(date => {
+            dateFound = true;
+            const day = 24 * 60 * 60 * 1000;
+            if (date + day > now) {
+                someAfter = true;
+            }
+        });
+
+        /*
         const dateRegex = /(\d\d)\.(\d\d)\.(\d\d\d\d)/g;
         const matches = [...dateString.matchAll(dateRegex)];
         matches.forEach(date => {
@@ -65,6 +114,7 @@ var update_events = function (show_past) {
                 someAfter = true;
             }
         });
+        */
 
         if (dateFound) {
             if (someAfter) {
@@ -114,30 +164,6 @@ var main = () => {
         }
 
         return null;
-    };
-
-    const parseDate = function (s) {
-        const re1 = /\s*(?<day>\d\d?)\.(?<month>\d\d?)\.(?<year>\d\d\d\d)\s*$/gm;
-        const match1 = re1.exec(s);
-        if (match1 !== null) {
-            return new Date(
-                parseInt(match1.groups.year),
-                parseInt(match1.groups.month)-1,
-                parseInt(match1.groups.day),
-                0, 0, 0);
-        }
-    
-        const re2 = /\s*(?<year>\d\d\d\d)-(?<month>\d\d)-(?<day>\d\d)\s*$/gm;
-        const match2 = re2.exec(s);
-        if (match2 !== null) {
-            return new Date(
-                parseInt(match2.groups.year),
-                parseInt(match2.groups.month)-1,
-                parseInt(match2.groups.day),
-                0, 0, 0);
-        }
-
-        return NaN;
     };
 
     var mapDiv = document.querySelector("#map");
