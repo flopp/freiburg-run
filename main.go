@@ -30,14 +30,17 @@ OPTIONS:
 
 type CommandLineOptions struct {
 	configFile string
+	outDir     string
 	useJSON    bool
 	exportCSV  bool
 }
 
 func parseCommandLine() CommandLineOptions {
+	configFile := flag.String("config", "", "select config file")
+	outDir := flag.String("out", ".out", "output directory")
 	useJSON := flag.Bool("loadjson", false, "use JSON files")
 	exportCSV := flag.Bool("exportcsv", false, "export CSV files")
-	configFile := flag.String("config", "", "select config file")
+
 	flag.Usage = func() {
 		fmt.Fprintf(flag.CommandLine.Output(), usage, os.Args[0])
 		flag.PrintDefaults()
@@ -50,6 +53,7 @@ func parseCommandLine() CommandLineOptions {
 
 	return CommandLineOptions{
 		*configFile,
+		*outDir,
 		*useJSON,
 		*exportCSV,
 	}
@@ -119,8 +123,8 @@ func makeDir(dir string) {
 	}
 }
 
-func copyHash(src, dst string) string {
-	dir := filepath.Join(".out", filepath.Dir(dst))
+func copyHash(src, dst, outDir string) string {
+	dir := filepath.Join(outDir, filepath.Dir(dst))
 	makeDir(dir)
 
 	hash := computeHash(src)
@@ -137,7 +141,7 @@ func copyHash(src, dst string) string {
 	defer source.Close()
 
 	dstHash := strings.Replace(dst, "HASH", hash, -1)
-	dstHash2 := filepath.Join(".out", dstHash)
+	dstHash2 := filepath.Join(outDir, dstHash)
 	destination, err := os.Create(dstHash2)
 	check(err)
 	defer destination.Close()
@@ -164,7 +168,7 @@ func download(url string, dst string) {
 	check(err)
 }
 
-func downloadHash(url string, dst string) string {
+func downloadHash(url string, dst, outDir string) string {
 	if strings.Contains(dst, "HASH") {
 		tmpfile, err := os.CreateTemp("", "")
 		check(err)
@@ -172,9 +176,9 @@ func downloadHash(url string, dst string) string {
 
 		download(url, tmpfile.Name())
 
-		return copyHash(tmpfile.Name(), dst)
+		return copyHash(tmpfile.Name(), dst, outDir)
 	} else {
-		dst2 := filepath.Join(".out", dst)
+		dst2 := filepath.Join(outDir, dst)
 
 		download(url, dst2)
 
@@ -225,8 +229,9 @@ func genSitemapEntry(f *os.File, url string, timeStamp string) {
 }
 
 func genSitemap(fileName, events_time, groups_time, shops_time, parkrun_time, info_time string) {
-	makeDir(".out")
-	f, err := os.Create(filepath.Join(".out", fileName))
+	outDir := filepath.Dir(fileName)
+	makeDir(outDir)
+	f, err := os.Create(fileName)
 	check(err)
 
 	defer f.Close()
@@ -564,35 +569,35 @@ func main() {
 
 	info_time := GetMtime("templates/info.html").Format("2006-01-02")
 
-	genSitemap("sitemap.xml", events_time, groups_time, shops_time, parkrun_time, info_time)
-	copyHash("static/.htaccess", ".htaccess")
-	copyHash("static/robots.txt", "robots.txt")
-	copyHash("static/favicon.png", "favicon.png")
-	copyHash("static/favicon.ico", "favicon.ico")
-	copyHash("static/apple-touch-icon.png", "apple-touch-icon.png")
-	copyHash("static/freiburg-run.svg", "images/freiburg-run.svg")
-	copyHash("static/events2023.jpg", "images/events2023.jpg")
-	copyHash("static/marker-grey-icon.png", "images/marker-grey-icon.png")
-	copyHash("static/marker-grey-icon-2x.png", "images/marker-grey-icon-2x.png")
-	copyHash("static/circle-small.png", "images/circle-small.png")
-	copyHash("static/circle-big.png", "images/circle-big.png")
+	genSitemap(filepath.Join(options.outDir, "sitemap.xml"), events_time, groups_time, shops_time, parkrun_time, info_time)
+	copyHash("static/.htaccess", ".htaccess", options.outDir)
+	copyHash("static/robots.txt", "robots.txt", options.outDir)
+	copyHash("static/favicon.png", "favicon.png", options.outDir)
+	copyHash("static/favicon.ico", "favicon.ico", options.outDir)
+	copyHash("static/apple-touch-icon.png", "apple-touch-icon.png", options.outDir)
+	copyHash("static/freiburg-run.svg", "images/freiburg-run.svg", options.outDir)
+	copyHash("static/events2023.jpg", "images/events2023.jpg", options.outDir)
+	copyHash("static/marker-grey-icon.png", "images/marker-grey-icon.png", options.outDir)
+	copyHash("static/marker-grey-icon-2x.png", "images/marker-grey-icon-2x.png", options.outDir)
+	copyHash("static/circle-small.png", "images/circle-small.png", options.outDir)
+	copyHash("static/circle-big.png", "images/circle-big.png", options.outDir)
 
 	js_files := make([]string, 0)
-	js_files = append(js_files, downloadHash("https://unpkg.com/leaflet@1.9.3/dist/leaflet.js", "leaflet-HASH.js"))
-	js_files = append(js_files, downloadHash("https://raw.githubusercontent.com/ptma/Leaflet.Legend/master/src/leaflet.legend.js", "leaflet-legend-HASH.js"))
-	js_files = append(js_files, copyHash("static/parkrun-track.js", "parkrun-track-HASH.js"))
-	js_files = append(js_files, copyHash("static/main.js", "main-HASH.js"))
+	js_files = append(js_files, downloadHash("https://unpkg.com/leaflet@1.9.3/dist/leaflet.js", "leaflet-HASH.js", options.outDir))
+	js_files = append(js_files, downloadHash("https://raw.githubusercontent.com/ptma/Leaflet.Legend/master/src/leaflet.legend.js", "leaflet-legend-HASH.js", options.outDir))
+	js_files = append(js_files, copyHash("static/parkrun-track.js", "parkrun-track-HASH.js", options.outDir))
+	js_files = append(js_files, copyHash("static/main.js", "main-HASH.js", options.outDir))
 
 	css_files := make([]string, 0)
-	css_files = append(css_files, downloadHash("https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css", "bulma-HASH.css"))
-	css_files = append(css_files, downloadHash("https://unpkg.com/leaflet@1.9.3/dist/leaflet.css", "leaflet-HASH.css"))
-	css_files = append(css_files, downloadHash("https://raw.githubusercontent.com/ptma/Leaflet.Legend/master/src/leaflet.legend.css", "leaflet-legend-HASH.css"))
-	css_files = append(css_files, downloadHash("https://raw.githubusercontent.com/justboil/bulma-responsive-tables/master/css/main.min.css", "bulma-responsive-tables-HASH.css"))
-	css_files = append(css_files, copyHash("static/style.css", "style-HASH.css"))
+	css_files = append(css_files, downloadHash("https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css", "bulma-HASH.css", options.outDir))
+	css_files = append(css_files, downloadHash("https://unpkg.com/leaflet@1.9.3/dist/leaflet.css", "leaflet-HASH.css", options.outDir))
+	css_files = append(css_files, downloadHash("https://raw.githubusercontent.com/ptma/Leaflet.Legend/master/src/leaflet.legend.css", "leaflet-legend-HASH.css", options.outDir))
+	css_files = append(css_files, downloadHash("https://raw.githubusercontent.com/justboil/bulma-responsive-tables/master/css/main.min.css", "bulma-responsive-tables-HASH.css", options.outDir))
+	css_files = append(css_files, copyHash("static/style.css", "style-HASH.css", options.outDir))
 
-	downloadHash("https://unpkg.com/leaflet@1.9.3/dist/images/marker-icon.png", "images/marker-icon.png")
-	downloadHash("https://unpkg.com/leaflet@1.9.3/dist/images/marker-icon-2x.png", "images/marker-icon-2x.png")
-	downloadHash("https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png", "images/marker-shadow.png")
+	downloadHash("https://unpkg.com/leaflet@1.9.3/dist/images/marker-icon.png", "images/marker-icon.png", options.outDir)
+	downloadHash("https://unpkg.com/leaflet@1.9.3/dist/images/marker-icon-2x.png", "images/marker-icon-2x.png", options.outDir)
+	downloadHash("https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png", "images/marker-shadow.png", options.outDir)
 
 	data := TemplateData{
 		"Laufveranstaltungen im Raum Freiburg / Südbaden 2023",
@@ -610,54 +615,54 @@ func main() {
 		css_files,
 	}
 
-	executeTemplate("events", ".out/index.html", data)
+	executeTemplate("events", filepath.Join(options.outDir, "index.html"), data)
 
 	data.Nav = "groups"
 	data.Title = "Lauftreffs im Raum Freiburg / Südbaden"
 	data.Type = "Lauftreff"
 	data.Description = "Liste von Lauftreffs, Laufgruppen, Lauf-Trainingsgruppen im Raum Freiburg / Südbaden"
 	data.Canonical = "https://freiburg.run/lauftreffs.html"
-	executeTemplate("groups", ".out/lauftreffs.html", data)
+	executeTemplate("groups", filepath.Join(options.outDir, "lauftreffs.html"), data)
 
 	data.Nav = "shops"
 	data.Title = "Lauf-Shops im Raum Freiburg / Südbaden"
 	data.Type = "Lauf-Shop"
 	data.Description = "Liste von Lauf-Shops, Geschäften mit Laufschuh-Auswahl im Raum Freiburg / Südbaden"
 	data.Canonical = "https://freiburg.run/shops.html"
-	executeTemplate("shops", ".out/shops.html", data)
+	executeTemplate("shops", filepath.Join(options.outDir, "shops.html"), data)
 
 	data.Nav = "parkrun"
 	data.Title = "Dietenbach parkrun - Karte, Ergebnisse, Laufberichte, Fotogalerien"
 	data.Type = "Dietenbach parkrun"
 	data.Description = "Dietenbach parkrun - Karte, Ergebnisse, Laufberichte, Fotogalerien"
 	data.Canonical = "https://freiburg.run/dietenbach-parkrun.html"
-	executeTemplate("dietenbach-parkrun", ".out/dietenbach-parkrun.html", data)
+	executeTemplate("dietenbach-parkrun", filepath.Join(options.outDir, "dietenbach-parkrun.html"), data)
 
 	data.Nav = "datenschutz"
 	data.Title = "Datenschutz"
 	data.Type = "Datenschutz"
 	data.Description = "Datenschutzerklärung von freiburg.run"
 	data.Canonical = "https://freiburg.run/datenschutz.html"
-	executeTemplate("datenschutz", ".out/datenschutz.html", data)
+	executeTemplate("datenschutz", filepath.Join(options.outDir, "datenschutz.html"), data)
 
 	data.Nav = "impressum"
 	data.Title = "Impressum"
 	data.Type = "Impressum"
 	data.Description = "Impressum von freiburg.run"
 	data.Canonical = "https://freiburg.run/impressum.html"
-	executeTemplate("impressum", ".out/impressum.html", data)
+	executeTemplate("impressum", filepath.Join(options.outDir, "impressum.html"), data)
 
 	data.Nav = "info"
 	data.Title = "Info"
 	data.Type = "Info"
 	data.Description = "Kontaktmöglichkeiten, allgemeine & technische Informationen über freiburg.run"
 	data.Canonical = "https://freiburg.run/info.html"
-	executeTemplate("info", ".out/info.html", data)
+	executeTemplate("info", filepath.Join(options.outDir, "info.html"), data)
 
 	data.Nav = "404"
 	data.Title = "404 - Seite nicht gefunden :("
 	data.Type = ""
 	data.Description = "Fehlerseite von freiburg.run"
 	data.Canonical = "https://freiburg.run/404.html"
-	executeTemplate("404", ".out/404.html", data)
+	executeTemplate("404", filepath.Join(options.outDir, "404.html"), data)
 }

@@ -4,7 +4,7 @@ all:
 .phony: build
 build:
 	rm -rf .out
-	go run main.go -config config.json
+	go run main.go -config config.json -out .out
 
 .phony: upload
 upload: build
@@ -14,3 +14,4 @@ upload: build
 .phony: upload-test
 upload-test: build
 	scp -r .out/* .out/.htaccess echeclus.uberspace.de:/var/www/virtual/floppnet/fraig.de/
+
