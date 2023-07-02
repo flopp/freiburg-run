@@ -116,6 +116,30 @@ var main = () => {
         return null;
     };
 
+    const parseDate = function (s) {
+        const re1 = /\s*(?<day>\d\d?)\.(?<month>\d\d?)\.(?<year>\d\d\d\d)\s*$/gm;
+        const match1 = re1.exec(s);
+        if (match1 !== null) {
+            return Date(
+                parseInt(match1.groups.year),
+                parseInt(match1.groups.month),
+                parseInt(match1.groups.day),
+                0, 0, 0);
+        }
+    
+        const re2 = /\s*(?<year>\d\d\d\d)-(?<month>\d\d)-(?<day>\d\d)\s*$/gm;
+        const match2 = re2.exec(s);
+        if (match2 !== null) {
+            return Date(
+                parseInt(match2.groups.year),
+                parseInt(match2.groups.month),
+                parseInt(match2.groups.day),
+                0, 0, 0);
+        }
+
+        return NaN;
+    };
+
     var mapDiv = document.querySelector("#map");
     var leafletMap = null;
     if (mapDiv !== null) {
@@ -190,7 +214,7 @@ var main = () => {
                 m.addTo(map);
                 m.bindPopup(`${el.dataset.name}<br>${el.dataset.location}`);
             }
-            let added = Date.parse(el.dataset.added);
+            let added = parseDate(el.dataset.added);
             const maxAge = 7 * 86400 * 1000; /* 7 days */
             if (added !== NaN && (Date.now() - added) < maxAge) {
                 const dateEl = el.children[0];
@@ -231,7 +255,8 @@ var main = () => {
             opacity: 1,
             column: 1,
             legends: items
-        }).addTo(map);
+        });
+        legend.addTo(map);
 
         var group = new L.featureGroup(markers);
         map.fitBounds(group.getBounds(), {padding: L.point(40, 40)});
@@ -246,7 +271,8 @@ var main = () => {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
-        var course = L.polyline(parkrunTrack).addTo(map);
+        var course = L.polyline(parkrunTrack);
+        course.addTo(map);
 
         let blueOptions = {
             iconAnchor: [12, 41],
