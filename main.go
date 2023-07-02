@@ -102,6 +102,7 @@ type TemplateData struct {
 	Nav           string
 	Canonical     string
 	Timestamp     string
+	SheetUrl      string
 	Events        []Event
 	EventsPending []Event
 	Groups        []Event
@@ -498,6 +499,7 @@ func fetchParkrunEvents(config ConfigData, srv *sheets.Service, table string) ([
 
 func main() {
 	timestamp := time.Now().Format("2006-01-02")
+	sheetUrl := ""
 	options := parseCommandLine()
 
 	var events []Event
@@ -534,6 +536,8 @@ func main() {
 		if err := json.Unmarshal(config_data, &config); err != nil {
 			panic(err)
 		}
+
+		sheetUrl = fmt.Sprintf("https://docs.google.com/spreadsheets/d/%s", config.SheetId)
 
 		ctx := context.Background()
 		srv, err := sheets.NewService(ctx, option.WithAPIKey(config.ApiKey))
@@ -606,6 +610,7 @@ func main() {
 		"events",
 		"https://freiburg.run/",
 		timestamp,
+		sheetUrl,
 		events,
 		events_pending,
 		groups,
