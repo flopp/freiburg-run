@@ -2,14 +2,10 @@ package main
 
 import (
 	"context"
-	"crypto/sha256"
-	"crypto/tls"
 	"encoding/json"
 	"flag"
 	"fmt"
-	"io"
 	"log"
-	"net/http"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -17,6 +13,7 @@ import (
 	"text/template"
 	"time"
 
+	"github.com/flopp/freiburg-run/internal/utils"
 	"google.golang.org/api/option"
 	"google.golang.org/api/sheets/v4"
 )
@@ -102,6 +99,7 @@ type TemplateData struct {
 	Nav           string
 	Canonical     string
 	Timestamp     string
+	TimestampFull string
 	SheetUrl      string
 	Events        []Event
 	EventsPending []Event
@@ -122,82 +120,6 @@ func makeDir(dir string) {
 	if err := os.MkdirAll(dir, 0770); err != nil {
 		panic(err)
 	}
-}
-
-func copyHash(src, dst, outDir string) string {
-	dir := filepath.Join(outDir, filepath.Dir(dst))
-	makeDir(dir)
-
-	hash := computeHash(src)
-
-	sourceFileStat, err := os.Stat(src)
-	check(err)
-
-	if !sourceFileStat.Mode().IsRegular() {
-		panic(fmt.Errorf("%s is not a regular file", src))
-	}
-
-	source, err := os.Open(src)
-	check(err)
-	defer source.Close()
-
-	dstHash := strings.Replace(dst, "HASH", hash, -1)
-	dstHash2 := filepath.Join(outDir, dstHash)
-	destination, err := os.Create(dstHash2)
-	check(err)
-	defer destination.Close()
-	_, err = io.Copy(destination, source)
-	check(err)
-
-	return dstHash
-}
-
-func download(url string, dst string) {
-	makeDir(filepath.Dir(dst))
-
-	out, err := os.Create(dst)
-	check(err)
-	defer out.Close()
-
-	// temporarily skip insecure certificates
-	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
-	resp, err := http.Get(url)
-	check(err)
-	defer resp.Body.Close()
-
-	_, err = io.Copy(out, resp.Body)
-	check(err)
-}
-
-func downloadHash(url string, dst, outDir string) string {
-	if strings.Contains(dst, "HASH") {
-		tmpfile, err := os.CreateTemp("", "")
-		check(err)
-		defer os.Remove(tmpfile.Name())
-
-		download(url, tmpfile.Name())
-
-		return copyHash(tmpfile.Name(), dst, outDir)
-	} else {
-		dst2 := filepath.Join(outDir, dst)
-
-		download(url, dst2)
-
-		return dst
-	}
-}
-
-func computeHash(fileName string) string {
-	f, err := os.Open(fileName)
-	check(err)
-	defer f.Close()
-
-	h := sha256.New()
-	if _, err := io.Copy(h, f); err != nil {
-		panic(err)
-	}
-
-	return fmt.Sprintf("%.8x", h.Sum(nil))
 }
 
 func loadTemplate(name string) *template.Template {
@@ -498,7 +420,9 @@ func fetchParkrunEvents(config ConfigData, srv *sheets.Service, table string) ([
 }
 
 func main() {
-	timestamp := time.Now().Format("2006-01-02")
+	now := time.Now()
+	timestamp := now.Format("2006-01-02")
+	timestampFull := now.Format("2006-01-02 15:04:05")
 	sheetUrl := ""
 	options := parseCommandLine()
 
@@ -574,34 +498,34 @@ func main() {
 	info_time := GetMtime("templates/info.html").Format("2006-01-02")
 
 	genSitemap(filepath.Join(options.outDir, "sitemap.xml"), events_time, groups_time, shops_time, parkrun_time, info_time)
-	copyHash("static/.htaccess", ".htaccess", options.outDir)
-	copyHash("static/robots.txt", "robots.txt", options.outDir)
-	copyHash("static/favicon.png", "favicon.png", options.outDir)
-	copyHash("static/favicon.ico", "favicon.ico", options.outDir)
-	copyHash("static/apple-touch-icon.png", "apple-touch-icon.png", options.outDir)
-	copyHash("static/freiburg-run.svg", "images/freiburg-run.svg", options.outDir)
-	copyHash("static/events2023.jpg", "images/events2023.jpg", options.outDir)
-	copyHash("static/marker-grey-icon.png", "images/marker-grey-icon.png", options.outDir)
-	copyHash("static/marker-grey-icon-2x.png", "images/marker-grey-icon-2x.png", options.outDir)
-	copyHash("static/circle-small.png", "images/circle-small.png", options.outDir)
-	copyHash("static/circle-big.png", "images/circle-big.png", options.outDir)
+	utils.MustCopyHash("static/.htaccess", ".htaccess", options.outDir)
+	utils.MustCopyHash("static/robots.txt", "robots.txt", options.outDir)
+	utils.MustCopyHash("static/favicon.png", "favicon.png", options.outDir)
+	utils.MustCopyHash("static/favicon.ico", "favicon.ico", options.outDir)
+	utils.MustCopyHash("static/apple-touch-icon.png", "apple-touch-icon.png", options.outDir)
+	utils.MustCopyHash("static/freiburg-run.svg", "images/freiburg-run.svg", options.outDir)
+	utils.MustCopyHash("static/events2023.jpg", "images/events2023.jpg", options.outDir)
+	utils.MustCopyHash("static/marker-grey-icon.png", "images/marker-grey-icon.png", options.outDir)
+	utils.MustCopyHash("static/marker-grey-icon-2x.png", "images/marker-grey-icon-2x.png", options.outDir)
+	utils.MustCopyHash("static/circle-small.png", "images/circle-small.png", options.outDir)
+	utils.MustCopyHash("static/circle-big.png", "images/circle-big.png", options.outDir)
 
 	js_files := make([]string, 0)
-	js_files = append(js_files, downloadHash("https://unpkg.com/leaflet@1.9.3/dist/leaflet.js", "leaflet-HASH.js", options.outDir))
-	js_files = append(js_files, downloadHash("https://raw.githubusercontent.com/ptma/Leaflet.Legend/master/src/leaflet.legend.js", "leaflet-legend-HASH.js", options.outDir))
-	js_files = append(js_files, copyHash("static/parkrun-track.js", "parkrun-track-HASH.js", options.outDir))
-	js_files = append(js_files, copyHash("static/main.js", "main-HASH.js", options.outDir))
+	js_files = append(js_files, utils.MustDownloadHash("https://unpkg.com/leaflet@1.9.3/dist/leaflet.js", "leaflet-HASH.js", options.outDir))
+	js_files = append(js_files, utils.MustDownloadHash("https://raw.githubusercontent.com/ptma/Leaflet.Legend/master/src/leaflet.legend.js", "leaflet-legend-HASH.js", options.outDir))
+	js_files = append(js_files, utils.MustCopyHash("static/parkrun-track.js", "parkrun-track-HASH.js", options.outDir))
+	js_files = append(js_files, utils.MustCopyHash("static/main.js", "main-HASH.js", options.outDir))
 
 	css_files := make([]string, 0)
-	css_files = append(css_files, downloadHash("https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css", "bulma-HASH.css", options.outDir))
-	css_files = append(css_files, downloadHash("https://unpkg.com/leaflet@1.9.3/dist/leaflet.css", "leaflet-HASH.css", options.outDir))
-	css_files = append(css_files, downloadHash("https://raw.githubusercontent.com/ptma/Leaflet.Legend/master/src/leaflet.legend.css", "leaflet-legend-HASH.css", options.outDir))
-	css_files = append(css_files, downloadHash("https://raw.githubusercontent.com/justboil/bulma-responsive-tables/master/css/main.min.css", "bulma-responsive-tables-HASH.css", options.outDir))
-	css_files = append(css_files, copyHash("static/style.css", "style-HASH.css", options.outDir))
+	css_files = append(css_files, utils.MustDownloadHash("https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css", "bulma-HASH.css", options.outDir))
+	css_files = append(css_files, utils.MustDownloadHash("https://unpkg.com/leaflet@1.9.3/dist/leaflet.css", "leaflet-HASH.css", options.outDir))
+	css_files = append(css_files, utils.MustDownloadHash("https://raw.githubusercontent.com/ptma/Leaflet.Legend/master/src/leaflet.legend.css", "leaflet-legend-HASH.css", options.outDir))
+	css_files = append(css_files, utils.MustDownloadHash("https://raw.githubusercontent.com/justboil/bulma-responsive-tables/master/css/main.min.css", "bulma-responsive-tables-HASH.css", options.outDir))
+	css_files = append(css_files, utils.MustCopyHash("static/style.css", "style-HASH.css", options.outDir))
 
-	downloadHash("https://unpkg.com/leaflet@1.9.3/dist/images/marker-icon.png", "images/marker-icon.png", options.outDir)
-	downloadHash("https://unpkg.com/leaflet@1.9.3/dist/images/marker-icon-2x.png", "images/marker-icon-2x.png", options.outDir)
-	downloadHash("https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png", "images/marker-shadow.png", options.outDir)
+	utils.MustDownloadHash("https://unpkg.com/leaflet@1.9.3/dist/images/marker-icon.png", "images/marker-icon.png", options.outDir)
+	utils.MustDownloadHash("https://unpkg.com/leaflet@1.9.3/dist/images/marker-icon-2x.png", "images/marker-icon-2x.png", options.outDir)
+	utils.MustDownloadHash("https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png", "images/marker-shadow.png", options.outDir)
 
 	data := TemplateData{
 		"Laufveranstaltungen im Raum Freiburg / Südbaden 2023",
@@ -610,6 +534,7 @@ func main() {
 		"events",
 		"https://freiburg.run/",
 		timestamp,
+		timestampFull,
 		sheetUrl,
 		events,
 		events_pending,
