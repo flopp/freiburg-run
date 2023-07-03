@@ -632,14 +632,14 @@ func main() {
 	data.Nav = "shops"
 	data.Title = "Lauf-Shops im Raum Freiburg / Südbaden"
 	data.Type = "Lauf-Shop"
-	data.Description = "Liste von Lauf-Shops, Geschäften mit Laufschuh-Auswahl im Raum Freiburg / Südbaden"
+	data.Description = "Liste von Lauf-Shops und Einzelhandelsgeschäften mit Laufschuh-Auswahl im Raum Freiburg / Südbaden"
 	data.Canonical = "https://freiburg.run/shops.html"
 	executeTemplate("shops", filepath.Join(options.outDir, "shops.html"), data)
 
 	data.Nav = "parkrun"
-	data.Title = "Dietenbach parkrun - Karte, Ergebnisse, Laufberichte, Fotogalerien"
+	data.Title = "Dietenbach parkrun"
 	data.Type = "Dietenbach parkrun"
-	data.Description = "Dietenbach parkrun - Karte, Ergebnisse, Laufberichte, Fotogalerien"
+	data.Description = "Vollständige Liste aller Ergebnisse, Laufberichte und Fotogalerien des 'Dietenbach parkrun' im Freiburger Dietenbachpark."
 	data.Canonical = "https://freiburg.run/dietenbach-parkrun.html"
 	executeTemplate("dietenbach-parkrun", filepath.Join(options.outDir, "dietenbach-parkrun.html"), data)
 
