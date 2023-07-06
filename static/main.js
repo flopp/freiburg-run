@@ -301,6 +301,34 @@ var main = () => {
         meetingpoint.bindPopup("Treffpunkt / Zielbereich");
     }
 
+    let eventMap = document.querySelector("#event-map");
+    if (eventMap !== null) {
+        let geo = parseGeo(eventMap.dataset.geo);
+        if (geo !== null) {
+            var map = L.map('event-map').setView(geo, 15);
+        
+            let blueOptions = {
+                iconAnchor: [12, 41],
+                iconRetinaUrl: "/images/marker-icon-2x.png",
+                iconSize: [25, 41],
+                iconUrl: "/images/marker-icon.png",
+                popupAnchor: [1, -34],
+                shadowSize: [41, 41],
+                shadowUrl: "/images/marker-shadow.png",
+                tooltipAnchor: [16, -28],
+            };
+            let blueIcon = L.icon(blueOptions);
+
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+            
+            let marker = L.marker(geo, {icon: blueIcon});
+            marker.addTo(map);
+            marker.bindPopup(eventMap.dataset.name);
+        }
+    }
+
     var checkbox = document.querySelector("#show-past-events");
     if (checkbox !== null) {
         checkbox.addEventListener('change', (event) => {

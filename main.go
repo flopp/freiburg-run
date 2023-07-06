@@ -12,8 +12,12 @@ import (
 	"strings"
 	"text/template"
 	"time"
+	"unicode"
 
 	"github.com/flopp/freiburg-run/internal/utils"
+	"golang.org/x/text/runes"
+	"golang.org/x/text/transform"
+	"golang.org/x/text/unicode/norm"
 	"google.golang.org/api/option"
 	"google.golang.org/api/sheets/v4"
 )
@@ -83,6 +87,95 @@ type Event struct {
 	Added    string
 }
 
+var yearRe = regexp.MustCompile(`\b(\d\d\d\d)\b`)
+
+func createSlug(eventType string, name string, date string) (string, error) {
+	m := yearRe.FindStringSubmatch(date)
+	s := fmt.Sprintf("%s/", eventType)
+	lastSp := false
+	if m != nil {
+		s += m[1]
+		s += "-"
+		lastSp = true
+	}
+
+	result := strings.ToLower(name)
+	result = strings.ReplaceAll(result, "ä", "ae")
+	result = strings.ReplaceAll(result, "ö", "oe")
+	result = strings.ReplaceAll(result, "ü", "ue")
+	result = strings.ReplaceAll(result, "ß", "ss")
+	result, _, err := transform.String(transform.Chain(norm.NFD, runes.Remove(runes.In(unicode.Mn))), result)
+	if err != nil {
+		return "", err
+	}
+
+	for _, char := range strings.ToLower(result) {
+		if char >= 'a' && char <= 'z' {
+			s += string(char)
+			lastSp = false
+		} else if char >= '0' && char <= '9' {
+			s += string(char)
+			lastSp = false
+		} else {
+			if !lastSp {
+				s += "-"
+				lastSp = true
+			}
+		}
+	}
+
+	if lastSp {
+		s = s[:len(s)-1]
+	}
+	return s, nil
+}
+
+func (event *Event) Slug() string {
+	m := yearRe.FindStringSubmatch(event.Time)
+	s := ""
+	lastSp := false
+	if m != nil {
+		s += m[1]
+		s += "-"
+		lastSp = true
+	}
+
+	sanitized := strings.ToLower(event.Name)
+	sanitized = strings.ReplaceAll(sanitized, "ä", "ae")
+	sanitized = strings.ReplaceAll(sanitized, "ö", "oe")
+	sanitized = strings.ReplaceAll(sanitized, "ü", "ue")
+	sanitized = strings.ReplaceAll(sanitized, "ß", "ss")
+	sanitized = strings.ReplaceAll(sanitized, " ", "-")
+	sanitized = strings.ReplaceAll(sanitized, ".", "-")
+	sanitized = strings.ReplaceAll(sanitized, "'", "-")
+	sanitized = strings.ReplaceAll(sanitized, "\"", "-")
+	sanitized = strings.ReplaceAll(sanitized, "(", "-")
+	sanitized = strings.ReplaceAll(sanitized, ")", "-")
+	result, _, err := transform.String(transform.Chain(norm.NFD, runes.Remove(runes.In(unicode.Mn))), sanitized)
+	if err != nil {
+		result = sanitized
+	}
+	for _, char := range result {
+		if char >= 'a' && char <= 'z' {
+			s += string(char)
+			lastSp = false
+		} else if char >= '0' && char <= '9' {
+			s += string(char)
+			lastSp = false
+		} else {
+			if !lastSp {
+				s += "-"
+				lastSp = true
+			}
+		}
+	}
+
+	if lastSp {
+		return s[:len(s)-1]
+	}
+	return s
+}
+
 type ParkrunEvent struct {
 	Index   string
 	Date    string
@@ -110,6 +203,21 @@ type TemplateData struct {
 	CssFiles      []string
 }
 
+type EventTemplateData struct {
+	Event         *Event
+	Title         string
+	Type          string
+	Description   string
+	Nav           string
+	Canonical     string
+	Main          string
+	Timestamp     string
+	TimestampFull string
+	SheetUrl      string
+	JsFiles       []string
+	CssFiles      []string
+}
+
 func check(err error) {
 	if err != nil {
 		panic(err)
@@ -132,9 +240,18 @@ func executeTemplate(templateName string, fileName string, data TemplateData) {
 	out, err := os.Create(fileName)
 	check(err)
 	defer out.Close()
-	if err := loadTemplate(templateName).Execute(out, data); err != nil {
-		panic(err)
-	}
+	err = loadTemplate(templateName).Execute(out, data)
+	check(err)
+}
+
+func executeEventTemplate(templateName string, fileName string, data EventTemplateData) {
+	outDir := filepath.Dir(fileName)
+	makeDir(outDir)
+	out, err := os.Create(fileName)
+	check(err)
+	defer out.Close()
+	err = loadTemplate(templateName).Execute(out, data)
+	check(err)
 }
 
 func nl(f *os.File) {
@@ -288,6 +405,8 @@ func fetchParkrunEventsJson(fileName string) ([]ParkrunEvent, string) {
 	return unmarshalled, mtime
 }
 
+var mtimeRe = regexp.MustCompile(`^\s*(\d+)\.(\d+)\.(\d+)\s*$`)
+
 func fetchEvents(config ConfigData, srv *sheets.Service, table string) ([]Event, string) {
 	events := make([]Event, 0)
 	mtime := ""
@@ -297,8 +416,7 @@ func fetchEvents(config ConfigData, srv *sheets.Service, table string) ([]Event,
 	if len(resp.Values) != 0 {
 		mtime = fmt.Sprintf("%v", resp.Values[0][0])
 		if mtime != "" {
-			r := regexp.MustCompile(`^\s*(\d+)\.(\d+)\.(\d+)\s*$`)
-			m := r.FindStringSubmatch(mtime)
+			m := mtimeRe.FindStringSubmatch(mtime)
 			if m == nil {
 				log.Printf("GOOGLE SHEETS: bad mtime for '%s': '%s'\n", table, mtime)
 				mtime = ""
@@ -595,4 +713,27 @@ func main() {
 	data.Description = "Fehlerseite von freiburg.run"
 	data.Canonical = "https://freiburg.run/404.html"
 	executeTemplate("404", filepath.Join(options.outDir, "404.html"), data)
+
+	eventdata := EventTemplateData{
+		nil,
+		"",
+		"Veranstaltung",
+		"",
+		"events",
+		"",
+		"/index.html",
+		timestamp,
+		timestampFull,
+		sheetUrl,
+		js_files,
+		css_files,
+	}
+	for _, event := range events {
+		eventdata.Event = &event
+		eventdata.Title = event.Name
+		eventdata.Description = fmt.Sprintf("Informationen zu %s in %s am %s", event.Name, event.Location, event.Time)
+		slug := fmt.Sprintf("event/%s.html", event.Slug())
+		eventdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
+		executeEventTemplate("event", filepath.Join(options.outDir, slug), eventdata)
+	}
 }
