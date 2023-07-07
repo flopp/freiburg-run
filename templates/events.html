@@ -31,6 +31,7 @@
                             <th>Veranstaltung</th>
                             <th>Ort</th>
                             <th>Details</th>
+                            <th>Mehr</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -55,6 +56,9 @@
                                 {{range .Reports}}
                                 <a class="tag is-link is-light" href="{{.Url}}" target="_blank">{{.Name}}</a>
                                 {{end}}
+                            </td>
+                            <td class="is-flex-wrap-wrap" data-label="Mehr" class="is-flex-wrap-wrap">
+                                <a href="/event/{{.Slug}}.html">Infos...</a>
                             </td>
                         </tr>
                         {{end}}

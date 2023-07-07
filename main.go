@@ -89,47 +89,6 @@ type Event struct {
 
 var yearRe = regexp.MustCompile(`\b(\d\d\d\d)\b`)
 
-func createSlug(eventType string, name string, date string) (string, error) {
-	m := yearRe.FindStringSubmatch(date)
-	s := fmt.Sprintf("%s/", eventType)
-	lastSp := false
-	if m != nil {
-		s += m[1]
-		s += "-"
-		lastSp = true
-	}
-
-	result := strings.ToLower(name)
-	result = strings.ReplaceAll(result, "ä", "ae")
-	result = strings.ReplaceAll(result, "ö", "oe")
-	result = strings.ReplaceAll(result, "ü", "ue")
-	result = strings.ReplaceAll(result, "ß", "ss")
-	result, _, err := transform.String(transform.Chain(norm.NFD, runes.Remove(runes.In(unicode.Mn))), result)
-	if err != nil {
-		return "", err
-	}
-
-	for _, char := range strings.ToLower(result) {
-		if char >= 'a' && char <= 'z' {
-			s += string(char)
-			lastSp = false
-		} else if char >= '0' && char <= '9' {
-			s += string(char)
-			lastSp = false
-		} else {
-			if !lastSp {
-				s += "-"
-				lastSp = true
-			}
-		}
-	}
-
-	if lastSp {
-		s = s[:len(s)-1]
-	}
-	return s, nil
-}
-
 func (event *Event) Slug() string {
 	m := yearRe.FindStringSubmatch(event.Time)
 	s := ""
@@ -733,6 +692,18 @@ func main() {
 		eventdata.Title = event.Name
 		eventdata.Description = fmt.Sprintf("Informationen zu %s in %s am %s", event.Name, event.Location, event.Time)
 		slug := fmt.Sprintf("event/%s.html", event.Slug())
+		eventdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
+		executeEventTemplate("event", filepath.Join(options.outDir, slug), eventdata)
+	}
+
+	eventdata.Type = "Lauftreff"
+	eventdata.Nav = "groups"
+	eventdata.Main = "/groups.html"
+	for _, event := range groups {
+		eventdata.Event = &event
+		eventdata.Title = event.Name
+		eventdata.Description = fmt.Sprintf("Informationen zu %s in %s am %s", event.Name, event.Location, event.Time)
+		slug := fmt.Sprintf("group/%s.html", event.Slug())
 		eventdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
 		executeEventTemplate("event", filepath.Join(options.outDir, slug), eventdata)
 	}
