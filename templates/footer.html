@@ -9,9 +9,5 @@
     </div>
 </footer>
 
-{{range .JsFiles}}
-<script src="/{{.}}"></script>
-{{end}}
-</body>
-</html>
+{{template "tail.html" .}}
 

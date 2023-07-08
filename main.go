@@ -206,7 +206,7 @@ func makeDir(dir string) {
 }
 
 func loadTemplate(name string) *template.Template {
-	t, err := template.ParseFiles(fmt.Sprintf("templates/%s.html", name), "templates/header.html", "templates/footer.html")
+	t, err := template.ParseFiles(fmt.Sprintf("templates/%s.html", name), "templates/header.html", "templates/footer.html", "templates/tail.html")
 	check(err)
 	return t
 }
@@ -682,6 +682,13 @@ func main() {
 	data.Description = "Vollständige Liste aller Ergebnisse, Laufberichte und Fotogalerien des 'Dietenbach parkrun' im Freiburger Dietenbachpark."
 	data.Canonical = "https://freiburg.run/dietenbach-parkrun.html"
 	executeTemplate("dietenbach-parkrun", filepath.Join(options.outDir, "dietenbach-parkrun.html"), data)
+
+	data.Nav = "map"
+	data.Title = "Karte aller Laufveranstaltunge"
+	data.Type = "Karte"
+	data.Description = "Karte"
+	data.Canonical = "https://freiburg.run/map.html"
+	executeTemplate("map", filepath.Join(options.outDir, "map.html"), data)
 
 	data.Nav = "datenschutz"
 	data.Title = "Datenschutz"
