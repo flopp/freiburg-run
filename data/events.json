@@ -8,7 +8,7 @@
         "location": "Dietenbachpark, Freiburg",
         "reports": [
             {"name": "parkrun", "url": "https://www.parkrun.com.de/"},
-            {"name": "Berichte, Fotos", "url": "https://freiburg.run/dietenbach-parkrun.html"},
+            {"name": "Berichte, Fotos", "url": "/dietenbach-parkrun.html"},
             {"name": "Blogbeitrag (flopp)", "url": "https://running.flopp.net/2022/11/06/dietenbach-parkrun/"}
         ]
     },

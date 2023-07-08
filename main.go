@@ -85,6 +85,22 @@ type Event struct {
 	Url      string
 	Reports  []NameUrl
 	Added    string
+	New      bool
+}
+
+func IsNew(s string, now time.Time) bool {
+	days := 14
+	d, err := time.Parse("2006-01-02", s)
+	if err == nil {
+		return d.AddDate(0, 0, days).After(now)
+	}
+
+	d, err = time.Parse("02.01.2006", s)
+	if err == nil {
+		return d.AddDate(0, 0, days).After(now)
+	}
+
+	return false
 }
 
 var yearRe = regexp.MustCompile(`\b(\d\d\d\d)\b`)
@@ -154,7 +170,7 @@ type TemplateData struct {
 	TimestampFull string
 	SheetUrl      string
 	Events        []Event
-	EventsPending []Event
+	EventsOld     []Event
 	Groups        []Event
 	Shops         []Event
 	Parkrun       []ParkrunEvent
@@ -332,7 +348,7 @@ func parseLinks(ss []interface{}) []NameUrl {
 	return links
 }
 
-func fetchEventsJson(fileName string) ([]Event, string) {
+func fetchEventsJson(fileName string, now time.Time) ([]Event, string) {
 	data, err := os.ReadFile(fileName)
 	check(err)
 	unmarshalled := make([]EventJson, 0)
@@ -344,7 +360,7 @@ func fetchEventsJson(fileName string) ([]Event, string) {
 	events := make([]Event, 0)
 	for _, e := range unmarshalled {
 		ed := Event{
-			e.Name, e.Time, e.Location, parseGeo(e.Geo), e.Details, e.Url, e.Reports, e.Added,
+			e.Name, e.Time, e.Location, parseGeo(e.Geo), e.Details, e.Url, e.Reports, e.Added, IsNew(e.Added, now),
 		}
 		events = append(events, ed)
 	}
@@ -366,7 +382,7 @@ func fetchParkrunEventsJson(fileName string) ([]ParkrunEvent, string) {
 
 var mtimeRe = regexp.MustCompile(`^\s*(\d+)\.(\d+)\.(\d+)\s*$`)
 
-func fetchEvents(config ConfigData, srv *sheets.Service, table string) ([]Event, string) {
+func fetchEvents(config ConfigData, srv *sheets.Service, table string, now time.Time) ([]Event, string) {
 	events := make([]Event, 0)
 	mtime := ""
 
@@ -428,6 +444,7 @@ func fetchEvents(config ConfigData, srv *sheets.Service, table string) ([]Event,
 				url,
 				links,
 				added,
+				IsNew(added, now),
 			})
 		}
 	}
@@ -504,7 +521,7 @@ func main() {
 	options := parseCommandLine()
 
 	var events []Event
-	var events_pending []Event
+	var events_old []Event
 	var events_time string
 
 	var groups []Event
@@ -518,17 +535,15 @@ func main() {
 
 	if options.useJSON {
 		var all_events []Event
-		all_events, events_time = fetchEventsJson("data/events.json")
+		all_events, events_time = fetchEventsJson("data/events.json", now)
 		for _, e := range all_events {
 			if !strings.Contains(e.Time, "UNBEKANNT") {
 				events = append(events, e)
-			} else {
-				events_pending = append(events_pending, e)
 			}
 		}
 
-		groups, groups_time = fetchEventsJson("data/groups.json")
-		shops, shops_time = fetchEventsJson("data/shops.json")
+		groups, groups_time = fetchEventsJson("data/groups.json", now)
+		shops, shops_time = fetchEventsJson("data/shops.json", now)
 		parkrun, parkrun_time = fetchParkrunEventsJson("data/dietenbach-parkrun.json")
 	} else {
 		config_data, err := os.ReadFile(options.configFile)
@@ -544,10 +559,9 @@ func main() {
 		srv, err := sheets.NewService(ctx, option.WithAPIKey(config.ApiKey))
 		check(err)
 
-		events, events_time = fetchEvents(config, srv, "Events")
-		events_pending, _ = fetchEvents(config, srv, "Events2")
-		groups, groups_time = fetchEvents(config, srv, "Groups")
-		shops, shops_time = fetchEvents(config, srv, "Shops")
+		events, events_time = fetchEvents(config, srv, "Events", now)
+		groups, groups_time = fetchEvents(config, srv, "Groups", now)
+		shops, shops_time = fetchEvents(config, srv, "Shops", now)
 		parkrun, parkrun_time = fetchParkrunEvents(config, srv, "Parkrun")
 
 		if events_time == "" {
@@ -564,9 +578,32 @@ func main() {
 		}
 	}
 
+	events_tmp := make([]Event, 0)
+	dateRe := regexp.MustCompile(`\b(\d\d\.\d\d\.\d\d\d\d)\b`)
+	for _, event := range events {
+		hasDate := false
+		hasFutureDate := false
+		m := dateRe.FindAllStringSubmatch(event.Time, -1)
+		for _, mm := range m {
+			d, err := time.Parse("02.01.2006 15:04:05", fmt.Sprintf("%s 23:59:59", mm[1]))
+			if err != nil {
+				continue
+			}
+			hasDate = true
+			if d.After(now) {
+				hasFutureDate = true
+			}
+		}
+		if !hasDate || hasFutureDate {
+			events_tmp = append(events_tmp, event)
+		} else {
+			events_old = append(events_old, event)
+		}
+	}
+	events = events_tmp
+
 	if options.exportCSV {
 		writeCsv("events.csv", events)
-		writeCsv("events2.csv", events_pending)
 		writeCsv("groups.csv", groups)
 		writeCsv("shops.csv", shops)
 		writeParkrunCsv("parkrun.csv", parkrun)
@@ -605,16 +642,16 @@ func main() {
 	utils.MustDownloadHash("https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png", "images/marker-shadow.png", options.outDir)
 
 	data := TemplateData{
-		"Laufveranstaltungen im Raum Freiburg / Südbaden 2023",
+		"Aktuelle und zukünftige Laufveranstaltungen im Raum Freiburg / Südbaden",
 		"Veranstaltung",
-		"Liste von Laufveranstaltungen, Lauf-Wettkämpfen, Volksläufen 2023 im Raum Freiburg / Südbaden",
+		"Liste von aktuellen und zukünftigen Laufveranstaltungen, Lauf-Wettkämpfen, Volksläufen im Raum Freiburg / Südbaden",
 		"events",
 		"https://freiburg.run/",
 		timestamp,
 		timestampFull,
 		sheetUrl,
 		events,
-		events_pending,
+		events_old,
 		groups,
 		shops,
 		parkrun,
@@ -623,6 +660,7 @@ func main() {
 	}
 
 	executeTemplate("events", filepath.Join(options.outDir, "index.html"), data)
+	executeTemplate("events-old", filepath.Join(options.outDir, "events-old.html"), data)
 
 	data.Nav = "groups"
 	data.Title = "Lauftreffs im Raum Freiburg / Südbaden"
@@ -696,6 +734,16 @@ func main() {
 		executeEventTemplate("event", filepath.Join(options.outDir, slug), eventdata)
 	}
 
+	eventdata.Main = "/events-old.html"
+	for _, event := range events_old {
+		eventdata.Event = &event
+		eventdata.Title = event.Name
+		eventdata.Description = fmt.Sprintf("Informationen zu %s in %s am %s", event.Name, event.Location, event.Time)
+		slug := fmt.Sprintf("event/%s.html", event.Slug())
+		eventdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
+		executeEventTemplate("event", filepath.Join(options.outDir, slug), eventdata)
+	}
+
 	eventdata.Type = "Lauftreff"
 	eventdata.Nav = "groups"
 	eventdata.Main = "/groups.html"
@@ -704,6 +752,18 @@ func main() {
 		eventdata.Title = event.Name
 		eventdata.Description = fmt.Sprintf("Informationen zu %s in %s am %s", event.Name, event.Location, event.Time)
 		slug := fmt.Sprintf("group/%s.html", event.Slug())
+		eventdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
+		executeEventTemplate("event", filepath.Join(options.outDir, slug), eventdata)
+	}
+
+	eventdata.Type = "Lauf-Shop"
+	eventdata.Nav = "shops"
+	eventdata.Main = "/shops.html"
+	for _, event := range shops {
+		eventdata.Event = &event
+		eventdata.Title = event.Name
+		eventdata.Description = fmt.Sprintf("Informationen zu %s in %s", event.Name, event.Location)
+		slug := fmt.Sprintf("shop/%s.html", event.Slug())
 		eventdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
 		executeEventTemplate("event", filepath.Join(options.outDir, slug), eventdata)
 	}

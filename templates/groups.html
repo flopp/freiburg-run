@@ -7,63 +7,55 @@
             Liste von Lauftreffs, Laufgruppen, Trainingsgruppen, Social Runs im Raum Freiburg / Südbaden.
             <br />
             Ist ein Eintrag fehlerhaft oder fehlt ein Lauftreff? - bitte <a href="info.html#kontakt">melden</a>. 
+            <br /><br />
+            Hinweis: Bevor man zum ersten Mal einen der obigen Lauftreffs besucht, am Besten vorher den Veranstalter für Details kontaktieren. 
         </div>
-
-        <div id="map"></div>
-
-        <div id="controls">
-            <label class="checkbox">
-                <input type="checkbox" id="show-map">
-                Zeige Karte
-            </label>
-        </div>
-        
-        <div class="b-table">
-            <div class="table-wrapper has-mobile-cards">
-                <table class="table is-fullwidth is-narrow">
-                    <thead>
-                        <tr>
-                            <th>Zeit</th>
-                            <th>Veranstaltung</th>
-                            <th>Ort</th>
-                            <th>Details</th>
-                            <th>Mehr</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {{range .Groups}}
-                        <tr class="event" data-pending="0" data-geo="{{.Geo}}" data-name="{{.Name}}" data-location="{{.Location}}" data-added="{{.Added}}">
-                            <td class="is-flex-wrap-wrap" data-label="Zeit">
-                                {{.Time}}
-                            </td>
-                            <td class="is-flex-wrap-wrap" data-label="Veranstaltung">
-                                <a href="{{.Url}}" target="_blank">{{.Name}}</a>
-                            </td>
-                            <td class="is-flex-wrap-wrap" data-label="Ort">
-                                {{if .Geo}}
-                                <a href="https://www.google.com/maps/place/{{.Geo}}" target="_blank">{{.Location}}</a>
-                                {{else}}
-                                {{.Location}}
-                                {{end}}
-                            </td>
-                            <td class="is-flex-wrap-wrap" data-label="Details">
-                                {{.Details}}
-                                {{if .Reports}}<br />{{end}}
-                                {{range .Reports}}
-                                <a class="tag is-link is-light" href="{{.Url}}" target="_blank">{{.Name}}</a>
-                                {{end}}
-                            </td>
-                            <td class="is-flex-wrap-wrap" data-label="Mehr" class="is-flex-wrap-wrap">
-                                <a href="/group/{{.Slug}}.html">Infos...</a>
-                            </td>
-                        </tr>
-                        {{end}}
-                    </tbody>
-                </table>
+    </div>
+</section>
+<section class="section">
+    <div class="container is-max-desktop">
+        <div class="columns is-multiline">   
+            {{range .Groups}}
+            <div class="column is-half">
+                <div class="card">
+                    <a href="/group/{{.Slug}}.html">
+                        <header class="card-header">
+                            {{if .New}}
+                            <p class="card-header-title has-background-success has-text-white">
+                                {{.Name}} (neu hinzugefügt)
+                            </p>
+                            {{else}}
+                            <p class="card-header-title">
+                                {{.Name}}
+                            </p>
+                            {{end}}
+                        </header>
+                    </a>
+                    <div class="card-content">
+                        <div class="content">
+                            {{.Time }} - {{if .Geo}}<a href="https://www.google.com/maps/place/{{.Geo}}" target="_blank">{{.Location}}</a>{{else}}{{.Location}}{{end}}
+                            <br>
+                            {{.Details}}
+                            {{if .Reports}}
+                            <br>
+                            {{range .Reports}}
+                            <a class="tag is-link is-light" href="{{.Url}}" target="_blank">{{.Name}}</a>
+                            {{end}}
+                            {{end}}
+                        </div>
+                    </div>
+                    {{if .Url}}
+                    <footer class="card-footer">
+                        <p class="card-footer-item">
+                            <span>
+                                <a href="{{.Url}}" target="_blank">Zum Lauftreff</a>
+                            </span>
+                        </p>
+                    </footer>
+                    {{end}}
+                </div>
             </div>
-        </div>
-        <div class="notification is-info is-light mt-5">
-            Bevor man zum ersten Mal einen der obigen Lauftreffs besucht, am Besten vorher den Veranstalter für Details kontaktieren. 
+            {{end}}
         </div>
     </div>
 </section>

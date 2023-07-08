@@ -2,40 +2,32 @@
 
 <section class="section">
     <div class="container">
-        <h1 class="title">Lauf-Shops im Raum Freiburg / Südbaden</h1>
-        <div class="notification is-info is-light">
-            Liste von Sportgeschäften mit Laufschuhauswahl im Raum Freiburg / Südbaden.
+        <h1 class="title">Vergangene Laufveranstaltungen im Raum Freiburg / Südbaden</h1>
+        <div class="notification is-danger">
+            Achtung: Dies ist eine Liste von <b>vergangenen</b> Laufveranstaltungen, Lauf-Wettkämpfen, Volksläufen im Raum Freiburg / Südbaden.
             <br />
-            Ist ein Eintrag fehlerhaft oder fehlt ein Geschäft? - bitte <a href="info.html#kontakt">melden</a>.
+            <a href="/index.html">Hier geht's zur Liste der aktuellen Veranstaltungen.</a> 
         </div>
     </div>
 </section>
 <section class="section">
     <div class="container is-max-desktop">
         <div class="columns is-multiline">   
-            {{range .Shops}}
+            {{range .EventsOld}}
             <div class="column is-half">
                 <div class="card">
-                    <a href="/shop/{{.Slug}}.html">
+                    <a href="/event/{{.Slug}}.html">
                         <header class="card-header">
-                            {{if .New}}
-                            <p class="card-header-title has-background-success has-text-white">
-                                {{.Name}} (neu hinzugefügt)
-                            </p>
-                            {{else}}
                             <p class="card-header-title">
                                 {{.Name}}
                             </p>
-                            {{end}}
                         </header>
                     </a>
                     <div class="card-content">
                         <div class="content">
-                            {{if .Geo}}<a href="https://www.google.com/maps/place/{{.Geo}}" target="_blank">{{.Location}}</a>{{else}}{{.Location}}{{end}}
-                            {{if .Details}}
+                            {{.Time }} - {{if .Geo}}<a href="https://www.google.com/maps/place/{{.Geo}}" target="_blank">{{.Location}}</a>{{else}}{{.Location}}{{end}}
                             <br>
                             {{.Details}}
-                            {{end}}
                             {{if .Reports}}
                             <br>
                             {{range .Reports}}
@@ -44,15 +36,13 @@
                             {{end}}
                         </div>
                     </div>
-                    {{if .Url}}
                     <footer class="card-footer">
                         <p class="card-footer-item">
                             <span>
-                                <a href="{{.Url}}" target="_blank">Zum Lauf-Shop</a>
+                                <a href="{{.Url}}" target="_blank">Zur Verstaltung</a>
                             </span>
                         </p>
                     </footer>
-                    {{end}}
                 </div>
             </div>
             {{end}}

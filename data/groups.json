@@ -102,7 +102,7 @@
         "details": "5k",
         "geo": "48.001291,7.806459",
         "location": "Dietenbachpark, Freiburg",
-        "reports": [{"name": "Berichte, Fotos", "url": "https://freiburg.run/dietenbach-parkrun.html"}, {"name": "Blogbeitrag (flopp)", "url": "https://running.flopp.net/2022/11/06/dietenbach-parkrun/"}]
+        "reports": [{"name": "Berichte, Fotos", "url": "/dietenbach-parkrun.html"}, {"name": "Blogbeitrag (flopp)", "url": "https://running.flopp.net/2022/11/06/dietenbach-parkrun/"}]
     },
     {
         "time": "Samstag 9:00",

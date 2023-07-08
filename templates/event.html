@@ -12,10 +12,12 @@
                         <a href="{{.Event.Url}}" target="_blank">{{.Event.Url}}</a>
                     </td>
                 </tr>
+                {{if .Event.Time}}
                 <tr>
                     <td>Datum</td>
                     <td>{{.Event.Time}}</td>
                 </tr>
+                {{end}}
                 <tr>
                     <td>Ort</td>
                     <td>
@@ -26,10 +28,12 @@
                         {{end}}
                     </td>
                 </tr>
+                {{if .Event.Details}}
                 <tr>
                     <td>Details</td>
                     <td>{{.Event.Details}}</td>
                 </tr>
+                {{end}}
                 {{if .Event.Reports}}
                 <tr>
                     <td>Infos</td>
