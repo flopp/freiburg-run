@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"log"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -86,6 +85,16 @@ type Event struct {
 	Reports  []NameUrl
 	Added    string
 	New      bool
+}
+
+var mtimeRe = regexp.MustCompile(`^\s*(\d+)\.(\d+)\.(\d\d\d\d)\s*$`)
+
+func genYMS(s string) string {
+	m := mtimeRe.FindStringSubmatch(s)
+	if m == nil {
+		return ""
+	}
+	return fmt.Sprintf("%s-%s-%s", m[3], m[2], m[1])
 }
 
 func IsNew(s string, now time.Time) bool {
@@ -229,42 +238,6 @@ func executeEventTemplate(templateName string, fileName string, data EventTempla
 	check(err)
 }
 
-func nl(f *os.File) {
-	f.WriteString("\n")
-}
-func genSitemapEntry(f *os.File, url string, timeStamp string) {
-	f.WriteString(`    <url>`)
-	nl(f)
-	f.WriteString(fmt.Sprintf(`        <loc>%s</loc>`, url))
-	nl(f)
-	f.WriteString(fmt.Sprintf(`        <lastmod>%s</lastmod>`, timeStamp))
-	nl(f)
-	f.WriteString(`    </url>`)
-	nl(f)
-}
-
-func genSitemap(fileName, events_time, groups_time, shops_time, parkrun_time, info_time string) {
-	outDir := filepath.Dir(fileName)
-	makeDir(outDir)
-	f, err := os.Create(fileName)
-	check(err)
-
-	defer f.Close()
-
-	f.WriteString(`<?xml version="1.0" encoding="UTF-8"?>`)
-	nl(f)
-	f.WriteString(`<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`)
-	nl(f)
-
-	genSitemapEntry(f, "https://freiburg.run/", events_time)
-	genSitemapEntry(f, "https://freiburg.run/lauftreffs.html", groups_time)
-	genSitemapEntry(f, "https://freiburg.run/shops.html", shops_time)
-	genSitemapEntry(f, "https://freiburg.run/dietenbach-parkrun.html", parkrun_time)
-	genSitemapEntry(f, "https://freiburg.run/info.html", info_time)
-
-	f.WriteString(`</urlset>`)
-}
-
 func GetMtime(filePath string) time.Time {
 	stat, err := os.Stat(filePath)
 	check(err)
@@ -380,8 +353,6 @@ func fetchParkrunEventsJson(fileName string) ([]ParkrunEvent, string) {
 	return unmarshalled, mtime
 }
 
-var mtimeRe = regexp.MustCompile(`^\s*(\d+)\.(\d+)\.(\d+)\s*$`)
-
 func fetchEvents(config ConfigData, srv *sheets.Service, table string, now time.Time) ([]Event, string) {
 	events := make([]Event, 0)
 	mtime := ""
@@ -389,16 +360,7 @@ func fetchEvents(config ConfigData, srv *sheets.Service, table string, now time.
 	resp, err := srv.Spreadsheets.Values.Get(config.SheetId, fmt.Sprintf("%s!A1", table)).Do()
 	check(err)
 	if len(resp.Values) != 0 {
-		mtime = fmt.Sprintf("%v", resp.Values[0][0])
-		if mtime != "" {
-			m := mtimeRe.FindStringSubmatch(mtime)
-			if m == nil {
-				log.Printf("GOOGLE SHEETS: bad mtime for '%s': '%s'\n", table, mtime)
-				mtime = ""
-			} else {
-				mtime = fmt.Sprintf("%s-%s-%s", m[3], m[2], m[1])
-			}
-		}
+		mtime = genYMS(fmt.Sprintf("%v", resp.Values[0][0]))
 	}
 
 	resp, err = srv.Spreadsheets.Values.Get(config.SheetId, fmt.Sprintf("%s!A3:Z", table)).Do()
@@ -459,17 +421,7 @@ func fetchParkrunEvents(config ConfigData, srv *sheets.Service, table string) ([
 	resp, err := srv.Spreadsheets.Values.Get(config.SheetId, fmt.Sprintf("%s!A1", table)).Do()
 	check(err)
 	if len(resp.Values) != 0 {
-		mtime = fmt.Sprintf("%v", resp.Values[0][0])
-		if mtime != "" {
-			r := regexp.MustCompile(`^\s*(\d+)\.(\d+)\.(\d+)\s*$`)
-			m := r.FindStringSubmatch(mtime)
-			if m == nil {
-				log.Printf("GOOGLE SHEETS: bad mtime for '%s': '%s'\n", table, mtime)
-				mtime = ""
-			} else {
-				mtime = fmt.Sprintf("%s-%s-%s", m[3], m[2], m[1])
-			}
-		}
+		mtime = genYMS(fmt.Sprintf("%v", resp.Values[0][0]))
 	}
 
 	resp, err = srv.Spreadsheets.Values.Get(config.SheetId, fmt.Sprintf("%s!A3:Z", table)).Do()
@@ -609,9 +561,15 @@ func main() {
 		writeParkrunCsv("parkrun.csv", parkrun)
 	}
 
-	info_time := GetMtime("templates/info.html").Format("2006-01-02")
+	sitemapEntries := make([]utils.SitemapEntry, 0)
+	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "index.html", events_time)
+	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "events-old.html", events_time)
+	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "groups.html", groups_time)
+	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "shops.html", shops_time)
+	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "dietenbach-parkrun.html", parkrun_time)
+	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "map.html", events_time)
+	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "info.html", GetMtime("templates/info.html").Format("2006-01-02"))
 
-	genSitemap(filepath.Join(options.outDir, "sitemap.xml"), events_time, groups_time, shops_time, parkrun_time, info_time)
 	utils.MustCopyHash("static/.htaccess", ".htaccess", options.outDir)
 	utils.MustCopyHash("static/robots.txt", "robots.txt", options.outDir)
 	utils.MustCopyHash("static/favicon.png", "favicon.png", options.outDir)
@@ -739,6 +697,11 @@ func main() {
 		slug := fmt.Sprintf("event/%s.html", event.Slug())
 		eventdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
 		executeEventTemplate("event", filepath.Join(options.outDir, slug), eventdata)
+		t := genYMS(event.Added)
+		if t == "" {
+			t = events_time
+		}
+		sitemapEntries = utils.AddSitemapEntry(sitemapEntries, slug, t)
 	}
 
 	eventdata.Main = "/events-old.html"
@@ -749,6 +712,11 @@ func main() {
 		slug := fmt.Sprintf("event/%s.html", event.Slug())
 		eventdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
 		executeEventTemplate("event", filepath.Join(options.outDir, slug), eventdata)
+		t := genYMS(event.Added)
+		if t == "" {
+			t = events_time
+		}
+		sitemapEntries = utils.AddSitemapEntry(sitemapEntries, slug, t)
 	}
 
 	eventdata.Type = "Lauftreff"
@@ -761,6 +729,11 @@ func main() {
 		slug := fmt.Sprintf("group/%s.html", event.Slug())
 		eventdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
 		executeEventTemplate("event", filepath.Join(options.outDir, slug), eventdata)
+		t := genYMS(event.Added)
+		if t == "" {
+			t = groups_time
+		}
+		sitemapEntries = utils.AddSitemapEntry(sitemapEntries, slug, t)
 	}
 
 	eventdata.Type = "Lauf-Shop"
@@ -773,5 +746,12 @@ func main() {
 		slug := fmt.Sprintf("shop/%s.html", event.Slug())
 		eventdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
 		executeEventTemplate("event", filepath.Join(options.outDir, slug), eventdata)
+		t := genYMS(event.Added)
+		if t == "" {
+			t = shops_time
+		}
+		sitemapEntries = utils.AddSitemapEntry(sitemapEntries, slug, t)
 	}
+
+	utils.GenSitemap(filepath.Join(options.outDir, "sitemap.xml"), "https://freiburg.run", sitemapEntries)
 }
