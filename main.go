@@ -569,6 +569,8 @@ func main() {
 	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "dietenbach-parkrun.html", parkrun_time)
 	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "map.html", events_time)
 	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "info.html", GetMtime("templates/info.html").Format("2006-01-02"))
+	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "datenschutz.html", GetMtime("templates/datenschutz.html").Format("2006-01-02"))
+	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "impressum.html", GetMtime("templates/impressum.html").Format("2006-01-02"))
 
 	utils.MustCopyHash("static/.htaccess", ".htaccess", options.outDir)
 	utils.MustCopyHash("static/robots.txt", "robots.txt", options.outDir)
@@ -583,21 +585,21 @@ func main() {
 	utils.MustCopyHash("static/circle-big.png", "images/circle-big.png", options.outDir)
 
 	js_files := make([]string, 0)
-	js_files = append(js_files, utils.MustDownloadHash("https://unpkg.com/leaflet@1.9.3/dist/leaflet.js", "leaflet-HASH.js", options.outDir))
+	js_files = append(js_files, utils.MustDownloadHash("https://unpkg.com/leaflet@1.9.4/dist/leaflet.js", "leaflet-HASH.js", options.outDir))
 	js_files = append(js_files, utils.MustDownloadHash("https://raw.githubusercontent.com/ptma/Leaflet.Legend/master/src/leaflet.legend.js", "leaflet-legend-HASH.js", options.outDir))
 	js_files = append(js_files, utils.MustCopyHash("static/parkrun-track.js", "parkrun-track-HASH.js", options.outDir))
 	js_files = append(js_files, utils.MustCopyHash("static/main.js", "main-HASH.js", options.outDir))
 
 	css_files := make([]string, 0)
 	css_files = append(css_files, utils.MustDownloadHash("https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css", "bulma-HASH.css", options.outDir))
-	css_files = append(css_files, utils.MustDownloadHash("https://unpkg.com/leaflet@1.9.3/dist/leaflet.css", "leaflet-HASH.css", options.outDir))
+	css_files = append(css_files, utils.MustDownloadHash("https://unpkg.com/leaflet@1.9.4/dist/leaflet.css", "leaflet-HASH.css", options.outDir))
 	css_files = append(css_files, utils.MustDownloadHash("https://raw.githubusercontent.com/ptma/Leaflet.Legend/master/src/leaflet.legend.css", "leaflet-legend-HASH.css", options.outDir))
 	css_files = append(css_files, utils.MustDownloadHash("https://raw.githubusercontent.com/justboil/bulma-responsive-tables/master/css/main.min.css", "bulma-responsive-tables-HASH.css", options.outDir))
 	css_files = append(css_files, utils.MustCopyHash("static/style.css", "style-HASH.css", options.outDir))
 
-	utils.MustDownloadHash("https://unpkg.com/leaflet@1.9.3/dist/images/marker-icon.png", "images/marker-icon.png", options.outDir)
-	utils.MustDownloadHash("https://unpkg.com/leaflet@1.9.3/dist/images/marker-icon-2x.png", "images/marker-icon-2x.png", options.outDir)
-	utils.MustDownloadHash("https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png", "images/marker-shadow.png", options.outDir)
+	utils.MustDownloadHash("https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png", "images/marker-icon.png", options.outDir)
+	utils.MustDownloadHash("https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png", "images/marker-icon-2x.png", options.outDir)
+	utils.MustDownloadHash("https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png", "images/marker-shadow.png", options.outDir)
 
 	data := TemplateData{
 		"Aktuelle und zukünftige Laufveranstaltungen im Raum Freiburg / Südbaden",
