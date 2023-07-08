@@ -1,0 +1,17 @@
+{{template "header.html" .}}
+<div id="big-map"></div>
+
+<div class="is-hidden">
+    {{range .Events}}
+    {{if .Geo}}
+    <div class="event" data-type="Veranstaltung" data-name="{{.Name}}" data-time="{{.Time}}" data-geo="{{.Geo}}" data-location="{{.Location}}" data-slug="/event/{{.Slug}}.html"></div>
+    {{end}}
+    {{end}}
+
+    {{range .EventsOld}}
+    {{if .Geo}}
+    <div class="event" data-type="vergangene Veranstaltung" data-name="{{.Name}}" data-time="{{.Time}}" data-geo="{{.Geo}}" data-location="{{.Location}}" data-slug="/event/{{.Slug}}.html"></div>
+    {{end}}
+    {{end}}
+</div>
+{{template "tail.html" .}}
