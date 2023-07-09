@@ -13,48 +13,8 @@
 <section class="section">
     <div class="container is-max-desktop">
         <div class="columns is-multiline">   
-            {{range .Shops}}
-            <div class="column is-half">
-                <div class="card">
-                    <a href="/shop/{{.Slug}}.html">
-                        <header class="card-header">
-                            {{if .New}}
-                            <p class="card-header-title has-background-success has-text-white">
-                                {{.Name}} (neu hinzugefügt)
-                            </p>
-                            {{else}}
-                            <p class="card-header-title">
-                                {{.Name}}
-                            </p>
-                            {{end}}
-                        </header>
-                    </a>
-                    <div class="card-content">
-                        <div class="content">
-                            {{if .Geo}}<a href="https://www.google.com/maps/place/{{.Geo}}" target="_blank">{{.Location}}</a>{{else}}{{.Location}}{{end}}
-                            {{if .Details}}
-                            <br>
-                            {{.Details}}
-                            {{end}}
-                            {{if .Reports}}
-                            <br>
-                            {{range .Reports}}
-                            <a class="tag is-link is-light" href="{{.Url}}" target="_blank">{{.Name}}</a>
-                            {{end}}
-                            {{end}}
-                        </div>
-                    </div>
-                    {{if .Url}}
-                    <footer class="card-footer">
-                        <p class="card-footer-item">
-                            <span>
-                                <a href="{{.Url}}" target="_blank">Zum Lauf-Shop</a>
-                            </span>
-                        </p>
-                    </footer>
-                    {{end}}
-                </div>
-            </div>
+            {{range .Shops}}   
+            {{template "card.html" .}}
             {{end}}
         </div>
     </div>

@@ -76,6 +76,7 @@ type EventJson struct {
 }
 
 type Event struct {
+	Type     string
 	Name     string
 	Time     string
 	Location string
@@ -116,7 +117,8 @@ var yearRe = regexp.MustCompile(`\b(\d\d\d\d)\b`)
 
 func (event *Event) Slug() string {
 	m := yearRe.FindStringSubmatch(event.Time)
-	s := ""
+	s := event.Type
+	s += "/"
 	lastSp := false
 	if m != nil {
 		s += m[1]
@@ -157,7 +159,23 @@ func (event *Event) Slug() string {
 	if lastSp {
 		return s[:len(s)-1]
 	}
+
+	s += ".html"
+
 	return s
+}
+
+func (event *Event) LinkTitle() string {
+	if event.Type == "event" {
+		return "Zur Veranstaltung"
+	}
+	if event.Type == "group" {
+		return "Zum Lauftreff"
+	}
+	if event.Type == "event" {
+		return "Zum Lauf-Shop"
+	}
+	return "Zur Veranstaltung"
 }
 
 type ParkrunEvent struct {
@@ -215,7 +233,7 @@ func makeDir(dir string) {
 }
 
 func loadTemplate(name string) *template.Template {
-	t, err := template.ParseFiles(fmt.Sprintf("templates/%s.html", name), "templates/header.html", "templates/footer.html", "templates/tail.html")
+	t, err := template.ParseFiles(fmt.Sprintf("templates/%s.html", name), "templates/header.html", "templates/footer.html", "templates/tail.html", "templates/card.html")
 	check(err)
 	return t
 }
@@ -321,7 +339,7 @@ func parseLinks(ss []interface{}) []NameUrl {
 	return links
 }
 
-func fetchEventsJson(fileName string, now time.Time) ([]Event, string) {
+func fetchEventsJson(eventType string, fileName string, now time.Time) ([]Event, string) {
 	data, err := os.ReadFile(fileName)
 	check(err)
 	unmarshalled := make([]EventJson, 0)
@@ -333,7 +351,7 @@ func fetchEventsJson(fileName string, now time.Time) ([]Event, string) {
 	events := make([]Event, 0)
 	for _, e := range unmarshalled {
 		ed := Event{
-			e.Name, e.Time, e.Location, parseGeo(e.Geo), e.Details, e.Url, e.Reports, e.Added, IsNew(e.Added, now),
+			eventType, e.Name, e.Time, e.Location, parseGeo(e.Geo), e.Details, e.Url, e.Reports, e.Added, IsNew(e.Added, now),
 		}
 		events = append(events, ed)
 	}
@@ -353,7 +371,7 @@ func fetchParkrunEventsJson(fileName string) ([]ParkrunEvent, string) {
 	return unmarshalled, mtime
 }
 
-func fetchEvents(config ConfigData, srv *sheets.Service, table string, now time.Time) ([]Event, string) {
+func fetchEvents(config ConfigData, srv *sheets.Service, eventType string, table string, now time.Time) ([]Event, string) {
 	events := make([]Event, 0)
 	mtime := ""
 
@@ -398,6 +416,7 @@ func fetchEvents(config ConfigData, srv *sheets.Service, table string, now time.
 				links = parseLinks(row[7:])
 			}
 			events = append(events, Event{
+				eventType,
 				name,
 				date,
 				location,
@@ -487,15 +506,15 @@ func main() {
 
 	if options.useJSON {
 		var all_events []Event
-		all_events, events_time = fetchEventsJson("data/events.json", now)
+		all_events, events_time = fetchEventsJson("event", "data/events.json", now)
 		for _, e := range all_events {
 			if !strings.Contains(e.Time, "UNBEKANNT") {
 				events = append(events, e)
 			}
 		}
 
-		groups, groups_time = fetchEventsJson("data/groups.json", now)
-		shops, shops_time = fetchEventsJson("data/shops.json", now)
+		groups, groups_time = fetchEventsJson("group", "data/groups.json", now)
+		shops, shops_time = fetchEventsJson("shop", "data/shops.json", now)
 		parkrun, parkrun_time = fetchParkrunEventsJson("data/dietenbach-parkrun.json")
 	} else {
 		config_data, err := os.ReadFile(options.configFile)
@@ -511,9 +530,9 @@ func main() {
 		srv, err := sheets.NewService(ctx, option.WithAPIKey(config.ApiKey))
 		check(err)
 
-		events, events_time = fetchEvents(config, srv, "Events", now)
-		groups, groups_time = fetchEvents(config, srv, "Groups", now)
-		shops, shops_time = fetchEvents(config, srv, "Shops", now)
+		events, events_time = fetchEvents(config, srv, "event", "Events", now)
+		groups, groups_time = fetchEvents(config, srv, "group", "Groups", now)
+		shops, shops_time = fetchEvents(config, srv, "shop", "Shops", now)
 		parkrun, parkrun_time = fetchParkrunEvents(config, srv, "Parkrun")
 
 		if events_time == "" {
@@ -696,8 +715,8 @@ func main() {
 		eventdata.Event = &event
 		eventdata.Title = event.Name
 		eventdata.Description = fmt.Sprintf("Informationen zu %s in %s am %s", event.Name, event.Location, event.Time)
-		slug := fmt.Sprintf("event/%s.html", event.Slug())
-		eventdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
+		slug := event.Slug()
+		eventdata.Canonical = fmt.Sprintf("https://freiburg.run%s", slug)
 		executeEventTemplate("event", filepath.Join(options.outDir, slug), eventdata)
 		t := genYMS(event.Added)
 		if t == "" {
@@ -711,8 +730,8 @@ func main() {
 		eventdata.Event = &event
 		eventdata.Title = event.Name
 		eventdata.Description = fmt.Sprintf("Informationen zu %s in %s am %s", event.Name, event.Location, event.Time)
-		slug := fmt.Sprintf("event/%s.html", event.Slug())
-		eventdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
+		slug := event.Slug()
+		eventdata.Canonical = fmt.Sprintf("https://freiburg.run%s", slug)
 		executeEventTemplate("event", filepath.Join(options.outDir, slug), eventdata)
 		t := genYMS(event.Added)
 		if t == "" {
@@ -728,8 +747,8 @@ func main() {
 		eventdata.Event = &event
 		eventdata.Title = event.Name
 		eventdata.Description = fmt.Sprintf("Informationen zu %s in %s am %s", event.Name, event.Location, event.Time)
-		slug := fmt.Sprintf("group/%s.html", event.Slug())
-		eventdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
+		slug := event.Slug()
+		eventdata.Canonical = fmt.Sprintf("https://freiburg.run%s", slug)
 		executeEventTemplate("event", filepath.Join(options.outDir, slug), eventdata)
 		t := genYMS(event.Added)
 		if t == "" {
@@ -745,8 +764,8 @@ func main() {
 		eventdata.Event = &event
 		eventdata.Title = event.Name
 		eventdata.Description = fmt.Sprintf("Informationen zu %s in %s", event.Name, event.Location)
-		slug := fmt.Sprintf("shop/%s.html", event.Slug())
-		eventdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
+		slug := event.Slug()
+		eventdata.Canonical = fmt.Sprintf("https://freiburg.run%s", slug)
 		executeEventTemplate("event", filepath.Join(options.outDir, slug), eventdata)
 		t := genYMS(event.Added)
 		if t == "" {

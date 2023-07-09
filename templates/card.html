@@ -1,0 +1,33 @@
+<div class="column is-half">
+    <div class="card">
+        <header class="card-header">
+            {{if .New}}
+            <a class="button is-success is-fullwidth" href="{{.Slug}}">{{.Name}} (neu hinzugefügt)</a>
+            {{else}}
+            <a class="button is-info is-fullwidth" href="{{.Slug}}">{{.Name}}</a>
+            {{end}}
+        </header>
+        <div class="card-content">
+            <div class="content">
+                {{if .Time}}{{.Time}} - {{end}}{{if .Geo}}<a href="https://www.google.com/maps/place/{{.Geo}}" target="_blank">{{.Location}}</a>{{else}}{{.Location}}{{end}}
+                {{if .Details}}
+                <br>
+                {{.Details}}
+                {{end}}
+                {{if .Reports}}
+                <br>
+                {{range .Reports}}
+                <a class="tag is-link is-light" href="{{.Url}}" target="_blank">{{.Name}}</a>
+                {{end}}
+                {{end}}
+            </div>
+        </div>
+        <footer class="card-footer">
+            <p class="card-footer-item">
+                <span>
+                    <a href="{{.Url}}" target="_blank">{{.LinkTitle}}</a>
+                </span>
+            </p>
+        </footer>
+    </div>
+</div>

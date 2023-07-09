@@ -14,37 +14,7 @@
     <div class="container is-max-desktop">
         <div class="columns is-multiline">   
             {{range .EventsOld}}
-            <div class="column is-half">
-                <div class="card">
-                    <a href="/event/{{.Slug}}.html">
-                        <header class="card-header">
-                            <p class="card-header-title">
-                                {{.Name}}
-                            </p>
-                        </header>
-                    </a>
-                    <div class="card-content">
-                        <div class="content">
-                            {{.Time }} - {{if .Geo}}<a href="https://www.google.com/maps/place/{{.Geo}}" target="_blank">{{.Location}}</a>{{else}}{{.Location}}{{end}}
-                            <br>
-                            {{.Details}}
-                            {{if .Reports}}
-                            <br>
-                            {{range .Reports}}
-                            <a class="tag is-link is-light" href="{{.Url}}" target="_blank">{{.Name}}</a>
-                            {{end}}
-                            {{end}}
-                        </div>
-                    </div>
-                    <footer class="card-footer">
-                        <p class="card-footer-item">
-                            <span>
-                                <a href="{{.Url}}" target="_blank">Zur Veranstaltung</a>
-                            </span>
-                        </p>
-                    </footer>
-                </div>
-            </div>
+            {{template "card.html" .}}
             {{end}}
         </div>
     </div>
