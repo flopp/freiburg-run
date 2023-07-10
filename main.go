@@ -585,7 +585,7 @@ func main() {
 	sitemapEntries := make([]utils.SitemapEntry, 0)
 	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "index.html", events_time)
 	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "events-old.html", events_time)
-	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "groups.html", groups_time)
+	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "lauftreffs.html", groups_time)
 	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "shops.html", shops_time)
 	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "dietenbach-parkrun.html", parkrun_time)
 	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "map.html", events_time)
@@ -744,7 +744,7 @@ func main() {
 
 	eventdata.Type = "Lauftreff"
 	eventdata.Nav = "groups"
-	eventdata.Main = "/groups.html"
+	eventdata.Main = "/lauftreffs.html"
 	for _, event := range groups {
 		eventdata.Event = &event
 		eventdata.Title = event.Name
