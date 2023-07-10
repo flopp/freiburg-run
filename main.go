@@ -98,14 +98,19 @@ func genYMS(s string) string {
 	return fmt.Sprintf("%s-%s-%s", m[3], m[2], m[1])
 }
 
-func IsNew(s string, now time.Time) bool {
-	days := 14
+func ParseD(s string) (time.Time, error) {
 	d, err := time.Parse("2006-01-02", s)
 	if err == nil {
-		return d.AddDate(0, 0, days).After(now)
+		return d, nil
 	}
 
-	d, err = time.Parse("02.01.2006", s)
+	return time.Parse("02.01.2006", s)
+}
+
+func IsNew(s string, now time.Time) bool {
+	days := 14
+
+	d, err := ParseD(s)
 	if err == nil {
 		return d.AddDate(0, 0, days).After(now)
 	}
@@ -374,14 +379,7 @@ func fetchParkrunEventsJson(fileName string) ([]ParkrunEvent, string) {
 func fetchEvents(config ConfigData, srv *sheets.Service, eventType string, table string, now time.Time) ([]Event, string) {
 	events := make([]Event, 0)
 	mtime := ""
-
-	resp, err := srv.Spreadsheets.Values.Get(config.SheetId, fmt.Sprintf("%s!A1", table)).Do()
-	check(err)
-	if len(resp.Values) != 0 {
-		mtime = genYMS(fmt.Sprintf("%v", resp.Values[0][0]))
-	}
-
-	resp, err = srv.Spreadsheets.Values.Get(config.SheetId, fmt.Sprintf("%s!A3:Z", table)).Do()
+	resp, err := srv.Spreadsheets.Values.Get(config.SheetId, fmt.Sprintf("%s!A2:Z", table)).Do()
 	check(err)
 	if len(resp.Values) == 0 {
 		panic("No events data found.")
@@ -427,6 +425,10 @@ func fetchEvents(config ConfigData, srv *sheets.Service, eventType string, table
 				added,
 				IsNew(added, now),
 			})
+			t := genYMS(added)
+			if mtime == "" || (t != "" && t > mtime) {
+				mtime = t
+			}
 		}
 	}
 
