@@ -11,12 +11,8 @@ import (
 	"strings"
 	"text/template"
 	"time"
-	"unicode"
 
 	"github.com/flopp/freiburg-run/internal/utils"
-	"golang.org/x/text/runes"
-	"golang.org/x/text/transform"
-	"golang.org/x/text/unicode/norm"
 	"google.golang.org/api/option"
 	"google.golang.org/api/sheets/v4"
 )
@@ -88,29 +84,10 @@ type Event struct {
 	New      bool
 }
 
-var mtimeRe = regexp.MustCompile(`^\s*(\d+)\.(\d+)\.(\d\d\d\d)\s*$`)
-
-func genYMS(s string) string {
-	m := mtimeRe.FindStringSubmatch(s)
-	if m == nil {
-		return ""
-	}
-	return fmt.Sprintf("%s-%s-%s", m[3], m[2], m[1])
-}
-
-func ParseD(s string) (time.Time, error) {
-	d, err := time.Parse("2006-01-02", s)
-	if err == nil {
-		return d, nil
-	}
-
-	return time.Parse("02.01.2006", s)
-}
-
 func IsNew(s string, now time.Time) bool {
 	days := 14
 
-	d, err := ParseD(s)
+	d, err := utils.ParseDate(s)
 	if err == nil {
 		return d.AddDate(0, 0, days).After(now)
 	}
@@ -121,53 +98,10 @@ func IsNew(s string, now time.Time) bool {
 var yearRe = regexp.MustCompile(`\b(\d\d\d\d)\b`)
 
 func (event *Event) Slug() string {
-	m := yearRe.FindStringSubmatch(event.Time)
-	s := event.Type
-	s += "/"
-	lastSp := false
-	if m != nil {
-		s += m[1]
-		s += "-"
-		lastSp = true
+	if m := yearRe.FindStringSubmatch(event.Time); m != nil {
+		return fmt.Sprintf("%s/%s-%s.html", event.Type, m[1], utils.SanitizeName(event.Name))
 	}
-
-	sanitized := strings.ToLower(event.Name)
-	sanitized = strings.ReplaceAll(sanitized, "ä", "ae")
-	sanitized = strings.ReplaceAll(sanitized, "ö", "oe")
-	sanitized = strings.ReplaceAll(sanitized, "ü", "ue")
-	sanitized = strings.ReplaceAll(sanitized, "ß", "ss")
-	sanitized = strings.ReplaceAll(sanitized, " ", "-")
-	sanitized = strings.ReplaceAll(sanitized, ".", "-")
-	sanitized = strings.ReplaceAll(sanitized, "'", "-")
-	sanitized = strings.ReplaceAll(sanitized, "\"", "-")
-	sanitized = strings.ReplaceAll(sanitized, "(", "-")
-	sanitized = strings.ReplaceAll(sanitized, ")", "-")
-	result, _, err := transform.String(transform.Chain(norm.NFD, runes.Remove(runes.In(unicode.Mn))), sanitized)
-	if err != nil {
-		result = sanitized
-	}
-	for _, char := range result {
-		if char >= 'a' && char <= 'z' {
-			s += string(char)
-			lastSp = false
-		} else if char >= '0' && char <= '9' {
-			s += string(char)
-			lastSp = false
-		} else {
-			if !lastSp {
-				s += "-"
-				lastSp = true
-			}
-		}
-	}
-
-	if lastSp {
-		return s[:len(s)-1]
-	}
-
-	s += ".html"
-
-	return s
+	return fmt.Sprintf("%s/%s.html", event.Type, utils.SanitizeName(event.Name))
 }
 
 func (event *Event) LinkTitle() string {
@@ -261,40 +195,13 @@ func executeEventTemplate(templateName string, fileName string, data EventTempla
 	check(err)
 }
 
-func GetMtime(filePath string) time.Time {
+func GetMtimeYMD(filePath string) string {
 	stat, err := os.Stat(filePath)
-	check(err)
-	return stat.ModTime()
-}
-
-var geoRe1 = regexp.MustCompile(`^\s*(\d*\.?\d*)\s*,\s*(\d*\.?\d*)\s*$`)
-var geoRe2 = regexp.MustCompile(`^\s*N\s*(\d*\.?\d*)\s*E\s*(\d*\.?\d*)\s*$`)
-
-func parseGeo(s string) string {
-	m := geoRe1.FindStringSubmatch(s)
-	if m != nil {
-		return fmt.Sprintf("%s,%s", m[1], m[2])
-	}
-	m = geoRe2.FindStringSubmatch(s)
-	if m != nil {
-		return fmt.Sprintf("%s,%s", m[1], m[2])
-	}
-	return ""
-}
-
-var dateRe = regexp.MustCompile(`^\s*(\d\d\d\d)-(\d\d)-(\d\d)\s*$`)
-
-func parseDate(s string) string {
-	if s == "" {
+	if err != nil {
 		return ""
 	}
 
-	m := dateRe.FindStringSubmatch(s)
-	if m != nil {
-		return fmt.Sprintf("%s.%s.%s", m[3], m[2], m[1])
-	}
-
-	panic(fmt.Errorf("bad date: <%s>", s))
+	return stat.ModTime().Format("2006-01-02")
 }
 
 func writeCsv(fileName string, events []Event) {
@@ -304,7 +211,7 @@ func writeCsv(fileName string, events []Event) {
 
 	fmt.Fprintf(f, "\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"\n", "ADDED", "DATE", "NAME", "URL", "DESCRIPTION", "LOCATION", "COORDINATES", "LINKS...")
 	for _, event := range events {
-		fmt.Fprintf(f, "\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"", parseDate(event.Added), event.Time, event.Name, event.Url, event.Details, event.Location, event.Geo)
+		fmt.Fprintf(f, "\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"", utils.DateYMS(event.Added), event.Time, event.Name, event.Url, event.Details, event.Location, event.Geo)
 		for _, link := range event.Reports {
 			fmt.Fprintf(f, ",\"%s|%s\"", link.Name, link.Url)
 		}
@@ -351,12 +258,12 @@ func fetchEventsJson(eventType string, fileName string, now time.Time) ([]Event,
 	if err := json.Unmarshal(data, &unmarshalled); err != nil {
 		panic(err)
 	}
-	mtime := GetMtime(fileName).Format("2006-01-02")
+	mtime := GetMtimeYMD(fileName)
 
 	events := make([]Event, 0)
 	for _, e := range unmarshalled {
 		ed := Event{
-			eventType, e.Name, e.Time, e.Location, parseGeo(e.Geo), e.Details, e.Url, e.Reports, e.Added, IsNew(e.Added, now),
+			eventType, e.Name, e.Time, e.Location, utils.NormalizeGeo(e.Geo), e.Details, e.Url, e.Reports, e.Added, IsNew(e.Added, now),
 		}
 		events = append(events, ed)
 	}
@@ -371,7 +278,7 @@ func fetchParkrunEventsJson(fileName string) ([]ParkrunEvent, string) {
 	if err := json.Unmarshal(data, &unmarshalled); err != nil {
 		panic(err)
 	}
-	mtime := GetMtime(fileName).Format("2006-01-02")
+	mtime := GetMtimeYMD(fileName)
 
 	return unmarshalled, mtime
 }
@@ -408,7 +315,7 @@ func fetchEvents(config ConfigData, srv *sheets.Service, eventType string, table
 				location = fmt.Sprintf("%v", row[5])
 			}
 			if ll > 6 {
-				coordinates = parseGeo(fmt.Sprintf("%v", row[6]))
+				coordinates = utils.NormalizeGeo(fmt.Sprintf("%v", row[6]))
 			}
 			if ll > 7 {
 				links = parseLinks(row[7:])
@@ -425,7 +332,7 @@ func fetchEvents(config ConfigData, srv *sheets.Service, eventType string, table
 				added,
 				IsNew(added, now),
 			})
-			t := genYMS(added)
+			t := utils.DateYMS(added)
 			if mtime == "" || (t != "" && t > mtime) {
 				mtime = t
 			}
@@ -442,7 +349,7 @@ func fetchParkrunEvents(config ConfigData, srv *sheets.Service, table string) ([
 	resp, err := srv.Spreadsheets.Values.Get(config.SheetId, fmt.Sprintf("%s!A1", table)).Do()
 	check(err)
 	if len(resp.Values) != 0 {
-		mtime = genYMS(fmt.Sprintf("%v", resp.Values[0][0]))
+		mtime = utils.DateYMS(fmt.Sprintf("%v", resp.Values[0][0]))
 	}
 
 	resp, err = srv.Spreadsheets.Values.Get(config.SheetId, fmt.Sprintf("%s!A3:Z", table)).Do()
@@ -589,9 +496,9 @@ func main() {
 	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "shops.html", shops_time)
 	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "dietenbach-parkrun.html", parkrun_time)
 	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "map.html", events_time)
-	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "info.html", GetMtime("templates/info.html").Format("2006-01-02"))
-	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "datenschutz.html", GetMtime("templates/datenschutz.html").Format("2006-01-02"))
-	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "impressum.html", GetMtime("templates/impressum.html").Format("2006-01-02"))
+	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "info.html", GetMtimeYMD("templates/info.html"))
+	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "datenschutz.html", GetMtimeYMD("templates/datenschutz.html"))
+	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "impressum.html", GetMtimeYMD("templates/impressum.html"))
 
 	utils.MustCopyHash("static/.htaccess", ".htaccess", options.outDir)
 	utils.MustCopyHash("static/robots.txt", "robots.txt", options.outDir)
@@ -720,7 +627,7 @@ func main() {
 		slug := event.Slug()
 		eventdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
 		executeEventTemplate("event", filepath.Join(options.outDir, slug), eventdata)
-		t := genYMS(event.Added)
+		t := utils.DateYMS(event.Added)
 		if t == "" {
 			t = events_time
 		}
@@ -735,7 +642,7 @@ func main() {
 		slug := event.Slug()
 		eventdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
 		executeEventTemplate("event", filepath.Join(options.outDir, slug), eventdata)
-		t := genYMS(event.Added)
+		t := utils.DateYMS(event.Added)
 		if t == "" {
 			t = events_time
 		}
@@ -752,7 +659,7 @@ func main() {
 		slug := event.Slug()
 		eventdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
 		executeEventTemplate("event", filepath.Join(options.outDir, slug), eventdata)
-		t := genYMS(event.Added)
+		t := utils.DateYMS(event.Added)
 		if t == "" {
 			t = groups_time
 		}
@@ -769,7 +676,7 @@ func main() {
 		slug := event.Slug()
 		eventdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
 		executeEventTemplate("event", filepath.Join(options.outDir, slug), eventdata)
-		t := genYMS(event.Added)
+		t := utils.DateYMS(event.Added)
 		if t == "" {
 			t = shops_time
 		}
