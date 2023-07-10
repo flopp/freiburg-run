@@ -718,7 +718,7 @@ func main() {
 		eventdata.Title = event.Name
 		eventdata.Description = fmt.Sprintf("Informationen zu %s in %s am %s", event.Name, event.Location, event.Time)
 		slug := event.Slug()
-		eventdata.Canonical = fmt.Sprintf("https://freiburg.run%s", slug)
+		eventdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
 		executeEventTemplate("event", filepath.Join(options.outDir, slug), eventdata)
 		t := genYMS(event.Added)
 		if t == "" {
@@ -733,7 +733,7 @@ func main() {
 		eventdata.Title = event.Name
 		eventdata.Description = fmt.Sprintf("Informationen zu %s in %s am %s", event.Name, event.Location, event.Time)
 		slug := event.Slug()
-		eventdata.Canonical = fmt.Sprintf("https://freiburg.run%s", slug)
+		eventdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
 		executeEventTemplate("event", filepath.Join(options.outDir, slug), eventdata)
 		t := genYMS(event.Added)
 		if t == "" {
@@ -750,7 +750,7 @@ func main() {
 		eventdata.Title = event.Name
 		eventdata.Description = fmt.Sprintf("Informationen zu %s in %s am %s", event.Name, event.Location, event.Time)
 		slug := event.Slug()
-		eventdata.Canonical = fmt.Sprintf("https://freiburg.run%s", slug)
+		eventdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
 		executeEventTemplate("event", filepath.Join(options.outDir, slug), eventdata)
 		t := genYMS(event.Added)
 		if t == "" {
@@ -767,7 +767,7 @@ func main() {
 		eventdata.Title = event.Name
 		eventdata.Description = fmt.Sprintf("Informationen zu %s in %s", event.Name, event.Location)
 		slug := event.Slug()
-		eventdata.Canonical = fmt.Sprintf("https://freiburg.run%s", slug)
+		eventdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
 		executeEventTemplate("event", filepath.Join(options.outDir, slug), eventdata)
 		t := genYMS(event.Added)
 		if t == "" {
