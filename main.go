@@ -78,6 +78,7 @@ type Event struct {
 	Location string
 	Geo      string
 	Details  string
+	Details2 string
 	Url      string
 	Reports  []NameUrl
 	Added    string
@@ -251,6 +252,14 @@ func parseLinks(ss []interface{}) []NameUrl {
 	return links
 }
 
+func SplitDetails(s string) (string, string) {
+	i := strings.Index(s, "|")
+	if i > -1 {
+		return s[:i], s[i+1:]
+	}
+	return s, ""
+}
+
 func fetchEventsJson(eventType string, fileName string, now time.Time) ([]Event, string) {
 	data, err := os.ReadFile(fileName)
 	check(err)
@@ -262,8 +271,9 @@ func fetchEventsJson(eventType string, fileName string, now time.Time) ([]Event,
 
 	events := make([]Event, 0)
 	for _, e := range unmarshalled {
+		d1, d2 := SplitDetails(e.Details)
 		ed := Event{
-			eventType, e.Name, e.Time, e.Location, utils.NormalizeGeo(e.Geo), e.Details, e.Url, e.Reports, e.Added, IsNew(e.Added, now),
+			eventType, e.Name, e.Time, e.Location, utils.NormalizeGeo(e.Geo), d1, d2, e.Url, e.Reports, e.Added, IsNew(e.Added, now),
 		}
 		events = append(events, ed)
 	}
@@ -292,7 +302,7 @@ func fetchEvents(config ConfigData, srv *sheets.Service, eventType string, table
 		panic("No events data found.")
 	} else {
 		for _, row := range resp.Values {
-			var added, date, name, url, description, location, coordinates string
+			var added, date, name, url, description1, description2, location, coordinates string
 			links := make([]NameUrl, 0)
 
 			ll := len(row)
@@ -309,7 +319,7 @@ func fetchEvents(config ConfigData, srv *sheets.Service, eventType string, table
 				url = fmt.Sprintf("%v", row[3])
 			}
 			if ll > 4 {
-				description = fmt.Sprintf("%v", row[4])
+				description1, description2 = SplitDetails(fmt.Sprintf("%v", row[4]))
 			}
 			if ll > 5 {
 				location = fmt.Sprintf("%v", row[5])
@@ -326,7 +336,8 @@ func fetchEvents(config ConfigData, srv *sheets.Service, eventType string, table
 				date,
 				location,
 				coordinates,
-				description,
+				description1,
+				description2,
 				url,
 				links,
 				added,

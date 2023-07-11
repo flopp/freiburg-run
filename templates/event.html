@@ -31,7 +31,12 @@
                 {{if .Event.Details}}
                 <tr>
                     <td>Details</td>
-                    <td>{{.Event.Details}}</td>
+                    <td>
+                        {{.Event.Details}}
+                        {{if .Event.Details2}}
+                        <br>{{.Event.Details2}}
+                        {{end}}
+                    </td>
                 </tr>
                 {{end}}
                 {{if .Event.Reports}}
