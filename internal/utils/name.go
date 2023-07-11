@@ -10,7 +10,6 @@ import (
 )
 
 func SanitizeName(s string) string {
-	lastSp := true
 	sanitized := strings.ToLower(s)
 	sanitized = strings.ReplaceAll(sanitized, "ä", "ae")
 	sanitized = strings.ReplaceAll(sanitized, "ö", "oe")
@@ -26,6 +25,8 @@ func SanitizeName(s string) string {
 	if err != nil {
 		result = sanitized
 	}
+	s = ""
+	lastSp := true
 	for _, char := range result {
 		if char >= 'a' && char <= 'z' {
 			s += string(char)
