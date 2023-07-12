@@ -545,7 +545,7 @@ func main() {
 		"Veranstaltung",
 		"Liste von aktuellen und zukünftigen Laufveranstaltungen, Lauf-Wettkämpfen, Volksläufen im Raum Freiburg / Südbaden",
 		"events",
-		"https://freiburg.run/",
+		"https://freiburg.run/index.html",
 		timestamp,
 		timestampFull,
 		sheetUrl,
@@ -559,6 +559,10 @@ func main() {
 	}
 
 	executeTemplate("events", filepath.Join(options.outDir, "index.html"), data)
+
+	data.Title = "Vergangene Laufveranstaltungen im Raum Freiburg / Südbaden"
+	data.Description = "Liste von vergangenen Laufveranstaltungen, Lauf-Wettkämpfen, Volksläufen im Raum Freiburg / Südbaden"
+	data.Canonical = "https://freiburg.run/events-old.html"
 	executeTemplate("events-old", filepath.Join(options.outDir, "events-old.html"), data)
 
 	data.Nav = "groups"
