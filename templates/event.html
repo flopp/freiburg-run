@@ -7,19 +7,19 @@
         <table class="table is-fullwidth">
             <tbody>
                 <tr>
-                    <td>Link</td>
+                    <th>Link</th>
                     <td>
                         <a href="{{.Event.Url}}" target="_blank">{{.Event.Url}}</a>
                     </td>
                 </tr>
                 {{if .Event.Time}}
                 <tr>
-                    <td>Datum</td>
+                    <th>Datum</th>
                     <td>{{.Event.Time}}</td>
                 </tr>
                 {{end}}
                 <tr>
-                    <td>Ort</td>
+                    <th>Ort</th>
                     <td>
                         {{if .Event.Geo}}
                         <a href="https://www.google.com/maps/place/{{.Event.Geo}}" target="_blank">{{.Event.Location}}</a>
@@ -30,7 +30,7 @@
                 </tr>
                 {{if .Event.Details}}
                 <tr>
-                    <td>Details</td>
+                    <th>Details</th>
                     <td>
                         {{.Event.Details}}
                         {{if .Event.Details2}}
@@ -41,7 +41,7 @@
                 {{end}}
                 {{if .Event.Reports}}
                 <tr>
-                    <td>Infos</td>
+                    <th>Infos</th>
                     <td>
                         {{range .Event.Reports}}
                             <a class="tag is-link is-light" href="{{.Url}}" target="_blank">{{.Name}}</a>

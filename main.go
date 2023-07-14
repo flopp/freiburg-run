@@ -404,6 +404,59 @@ func fetchParkrunEvents(config ConfigData, srv *sheets.Service, table string) ([
 	return events, mtime
 }
 
+func createDateEvent(monthLabel string) Event {
+	return Event{
+		"",
+		monthLabel,
+		"",
+		"",
+		"",
+		"",
+		"",
+		"",
+		nil,
+		"",
+		true,
+	}
+}
+
+func createMonthLabel(t time.Time) string {
+	if t.Month() == time.January {
+		return fmt.Sprintf("Januar %d", t.Year())
+	}
+	if t.Month() == time.February {
+		return fmt.Sprintf("Februar %d", t.Year())
+	}
+	if t.Month() == time.March {
+		return fmt.Sprintf("März %d", t.Year())
+	}
+	if t.Month() == time.April {
+		return fmt.Sprintf("April %d", t.Year())
+	}
+	if t.Month() == time.May {
+		return fmt.Sprintf("Mai %d", t.Year())
+	}
+	if t.Month() == time.June {
+		return fmt.Sprintf("Juni %d", t.Year())
+	}
+	if t.Month() == time.July {
+		return fmt.Sprintf("Juli %d", t.Year())
+	}
+	if t.Month() == time.August {
+		return fmt.Sprintf("August %d", t.Year())
+	}
+	if t.Month() == time.September {
+		return fmt.Sprintf("September %d", t.Year())
+	}
+	if t.Month() == time.October {
+		return fmt.Sprintf("Oktober %d", t.Year())
+	}
+	if t.Month() == time.November {
+		return fmt.Sprintf("November %d", t.Year())
+	}
+	return fmt.Sprintf("Dezember %d", t.Year())
+}
+
 func main() {
 	now := time.Now()
 	timestamp := now.Format("2006-01-02")
@@ -471,21 +524,48 @@ func main() {
 
 	events_tmp := make([]Event, 0)
 	dateRe := regexp.MustCompile(`\b(\d\d\.\d\d\.\d\d\d\d)\b`)
+
+	lastMonth := now
+	lastMonthLabel := ""
+
 	for _, event := range events {
 		hasDate := false
 		hasFutureDate := false
+		var date time.Time
 		m := dateRe.FindAllStringSubmatch(event.Time, -1)
 		for _, mm := range m {
 			d, err := time.Parse("02.01.2006 15:04:05", fmt.Sprintf("%s 23:59:59", mm[1]))
 			if err != nil {
 				continue
 			}
-			hasDate = true
+			if !hasDate {
+				hasDate = true
+				date = d
+			}
 			if d.After(now) {
 				hasFutureDate = true
 			}
 		}
-		if !hasDate || hasFutureDate {
+		if !hasDate {
+			events_tmp = append(events_tmp, event)
+		} else if hasFutureDate {
+			if lastMonthLabel == "" {
+				lastMonthLabel = createMonthLabel(lastMonth)
+				events_tmp = append(events_tmp, createDateEvent(lastMonthLabel))
+			}
+			if lastMonth.Year() == date.Year() && lastMonth.Month() == date.Month() {
+				// nothing
+			} else if date.After(lastMonth) {
+				for lastMonth.Year() != date.Year() || lastMonth.Month() != date.Month() {
+					if lastMonth.Month() == time.December {
+						lastMonth = time.Date(lastMonth.Year()+1, time.January, 1, 0, 0, 0, 0, lastMonth.Location())
+					} else {
+						lastMonth = time.Date(lastMonth.Year(), lastMonth.Month()+1, 1, 0, 0, 0, 0, lastMonth.Location())
+					}
+					lastMonthLabel = createMonthLabel(lastMonth)
+					events_tmp = append(events_tmp, createDateEvent(lastMonthLabel))
+				}
+			}
 			events_tmp = append(events_tmp, event)
 		} else {
 			events_old = append(events_old, event)

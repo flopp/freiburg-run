@@ -17,7 +17,13 @@
     <div class="container is-max-desktop">
         <div class="columns is-multiline">   
             {{range .Events}}
+            {{if .Type}}
             {{template "card.html" .}}     
+            {{else}}
+            <div class="column is-full">
+                <div class="notification is-info is-light">{{.Name}}</div>
+            </div>
+            {{end}}
             {{end}}
         </div>
     </div>
