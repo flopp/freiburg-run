@@ -4,23 +4,23 @@
     <div class="container">
         <a id="back" href="{{.Main}}">Zurück zur Liste</a>
         <h1 class="title">{{.Event.Name}}</h1>
-        <table class="table is-fullwidth">
+        <table class="table is-fullwidth is-narrow">
             <tbody>
                 <tr>
                     <th>Link</th>
-                    <td>
+                    <td class="is-w100">
                         <a href="{{.Event.Url}}" target="_blank">{{.Event.Url}}</a>
                     </td>
                 </tr>
                 {{if .Event.Time}}
                 <tr>
                     <th>Datum</th>
-                    <td>{{.Event.Time}}</td>
+                    <td class="is-w100">{{.Event.Time}}</td>
                 </tr>
                 {{end}}
                 <tr>
                     <th>Ort</th>
-                    <td>
+                    <td class="is-w100">
                         {{if .Event.Geo}}
                         <a href="https://www.google.com/maps/place/{{.Event.Geo}}" target="_blank">{{.Event.Location}}</a>
                         {{else}}
@@ -31,7 +31,7 @@
                 {{if .Event.Details}}
                 <tr>
                     <th>Details</th>
-                    <td>
+                    <td class="is-w100">
                         {{.Event.Details}}
                         {{if .Event.Details2}}
                         <br>{{.Event.Details2}}
@@ -42,10 +42,26 @@
                 {{if .Event.Reports}}
                 <tr>
                     <th>Infos</th>
-                    <td>
+                    <td class="is-w100">
                         {{range .Event.Reports}}
                             <a class="tag is-link is-light" href="{{.Url}}" target="_blank">{{.Name}}</a>
                         {{end}}
+                    </td>
+                </tr>
+                {{end}}
+                {{if .Event.Prev}}
+                <tr>
+                    <th>Voriger</th>
+                    <td class="is-w100">
+                        <a href="/{{.Event.Prev.Slug}}">{{.Event.Prev.Name}} ({{.Event.Prev.Time}})</a>
+                    </td>
+                </tr>
+                {{end}}
+                {{if .Event.Next}}
+                <tr>
+                    <th>Nächster</th>
+                    <td class="is-w100">
+                        <a href="/{{.Event.Next.Slug}}">{{.Event.Next.Name}} ({{.Event.Next.Time}})</a>
                     </td>
                 </tr>
                 {{end}}

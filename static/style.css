@@ -48,3 +48,7 @@ a[href^="https://freiburg.run"]::after
 {
     display: none !important;
 }
+
+.is-w100 {
+    width: 100%;
+}

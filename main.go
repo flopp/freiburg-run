@@ -11,6 +11,7 @@ import (
 	"strings"
 	"text/template"
 	"time"
+	"unicode"
 
 	"github.com/flopp/freiburg-run/internal/utils"
 	"google.golang.org/api/option"
@@ -83,6 +84,8 @@ type Event struct {
 	Reports  []NameUrl
 	Added    string
 	New      bool
+	Prev     *Event
+	Next     *Event
 }
 
 func IsNew(s string, now time.Time) bool {
@@ -141,11 +144,11 @@ type TemplateData struct {
 	Timestamp     string
 	TimestampFull string
 	SheetUrl      string
-	Events        []Event
-	EventsOld     []Event
-	Groups        []Event
-	Shops         []Event
-	Parkrun       []ParkrunEvent
+	Events        []*Event
+	EventsOld     []*Event
+	Groups        []*Event
+	Shops         []*Event
+	Parkrun       []*ParkrunEvent
 	JsFiles       []string
 	CssFiles      []string
 }
@@ -210,7 +213,7 @@ func GetMtimeYMD(filePath string) string {
 	return stat.ModTime().Format("2006-01-02")
 }
 
-func writeCsv(fileName string, events []Event) {
+func writeCsv(fileName string, events []*Event) {
 	f, err := os.Create(fileName)
 	check(err)
 	defer f.Close()
@@ -225,7 +228,7 @@ func writeCsv(fileName string, events []Event) {
 	}
 }
 
-func writeParkrunCsv(fileName string, events []ParkrunEvent) {
+func writeParkrunCsv(fileName string, events []*ParkrunEvent) {
 	f, err := os.Create(fileName)
 	check(err)
 	defer f.Close()
@@ -265,7 +268,7 @@ func SplitDetails(s string) (string, string) {
 	return s, ""
 }
 
-func fetchEventsJson(eventType string, fileName string, now time.Time) ([]Event, string) {
+func fetchEventsJson(eventType string, fileName string, now time.Time) ([]*Event, string) {
 	data, err := os.ReadFile(fileName)
 	check(err)
 	unmarshalled := make([]EventJson, 0)
@@ -274,22 +277,22 @@ func fetchEventsJson(eventType string, fileName string, now time.Time) ([]Event,
 	}
 	mtime := GetMtimeYMD(fileName)
 
-	events := make([]Event, 0)
+	events := make([]*Event, 0)
 	for _, e := range unmarshalled {
 		d1, d2 := SplitDetails(e.Details)
 		ed := Event{
-			eventType, e.Name, e.Time, e.Location, utils.NormalizeGeo(e.Geo), d1, d2, e.Url, e.Reports, e.Added, IsNew(e.Added, now),
+			eventType, e.Name, e.Time, e.Location, utils.NormalizeGeo(e.Geo), d1, d2, e.Url, e.Reports, e.Added, IsNew(e.Added, now), nil, nil,
 		}
-		events = append(events, ed)
+		events = append(events, &ed)
 	}
 
 	return events, mtime
 }
 
-func fetchParkrunEventsJson(fileName string) ([]ParkrunEvent, string) {
+func fetchParkrunEventsJson(fileName string) ([]*ParkrunEvent, string) {
 	data, err := os.ReadFile(fileName)
 	check(err)
-	unmarshalled := make([]ParkrunEvent, 0)
+	unmarshalled := make([]*ParkrunEvent, 0)
 	if err := json.Unmarshal(data, &unmarshalled); err != nil {
 		panic(err)
 	}
@@ -298,8 +301,8 @@ func fetchParkrunEventsJson(fileName string) ([]ParkrunEvent, string) {
 	return unmarshalled, mtime
 }
 
-func fetchEvents(config ConfigData, srv *sheets.Service, eventType string, table string, now time.Time) ([]Event, string) {
-	events := make([]Event, 0)
+func fetchEvents(config ConfigData, srv *sheets.Service, eventType string, table string, now time.Time) ([]*Event, string) {
+	events := make([]*Event, 0)
 	mtime := ""
 	resp, err := srv.Spreadsheets.Values.Get(config.SheetId, fmt.Sprintf("%s!A2:Z", table)).Do()
 	check(err)
@@ -335,7 +338,7 @@ func fetchEvents(config ConfigData, srv *sheets.Service, eventType string, table
 			if ll > 7 {
 				links = parseLinks(row[7:])
 			}
-			events = append(events, Event{
+			events = append(events, &Event{
 				eventType,
 				name,
 				date,
@@ -347,6 +350,8 @@ func fetchEvents(config ConfigData, srv *sheets.Service, eventType string, table
 				links,
 				added,
 				IsNew(added, now),
+				nil,
+				nil,
 			})
 			t := utils.DateYMS(added)
 			if mtime == "" || (t != "" && t > mtime) {
@@ -358,8 +363,8 @@ func fetchEvents(config ConfigData, srv *sheets.Service, eventType string, table
 	return events, mtime
 }
 
-func fetchParkrunEvents(config ConfigData, srv *sheets.Service, table string) ([]ParkrunEvent, string) {
-	events := make([]ParkrunEvent, 0)
+func fetchParkrunEvents(config ConfigData, srv *sheets.Service, table string) ([]*ParkrunEvent, string) {
+	events := make([]*ParkrunEvent, 0)
 	mtime := ""
 
 	resp, err := srv.Spreadsheets.Values.Get(config.SheetId, fmt.Sprintf("%s!A1", table)).Do()
@@ -395,7 +400,7 @@ func fetchParkrunEvents(config ConfigData, srv *sheets.Service, table string) ([
 			if ll > 5 {
 				photos = fmt.Sprintf("%v", row[5])
 			}
-			events = append(events, ParkrunEvent{
+			events = append(events, &ParkrunEvent{
 				index,
 				date,
 				special,
@@ -409,8 +414,8 @@ func fetchParkrunEvents(config ConfigData, srv *sheets.Service, table string) ([
 	return events, mtime
 }
 
-func createDateEvent(monthLabel string) Event {
-	return Event{
+func createDateEvent(monthLabel string) *Event {
+	return &Event{
 		"",
 		monthLabel,
 		"",
@@ -422,6 +427,8 @@ func createDateEvent(monthLabel string) Event {
 		nil,
 		"",
 		true,
+		nil,
+		nil,
 	}
 }
 
@@ -462,6 +469,22 @@ func createMonthLabel(t time.Time) string {
 	return fmt.Sprintf("Dezember %d", t.Year())
 }
 
+func isSimilarName(s1, s2 string) bool {
+	var builder1 strings.Builder
+	for _, r := range s1 {
+		if !unicode.IsDigit(r) {
+			builder1.WriteRune(r)
+		}
+	}
+	var builder2 strings.Builder
+	for _, r := range s2 {
+		if !unicode.IsDigit(r) {
+			builder2.WriteRune(r)
+		}
+	}
+	return builder1.String() == builder2.String()
+}
+
 func main() {
 	now := time.Now()
 	timestamp := now.Format("2006-01-02")
@@ -469,21 +492,21 @@ func main() {
 	sheetUrl := ""
 	options := parseCommandLine()
 
-	var events []Event
-	var events_old []Event
+	var events []*Event
+	var events_old []*Event
 	var events_time string
 
-	var groups []Event
+	var groups []*Event
 	var groups_time string
 
-	var shops []Event
+	var shops []*Event
 	var shops_time string
 
-	var parkrun []ParkrunEvent
+	var parkrun []*ParkrunEvent
 	var parkrun_time string
 
 	if options.useJSON {
-		var all_events []Event
+		var all_events []*Event
 		all_events, events_time = fetchEventsJson("event", "data/events.json", now)
 		for _, e := range all_events {
 			if !strings.Contains(e.Time, "UNBEKANNT") {
@@ -527,7 +550,26 @@ func main() {
 		}
 	}
 
-	events_tmp := make([]Event, 0)
+	// find prev & next events
+	for _, event := range events {
+		var prev *Event = nil
+		for _, event2 := range events {
+			if event2 == event {
+				break
+			}
+
+			if isSimilarName(event2.Name, event.Name) && event2.Geo == event.Geo {
+				prev = event2
+			}
+		}
+
+		if prev != nil {
+			prev.Next = event
+			event.Prev = prev
+		}
+	}
+
+	events_tmp := make([]*Event, 0)
 	dateRe := regexp.MustCompile(`\b(\d\d\.\d\d\.\d\d\d\d)\b`)
 
 	lastMonth := now
@@ -721,7 +763,7 @@ func main() {
 		css_files,
 	}
 	for _, event := range events {
-		eventdata.Event = &event
+		eventdata.Event = event
 		eventdata.Title = event.Name
 		eventdata.Description = fmt.Sprintf("Informationen zu %s in %s am %s", event.Name, event.Location, event.Time)
 		slug := event.Slug()
@@ -736,7 +778,7 @@ func main() {
 
 	eventdata.Main = "/events-old.html"
 	for _, event := range events_old {
-		eventdata.Event = &event
+		eventdata.Event = event
 		eventdata.Title = event.Name
 		eventdata.Description = fmt.Sprintf("Informationen zu %s in %s am %s", event.Name, event.Location, event.Time)
 		slug := event.Slug()
@@ -756,7 +798,7 @@ func main() {
 		if strings.Contains(event.Name, "parkrun") {
 			continue
 		}
-		eventdata.Event = &event
+		eventdata.Event = event
 		eventdata.Title = event.Name
 		eventdata.Description = fmt.Sprintf("Informationen zu %s in %s am %s", event.Name, event.Location, event.Time)
 		slug := event.Slug()
@@ -773,7 +815,7 @@ func main() {
 	eventdata.Nav = "shops"
 	eventdata.Main = "/shops.html"
 	for _, event := range shops {
-		eventdata.Event = &event
+		eventdata.Event = event
 		eventdata.Title = event.Name
 		eventdata.Description = fmt.Sprintf("Informationen zu %s in %s", event.Name, event.Location)
 		slug := event.Slug()
