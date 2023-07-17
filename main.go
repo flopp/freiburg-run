@@ -99,10 +99,15 @@ func IsNew(s string, now time.Time) bool {
 var yearRe = regexp.MustCompile(`\b(\d\d\d\d)\b`)
 
 func (event *Event) Slug() string {
-	if m := yearRe.FindStringSubmatch(event.Time); m != nil {
-		return fmt.Sprintf("%s/%s-%s.html", event.Type, m[1], utils.SanitizeName(event.Name))
+	t := event.Type
+	if strings.Contains(event.Name, "parkrun") {
+		t = "event"
 	}
-	return fmt.Sprintf("%s/%s.html", event.Type, utils.SanitizeName(event.Name))
+
+	if m := yearRe.FindStringSubmatch(event.Time); m != nil {
+		return fmt.Sprintf("%s/%s-%s.html", t, m[1], utils.SanitizeName(event.Name))
+	}
+	return fmt.Sprintf("%s/%s.html", t, utils.SanitizeName(event.Name))
 }
 
 func (event *Event) LinkTitle() string {
@@ -748,6 +753,9 @@ func main() {
 	eventdata.Nav = "groups"
 	eventdata.Main = "/lauftreffs.html"
 	for _, event := range groups {
+		if strings.Contains(event.Name, "parkrun") {
+			continue
+		}
 		eventdata.Event = &event
 		eventdata.Title = event.Name
 		eventdata.Description = fmt.Sprintf("Informationen zu %s in %s am %s", event.Name, event.Location, event.Time)

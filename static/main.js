@@ -103,9 +103,9 @@ var main = () => {
                 markers.push(m);
                 m.addTo(map);
                 if (el.dataset.time !== undefined) {
-                    m.bindPopup(`<a href="${el.dataset.slug}">${el.dataset.name}</a><br>(${el.dataset.type})<br>${el.dataset.time}<br>${el.dataset.location}`);
+                    m.bindPopup(`<a href="${el.dataset.slug}?back=map">${el.dataset.name}</a><br>(${el.dataset.type})<br>${el.dataset.time}<br>${el.dataset.location}`);
                 } else {
-                    m.bindPopup(`<a href="${el.dataset.slug}">${el.dataset.name}</a><br>(${el.dataset.type})<br>${el.dataset.location}`);
+                    m.bindPopup(`<a href="${el.dataset.slug}?back=map">${el.dataset.name}</a><br>(${el.dataset.type})<br>${el.dataset.location}`);
                 }
             }
         });
@@ -233,6 +233,25 @@ var main = () => {
                 toggle_map(mapDiv, leafletMap, checkboxMap.checked);
             });
             toggle_map(mapDiv, leafletMap, checkboxMap.checked);
+        }
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const backLink = document.querySelector("#back");
+    if (backLink !== null && urlParams.has("back")) {
+        const back = urlParams.get("back");
+        if (back == "events" || back == "event") {
+            backLink.href = "/index.html";
+        } else if (back == "events-old" || back == "event-old") {
+            backLink.href = "/events-old.html";
+        } else if (back == "groups" || back == "group") {
+            backLink.href = "/lauftreffs.html";
+        } else if (back == "shops" || back == "shop") {
+            backLink.href = "/shops.html";
+        } else if (back == "map") {
+            backLink.href = "/map.html";
+        } else if (back == "info") {
+            backLink.href = "/info.html";
         }
     }
 };
