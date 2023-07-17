@@ -472,14 +472,14 @@ func createMonthLabel(t time.Time) string {
 func isSimilarName(s1, s2 string) bool {
 	var builder1 strings.Builder
 	for _, r := range s1 {
-		if !unicode.IsDigit(r) {
-			builder1.WriteRune(r)
+		if unicode.IsLetter(r) {
+			builder1.WriteRune(unicode.ToLower(r))
 		}
 	}
 	var builder2 strings.Builder
 	for _, r := range s2 {
-		if !unicode.IsDigit(r) {
-			builder2.WriteRune(r)
+		if unicode.IsLetter(r) {
+			builder2.WriteRune(unicode.ToLower(r))
 		}
 	}
 	return builder1.String() == builder2.String()
