@@ -763,6 +763,9 @@ func main() {
 		css_files,
 	}
 	for _, event := range events {
+		if event.Type == "" {
+			continue
+		}
 		eventdata.Event = event
 		eventdata.Title = event.Name
 		eventdata.Description = fmt.Sprintf("Informationen zu %s in %s am %s", event.Name, event.Location, event.Time)
