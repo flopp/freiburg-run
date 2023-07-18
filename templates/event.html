@@ -4,69 +4,80 @@
     <div class="container">
         <a id="back" href="{{.Main}}">Zurück zur Liste</a>
         <h1 class="title">{{.Event.Name}}</h1>
-        <table class="table is-fullwidth is-narrow">
-            <tbody>
-                <tr>
-                    <th>Link</th>
-                    <td class="is-w100">
-                        <a href="{{.Event.Url}}" target="_blank">{{.Event.Url}}</a>
-                    </td>
-                </tr>
-                {{if .Event.Time}}
-                <tr>
-                    <th>Datum</th>
-                    <td class="is-w100">{{.Event.Time}}</td>
-                </tr>
-                {{end}}
-                <tr>
-                    <th>Ort</th>
-                    <td class="is-w100">
-                        {{if .Event.Geo}}
-                        <a href="https://www.google.com/maps/place/{{.Event.Geo}}" target="_blank">{{.Event.Location}}</a>
-                        {{else}}
-                        {{.Event.Location}}
+        <div class="columns">
+            <div class="column is-two-thirds">
+                <table class="table is-fullwidth is-narrow">
+                    <tbody>
+                        <tr>
+                            <th>Link</th>
+                            <td class="is-w100">
+                                <a href="{{.Event.Url}}" target="_blank">{{.Event.Url}}</a>
+                            </td>
+                        </tr>
+                        {{if .Event.Time}}
+                        <tr>
+                            <th>Datum</th>
+                            <td class="is-w100">{{.Event.Time}}</td>
+                        </tr>
                         {{end}}
-                    </td>
-                </tr>
-                {{if .Event.Details}}
-                <tr>
-                    <th>Details</th>
-                    <td class="is-w100">
-                        {{.Event.Details}}
-                        {{if .Event.Details2}}
-                        <br>{{.Event.Details2}}
+                        <tr>
+                            <th>Ort</th>
+                            <td class="is-w100">
+                                {{if .Event.Geo}}
+                                <a href="https://www.google.com/maps/place/{{.Event.Geo}}" target="_blank">{{.Event.Location}}</a>
+                                {{else}}
+                                {{.Event.Location}}
+                                {{end}}
+                            </td>
+                        </tr>
+                        {{if .Event.Details}}
+                        <tr>
+                            <th>Details</th>
+                            <td class="is-w100">
+                                {{.Event.Details}}
+                                {{if .Event.Details2}}
+                                <br>{{.Event.Details2}}
+                                {{end}}
+                            </td>
+                        </tr>
                         {{end}}
-                    </td>
-                </tr>
-                {{end}}
-                {{if .Event.Reports}}
-                <tr>
-                    <th>Infos</th>
-                    <td class="is-w100">
-                        {{range .Event.Reports}}
-                            <a class="tag is-link is-light" href="{{.Url}}" target="_blank">{{.Name}}</a>
+                        {{if .Event.Reports}}
+                        <tr>
+                            <th>Infos</th>
+                            <td class="is-w100">
+                                {{range .Event.Reports}}
+                                    <a class="tag is-link is-light" href="{{.Url}}" target="_blank">{{.Name}}</a>
+                                {{end}}
+                            </td>
+                        </tr>
                         {{end}}
-                    </td>
-                </tr>
-                {{end}}
-                {{if .Event.Prev}}
-                <tr>
-                    <th>Voriger</th>
-                    <td class="is-w100">
-                        <a href="/{{.Event.Prev.Slug}}">{{.Event.Prev.Name}} ({{.Event.Prev.Time}})</a>
-                    </td>
-                </tr>
-                {{end}}
-                {{if .Event.Next}}
-                <tr>
-                    <th>Nächster</th>
-                    <td class="is-w100">
-                        <a href="/{{.Event.Next.Slug}}">{{.Event.Next.Name}} ({{.Event.Next.Time}})</a>
-                    </td>
-                </tr>
-                {{end}}
-            </tbody>
-        </table>
+                        {{if .Event.Prev}}
+                        <tr>
+                            <th>Voriger</th>
+                            <td class="is-w100">
+                                <a href="/{{.Event.Prev.Slug}}">{{.Event.Prev.Name}} ({{.Event.Prev.Time}})</a>
+                            </td>
+                        </tr>
+                        {{end}}
+                        {{if .Event.Next}}
+                        <tr>
+                            <th>Nächster</th>
+                            <td class="is-w100">
+                                <a href="/{{.Event.Next.Slug}}">{{.Event.Next.Name}} ({{.Event.Next.Time}})</a>
+                            </td>
+                        </tr>
+                        {{end}}
+                    </tbody>
+                </table>
+            </div>
+            <div class="column">
+                <div class="notification is-info is-light">
+                    Die Daten wurde manuell zusammengestellt und haben keinen Anspruch auf Richtigkeit. Im Zweifel vor einem Besuch der Veranstaltung die Angaben direkt auf der Seite des Veranstalters überprüfen.  
+                    <br /><br />
+                    Ist etwas fehlerhaft? - bitte <a href="info.html#kontakt">melden</a>. 
+                </div>
+            </div>
+        </div>
         {{if .Event.Geo}}
         <div id="event-map" data-geo="{{.Event.Geo}}" data-name="{{.Event.Name}}"></div>
         {{end}}
