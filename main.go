@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -72,20 +73,71 @@ type EventJson struct {
 	Added    string
 }
 
+type TimeRange struct {
+	From time.Time
+	To   time.Time
+}
+
+func parseTimeRange(s string) (TimeRange, error) {
+	dateRe := regexp.MustCompile(`\b(\d\d\.\d\d\.\d\d\d\d)\b`)
+
+	var from, to time.Time
+	for _, mm := range dateRe.FindAllStringSubmatch(s, -1) {
+		d, err := time.Parse("02.01.2006", mm[1])
+		if err != nil {
+			return TimeRange{}, fmt.Errorf("cannot parse date '%s' from '%s'", mm[1], s)
+		}
+		if from.IsZero() {
+			from = d
+		} else {
+			if d.Before(to) {
+				return TimeRange{}, fmt.Errorf("invalid time range '%s' (wrongly ordered components)", s)
+			}
+		}
+		to = d
+	}
+
+	return TimeRange{from, to}, nil
+}
+
 type Event struct {
-	Type     string
-	Name     string
-	Time     string
-	Location string
-	Geo      string
-	Details  string
-	Details2 string
-	Url      string
-	Reports  []NameUrl
-	Added    string
-	New      bool
-	Prev     *Event
-	Next     *Event
+	Type      string
+	Name      string
+	Time      string
+	TimeRange TimeRange
+	Location  string
+	Geo       string
+	Details   string
+	Details2  string
+	Url       string
+	Reports   []NameUrl
+	Added     string
+	New       bool
+	Prev      *Event
+	Next      *Event
+}
+
+func (event Event) IsSeparator() bool {
+	return event.Type == ""
+}
+
+func createSeparatorEvent(label string) *Event {
+	return &Event{
+		"",
+		label,
+		"",
+		TimeRange{},
+		"",
+		"",
+		"",
+		"",
+		"",
+		nil,
+		"",
+		true,
+		nil,
+		nil,
+	}
 }
 
 func IsNew(s string, now time.Time) bool {
@@ -280,8 +332,12 @@ func fetchEventsJson(eventType string, fileName string, now time.Time) ([]*Event
 	events := make([]*Event, 0)
 	for _, e := range unmarshalled {
 		d1, d2 := SplitDetails(e.Details)
+		timeRange, err := parseTimeRange(e.Time)
+		if err != nil {
+			log.Printf("event '%s': %v", e.Name, err)
+		}
 		ed := Event{
-			eventType, e.Name, e.Time, e.Location, utils.NormalizeGeo(e.Geo), d1, d2, e.Url, e.Reports, e.Added, IsNew(e.Added, now), nil, nil,
+			eventType, e.Name, e.Time, timeRange, e.Location, utils.NormalizeGeo(e.Geo), d1, d2, e.Url, e.Reports, e.Added, IsNew(e.Added, now), nil, nil,
 		}
 		events = append(events, &ed)
 	}
@@ -338,10 +394,16 @@ func fetchEvents(config ConfigData, srv *sheets.Service, eventType string, table
 			if ll > 7 {
 				links = parseLinks(row[7:])
 			}
+
+			timeRange, err := parseTimeRange(date)
+			if err != nil {
+				log.Printf("event '%s': %v", name, err)
+			}
 			events = append(events, &Event{
 				eventType,
 				name,
 				date,
+				timeRange,
 				location,
 				coordinates,
 				description1,
@@ -414,24 +476,6 @@ func fetchParkrunEvents(config ConfigData, srv *sheets.Service, table string) ([
 	return events, mtime
 }
 
-func createDateEvent(monthLabel string) *Event {
-	return &Event{
-		"",
-		monthLabel,
-		"",
-		"",
-		"",
-		"",
-		"",
-		"",
-		nil,
-		"",
-		true,
-		nil,
-		nil,
-	}
-}
-
 func createMonthLabel(t time.Time) string {
 	if t.Month() == time.January {
 		return fmt.Sprintf("Januar %d", t.Year())
@@ -485,8 +529,95 @@ func isSimilarName(s1, s2 string) bool {
 	return builder1.String() == builder2.String()
 }
 
+func validateDateOrder(events []*Event) {
+	var lastDate time.Time
+	for _, event := range events {
+		if !lastDate.IsZero() {
+			if event.TimeRange.From.IsZero() {
+				log.Printf("event '%s' has no date but occurs after dated event", event.Name)
+				return
+			}
+			if event.TimeRange.From.Before(lastDate) {
+				log.Printf("event '%s' has date '%s' before date of previous event '%s'", event.Name, event.Time, lastDate.Format("2006-01-02"))
+				return
+			}
+		}
+
+		lastDate = event.TimeRange.From
+	}
+}
+
+func findPrevNextEvents(events []*Event) {
+	for _, event := range events {
+		var prev *Event = nil
+		for _, event2 := range events {
+			if event2 == event {
+				break
+			}
+
+			if isSimilarName(event2.Name, event.Name) && event2.Geo == event.Geo {
+				prev = event2
+			}
+		}
+
+		if prev != nil {
+			prev.Next = event
+			event.Prev = prev
+		}
+	}
+}
+
+func splitEvents(events []*Event, today time.Time) ([]*Event, []*Event) {
+	futureEvents := make([]*Event, 0)
+	pastEvents := make([]*Event, 0)
+
+	for _, event := range events {
+		if event.TimeRange.From.IsZero() {
+			futureEvents = append(futureEvents, event)
+		} else if event.TimeRange.To.Before(today) {
+			pastEvents = append(pastEvents, event)
+		} else {
+			futureEvents = append(futureEvents, event)
+		}
+	}
+	return futureEvents, pastEvents
+}
+
+func addMonthSeparators(events []*Event) []*Event {
+	result := make([]*Event, 0, len(events))
+	var last time.Time
+
+	for _, event := range events {
+		d := event.TimeRange.From
+		if event.TimeRange.From.IsZero() {
+			// no label
+		} else if last.IsZero() {
+			// initial label
+			last = d
+			result = append(result, createSeparatorEvent(createMonthLabel(last)))
+		} else if d.After(last) {
+			if last.Year() == d.Year() && last.Month() == d.Month() {
+				// no new month label
+			} else {
+				for last.Year() != d.Year() || last.Month() != d.Month() {
+					if last.Month() == time.December {
+						last = time.Date(last.Year()+1, time.January, 1, 0, 0, 0, 0, last.Location())
+					} else {
+						last = time.Date(last.Year(), last.Month()+1, 1, 0, 0, 0, 0, last.Location())
+					}
+					result = append(result, createSeparatorEvent(createMonthLabel(last)))
+				}
+			}
+		}
+
+		result = append(result, event)
+	}
+	return result
+}
+
 func main() {
 	now := time.Now()
+	today := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
 	timestamp := now.Format("2006-01-02")
 	timestampFull := now.Format("2006-01-02 15:04:05")
 	sheetUrl := ""
@@ -550,75 +681,11 @@ func main() {
 		}
 	}
 
-	// find prev & next events
-	for _, event := range events {
-		var prev *Event = nil
-		for _, event2 := range events {
-			if event2 == event {
-				break
-			}
-
-			if isSimilarName(event2.Name, event.Name) && event2.Geo == event.Geo {
-				prev = event2
-			}
-		}
-
-		if prev != nil {
-			prev.Next = event
-			event.Prev = prev
-		}
-	}
-
-	events_tmp := make([]*Event, 0)
-	dateRe := regexp.MustCompile(`\b(\d\d\.\d\d\.\d\d\d\d)\b`)
-
-	lastMonth := now
-	lastMonthLabel := ""
-
-	for _, event := range events {
-		hasDate := false
-		hasFutureDate := false
-		var date time.Time
-		m := dateRe.FindAllStringSubmatch(event.Time, -1)
-		for _, mm := range m {
-			d, err := time.Parse("02.01.2006 15:04:05", fmt.Sprintf("%s 23:59:59", mm[1]))
-			if err != nil {
-				continue
-			}
-			if !hasDate {
-				hasDate = true
-				date = d
-			}
-			if d.After(now) {
-				hasFutureDate = true
-			}
-		}
-		if !hasDate {
-			events_tmp = append(events_tmp, event)
-		} else if hasFutureDate {
-			if lastMonthLabel == "" {
-				lastMonthLabel = createMonthLabel(lastMonth)
-				events_tmp = append(events_tmp, createDateEvent(lastMonthLabel))
-			}
-			if lastMonth.Year() == date.Year() && lastMonth.Month() == date.Month() {
-				// nothing
-			} else if date.After(lastMonth) {
-				for lastMonth.Year() != date.Year() || lastMonth.Month() != date.Month() {
-					if lastMonth.Month() == time.December {
-						lastMonth = time.Date(lastMonth.Year()+1, time.January, 1, 0, 0, 0, 0, lastMonth.Location())
-					} else {
-						lastMonth = time.Date(lastMonth.Year(), lastMonth.Month()+1, 1, 0, 0, 0, 0, lastMonth.Location())
-					}
-					lastMonthLabel = createMonthLabel(lastMonth)
-					events_tmp = append(events_tmp, createDateEvent(lastMonthLabel))
-				}
-			}
-			events_tmp = append(events_tmp, event)
-		} else {
-			events_old = append(events_old, event)
-		}
-	}
-	events = events_tmp
+	validateDateOrder(events)
+	findPrevNextEvents(events)
+	events, events_old = splitEvents(events, today)
+	events = addMonthSeparators(events)
+	events_old = addMonthSeparators(events_old)
 
 	if options.exportCSV {
 		writeCsv("events.csv", events)
@@ -763,7 +830,7 @@ func main() {
 		css_files,
 	}
 	for _, event := range events {
-		if event.Type == "" {
+		if event.IsSeparator() {
 			continue
 		}
 		eventdata.Event = event
@@ -781,6 +848,9 @@ func main() {
 
 	eventdata.Main = "/events-old.html"
 	for _, event := range events_old {
+		if event.IsSeparator() {
+			continue
+		}
 		eventdata.Event = event
 		eventdata.Title = event.Name
 		eventdata.Description = fmt.Sprintf("Informationen zu %s in %s am %s", event.Name, event.Location, event.Time)
