@@ -15,6 +15,17 @@ var toggle_map = function (mapDiv, leafletMap, show) {
     }
 };
 
+var toggle_menuitem = function (id) {
+    var next = document.getElementById(id);
+    var current = document.querySelector(".navbar-item.is-active");
+    if (next != null && next !== current) {
+        if (current !== null) {
+            current.classList.remove("is-active");
+        }
+        next.classList.add("is-active");
+    }
+};
+
 var main = () => {
     document.querySelectorAll('.navbar-burger').forEach(el => {
         el.addEventListener('click', () => {
@@ -103,9 +114,9 @@ var main = () => {
                 markers.push(m);
                 m.addTo(map);
                 if (el.dataset.time !== undefined) {
-                    m.bindPopup(`<a href="${el.dataset.slug}?back=map">${el.dataset.name}</a><br>(${el.dataset.type})<br>${el.dataset.time}<br>${el.dataset.location}`);
+                    m.bindPopup(`<a href="${el.dataset.slug}#map">${el.dataset.name}</a><br>(${el.dataset.type})<br>${el.dataset.time}<br>${el.dataset.location}`);
                 } else {
-                    m.bindPopup(`<a href="${el.dataset.slug}?back=map">${el.dataset.name}</a><br>(${el.dataset.type})<br>${el.dataset.location}`);
+                    m.bindPopup(`<a href="${el.dataset.slug}#map">${el.dataset.name}</a><br>(${el.dataset.type})<br>${el.dataset.location}`);
                 }
             }
         });
@@ -236,22 +247,31 @@ var main = () => {
         }
     }
 
-    const urlParams = new URLSearchParams(window.location.search);
+    const urlHash = window.location.hash;
     const backLink = document.querySelector("#back");
-    if (backLink !== null && urlParams.has("back")) {
-        const back = urlParams.get("back");
+    if (backLink !== null && urlHash !== "") {
+        const back = urlHash.substring(1);
         if (back == "events" || back == "event") {
             backLink.href = "/index.html";
+            toggle_menuitem("nav-events");
         } else if (back == "events-old" || back == "event-old") {
             backLink.href = "/events-old.html";
+            toggle_menuitem("nav-events");
         } else if (back == "groups" || back == "group") {
             backLink.href = "/lauftreffs.html";
+            toggle_menuitem("nav-groups");
         } else if (back == "shops" || back == "shop") {
             backLink.href = "/shops.html";
+            toggle_menuitem("nav-shops");
+        } else if (back == "parkrun") {
+            backLink.href = "/dietenbach-parkrun.html";
+            toggle_menuitem("nav-parkrun");
         } else if (back == "map") {
             backLink.href = "/map.html";
+            toggle_menuitem("nav-map");
         } else if (back == "info") {
             backLink.href = "/info.html";
+            toggle_menuitem("nav-info");
         }
     }
 };
