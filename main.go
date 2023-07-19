@@ -831,5 +831,5 @@ func main() {
 		sitemapEntries = utils.AddSitemapEntry(sitemapEntries, slug, t)
 	}
 
-	utils.GenSitemap(filepath.Join(options.outDir, "sitemap.xml"), "https://freiburg.run", sitemapEntries)
+	utils.GenSitemap(filepath.Join(options.outDir, "sitemap.xml"), "https://freiburg.run", sitemapEntries, "2023-07-19")
 }

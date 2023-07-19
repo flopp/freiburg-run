@@ -29,7 +29,7 @@ func AddSitemapEntry(entries []SitemapEntry, slug string, timeStamp string) []Si
 	return append(entries, SitemapEntry{slug, timeStamp})
 }
 
-func GenSitemap(fileName string, baseUrl string, entries []SitemapEntry) error {
+func GenSitemap(fileName string, baseUrl string, entries []SitemapEntry, forceDate string) error {
 	outDir := filepath.Dir(fileName)
 	if err := os.MkdirAll(outDir, 0770); err != nil {
 		return err
@@ -48,7 +48,11 @@ func GenSitemap(fileName string, baseUrl string, entries []SitemapEntry) error {
 	nl(f)
 
 	for _, e := range entries {
-		genSitemapEntry(f, fmt.Sprintf("%s/%s", baseUrl, e.slug), e.timestamp)
+		if forceDate > e.timestamp {
+			genSitemapEntry(f, fmt.Sprintf("%s/%s", baseUrl, e.slug), forceDate)
+		} else {
+			genSitemapEntry(f, fmt.Sprintf("%s/%s", baseUrl, e.slug), e.timestamp)
+		}
 	}
 
 	f.WriteString(`</urlset>`)
