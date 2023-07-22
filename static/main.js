@@ -103,14 +103,31 @@ var main = () => {
         let greyIcon = L.icon(greyOptions);
 
         let markers = [];
+        // first: past events (so that they are displayed below future events)
         document.querySelectorAll(".event").forEach(el => {
+            if (el.dataset.type !== "vergangene Veranstaltung") {
+                return
+            }
             let geo = parseGeo(el.dataset.geo);
             if (geo !== null) {
-                let icon = blueIcon;
-                if (el.dataset.type === "vergangene Veranstaltung") {
-                    icon = greyIcon;
+                let m = L.marker(geo, {icon: greyIcon});
+                markers.push(m);
+                m.addTo(map);
+                if (el.dataset.time !== undefined) {
+                    m.bindPopup(`<a href="${el.dataset.slug}#map">${el.dataset.name}</a><br>(${el.dataset.type})<br>${el.dataset.time}<br>${el.dataset.location}`);
+                } else {
+                    m.bindPopup(`<a href="${el.dataset.slug}#map">${el.dataset.name}</a><br>(${el.dataset.type})<br>${el.dataset.location}`);
                 }
-                let m = L.marker(geo, {icon});
+            }
+        });
+        // second: future events
+        document.querySelectorAll(".event").forEach(el => {
+            if (el.dataset.type === "vergangene Veranstaltung") {
+                return
+            }
+            let geo = parseGeo(el.dataset.geo);
+            if (geo !== null) {
+                let m = L.marker(geo, {icon: blueIcon});
                 markers.push(m);
                 m.addTo(map);
                 if (el.dataset.time !== undefined) {
