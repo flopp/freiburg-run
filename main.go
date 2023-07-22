@@ -29,15 +29,13 @@ OPTIONS:
 type CommandLineOptions struct {
 	configFile string
 	outDir     string
-	useJSON    bool
-	exportCSV  bool
+	hashFile   string
 }
 
 func parseCommandLine() CommandLineOptions {
 	configFile := flag.String("config", "", "select config file")
 	outDir := flag.String("out", ".out", "output directory")
-	useJSON := flag.Bool("loadjson", false, "use JSON files")
-	exportCSV := flag.Bool("exportcsv", false, "export CSV files")
+	hashFile := flag.String("hashfile", ".hashes", "file storing file hashes (for sitemap)")
 
 	flag.Usage = func() {
 		fmt.Fprintf(flag.CommandLine.Output(), usage, os.Args[0])
@@ -45,15 +43,14 @@ func parseCommandLine() CommandLineOptions {
 	}
 	flag.Parse()
 
-	if !*useJSON && *configFile == "" {
-		panic("You have to specify a config file, e.g. -config myconfig.json, when not using JSON files")
+	if *configFile == "" {
+		panic("You have to specify a config file, e.g. -config myconfig.json")
 	}
 
 	return CommandLineOptions{
 		*configFile,
 		*outDir,
-		*useJSON,
-		*exportCSV,
+		*hashFile,
 	}
 }
 
@@ -265,32 +262,6 @@ func GetMtimeYMD(filePath string) string {
 	return stat.ModTime().Format("2006-01-02")
 }
 
-func writeCsv(fileName string, events []*Event) {
-	f, err := os.Create(fileName)
-	check(err)
-	defer f.Close()
-
-	fmt.Fprintf(f, "\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"\n", "ADDED", "DATE", "NAME", "URL", "DESCRIPTION", "LOCATION", "COORDINATES", "LINKS...")
-	for _, event := range events {
-		fmt.Fprintf(f, "\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"", utils.DateYMS(event.Added), event.Time, event.Name, event.Url, event.Details, event.Location, event.Geo)
-		for _, link := range event.Reports {
-			fmt.Fprintf(f, ",\"%s|%s\"", link.Name, link.Url)
-		}
-		fmt.Fprintf(f, "\n")
-	}
-}
-
-func writeParkrunCsv(fileName string, events []*ParkrunEvent) {
-	f, err := os.Create(fileName)
-	check(err)
-	defer f.Close()
-
-	fmt.Fprintf(f, "\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"\n", "INDEX", "DATE", "SPECIAL", "RESULTS", "REPORT", "PHOTOS")
-	for _, event := range events {
-		fmt.Fprintf(f, "\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"\n", event.Index, event.Date, event.Special, event.Results, event.Report, event.Photos)
-	}
-}
-
 type ConfigData struct {
 	ApiKey  string `json:"api_key"`
 	SheetId string `json:"sheet_id"`
@@ -320,46 +291,8 @@ func SplitDetails(s string) (string, string) {
 	return s, ""
 }
 
-func fetchEventsJson(eventType string, fileName string, now time.Time) ([]*Event, string) {
-	data, err := os.ReadFile(fileName)
-	check(err)
-	unmarshalled := make([]EventJson, 0)
-	if err := json.Unmarshal(data, &unmarshalled); err != nil {
-		panic(err)
-	}
-	mtime := GetMtimeYMD(fileName)
-
+func fetchEvents(config ConfigData, srv *sheets.Service, eventType string, table string, now time.Time) []*Event {
 	events := make([]*Event, 0)
-	for _, e := range unmarshalled {
-		d1, d2 := SplitDetails(e.Details)
-		timeRange, err := parseTimeRange(e.Time)
-		if err != nil {
-			log.Printf("event '%s': %v", e.Name, err)
-		}
-		ed := Event{
-			eventType, e.Name, e.Time, timeRange, e.Location, utils.NormalizeGeo(e.Geo), d1, d2, e.Url, e.Reports, e.Added, IsNew(e.Added, now), nil, nil,
-		}
-		events = append(events, &ed)
-	}
-
-	return events, mtime
-}
-
-func fetchParkrunEventsJson(fileName string) ([]*ParkrunEvent, string) {
-	data, err := os.ReadFile(fileName)
-	check(err)
-	unmarshalled := make([]*ParkrunEvent, 0)
-	if err := json.Unmarshal(data, &unmarshalled); err != nil {
-		panic(err)
-	}
-	mtime := GetMtimeYMD(fileName)
-
-	return unmarshalled, mtime
-}
-
-func fetchEvents(config ConfigData, srv *sheets.Service, eventType string, table string, now time.Time) ([]*Event, string) {
-	events := make([]*Event, 0)
-	mtime := ""
 	resp, err := srv.Spreadsheets.Values.Get(config.SheetId, fmt.Sprintf("%s!A2:Z", table)).Do()
 	check(err)
 	if len(resp.Values) == 0 {
@@ -415,27 +348,15 @@ func fetchEvents(config ConfigData, srv *sheets.Service, eventType string, table
 				nil,
 				nil,
 			})
-			t := utils.DateYMS(added)
-			if mtime == "" || (t != "" && t > mtime) {
-				mtime = t
-			}
 		}
 	}
 
-	return events, mtime
+	return events
 }
 
-func fetchParkrunEvents(config ConfigData, srv *sheets.Service, table string) ([]*ParkrunEvent, string) {
+func fetchParkrunEvents(config ConfigData, srv *sheets.Service, table string) []*ParkrunEvent {
 	events := make([]*ParkrunEvent, 0)
-	mtime := ""
-
-	resp, err := srv.Spreadsheets.Values.Get(config.SheetId, fmt.Sprintf("%s!A1", table)).Do()
-	check(err)
-	if len(resp.Values) != 0 {
-		mtime = utils.DateYMS(fmt.Sprintf("%v", resp.Values[0][0]))
-	}
-
-	resp, err = srv.Spreadsheets.Values.Get(config.SheetId, fmt.Sprintf("%s!A3:Z", table)).Do()
+	resp, err := srv.Spreadsheets.Values.Get(config.SheetId, fmt.Sprintf("%s!A2:Z", table)).Do()
 	check(err)
 	if len(resp.Values) == 0 {
 		panic("No events data found.")
@@ -473,7 +394,7 @@ func fetchParkrunEvents(config ConfigData, srv *sheets.Service, table string) ([
 		}
 	}
 
-	return events, mtime
+	return events
 }
 
 func createMonthLabel(t time.Time) string {
@@ -625,61 +546,27 @@ func main() {
 
 	var events []*Event
 	var events_old []*Event
-	var events_time string
-
 	var groups []*Event
-	var groups_time string
-
 	var shops []*Event
-	var shops_time string
-
 	var parkrun []*ParkrunEvent
-	var parkrun_time string
 
-	if options.useJSON {
-		var all_events []*Event
-		all_events, events_time = fetchEventsJson("event", "data/events.json", now)
-		for _, e := range all_events {
-			if !strings.Contains(e.Time, "UNBEKANNT") {
-				events = append(events, e)
-			}
-		}
-
-		groups, groups_time = fetchEventsJson("group", "data/groups.json", now)
-		shops, shops_time = fetchEventsJson("shop", "data/shops.json", now)
-		parkrun, parkrun_time = fetchParkrunEventsJson("data/dietenbach-parkrun.json")
-	} else {
-		config_data, err := os.ReadFile(options.configFile)
-		check(err)
-		var config ConfigData
-		if err := json.Unmarshal(config_data, &config); err != nil {
-			panic(err)
-		}
-
-		sheetUrl = fmt.Sprintf("https://docs.google.com/spreadsheets/d/%s", config.SheetId)
-
-		ctx := context.Background()
-		srv, err := sheets.NewService(ctx, option.WithAPIKey(config.ApiKey))
-		check(err)
-
-		events, events_time = fetchEvents(config, srv, "event", "Events", now)
-		groups, groups_time = fetchEvents(config, srv, "group", "Groups", now)
-		shops, shops_time = fetchEvents(config, srv, "shop", "Shops", now)
-		parkrun, parkrun_time = fetchParkrunEvents(config, srv, "Parkrun")
-
-		if events_time == "" {
-			events_time = timestamp
-		}
-		if groups_time == "" {
-			groups_time = timestamp
-		}
-		if shops_time == "" {
-			shops_time = timestamp
-		}
-		if parkrun_time == "" {
-			parkrun_time = timestamp
-		}
+	config_data, err := os.ReadFile(options.configFile)
+	check(err)
+	var config ConfigData
+	if err := json.Unmarshal(config_data, &config); err != nil {
+		panic(err)
 	}
+
+	sheetUrl = fmt.Sprintf("https://docs.google.com/spreadsheets/d/%s", config.SheetId)
+
+	ctx := context.Background()
+	srv, err := sheets.NewService(ctx, option.WithAPIKey(config.ApiKey))
+	check(err)
+
+	events = fetchEvents(config, srv, "event", "Events", now)
+	groups = fetchEvents(config, srv, "group", "Groups", now)
+	shops = fetchEvents(config, srv, "shop", "Shops", now)
+	parkrun = fetchParkrunEvents(config, srv, "Parkrun")
 
 	validateDateOrder(events)
 	findPrevNextEvents(events)
@@ -687,23 +574,16 @@ func main() {
 	events = addMonthSeparators(events)
 	events_old = addMonthSeparators(events_old)
 
-	if options.exportCSV {
-		writeCsv("events.csv", events)
-		writeCsv("groups.csv", groups)
-		writeCsv("shops.csv", shops)
-		writeParkrunCsv("parkrun.csv", parkrun)
-	}
-
-	sitemapEntries := make([]utils.SitemapEntry, 0)
-	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "index.html", events_time)
-	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "events-old.html", events_time)
-	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "lauftreffs.html", groups_time)
-	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "shops.html", shops_time)
-	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "dietenbach-parkrun.html", parkrun_time)
-	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "map.html", events_time)
-	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "info.html", GetMtimeYMD("templates/info.html"))
-	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "datenschutz.html", GetMtimeYMD("templates/datenschutz.html"))
-	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "impressum.html", GetMtimeYMD("templates/impressum.html"))
+	sitemapEntries := make([]string, 0)
+	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "index.html")
+	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "events-old.html")
+	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "lauftreffs.html")
+	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "shops.html")
+	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "dietenbach-parkrun.html")
+	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "map.html")
+	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "info.html")
+	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "datenschutz.html")
+	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "impressum.html")
 
 	utils.MustCopyHash("static/.htaccess", ".htaccess", options.outDir)
 	utils.MustCopyHash("static/robots.txt", "robots.txt", options.outDir)
@@ -839,11 +719,7 @@ func main() {
 		slug := event.Slug()
 		eventdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
 		executeEventTemplate("event", filepath.Join(options.outDir, slug), eventdata)
-		t := utils.DateYMS(event.Added)
-		if t == "" {
-			t = events_time
-		}
-		sitemapEntries = utils.AddSitemapEntry(sitemapEntries, slug, t)
+		sitemapEntries = utils.AddSitemapEntry(sitemapEntries, slug)
 	}
 
 	eventdata.Main = "/events-old.html"
@@ -857,11 +733,7 @@ func main() {
 		slug := event.Slug()
 		eventdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
 		executeEventTemplate("event", filepath.Join(options.outDir, slug), eventdata)
-		t := utils.DateYMS(event.Added)
-		if t == "" {
-			t = events_time
-		}
-		sitemapEntries = utils.AddSitemapEntry(sitemapEntries, slug, t)
+		sitemapEntries = utils.AddSitemapEntry(sitemapEntries, slug)
 	}
 
 	eventdata.Type = "Lauftreff"
@@ -877,11 +749,7 @@ func main() {
 		slug := event.Slug()
 		eventdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
 		executeEventTemplate("event", filepath.Join(options.outDir, slug), eventdata)
-		t := utils.DateYMS(event.Added)
-		if t == "" {
-			t = groups_time
-		}
-		sitemapEntries = utils.AddSitemapEntry(sitemapEntries, slug, t)
+		sitemapEntries = utils.AddSitemapEntry(sitemapEntries, slug)
 	}
 
 	eventdata.Type = "Lauf-Shop"
@@ -894,12 +762,8 @@ func main() {
 		slug := event.Slug()
 		eventdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
 		executeEventTemplate("event", filepath.Join(options.outDir, slug), eventdata)
-		t := utils.DateYMS(event.Added)
-		if t == "" {
-			t = shops_time
-		}
-		sitemapEntries = utils.AddSitemapEntry(sitemapEntries, slug, t)
+		sitemapEntries = utils.AddSitemapEntry(sitemapEntries, slug)
 	}
 
-	utils.GenSitemap(filepath.Join(options.outDir, "sitemap.xml"), "https://freiburg.run", sitemapEntries, "2023-07-19")
+	utils.GenSitemap(filepath.Join(options.outDir, "sitemap.xml"), options.hashFile, options.outDir, "https://freiburg.run", sitemapEntries)
 }
