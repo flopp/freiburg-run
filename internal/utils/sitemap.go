@@ -146,7 +146,6 @@ func GenSitemap(fileName string, hashFileName string, outDir string, baseUrl str
 		if ok {
 			if currentHash == oldHash.hash {
 				timeStamp = oldHash.date
-				log.Printf("same hash for: %s", fileName)
 			} else {
 				log.Printf("changed hash for: %s", fileName)
 			}
