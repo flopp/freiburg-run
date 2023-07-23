@@ -2,9 +2,15 @@
     <div class="card">
         <header class="card-header">
             {{if .New}}
-            <a class="button is-success is-fullwidth" href="/{{.Slug}}#{{.Type}}">{{.Name}} (neu hinzugefügt)</a>
+            <a class="button is-success is-fullwidth" href="/{{.Slug}}#{{.Type}}">
+                <span class="icon"><i class="info-icon"></i></span>
+                <span>{{.Name}} (neu hinzugefügt)</a></span>
+            </a>
             {{else}}
-            <a class="button is-info is-fullwidth" href="/{{.Slug}}#{{.Type}}">{{.Name}}</a>
+            <a class="button is-info is-fullwidth" href="/{{.Slug}}#{{.Type}}">
+                <span class="icon"><i class="info-icon"></i></span>
+                <span>{{.Name}}</a></span>
+            </a>
             {{end}}
         </header>
         <div class="card-content">
