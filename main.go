@@ -164,9 +164,15 @@ func (event *Event) Slug() string {
 
 func (event *Event) LinkTitle() string {
 	if event.Type == "event" {
+		if strings.HasPrefix(event.Url, "mailto:") {
+			return "Mail an Veranstalter"
+		}
 		return "Zur Veranstaltung"
 	}
 	if event.Type == "group" {
+		if strings.HasPrefix(event.Url, "mailto:") {
+			return "Mail an Organisator"
+		}
 		return "Zum Lauftreff"
 	}
 	if event.Type == "event" {
