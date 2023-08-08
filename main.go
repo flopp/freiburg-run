@@ -107,6 +107,7 @@ type Event struct {
 	Details   string
 	Details2  string
 	Url       string
+	Tags      []string
 	Reports   []NameUrl
 	Added     string
 	New       bool
@@ -129,6 +130,7 @@ func createSeparatorEvent(label string) *Event {
 		"",
 		"",
 		"",
+		nil,
 		nil,
 		"",
 		true,
@@ -273,6 +275,17 @@ type ConfigData struct {
 	SheetId string `json:"sheet_id"`
 }
 
+func parseTags(s string) []string {
+	tags := make([]string, 0)
+	for _, tag := range strings.Split(s, ",") {
+		tag = strings.TrimSpace(tag)
+		if len(tag) > 0 {
+			tags = append(tags, tag)
+		}
+	}
+	return tags
+}
+
 func parseLinks(ss []interface{}) []NameUrl {
 	links := make([]NameUrl, 0)
 	for _, i := range ss {
@@ -306,6 +319,7 @@ func fetchEvents(config ConfigData, srv *sheets.Service, eventType string, table
 	} else {
 		for _, row := range resp.Values {
 			var added, date, name, url, description1, description2, location, coordinates string
+			tags := make([]string, 0)
 			links := make([]NameUrl, 0)
 
 			ll := len(row)
@@ -331,7 +345,10 @@ func fetchEvents(config ConfigData, srv *sheets.Service, eventType string, table
 				coordinates = utils.NormalizeGeo(fmt.Sprintf("%v", row[6]))
 			}
 			if ll > 7 {
-				links = parseLinks(row[7:])
+				tags = parseTags(row[7])
+			}
+			if ll > 8 {
+				links = parseLinks(row[8:])
 			}
 
 			timeRange, err := parseTimeRange(date)
@@ -348,6 +365,7 @@ func fetchEvents(config ConfigData, srv *sheets.Service, eventType string, table
 				description1,
 				description2,
 				url,
+				tags,
 				links,
 				added,
 				IsNew(added, now),
