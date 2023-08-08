@@ -865,7 +865,7 @@ func main() {
 	for _, tag := range tags {
 		tagdata.Tag = tag
 		tagdata.Title = fmt.Sprintf("Laufveranstaltungen der Kategorie '%s'", tag.Name)
-		tagdata.Description = fmt.Sprintf("List an Laufveranstaltungen im Raum Freiburg/Südbaden, die mit der Kategorie Kategorie '%s' getaggt sind", tag.Name)
+		tagdata.Description = fmt.Sprintf("Liste an Laufveranstaltungen im Raum Freiburg/Südbaden, die mit der Kategorie Kategorie '%s' getaggt sind", tag.Name)
 		slug := fmt.Sprintf("tag/%s.html", tag.Name)
 		tagdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
 		executeTagTemplate("tag", filepath.Join(options.outDir, slug), tagdata)
