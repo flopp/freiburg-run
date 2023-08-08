@@ -345,7 +345,7 @@ func fetchEvents(config ConfigData, srv *sheets.Service, eventType string, table
 				coordinates = utils.NormalizeGeo(fmt.Sprintf("%v", row[6]))
 			}
 			if ll > 7 {
-				tags = parseTags(row[7])
+				tags = parseTags(fmt.Sprintf("%v", row[7]))
 			}
 			if ll > 8 {
 				links = parseLinks(row[8:])
