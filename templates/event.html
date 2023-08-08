@@ -51,6 +51,16 @@
                             </td>
                         </tr>
                         {{end}}
+                        {{if .Event.Tags}}
+                        <tr>
+                            <th>Kategorien</th>
+                            <td class="is-w100">
+                                {{range .Event.Tags}}
+                                    <a class="tag is-link is-light" href="/tag/{{.}}.html" target="_blank">{{.}}</a>
+                                {{end}}
+                            </td>
+                        </tr>
+                        {{end}}
                         {{if .Event.Prev}}
                         <tr>
                             <th>Voriger</th>

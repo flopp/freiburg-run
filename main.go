@@ -225,6 +225,27 @@ type EventTemplateData struct {
 	CssFiles      []string
 }
 
+type Tag struct {
+	Name      string
+	Events    []*Event
+	EventsOld []*Event
+}
+
+type TagTemplateData struct {
+	Tag           *Tag
+	Title         string
+	Type          string
+	Description   string
+	Nav           string
+	Canonical     string
+	Main          string
+	Timestamp     string
+	TimestampFull string
+	SheetUrl      string
+	JsFiles       []string
+	CssFiles      []string
+}
+
 func check(err error) {
 	if err != nil {
 		panic(err)
@@ -261,6 +282,16 @@ func executeEventTemplate(templateName string, fileName string, data EventTempla
 	check(err)
 }
 
+func executeTagTemplate(templateName string, fileName string, data TagTemplateData) {
+	outDir := filepath.Dir(fileName)
+	makeDir(outDir)
+	out, err := os.Create(fileName)
+	check(err)
+	defer out.Close()
+	err = loadTemplate(templateName).Execute(out, data)
+	check(err)
+}
+
 func GetMtimeYMD(filePath string) string {
 	stat, err := os.Stat(filePath)
 	if err != nil {
@@ -278,7 +309,7 @@ type ConfigData struct {
 func parseTags(s string) []string {
 	tags := make([]string, 0)
 	for _, tag := range strings.Split(s, ",") {
-		tag = strings.TrimSpace(tag)
+		tag = utils.SanitizeName(tag)
 		if len(tag) > 0 {
 			tags = append(tags, tag)
 		}
@@ -560,6 +591,33 @@ func addMonthSeparators(events []*Event) []*Event {
 	return result
 }
 
+func collectTags(events []*Event, eventsOld []*Event) map[string]*Tag {
+	tags := make(map[string]*Tag)
+	for _, e := range events {
+		for _, t := range e.Tags {
+			if tag, found := tags[t]; found == true {
+				tag.Events = append(tag.Events, e)
+			} else {
+				tag := &Tag{t, make([]*Event, 0), make([]*Event, 0)}
+				tag.Events = append(tag.Events, e)
+				tags[t] = tag
+			}
+		}
+	}
+	for _, e := range eventsOld {
+		for _, t := range e.Tags {
+			if tag, found := tags[t]; found == true {
+				tag.EventsOld = append(tag.EventsOld, e)
+			} else {
+				tag := &Tag{t, make([]*Event, 0), make([]*Event, 0)}
+				tag.EventsOld = append(tag.EventsOld, e)
+				tags[t] = tag
+			}
+		}
+	}
+	return tags
+}
+
 func main() {
 	now := time.Now()
 	today := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
@@ -597,6 +655,7 @@ func main() {
 	events, events_old = splitEvents(events, today)
 	events = addMonthSeparators(events)
 	events_old = addMonthSeparators(events_old)
+	tags := collectTags(events, events_old)
 
 	sitemapEntries := make([]string, 0)
 	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "index.html")
@@ -786,6 +845,30 @@ func main() {
 		slug := event.Slug()
 		eventdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
 		executeEventTemplate("event", filepath.Join(options.outDir, slug), eventdata)
+		sitemapEntries = utils.AddSitemapEntry(sitemapEntries, slug)
+	}
+
+	tagdata := TagTemplateData{
+		nil,
+		"",
+		"Kategorie",
+		"",
+		"events",
+		"",
+		"/index.html",
+		timestamp,
+		timestampFull,
+		sheetUrl,
+		js_files,
+		css_files,
+	}
+	for _, tag := range tags {
+		tagdata.Tag = tag
+		tagdata.Title = fmt.Sprintf("Laufveranstaltungen der Kategorie '%s'", tag.Name)
+		tagdata.Description = fmt.Sprintf("List an Laufveranstaltungen im Raum Freiburg/Südbaden, die mit der Kategorie Kategorie '%s' getaggt sind", tag.Name)
+		slug := fmt.Sprintf("tag/%s.html", tag.Name)
+		tagdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
+		executeTagTemplate("tag", filepath.Join(options.outDir, slug), tagdata)
 		sitemapEntries = utils.AddSitemapEntry(sitemapEntries, slug)
 	}
 
