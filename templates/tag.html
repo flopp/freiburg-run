@@ -1,0 +1,38 @@
+{{template "header.html" .}}
+
+<section class="section">
+    <div class="container">
+        <h1 class="title">{{.Title}}</h1>
+    </div>
+</section>
+
+{{if .Tag.Events}}
+<section class="section">
+    <div class="container is-max-desktop">
+        <div class="columns is-multiline">
+            {{range .Tag.Events}}
+            {{template "card.html" .}}
+            {{end}}
+        </div>
+    </div>
+</section>
+{{end}}
+
+{{if .Tag.EventsOld}}
+<section class="section">
+    <div class="container">
+        <h1 class="title">Vergangene Laufveranstaltungen der Kategorie '{{.Tag.Name}}'</h1>
+    </div>
+</section>
+<section class="section">
+    <div class="container is-max-desktop">
+        <div class="columns is-multiline">
+            {{range .Tag.EventsOld}}
+            {{template "card.html" .}}
+            {{end}}
+        </div>
+    </div>
+</section>
+{{end}}
+
+{{template "footer.html" .}}
