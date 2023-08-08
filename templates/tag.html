@@ -4,7 +4,12 @@
     <div class="container">
         <h1 class="title">{{.Title}}</h1>
         <div class="notification is-info is-light">
-            <a href="/index.html">Hier geht's zur Liste aller aktuellen und zukünftigen Veranstaltungen.</a>
+            Liste von Laufveranstaltungen, Lauf-Wettkämpfen, Volksläufen im Raum Freiburg / Südbaden, die in die <b>Kategorie '{{.Tag.Name}}'</b> einsortiert sind.
+            <br />
+            Ist ein Eintrag fehlerhaft oder fehlt eine Veranstaltung? - bitte <a href="info.html#kontakt">melden</a>. 
+            <br />
+            <br />
+            <a href="/index.html">Hier geht's zurück zur Liste <b>aller</b> aktuellen und zukünftigen Veranstaltungen.</a>
         </div>
     </div>
 </section>
@@ -24,7 +29,7 @@
 {{if .Tag.EventsOld}}
 <section class="section">
     <div class="container">
-        <h1 class="title">Vergangene Laufveranstaltungen der Kategorie '{{.Tag.Name}}'</h1>
+        <h2 class="title">Vergangene Laufveranstaltungen der Kategorie '{{.Tag.Name}}'</h2>
     </div>
 </section>
 <section class="section">
