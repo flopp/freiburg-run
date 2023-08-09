@@ -177,7 +177,7 @@ func (event *Event) LinkTitle() string {
 		}
 		return "Zum Lauftreff"
 	}
-	if event.Type == "event" {
+	if event.Type == "shop" {
 		return "Zum Lauf-Shop"
 	}
 	return "Zur Veranstaltung"
