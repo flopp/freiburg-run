@@ -34,7 +34,7 @@
         {{end}}
     </head>
     <body data-itemtype="{{.Type}}">
-        <nav class="navbar is-info is-fixed-top z-top" role="navigation" aria-label="main navigation">
+        <nav class="navbar is-info is-fixed-top z-top is-hidden-touch" role="navigation" aria-label="main navigation">
             <div class="navbar-brand">
                 <a class="navbar-item" href="/index.html">
                     <img alt="Logo freiburg.run" src="/images/freiburg-run.svg">&nbsp;<strong>freiburg.run</strong>
@@ -68,5 +68,25 @@
                         Info
                     </a>
                 </div>
+            </div>
+        </nav>
+
+        <nav class="navbar is-info is-fixed-top z-top is-hidden-desktop" role="navigation">
+            <div class="navbar-brand">
+                <a id="nav-events" class="navbar-item {{if eq .Nav "events"}}is-active{{end}}" href="/index.html">
+                    Veranstaltungen
+                </a>
+                <a id="nav-groups" class="navbar-item {{if eq .Nav "groups"}}is-active{{end}}" href="/lauftreffs.html">
+                    Lauftreffs
+                </a>
+                <a id="nav-parkrun" class="navbar-item {{if eq .Nav "parkrun"}}is-active{{end}}" href="/dietenbach-parkrun.html">
+                    parkrun
+                </a>
+                <a id="nav-shops" class="navbar-item {{if eq .Nav "shops"}}is-active{{end}}" href="/shops.html">
+                    <span class="icon"><i class="shop-icon"></i></span>
+                </a>
+                <a id="nav-info" class="navbar-item {{if eq .Nav "info"}}is-active{{end}}" href="/info.html">
+                    <span class="icon"><i class="info-icon"></i></span>
+                </a>
             </div>
         </nav>
