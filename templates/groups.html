@@ -1,8 +1,9 @@
 {{template "header.html" .}}
 
 <section class="section">
-    <div class="container">
-        <h1 class="title">Lauftreffs im Raum Freiburg / Südbaden</h1>
+    <div class="container is-max-desktop" itemscope itemtype="https://schema.org/ItemList">
+        <h1 class="title" itemprop="name">{{.Title}}</h1>
+
         <div class="notification is-info is-light">
             Liste von Lauftreffs, Laufgruppen, Trainingsgruppen, Social Runs im Raum Freiburg / Südbaden.
             <br />
@@ -10,10 +11,7 @@
             <br /><br />
             Hinweis: Bevor man zum ersten Mal einen der obigen Lauftreffs besucht, am Besten vorher den Veranstalter für Details kontaktieren. 
         </div>
-    </div>
-</section>
-<section class="section">
-    <div class="container is-max-desktop">
+
         <div class="columns is-multiline">   
             {{range .Groups}}
             {{template "card.html" .}}

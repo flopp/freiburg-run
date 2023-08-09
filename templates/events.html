@@ -1,8 +1,9 @@
 {{template "header.html" .}}
 
 <section class="section">
-    <div class="container">
-        <h1 class="title">Laufveranstaltungen im Raum Freiburg / Südbaden</h1>
+    <div class="container is-max-desktop" itemscope itemtype="https://schema.org/ItemList">
+        <h1 class="title" itemprop="name">{{.Title}}</h1>
+        
         <div class="notification is-info is-light">
             Liste von <b>aktuellen und zukünftigen</b> Laufveranstaltungen, Lauf-Wettkämpfen, Volksläufen im Raum Freiburg / Südbaden.
             <br />
@@ -11,10 +12,7 @@
             <br />
             <a href="/events-old.html">Hier geht's zur Liste der vergangenen Veranstaltungen.</a>
         </div>
-    </div>
-</section>
-<section class="section">
-    <div class="container is-max-desktop">
+
         <div class="columns is-multiline">
             {{range .Events}}
             {{if .IsSeparator}}
