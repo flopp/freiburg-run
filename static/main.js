@@ -271,9 +271,6 @@ var main = () => {
         if (back == "events" || back == "event") {
             backLink.href = "/index.html";
             toggle_menuitem("nav-events");
-        } else if (back == "events-old" || back == "event-old") {
-            backLink.href = "/events-old.html";
-            toggle_menuitem("nav-events");
         } else if (back == "groups" || back == "group") {
             backLink.href = "/lauftreffs.html";
             toggle_menuitem("nav-groups");

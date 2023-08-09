@@ -9,6 +9,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"sort"
 	"strings"
 	"text/template"
 	"time"
@@ -192,6 +193,24 @@ type ParkrunEvent struct {
 	Photos  string
 }
 
+type Tag struct {
+	Name      string
+	Events    []*Event
+	EventsOld []*Event
+}
+
+func (tag *Tag) Slug() string {
+	return fmt.Sprintf("/tag/%s.html", tag.Name)
+}
+
+func (tag *Tag) NumEvents() int {
+	return len(tag.Events)
+}
+
+func (tag *Tag) NumOldEvents() int {
+	return len(tag.EventsOld)
+}
+
 type TemplateData struct {
 	Title         string
 	Type          string
@@ -206,6 +225,7 @@ type TemplateData struct {
 	Groups        []*Event
 	Shops         []*Event
 	Parkrun       []*ParkrunEvent
+	Tags          []*Tag
 	JsFiles       []string
 	CssFiles      []string
 }
@@ -223,12 +243,6 @@ type EventTemplateData struct {
 	SheetUrl      string
 	JsFiles       []string
 	CssFiles      []string
-}
-
-type Tag struct {
-	Name      string
-	Events    []*Event
-	EventsOld []*Event
 }
 
 type TagTemplateData struct {
@@ -591,11 +605,11 @@ func addMonthSeparators(events []*Event) []*Event {
 	return result
 }
 
-func collectTags(events []*Event, eventsOld []*Event) map[string]*Tag {
+func collectTags(events []*Event, eventsOld []*Event) (map[string]*Tag, []*Tag) {
 	tags := make(map[string]*Tag)
 	for _, e := range events {
 		for _, t := range e.Tags {
-			if tag, found := tags[t]; found == true {
+			if tag, found := tags[t]; found {
 				tag.Events = append(tag.Events, e)
 			} else {
 				tag := &Tag{t, make([]*Event, 0), make([]*Event, 0)}
@@ -606,7 +620,7 @@ func collectTags(events []*Event, eventsOld []*Event) map[string]*Tag {
 	}
 	for _, e := range eventsOld {
 		for _, t := range e.Tags {
-			if tag, found := tags[t]; found == true {
+			if tag, found := tags[t]; found {
 				tag.EventsOld = append(tag.EventsOld, e)
 			} else {
 				tag := &Tag{t, make([]*Event, 0), make([]*Event, 0)}
@@ -615,7 +629,14 @@ func collectTags(events []*Event, eventsOld []*Event) map[string]*Tag {
 			}
 		}
 	}
-	return tags
+
+	tagsList := make([]*Tag, 0, len(tags))
+	for _, tag := range tags {
+		tagsList = append(tagsList, tag)
+	}
+	sort.Slice(tagsList, func(i, j int) bool { return tagsList[i].Name < tagsList[j].Name })
+
+	return tags, tagsList
 }
 
 func main() {
@@ -655,11 +676,12 @@ func main() {
 	events, events_old = splitEvents(events, today)
 	events = addMonthSeparators(events)
 	events_old = addMonthSeparators(events_old)
-	tags := collectTags(events, events_old)
+	tags, tagsList := collectTags(events, events_old)
 
 	sitemapEntries := make([]string, 0)
 	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "index.html")
 	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "events-old.html")
+	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "tags.html")
 	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "lauftreffs.html")
 	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "shops.html")
 	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "dietenbach-parkrun.html")
@@ -711,6 +733,7 @@ func main() {
 		groups,
 		shops,
 		parkrun,
+		tagsList,
 		js_files,
 		css_files,
 	}
@@ -721,6 +744,11 @@ func main() {
 	data.Description = "Liste von vergangenen Laufveranstaltungen, Lauf-Wettkämpfen, Volksläufen im Raum Freiburg / Südbaden"
 	data.Canonical = "https://freiburg.run/events-old.html"
 	executeTemplate("events-old", filepath.Join(options.outDir, "events-old.html"), data)
+
+	data.Title = "Kategorien"
+	data.Description = "Liste aller Kategorien von vergangenen Laufveranstaltungen, Lauf-Wettkämpfen, Volksläufen im Raum Freiburg / Südbaden"
+	data.Canonical = "https://freiburg.run/tagshtml"
+	executeTemplate("tags", filepath.Join(options.outDir, "tags.html"), data)
 
 	data.Nav = "groups"
 	data.Title = "Lauftreffs im Raum Freiburg / Südbaden"

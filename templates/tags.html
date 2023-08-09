@@ -1,0 +1,42 @@
+{{template "header.html" .}}
+
+<section class="section">
+    <div class="container">
+        <h1 class="title">{{.Title}}</h1>
+        
+        <div class="notification is-info is-light">
+            Liste aller Kategorien von aktuellen und vergangenen Lauf-Veranstaltungen auf freiburg.run.
+        </div>
+
+        <div class="b-table">
+            <div class="table-wrapper">
+                <table class="table is-fullwidth is-narrow">
+                    <thead>
+                        <tr>
+                            <th>Kategorie</th>
+                            <th># aktuelle</th>
+                            <th># vergangene</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{range .Tags}}
+                        <tr>
+                            <td>
+                                <a href="{{.Slug}}">{{.Name}}</a>
+                            </td>
+                            <td>
+                                {{.NumEvents}}
+                            </td>
+                            <td>
+                                {{.NumOldEvents}}
+                            </td>
+                        </tr>
+                        {{end}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+{{template "footer.html" .}}

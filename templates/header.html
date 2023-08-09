@@ -49,8 +49,14 @@
 
             <div id="navbarMain" class="navbar-menu">
                 <div class="navbar-start">
-                    <a id="nav-events" class="navbar-item {{if eq .Nav "events"}}is-active{{end}}" href="/index.html">
+                    <a id="nav-events" class="navbar-item {{if eq .Nav "events"}}is-active{{end}}" href="/index.html" title="Aktuelle Lauf-Veranstaltungen">
                         Laufveranstaltungen
+                    </a>
+                    <a id="nav-events" class="navbar-item {{if eq .Nav "events-old"}}is-active{{end}}" href="/events-old.html" title="Vergangene Lauf-Veranstaltungen">
+                        <span class="icon"><i class="old-icon"></i></span>
+                    </a>
+                    <a id="nav-events" class="navbar-item {{if eq .Nav "tags"}}is-active{{end}}" href="/tags.html" title="Kategorien">
+                        <span class="icon"><i class="tags-icon"></i></span>
                     </a>
                     <a id="nav-groups" class="navbar-item {{if eq .Nav "groups"}}is-active{{end}}" href="/lauftreffs.html">
                         Lauftreffs
