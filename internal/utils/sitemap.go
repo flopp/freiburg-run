@@ -81,24 +81,38 @@ func writeHashFile(fileName string, m map[string]*FileHashDate) {
 }
 
 var reTimestamp = regexp.MustCompile(`<span class="timestamp">[^<]*</span>`)
+var reScript = regexp.MustCompile(`<script src="[^"]*"></script>`)
+var reStyle = regexp.MustCompile(`<link rel="stylesheet" href="[^"]*"/>`)
+
+func replaceRegexp(s []byte, r regexp.Regexp) []byte {
+	for {
+		match := r.FindIndex(s)
+		if match != nil {
+			matchStart := match[0]
+			matchEnd := match[1]
+			replaced := make([]byte, 0, len(s))
+			replaced = append(replaced, s[:matchStart]...)
+			replaced = append(replaced, s[matchEnd:]...)
+			s = replaced
+		} else {
+			break
+		}
+	}
+	return s
+}
 
 func determineHash(fileName string) (string, error) {
 	buf, err := ioutil.ReadFile(fileName)
 	if err != nil {
 		return "", err
 	}
+
+	buf = replaceRegexp(buf, *reTimestamp)
+	buf = replaceRegexp(buf, *reScript)
+	buf = replaceRegexp(buf, *reStyle)
+
 	h := sha256.New()
-	match := reTimestamp.FindIndex(buf)
-	if match != nil {
-		matchStart := match[0]
-		matchEnd := match[1]
-		replaced := make([]byte, 0, len(buf))
-		replaced = append(replaced, buf[:matchStart]...)
-		replaced = append(replaced, buf[matchEnd:]...)
-		h.Write(replaced)
-	} else {
-		h.Write(buf)
-	}
+	h.Write(buf)
 
 	return fmt.Sprintf("%.8x", h.Sum(nil)), nil
 }
