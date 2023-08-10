@@ -96,3 +96,22 @@
                 </a>
             </div>
         </nav>
+
+        {{if .Breadcrumbs}}
+        <section class="section pt-2 pb-0">
+            <div class="container is-max-desktop">
+                <nav class="breadcrumb">
+                    <ul itemscope itemtype="https://schema.org/BreadcrumbList">
+                        {{range .Breadcrumbs}}
+                        <li {{if .IsLast}}class="is-active"{{end}} itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                            <a href="{{.Link.Url}}" itemprop="item">
+                                <span itemprop="name">{{.Link.Name}}</span>
+                            </a>
+                            <meta itemprop="position" content="{{.Position}}" />
+                        </li>
+                        {{end}}
+                    </ul>
+                </nav>
+            </div>
+        </section>
+        {{end}}
