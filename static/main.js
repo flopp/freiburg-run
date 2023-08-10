@@ -131,9 +131,9 @@ var main = () => {
                 markers.push(m);
                 m.addTo(map);
                 if (el.dataset.time !== undefined) {
-                    m.bindPopup(`<a href="${el.dataset.slug}#map">${el.dataset.name}</a><br>(${el.dataset.type})<br>${el.dataset.time}<br>${el.dataset.location}`);
+                    m.bindPopup(`<a href="${el.dataset.slug}">${el.dataset.name}</a><br>(${el.dataset.type})<br>${el.dataset.time}<br>${el.dataset.location}`);
                 } else {
-                    m.bindPopup(`<a href="${el.dataset.slug}#map">${el.dataset.name}</a><br>(${el.dataset.type})<br>${el.dataset.location}`);
+                    m.bindPopup(`<a href="${el.dataset.slug}">${el.dataset.name}</a><br>(${el.dataset.type})<br>${el.dataset.location}`);
                 }
             }
         });
@@ -261,31 +261,6 @@ var main = () => {
                 toggle_map(mapDiv, leafletMap, checkboxMap.checked);
             });
             toggle_map(mapDiv, leafletMap, checkboxMap.checked);
-        }
-    }
-
-    const urlHash = window.location.hash;
-    const backLink = document.querySelector("#back");
-    if (backLink !== null && urlHash !== "") {
-        const back = urlHash.substring(1);
-        if (back == "events" || back == "event") {
-            backLink.href = "/index.html";
-            toggle_menuitem("nav-events");
-        } else if (back == "groups" || back == "group") {
-            backLink.href = "/lauftreffs.html";
-            toggle_menuitem("nav-groups");
-        } else if (back == "shops" || back == "shop") {
-            backLink.href = "/shops.html";
-            toggle_menuitem("nav-shops");
-        } else if (back == "parkrun") {
-            backLink.href = "/dietenbach-parkrun.html";
-            toggle_menuitem("nav-parkrun");
-        } else if (back == "map") {
-            backLink.href = "/map.html";
-            toggle_menuitem("nav-map");
-        } else if (back == "info") {
-            backLink.href = "/info.html";
-            toggle_menuitem("nav-info");
         }
     }
 };

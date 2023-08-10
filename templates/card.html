@@ -2,13 +2,13 @@
     <div class="card" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
         <header class="card-header">
             {{if .New}}
-            <a class="button is-success is-fullwidth" href="/{{.Slug}}#{{.Type}}" itemprop="item">
+            <a class="button is-success is-fullwidth" href="/{{.Slug}}" itemprop="item">
                 <span class="icon"><i class="info-icon"></i></span>
                 <span itemprop="name">{{.Name}}</span>
                 <span>(neu hinzugefügt)</span>
             </a>
             {{else}}
-            <a class="button is-info is-fullwidth" href="/{{.Slug}}#{{.Type}}" itemprop="item">
+            <a class="button is-info is-fullwidth" href="/{{.Slug}}" itemprop="item">
                 <span class="icon"><i class="info-icon"></i></span>
                 <span itemprop="name">{{.Name}}</span>
             </a>
