@@ -96,3 +96,11 @@ background-position: center;
 .is-w100 {
     width: 100%;
 }
+
+.w-2em {
+    width: 2em;
+}
+
+.no-border {
+    border: 0 !important;
+}
