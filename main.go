@@ -153,16 +153,24 @@ func IsNew(s string, now time.Time) bool {
 
 var yearRe = regexp.MustCompile(`\b(\d\d\d\d)\b`)
 
-func (event *Event) Slug() string {
+func (event *Event) slug(ext string) string {
 	t := event.Type
 	if strings.Contains(event.Name, "parkrun") {
 		t = "event"
 	}
 
 	if m := yearRe.FindStringSubmatch(event.Time); m != nil {
-		return fmt.Sprintf("%s/%s-%s.html", t, m[1], utils.SanitizeName(event.Name))
+		return fmt.Sprintf("%s/%s-%s.%s", t, m[1], utils.SanitizeName(event.Name), ext)
 	}
-	return fmt.Sprintf("%s/%s.html", t, utils.SanitizeName(event.Name))
+	return fmt.Sprintf("%s/%s.%s", t, utils.SanitizeName(event.Name), ext)
+}
+
+func (event *Event) Slug() string {
+	return event.slug("html")
+}
+
+func (event *Event) ImageSlug() string {
+	return event.slug("png")
 }
 
 func (event *Event) LinkTitle() string {
@@ -217,6 +225,7 @@ type TemplateData struct {
 	Description   string
 	Nav           string
 	Canonical     string
+	Image         string
 	Breadcrumbs   []utils.Breadcrumb
 	Timestamp     string
 	TimestampFull string
@@ -238,6 +247,7 @@ type EventTemplateData struct {
 	Description   string
 	Nav           string
 	Canonical     string
+	Image         string
 	Breadcrumbs   []utils.Breadcrumb
 	Main          string
 	Timestamp     string
@@ -254,6 +264,7 @@ type TagTemplateData struct {
 	Description   string
 	Nav           string
 	Canonical     string
+	Image         string
 	Breadcrumbs   []utils.Breadcrumb
 	Main          string
 	Timestamp     string
@@ -725,12 +736,15 @@ func main() {
 	breadcrumbsBase := utils.InitBreadcrumbs(utils.Link{Name: "freiburg.run", Url: "/index.html"})
 	breadcrumbsEvents := utils.PushBreadcrumb(breadcrumbsBase, utils.Link{Name: "Laufveranstaltungen", Url: "/index.html"})
 
+	defaultImage := "/images/events2023.jpg"
+
 	data := TemplateData{
 		"Aktuelle und zukünftige Laufveranstaltungen im Raum Freiburg / Südbaden",
 		"Veranstaltung",
 		"Liste von aktuellen und zukünftigen Laufveranstaltungen, Lauf-Wettkämpfen, Volksläufen im Raum Freiburg / Südbaden",
 		"events",
 		"https://freiburg.run/index.html",
+		defaultImage,
 		breadcrumbsEvents,
 		timestamp,
 		timestampFull,
@@ -835,6 +849,7 @@ func main() {
 		"",
 		"events",
 		"",
+		defaultImage,
 		breadcrumbsEvents,
 		"/index.html",
 		timestamp,
@@ -852,6 +867,12 @@ func main() {
 		eventdata.Description = fmt.Sprintf("Informationen zu %s in %s am %s", event.Name, event.Location, event.Time)
 		slug := event.Slug()
 		eventdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
+		image := event.ImageSlug()
+		if utils.GenImage(filepath.Join(options.outDir, image), event.Name, event.Time, event.Location) == nil {
+			eventdata.Image = fmt.Sprintf("/%s", image)
+		} else {
+			eventdata.Image = defaultImage
+		}
 		eventdata.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsEvents, utils.Link{Name: event.Name, Url: fmt.Sprintf("/%s", slug)})
 		executeEventTemplate("event", filepath.Join(options.outDir, slug), eventdata)
 		sitemapEntries = utils.AddSitemapEntry(sitemapEntries, slug)
@@ -867,6 +888,13 @@ func main() {
 		eventdata.Description = fmt.Sprintf("Informationen zu %s in %s am %s", event.Name, event.Location, event.Time)
 		slug := event.Slug()
 		eventdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
+		image := event.ImageSlug()
+		if err = utils.GenImage(filepath.Join(options.outDir, image), event.Name, event.Time, event.Location); err != nil {
+			eventdata.Image = defaultImage
+			log.Printf("event '%s': %v", event.Name, err)
+		} else {
+			eventdata.Image = image
+		}
 		eventdata.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsEventsOld, utils.Link{Name: event.Name, Url: fmt.Sprintf("/%s", slug)})
 		executeEventTemplate("event", filepath.Join(options.outDir, slug), eventdata)
 		sitemapEntries = utils.AddSitemapEntry(sitemapEntries, slug)
@@ -884,6 +912,13 @@ func main() {
 		eventdata.Description = fmt.Sprintf("Informationen zu %s in %s am %s", event.Name, event.Location, event.Time)
 		slug := event.Slug()
 		eventdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
+		image := event.ImageSlug()
+		if err = utils.GenImage(filepath.Join(options.outDir, image), event.Name, event.Time, event.Location); err != nil {
+			eventdata.Image = defaultImage
+			log.Printf("event '%s': %v", event.Name, err)
+		} else {
+			eventdata.Image = image
+		}
 		eventdata.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsGroups, utils.Link{Name: event.Name, Url: fmt.Sprintf("/%s", slug)})
 		executeEventTemplate("event", filepath.Join(options.outDir, slug), eventdata)
 		sitemapEntries = utils.AddSitemapEntry(sitemapEntries, slug)
@@ -898,6 +933,13 @@ func main() {
 		eventdata.Description = fmt.Sprintf("Informationen zu %s in %s", event.Name, event.Location)
 		slug := event.Slug()
 		eventdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
+		image := event.ImageSlug()
+		if err = utils.GenImage2(filepath.Join(options.outDir, image), event.Name, event.Location); err != nil {
+			eventdata.Image = defaultImage
+			log.Printf("event '%s': %v", event.Name, err)
+		} else {
+			eventdata.Image = image
+		}
 		eventdata.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsShops, utils.Link{Name: event.Name, Url: fmt.Sprintf("/%s", slug)})
 		executeEventTemplate("event", filepath.Join(options.outDir, slug), eventdata)
 		sitemapEntries = utils.AddSitemapEntry(sitemapEntries, slug)
@@ -910,6 +952,7 @@ func main() {
 		"",
 		"events",
 		"",
+		defaultImage,
 		breadcrumbsEventsTags,
 		"/tags.html",
 		timestamp,
