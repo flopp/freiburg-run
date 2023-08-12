@@ -11,9 +11,10 @@ import (
 )
 
 var regularFont *truetype.Font = nil
-var fontCache map[float64]font.Face = make(map[float64]font.Face)
+var fontCache map[int64]font.Face = make(map[int64]font.Face)
 
 func getFont(size float64) (font.Face, error) {
+	ssize := int64(size)
 	if regularFont == nil {
 		font, err := truetype.Parse(goregular.TTF)
 		if err != nil {
@@ -23,12 +24,12 @@ func getFont(size float64) (font.Face, error) {
 		regularFont = font
 	}
 
-	if f, ok := fontCache[size]; ok {
+	if f, ok := fontCache[ssize]; ok {
 		return f, nil
 	}
 
 	f := truetype.NewFace(regularFont, &truetype.Options{Size: size})
-	fontCache[size] = f
+	fontCache[ssize] = f
 	return f, nil
 }
 
@@ -38,7 +39,6 @@ func GenImage(fileName string, title string, sub1 string, sub2 string) error {
 	margin := 16
 
 	sizeBig := 70.0
-	sizeSmall := 39.0
 	w1 := 0.0
 	h1 := 0.0
 	w2 := 0.0
@@ -46,9 +46,30 @@ func GenImage(fileName string, title string, sub1 string, sub2 string) error {
 	w3 := 0.0
 	h3 := 0.0
 
+	dc := gg.NewContext(w, h)
+
 	faceBig, err := getFont(sizeBig)
 	if err != nil {
 		return err
+	}
+
+	for sizeBig >= 16.0 {
+		dc.SetFontFace(faceBig)
+		w1, h1 = dc.MeasureString(title)
+		if w1 > float64(w-margin) {
+			sizeBig -= 1.0
+			faceBig, err = getFont(sizeBig)
+			if err != nil {
+				return err
+			}
+		} else {
+			break
+		}
+	}
+
+	sizeSmall := sizeBig * 2.0 / 3.0
+	if sizeSmall < 16.0 {
+		sizeSmall = 16.0
 	}
 
 	faceSmall, err := getFont(sizeSmall)
@@ -56,22 +77,12 @@ func GenImage(fileName string, title string, sub1 string, sub2 string) error {
 		return err
 	}
 
-	dc := gg.NewContext(w, h)
-
-	for sizeBig >= 16.0 && sizeSmall >= 16.0 {
-		dc.SetFontFace(faceBig)
-		w1, h1 = dc.MeasureString(title)
+	for sizeSmall >= 16.0 {
 		dc.SetFontFace(faceSmall)
 		w2, h2 = dc.MeasureString(sub1)
 		w3, h3 = dc.MeasureString(sub2)
-		if w1 > float64(w-margin) || w2 > float64(w-margin) || w3 > float64(w-margin) {
-			sizeBig -= 1.0
+		if w2 > float64(w-margin) || w3 > float64(w-margin) {
 			sizeSmall -= 1.0
-			faceBig, err = getFont(sizeBig)
-			if err != nil {
-				return err
-			}
-
 			faceSmall, err = getFont(sizeSmall)
 			if err != nil {
 				return err
@@ -112,20 +123,40 @@ func GenImage(fileName string, title string, sub1 string, sub2 string) error {
 }
 
 func GenImage2(fileName string, title string, sub string) error {
-	w := 1024
-	h := 768
+	w := 640
+	h := 480
 	margin := 16
 
-	sizeBig := 96.0
-	sizeSmall := 64.0
+	sizeBig := 70.0
 	w1 := 0.0
 	h1 := 0.0
 	w2 := 0.0
 	h2 := 0.0
 
+	dc := gg.NewContext(w, h)
+
 	faceBig, err := getFont(sizeBig)
 	if err != nil {
 		return err
+	}
+
+	for sizeBig >= 16.0 {
+		dc.SetFontFace(faceBig)
+		w1, h1 = dc.MeasureString(title)
+		if w1 > float64(w-margin) {
+			sizeBig -= 1.0
+			faceBig, err = getFont(sizeBig)
+			if err != nil {
+				return err
+			}
+		} else {
+			break
+		}
+	}
+
+	sizeSmall := sizeBig * 2.0 / 3.0
+	if sizeSmall < 16.0 {
+		sizeSmall = 16.0
 	}
 
 	faceSmall, err := getFont(sizeSmall)
@@ -133,21 +164,11 @@ func GenImage2(fileName string, title string, sub string) error {
 		return err
 	}
 
-	dc := gg.NewContext(w, h)
-
-	for sizeBig >= 16.0 && sizeSmall >= 16.0 {
-		dc.SetFontFace(faceBig)
-		w1, h1 = dc.MeasureString(title)
+	for sizeSmall >= 16.0 {
 		dc.SetFontFace(faceSmall)
 		w2, h2 = dc.MeasureString(sub)
-		if w1 > float64(w-margin) || w2 > float64(w-margin) {
-			sizeBig -= 1.0
+		if w2 > float64(w-margin) {
 			sizeSmall -= 1.0
-			faceBig, err = getFont(sizeBig)
-			if err != nil {
-				return err
-			}
-
 			faceSmall, err = getFont(sizeSmall)
 			if err != nil {
 				return err
