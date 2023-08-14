@@ -193,12 +193,13 @@ func (event *Event) LinkTitle() string {
 }
 
 type ParkrunEvent struct {
-	Index   string
-	Date    string
-	Special string
-	Results string
-	Report  string
-	Photos  string
+	IsCurrentWeek bool
+	Index         string
+	Date          string
+	Special       string
+	Results       string
+	Report        string
+	Photos        string
 }
 
 type Tag struct {
@@ -437,7 +438,7 @@ func fetchEvents(config ConfigData, srv *sheets.Service, eventType string, table
 	return events
 }
 
-func fetchParkrunEvents(config ConfigData, srv *sheets.Service, table string) []*ParkrunEvent {
+func fetchParkrunEvents(config ConfigData, srv *sheets.Service, table string, now time.Time) []*ParkrunEvent {
 	events := make([]*ParkrunEvent, 0)
 	resp, err := srv.Spreadsheets.Values.Get(config.SheetId, fmt.Sprintf("%s!A2:Z", table)).Do()
 	check(err)
@@ -466,7 +467,15 @@ func fetchParkrunEvents(config ConfigData, srv *sheets.Service, table string) []
 			if ll > 5 {
 				photos = fmt.Sprintf("%v", row[5])
 			}
+
+			currentWeek := false
+			d, err := utils.ParseDate(date)
+			if err == nil {
+				currentWeek = now.After(d) && now.Before(d.AddDate(0, 0, 7))
+			}
+
 			events = append(events, &ParkrunEvent{
+				currentWeek,
 				index,
 				date,
 				special,
@@ -683,7 +692,7 @@ func main() {
 	events = fetchEvents(config, srv, "event", "Events", now)
 	groups = fetchEvents(config, srv, "group", "Groups", now)
 	shops = fetchEvents(config, srv, "shop", "Shops", now)
-	parkrun = fetchParkrunEvents(config, srv, "Parkrun")
+	parkrun = fetchParkrunEvents(config, srv, "Parkrun", now)
 
 	validateDateOrder(events)
 	findPrevNextEvents(events)
