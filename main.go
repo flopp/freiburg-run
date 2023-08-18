@@ -702,7 +702,7 @@ func main() {
 	tags, tagsList := collectTags(events, events_old)
 
 	sitemapEntries := make([]string, 0)
-	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "index.html")
+	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "")
 	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "events-old.html")
 	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "tags.html")
 	sitemapEntries = utils.AddSitemapEntry(sitemapEntries, "lauftreffs.html")
@@ -742,8 +742,8 @@ func main() {
 	utils.MustDownloadHash("https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png", "images/marker-icon-2x.png", options.outDir)
 	utils.MustDownloadHash("https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png", "images/marker-shadow.png", options.outDir)
 
-	breadcrumbsBase := utils.InitBreadcrumbs(utils.Link{Name: "freiburg.run", Url: "/index.html"})
-	breadcrumbsEvents := utils.PushBreadcrumb(breadcrumbsBase, utils.Link{Name: "Laufveranstaltungen", Url: "/index.html"})
+	breadcrumbsBase := utils.InitBreadcrumbs(utils.Link{Name: "freiburg.run", Url: "/"})
+	breadcrumbsEvents := utils.PushBreadcrumb(breadcrumbsBase, utils.Link{Name: "Laufveranstaltungen", Url: "/"})
 
 	defaultImage := "/images/events2023.jpg"
 
@@ -752,7 +752,7 @@ func main() {
 		"Veranstaltung",
 		"Liste von aktuellen und zukünftigen Laufveranstaltungen, Lauf-Wettkämpfen, Volksläufen im Raum Freiburg / Südbaden",
 		"events",
-		"https://freiburg.run/index.html",
+		"https://freiburg.run/",
 		defaultImage,
 		breadcrumbsEvents,
 		timestamp,
@@ -860,7 +860,7 @@ func main() {
 		"",
 		defaultImage,
 		breadcrumbsEvents,
-		"/index.html",
+		"/",
 		timestamp,
 		timestampFull,
 		sheetUrl,
