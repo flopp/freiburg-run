@@ -146,7 +146,12 @@ func GenSitemap(fileName string, hashFileName string, outDir string, baseUrl str
 	nl(f)
 
 	for _, e := range entries {
-		fileName := filepath.Join(outDir, e)
+		var fileName string
+		if e == "" {
+			fileName = filepath.Join(outDir, "index.html")
+		} else {
+			fileName = filepath.Join(outDir, e)
+		}
 		timeStamp := getMtimeYMD(fileName)
 		if timeStamp == "" {
 			log.Printf("cannot get mtime '%s'", fileName)
