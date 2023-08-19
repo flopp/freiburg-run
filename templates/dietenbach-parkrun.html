@@ -1,27 +1,21 @@
 {{template "header.html" .}}
 
 <section class="section">
-    <div class="container">
+    <div class="container is-max-desktop">
         <h1 class="title">Dietenbach parkrun - Karte, Ergebnisse, Laufberichte, Fotogalerien</h1>
-        
-        <div id="controls">
-            <label class="checkbox">
-                <input type="checkbox" id="show-map">
-                Zeige Karte
-            </label>
-        </div>
-        
-        <div id="parkrun-map-wrapper">
-            <div class="notification is-info is-light">
-                Detaillierte Karte des <a href="https://www.parkrun.com.de/dietenbach/" target="_blank">Dietenbach parkrun</a> mit Treffpunkt, Parkplatz, Straßenbahnhaltestelle, Café.
+
+        <div class="columns">
+            <div class="column">
+                <div class="notification is-info is-light">
+                    Zu jedem Laufevent des <a href="https://www.parkrun.com.de/dietenbach/" target="_blank">Dietenbach parkrun</a> gibt es neben der Ergebnisliste auch einen Laufbericht und eine Fotogalerie.
+                    Auf der parkrun-Hauptseite sind diese sehr schwer zu finden - deshalb liste ich alle Berichte und Fotogalerien hier auf.
+                    <br />
+                    Außerdem gibt es hier eine detaillierte Streckenkarte des Dietenbach parkrun mit Treffpunkt, Parkplatz, Straßenbahnhaltestelle, Café.
+                </div>
             </div>
-    
-            <div id="parkrun-map"></div>
-        </div>
-        
-        <div class="notification is-info is-light">
-            Zu jedem Laufevent des <a href="https://www.parkrun.com.de/dietenbach/" target="_blank">Dietenbach parkrun</a> gibt es neben der Ergebnisliste auch einen Laufbericht und eine Fotogalerie.
-            Auf der parkrun-Hauptseite sind diese sehr schwer zu finden - deshalb liste ich alle Berichte und Fotogalerien hier auf.
+            <div class="column">
+                <div id="parkrun-map"></div>
+            </div>
         </div>
 
         <div class="b-table">
@@ -51,21 +45,21 @@
                             </td>
                             <td class="is-flex-wrap-wrap" data-label="Ergebnisse">
                                 {{if .Results}}
-                                <a href="{{.Results}}" target="_blank">Ergebnisse #{{.Index}}</a>
+                                <a href="{{.Results}}" target="_blank" title="Ergebnisse #{{.Index}}">Ergebnisse</a>
                                 {{end}}
                             </td>
                             <td class="is-flex-wrap-wrap" data-label="Laufbericht">
                                 {{if .Report}}
-                                <a href="{{.Report}}" target="_blank">Laufbericht #{{.Index}}</a>
+                                <a href="{{.Report}}" target="_blank" title="Laufbericht #{{.Index}}">Laufbericht</a>
                                 {{else}}
                                 {{if .Results}}
                                 In Arbeit
                                 {{end}}
                                 {{end}}
                             </td>
-                            <td class="is-flex-wrap-wrap" data-label="Fotogalerie">
+                            <td class="is-flex-wrap-wrap" data-label="Fotos">
                                 {{if .Photos}}
-                                <a href="{{.Photos}}" target="_blank">Fotogalerie #{{.Index}}</a>
+                                <a href="{{.Photos}}" target="_blank" title="Fotogalerie #{{.Index}}">Fotos</a>
                                 {{end}}
                             </td>
                         </tr>

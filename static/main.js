@@ -6,15 +6,6 @@ var on_load = function(f) {
     }
 }
 
-var toggle_map = function (mapDiv, leafletMap, show) {
-    if (show) {
-        mapDiv.classList.remove("is-hidden");
-        leafletMap.invalidateSize();
-    } else {
-        mapDiv.classList.add("is-hidden");
-    }
-};
-
 var toggle_menuitem = function (id) {
     var next = document.getElementById(id);
     var current = document.querySelector(".navbar-item.is-active");
@@ -55,7 +46,6 @@ var main = () => {
         return null;
     };
 
-    var mapDiv = null;
     var leafletMap = null;
 
     if (document.querySelector("#big-map") !== null) {
@@ -174,7 +164,6 @@ var main = () => {
     }
 
     if (document.querySelector("#parkrun-map") !== null) {
-        mapDiv = document.querySelector("#parkrun-map-wrapper");
         var map = L.map('parkrun-map').setView([48.000548, 7.804842], 15);
         leafletMap = map;
 
@@ -251,16 +240,6 @@ var main = () => {
             let marker = L.marker(geo, {icon: blueIcon});
             marker.addTo(map);
             marker.bindPopup(eventMap.dataset.name);
-        }
-    }
-
-    if (mapDiv !== null) {
-        var checkboxMap = document.querySelector("#show-map");
-        if (checkboxMap !== null) {
-            checkboxMap.addEventListener('change', (event) => {
-                toggle_map(mapDiv, leafletMap, checkboxMap.checked);
-            });
-            toggle_map(mapDiv, leafletMap, checkboxMap.checked);
         }
     }
 };
