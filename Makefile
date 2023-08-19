@@ -16,3 +16,7 @@ upload-test: build
 	scp -r .out/* .out/.htaccess echeclus.uberspace.de:/var/www/virtual/floppnet/fraig.de/
 	ssh echeclus.uberspace.de chmod -R a+rx /var/www/virtual/floppnet/fraig.de/
 
+.phone: run-script
+run-script:
+	ssh echeclus.uberspace.de packages/freiburg.run/cronjob.sh
+

@@ -1,11 +1,17 @@
 <div class="column is-half">
     <div class="card" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
         <header class="card-header">
-            {{if .New}}
+            {{if .Cancelled}}
+            <a class="button is-danger is-fullwidth" href="/{{.Slug}}" itemprop="item">
+                <span class="icon"><i class="info-icon"></i></span>
+                <span itemprop="name">{{.Name}}</span>
+                <span class="ml-1">(abgesagt)</span>
+            </a>
+            {{else if .New}}
             <a class="button is-success is-fullwidth" href="/{{.Slug}}" itemprop="item">
                 <span class="icon"><i class="info-icon"></i></span>
                 <span itemprop="name">{{.Name}}</span>
-                <span>(neu hinzugefügt)</span>
+                <span class="ml-1">(neu hinzugefügt)</span>
             </a>
             {{else}}
             <a class="button is-info is-fullwidth" href="/{{.Slug}}" itemprop="item">

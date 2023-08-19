@@ -6,6 +6,11 @@
         <h1 class="title">{{.Event.Name}}</h1>
         <div class="columns">
             <div class="column is-two-thirds">
+                {{if .Event.Cancelled}}
+                <div class="notification is-danger">
+                    Achtung: diese Veranstaltung wurde abgesagt!
+                </div>
+                {{end}}
                 <table class="table is-fullwidth is-narrow">
                     <tbody>
                         <tr>

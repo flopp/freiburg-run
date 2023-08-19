@@ -103,6 +103,7 @@ type Event struct {
 	Name      string
 	Time      string
 	TimeRange TimeRange
+	Cancelled bool
 	Location  string
 	Geo       string
 	Details   string
@@ -126,6 +127,7 @@ func createSeparatorEvent(label string) *Event {
 		label,
 		"",
 		TimeRange{},
+		false,
 		"",
 		"",
 		"",
@@ -420,6 +422,7 @@ func fetchEvents(config ConfigData, srv *sheets.Service, eventType string, table
 				name,
 				date,
 				timeRange,
+				strings.Contains(strings.ToLower(date), "abgesagt"),
 				location,
 				coordinates,
 				description1,
