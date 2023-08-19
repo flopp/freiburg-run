@@ -18,56 +18,54 @@
             </div>
         </div>
 
-        <div class="b-table">
-            <div class="table-wrapper has-mobile-cards">
-                <table class="table is-fullwidth is-narrow">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Datum</th>
-                            <th>Spezial</th>
-                            <th>Ergebnisse</th>
-                            <th>Laufbericht</th>
-                            <th>Fotogalerie</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {{range .Parkrun}}
-                        <tr {{if .IsCurrentWeek}}class="parkrun-event is-selected"{{else}}class="parkrun-event"{{end}}>
-                            <td class="is-flex-wrap-wrap" data-label="#">
-                                {{.Index}}
-                            </td>
-                            <td class="is-flex-wrap-wrap" data-label="Datum">
-                                {{.Date}}
-                            </td>
-                            <td class="is-flex-wrap-wrap" data-label="Spezial">
-                                {{.Special}}
-                            </td>
-                            <td class="is-flex-wrap-wrap" data-label="Ergebnisse">
-                                {{if .Results}}
-                                <a href="{{.Results}}" target="_blank" title="Ergebnisse #{{.Index}}">Ergebnisse</a>
-                                {{end}}
-                            </td>
-                            <td class="is-flex-wrap-wrap" data-label="Laufbericht">
-                                {{if .Report}}
-                                <a href="{{.Report}}" target="_blank" title="Laufbericht #{{.Index}}">Laufbericht</a>
-                                {{else}}
-                                {{if .Results}}
-                                In Arbeit
-                                {{end}}
-                                {{end}}
-                            </td>
-                            <td class="is-flex-wrap-wrap" data-label="Fotos">
-                                {{if .Photos}}
-                                <a href="{{.Photos}}" target="_blank" title="Fotogalerie #{{.Index}}">Fotos</a>
-                                {{end}}
-                            </td>
-                        </tr>
-                        {{end}}
-                    </tbody>
-                </table>
-            </div>
-        </div>
+        <table class="table is-fullwidth is-narrow">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Datum</th>
+                    <th>Spezial</th>
+                    <th>Links</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{range .Parkrun}}
+                <tr {{if .IsCurrentWeek}}class="parkrun-event is-selected"{{else}}class="parkrun-event"{{end}}>
+                    <td>
+                        {{.Index}}
+                    </td>
+                    <td>
+                        {{.Date}}
+                    </td>
+                    <td data-label="Spezial">
+                        {{.Special}}
+                    </td>
+                    <td>
+                        <div class="field has-addons">
+                            {{if .Results}}
+                            <p class="control">
+                                <a class="button no-external" href="{{.Results}}" target="_blank" title="Ergebnisse #{{.Index}}"><span class="icon"><i class="medal-icon"></i></span></a>
+                            </p>
+                            {{end}}
+                            {{if .Report}}
+                            <p class="control">
+                                <a class="button no-external" href="{{.Report}}" target="_blank" title="Laufbericht #{{.Index}}"><span class="icon"><i class="report-icon"></i></span></a>
+                            </p>
+                            {{else if .Results}}
+                            <p class="control">
+                                <a disabled class="button no-external" href="#" target="_blank" title="Laufbericht #{{.Index}} (in Arbeit)"><span class="icon"><i class="report-icon"></i></span></a>
+                            </p>
+                            {{end}}
+                            {{if .Photos}}
+                            <p class="control">
+                                <a class="button no-external" href="{{.Photos}}" target="_blank" title="Fotogalerie #{{.Index}}"><span class="icon"><i class="images-icon"></i></span></a>
+                            </p>
+                            {{end}}
+                        </div>
+                    </td>
+                </tr>
+                {{end}}
+            </tbody>
+        </table>
     </div>
 </section>
 
