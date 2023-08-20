@@ -24,7 +24,10 @@
 {{end}}
 
 {{if .Tag.EventsOld}}
-        <h2 class="title">Vergangene Laufveranstaltungen der Kategorie '{{.Tag.Name}}'</h2>
+        <h2 class="title">Vergangene Laufveranstaltungen</h2>
+        <div class="notification is-info is-light">
+            In umgekehrt chronologischer Reihenfolge.
+        </div>
 
         <div class="columns is-multiline">
             {{range .Tag.EventsOld}}

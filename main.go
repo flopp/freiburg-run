@@ -631,6 +631,50 @@ func addMonthSeparators(events []*Event) []*Event {
 	return result
 }
 
+func addMonthSeparatorsDescending(events []*Event) []*Event {
+	result := make([]*Event, 0, len(events))
+	var last time.Time
+
+	for _, event := range events {
+		d := event.TimeRange.From
+		if event.TimeRange.From.IsZero() {
+			// no label
+		} else if last.IsZero() {
+			// initial label
+			last = d
+			result = append(result, createSeparatorEvent(createMonthLabel(last)))
+		} else if d.Before(last) {
+			if last.Year() == d.Year() && last.Month() == d.Month() {
+				// no new month label
+			} else {
+				for last.Year() != d.Year() || last.Month() != d.Month() {
+					if last.Month() == time.January {
+						last = time.Date(last.Year()-1, time.December, 1, 0, 0, 0, 0, last.Location())
+					} else {
+						last = time.Date(last.Year(), last.Month()-1, 1, 0, 0, 0, 0, last.Location())
+					}
+					result = append(result, createSeparatorEvent(createMonthLabel(last)))
+				}
+			}
+		}
+
+		result = append(result, event)
+	}
+	return result
+}
+
+func reverse(s []*Event) []*Event {
+	a := make([]*Event, len(s))
+	copy(a, s)
+
+	for i := len(a)/2 - 1; i >= 0; i-- {
+		opp := len(a) - 1 - i
+		a[i], a[opp] = a[opp], a[i]
+	}
+
+	return a
+}
+
 func collectTags(events []*Event, eventsOld []*Event) (map[string]*Tag, []*Tag) {
 	tags := make(map[string]*Tag)
 	for _, e := range events {
@@ -701,7 +745,8 @@ func main() {
 	findPrevNextEvents(events)
 	events, events_old = splitEvents(events, today)
 	events = addMonthSeparators(events)
-	events_old = addMonthSeparators(events_old)
+	events_old = reverse(events_old)
+	events_old = addMonthSeparatorsDescending(events_old)
 	tags, tagsList := collectTags(events, events_old)
 
 	sitemapEntries := make([]string, 0)
@@ -975,7 +1020,7 @@ func main() {
 	for _, tag := range tags {
 		tagdata.Tag = tag
 		tagdata.Title = fmt.Sprintf("Laufveranstaltungen der Kategorie '%s'", tag.Name)
-		tagdata.Description = fmt.Sprintf("Liste an Laufveranstaltungen im Raum Freiburg/Südbaden, die mit der Kategorie Kategorie '%s' getaggt sind", tag.Name)
+		tagdata.Description = fmt.Sprintf("Liste an Laufveranstaltungen im Raum Freiburg/Südbaden, die mit der Kategorie '%s' getaggt sind", tag.Name)
 		slug := fmt.Sprintf("tag/%s.html", tag.Name)
 		tagdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
 		tagdata.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsEventsTags, utils.Link{Name: tag.Name, Url: fmt.Sprintf("/%s", slug)})
