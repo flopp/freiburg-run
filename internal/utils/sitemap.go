@@ -4,17 +4,11 @@ import (
 	"bufio"
 	"crypto/sha256"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
 	"regexp"
 )
-
-type SitemapEntry struct {
-	slug      string
-	timestamp string
-}
 
 func nl(f *os.File) {
 	f.WriteString("\n")
@@ -102,7 +96,7 @@ func replaceRegexp(s []byte, r regexp.Regexp) []byte {
 }
 
 func determineHash(fileName string) (string, error) {
-	buf, err := ioutil.ReadFile(fileName)
+	buf, err := os.ReadFile(fileName)
 	if err != nil {
 		return "", err
 	}
