@@ -31,12 +31,14 @@ type CommandLineOptions struct {
 	configFile string
 	outDir     string
 	hashFile   string
+	addedFile  string
 }
 
 func parseCommandLine() CommandLineOptions {
 	configFile := flag.String("config", "", "select config file")
 	outDir := flag.String("out", ".out", "output directory")
 	hashFile := flag.String("hashfile", ".hashes", "file storing file hashes (for sitemap)")
+	addedFile := flag.String("addedfile", ".added", "file storing event addition dates")
 
 	flag.Usage = func() {
 		fmt.Fprintf(flag.CommandLine.Output(), usage, os.Args[0])
@@ -52,6 +54,7 @@ func parseCommandLine() CommandLineOptions {
 		*configFile,
 		*outDir,
 		*hashFile,
+		*addedFile,
 	}
 }
 
@@ -709,6 +712,24 @@ func collectTags(events []*Event, eventsOld []*Event) (map[string]*Tag, []*Tag) 
 	return tags, tagsList
 }
 
+func updateAddedDates(events []*Event, added *utils.Added, eventType string, timestamp string) {
+	for _, event := range events {
+		fromFile, err := added.GetAdded(eventType, event.Slug())
+		if err == nil {
+			if fromFile == "" {
+				if event.Added == "" {
+					event.Added = timestamp
+				}
+				_ = added.SetAdded(eventType, event.Slug(), event.Added)
+			} else {
+				if event.Added == "" {
+					event.Added = fromFile
+				}
+			}
+		}
+	}
+}
+
 func main() {
 	now := time.Now()
 	today := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
@@ -740,6 +761,21 @@ func main() {
 	groups = fetchEvents(config, srv, "group", "Groups", now)
 	shops = fetchEvents(config, srv, "shop", "Shops", now)
 	parkrun = fetchParkrunEvents(config, srv, "Parkrun", now)
+
+	if options.addedFile != "" {
+		added, err := utils.ReadAdded(options.addedFile)
+		if err != nil {
+			log.Printf("failed to parse added file: '%s' - %v", options.addedFile, err)
+		}
+
+		updateAddedDates(events, added, "event", timestamp)
+		updateAddedDates(groups, added, "group", timestamp)
+		updateAddedDates(shops, added, "shop", timestamp)
+
+		if err = added.Write(options.addedFile); err != nil {
+			log.Printf("failed to write added file: '%s' - %v", options.addedFile, err)
+		}
+	}
 
 	validateDateOrder(events)
 	findPrevNextEvents(events)

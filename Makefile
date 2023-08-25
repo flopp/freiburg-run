@@ -4,7 +4,7 @@ all:
 .phony: build
 build:
 	rm -rf .out
-	go run main.go -config config.json -out .out -hashfile .hashes
+	go run main.go -config config.json -out .out -hashfile .hashes -added .added
 
 .phony: upload
 upload: build
