@@ -375,7 +375,7 @@ func SplitDetails(s string) (string, string) {
 	return s, ""
 }
 
-func fetchEvents(config ConfigData, srv *sheets.Service, eventType string, table string, now time.Time) []*Event {
+func fetchEvents(config ConfigData, srv *sheets.Service, eventType string, table string) []*Event {
 	events := make([]*Event, 0)
 	resp, err := srv.Spreadsheets.Values.Get(config.SheetId, fmt.Sprintf("%s!A2:Z", table)).Do()
 	check(err)
@@ -383,37 +383,34 @@ func fetchEvents(config ConfigData, srv *sheets.Service, eventType string, table
 		panic("No events data found.")
 	} else {
 		for _, row := range resp.Values {
-			var added, date, name, url, description1, description2, location, coordinates string
+			var date, name, url, description1, description2, location, coordinates string
 			tags := make([]string, 0)
 			links := make([]NameUrl, 0)
 
 			ll := len(row)
 			if ll > 0 {
-				added = fmt.Sprintf("%v", row[0])
+				date = fmt.Sprintf("%v", row[0])
 			}
 			if ll > 1 {
-				date = fmt.Sprintf("%v", row[1])
+				name = fmt.Sprintf("%v", row[1])
 			}
 			if ll > 2 {
-				name = fmt.Sprintf("%v", row[2])
+				url = fmt.Sprintf("%v", row[2])
 			}
 			if ll > 3 {
-				url = fmt.Sprintf("%v", row[3])
+				description1, description2 = SplitDetails(fmt.Sprintf("%v", row[3]))
 			}
 			if ll > 4 {
-				description1, description2 = SplitDetails(fmt.Sprintf("%v", row[4]))
+				location = fmt.Sprintf("%v", row[4])
 			}
 			if ll > 5 {
-				location = fmt.Sprintf("%v", row[5])
+				coordinates = utils.NormalizeGeo(fmt.Sprintf("%v", row[5]))
 			}
 			if ll > 6 {
-				coordinates = utils.NormalizeGeo(fmt.Sprintf("%v", row[6]))
+				tags = parseTags(fmt.Sprintf("%v", row[6]))
 			}
 			if ll > 7 {
-				tags = parseTags(fmt.Sprintf("%v", row[7]))
-			}
-			if ll > 8 {
-				links = parseLinks(row[8:])
+				links = parseLinks(row[7:])
 			}
 
 			timeRange, err := parseTimeRange(date)
@@ -433,8 +430,8 @@ func fetchEvents(config ConfigData, srv *sheets.Service, eventType string, table
 				url,
 				tags,
 				links,
-				added,
-				IsNew(added, now),
+				"",
+				false,
 				nil,
 				nil,
 			})
@@ -712,7 +709,7 @@ func collectTags(events []*Event, eventsOld []*Event) (map[string]*Tag, []*Tag) 
 	return tags, tagsList
 }
 
-func updateAddedDates(events []*Event, added *utils.Added, eventType string, timestamp string) {
+func updateAddedDates(events []*Event, added *utils.Added, eventType string, timestamp string, now time.Time) {
 	for _, event := range events {
 		fromFile, err := added.GetAdded(eventType, event.Slug())
 		if err == nil {
@@ -726,7 +723,9 @@ func updateAddedDates(events []*Event, added *utils.Added, eventType string, tim
 					event.Added = fromFile
 				}
 			}
+
 		}
+		event.New = IsNew(event.Added, now)
 	}
 }
 
@@ -757,9 +756,9 @@ func main() {
 	srv, err := sheets.NewService(ctx, option.WithAPIKey(config.ApiKey))
 	check(err)
 
-	events = fetchEvents(config, srv, "event", "Events", now)
-	groups = fetchEvents(config, srv, "group", "Groups", now)
-	shops = fetchEvents(config, srv, "shop", "Shops", now)
+	events = fetchEvents(config, srv, "event", "Events")
+	groups = fetchEvents(config, srv, "group", "Groups")
+	shops = fetchEvents(config, srv, "shop", "Shops")
 	parkrun = fetchParkrunEvents(config, srv, "Parkrun", now)
 
 	if options.addedFile != "" {
@@ -768,9 +767,9 @@ func main() {
 			log.Printf("failed to parse added file: '%s' - %v", options.addedFile, err)
 		}
 
-		updateAddedDates(events, added, "event", timestamp)
-		updateAddedDates(groups, added, "group", timestamp)
-		updateAddedDates(shops, added, "shop", timestamp)
+		updateAddedDates(events, added, "event", timestamp, now)
+		updateAddedDates(groups, added, "group", timestamp, now)
+		updateAddedDates(shops, added, "shop", timestamp, now)
 
 		if err = added.Write(options.addedFile); err != nil {
 			log.Printf("failed to write added file: '%s' - %v", options.addedFile, err)
