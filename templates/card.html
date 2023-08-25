@@ -1,20 +1,24 @@
 <div class="column is-half">
     <div class="card" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-        <header class="card-header">
+        <header class="card-header is-flex-direction-column">
             {{if .Cancelled}}
-            <a class="button is-danger is-fullwidth" href="/{{.Slug}}" itemprop="item">
+            <a class="button is-danger is-fullwidth is-radiusless" href="/{{.Slug}}" itemprop="item">
                 <span class="icon"><i class="info-icon"></i></span>
                 <span itemprop="name">{{.Name}}</span>
-                <span class="ml-1">(abgesagt)</span>
+            </a>
+            <a class="button is-danger is-small is-fullwidth is-radiusless" href="/{{.Slug}}">
+                <span>(abgesagt)</span>
             </a>
             {{else if .New}}
-            <a class="button is-success is-fullwidth" href="/{{.Slug}}" itemprop="item">
+            <a class="button is-success is-fullwidth is-radiusless" href="/{{.Slug}}" itemprop="item">
                 <span class="icon"><i class="info-icon"></i></span>
                 <span itemprop="name">{{.Name}}</span>
-                <span class="ml-1">(neu hinzugefügt)</span>
+            </a>
+            <a class="button is-success is-small is-fullwidth is-radiusless" href="/{{.Slug}}">
+                <span>(neu hinzugefügt)</span>
             </a>
             {{else}}
-            <a class="button is-info is-fullwidth" href="/{{.Slug}}" itemprop="item">
+            <a class="button is-info is-fullwidth is-radiusless" href="/{{.Slug}}" itemprop="item">
                 <span class="icon"><i class="info-icon"></i></span>
                 <span itemprop="name">{{.Name}}</span>
             </a>
