@@ -109,6 +109,8 @@ type Event struct {
 	Cancelled bool
 	Location  string
 	Geo       string
+	Distance  string
+	Direction string
 	Details   string
 	Details2  string
 	Url       string
@@ -131,6 +133,8 @@ func createSeparatorEvent(label string) *Event {
 		"",
 		TimeRange{},
 		false,
+		"",
+		"",
 		"",
 		"",
 		"",
@@ -383,7 +387,7 @@ func fetchEvents(config ConfigData, srv *sheets.Service, eventType string, table
 		panic("No events data found.")
 	} else {
 		for _, row := range resp.Values {
-			var date, name, url, description1, description2, location, coordinates string
+			var date, name, url, description1, description2, location, coordinates, distance, direction string
 			tags := make([]string, 0)
 			links := make([]NameUrl, 0)
 
@@ -405,6 +409,15 @@ func fetchEvents(config ConfigData, srv *sheets.Service, eventType string, table
 			}
 			if ll > 5 {
 				coordinates = utils.NormalizeGeo(fmt.Sprintf("%v", row[5]))
+				lat, lon, err := utils.LatLon(coordinates)
+				if err == nil {
+					// Freiburg
+					lat0 := 47.996090
+					lon0 := 7.849400
+					d, b := utils.DistanceBearing(lat0, lon0, lat, lon)
+					distance = fmt.Sprintf("%.1fkm", d)
+					direction = utils.ApproxDirection(b)
+				}
 			}
 			if ll > 6 {
 				tags = parseTags(fmt.Sprintf("%v", row[6]))
@@ -425,6 +438,8 @@ func fetchEvents(config ConfigData, srv *sheets.Service, eventType string, table
 				strings.Contains(strings.ToLower(date), "abgesagt"),
 				location,
 				coordinates,
+				distance,
+				direction,
 				description1,
 				description2,
 				url,

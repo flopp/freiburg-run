@@ -30,6 +30,7 @@
                             <td class="is-w100">
                                 {{if .Event.Geo}}
                                 <a href="https://www.google.com/maps/place/{{.Event.Geo}}" target="_blank">{{.Event.Location}}</a>
+                                ({{.Event.Distance}} {{.Event.Direction}} von Freiburg Zentrum)
                                 {{else}}
                                 {{.Event.Location}}
                                 {{end}}
