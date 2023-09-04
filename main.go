@@ -5,13 +5,13 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"html/template"
 	"log"
 	"os"
 	"path/filepath"
 	"regexp"
 	"sort"
 	"strings"
-	"text/template"
 	"time"
 	"unicode"
 
@@ -112,7 +112,7 @@ type Event struct {
 	Distance  string
 	Direction string
 	Details   string
-	Details2  string
+	Details2  template.HTML
 	Url       string
 	Tags      []string
 	Reports   []NameUrl
@@ -441,7 +441,7 @@ func fetchEvents(config ConfigData, srv *sheets.Service, eventType string, table
 				distance,
 				direction,
 				description1,
-				description2,
+				template.HTML(description2),
 				url,
 				tags,
 				links,
