@@ -10,6 +10,36 @@ import (
 	"regexp"
 )
 
+type FileHashDate struct {
+	name string
+	hash string
+	date string
+}
+
+type SitemapEntry struct {
+	Slug     string
+	Name     string
+	Category string
+}
+
+type Sitemap struct {
+	BaseUrl    string
+	Categories []string
+	Entries    []*SitemapEntry
+}
+
+func CreateSitemap(baseUrl string) *Sitemap {
+	return &Sitemap{baseUrl, make([]string, 0), make([]*SitemapEntry, 0)}
+}
+
+func (sitemap *Sitemap) AddCategory(name string) {
+	sitemap.Categories = append(sitemap.Categories, name)
+}
+
+func (sitemap *Sitemap) Add(slug string, name string, category string) {
+	sitemap.Entries = append(sitemap.Entries, &SitemapEntry{slug, name, category})
+}
+
 func nl(f *os.File) {
 	f.WriteString("\n")
 }
@@ -26,12 +56,6 @@ func genSitemapEntry(f *os.File, url string, timeStamp string) {
 
 func AddSitemapEntry(entries []string, slug string) []string {
 	return append(entries, slug)
-}
-
-type FileHashDate struct {
-	name string
-	hash string
-	date string
 }
 
 func readHashFile(fileName string) map[string]*FileHashDate {
@@ -120,7 +144,7 @@ func getMtimeYMD(filePath string) string {
 	return stat.ModTime().Format("2006-01-02")
 }
 
-func GenSitemap(fileName string, hashFileName string, outDir string, baseUrl string, entries []string) error {
+func (sitemap Sitemap) Gen(fileName string, hashFileName string, outDir string) error {
 	if err := os.MkdirAll(filepath.Dir(fileName), 0770); err != nil {
 		return err
 	}
@@ -139,7 +163,8 @@ func GenSitemap(fileName string, hashFileName string, outDir string, baseUrl str
 	f.WriteString(`<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`)
 	nl(f)
 
-	for _, e := range entries {
+	for _, entry := range sitemap.Entries {
+		e := entry.Slug
 		var fileName string
 		if e == "" {
 			fileName = filepath.Join(outDir, "index.html")
@@ -167,7 +192,7 @@ func GenSitemap(fileName string, hashFileName string, outDir string, baseUrl str
 		}
 		mNew[fileName] = &FileHashDate{fileName, currentHash, timeStamp}
 
-		genSitemapEntry(f, fmt.Sprintf("%s/%s", baseUrl, e), timeStamp)
+		genSitemapEntry(f, fmt.Sprintf("%s/%s", sitemap.BaseUrl, e), timeStamp)
 	}
 
 	f.WriteString(`</urlset>`)
@@ -175,4 +200,38 @@ func GenSitemap(fileName string, hashFileName string, outDir string, baseUrl str
 	writeHashFile(hashFileName, mNew)
 
 	return nil
+}
+
+type SitemapCategory struct {
+	Name  string
+	Links []Link
+}
+
+func (sitemap Sitemap) GenHTML() []SitemapCategory {
+	byCategory := make(map[string][]*SitemapEntry)
+	for _, c := range sitemap.Categories {
+		byCategory[c] = make([]*SitemapEntry, 0)
+	}
+
+	for _, e := range sitemap.Entries {
+		c, found := byCategory[e.Category]
+		if !found {
+			log.Printf("Sitemap: event '%s' has bad category '%s", e.Name, e.Category)
+			continue
+		}
+
+		c = append(c, e)
+		byCategory[e.Category] = c
+	}
+
+	categories := make([]SitemapCategory, 0)
+	for _, c := range sitemap.Categories {
+		links := make([]Link, 0)
+		for _, e := range byCategory[c] {
+			links = append(links, Link{e.Name, fmt.Sprintf("%s/%s", sitemap.BaseUrl, e.Slug)})
+		}
+		categories = append(categories, SitemapCategory{c, links})
+	}
+
+	return categories
 }
