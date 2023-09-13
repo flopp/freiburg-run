@@ -104,6 +104,7 @@ func parseTimeRange(s string) (TimeRange, error) {
 type Event struct {
 	Type      string
 	Name      string
+	NameOld   string
 	Time      string
 	TimeRange TimeRange
 	Cancelled bool
@@ -130,6 +131,7 @@ func createSeparatorEvent(label string) *Event {
 	return &Event{
 		"",
 		label,
+		"",
 		"",
 		TimeRange{},
 		false,
@@ -172,6 +174,22 @@ func (event *Event) slug(ext string) string {
 		return fmt.Sprintf("%s/%s-%s.%s", t, m[1], utils.SanitizeName(event.Name), ext)
 	}
 	return fmt.Sprintf("%s/%s.%s", t, utils.SanitizeName(event.Name), ext)
+}
+
+func (event *Event) SlugOld() string {
+	if event.NameOld == "" {
+		return ""
+	}
+
+	t := event.Type
+	if strings.Contains(event.NameOld, "parkrun") {
+		t = "event"
+	}
+
+	if m := yearRe.FindStringSubmatch(event.Time); m != nil {
+		return fmt.Sprintf("%s/%s-%s.html", t, m[1], utils.SanitizeName(event.NameOld))
+	}
+	return fmt.Sprintf("%s/%s.html", t, utils.SanitizeName(event.NameOld))
 }
 
 func (event *Event) Slug() string {
@@ -357,7 +375,7 @@ func fetchEvents(config ConfigData, srv *sheets.Service, eventType string, table
 		panic("No events data found.")
 	} else {
 		for _, row := range resp.Values {
-			var date, name, url, description1, description2, location, coordinates, distance, direction string
+			var date, name, nameOld, url, description1, description2, location, coordinates, distance, direction string
 			tags := make([]string, 0)
 			links := make([]NameUrl, 0)
 
@@ -366,7 +384,7 @@ func fetchEvents(config ConfigData, srv *sheets.Service, eventType string, table
 				date = fmt.Sprintf("%v", row[0])
 			}
 			if ll > 1 {
-				name = fmt.Sprintf("%v", row[1])
+				name, nameOld = SplitDetails(fmt.Sprintf("%v", row[1]))
 			}
 			if ll > 2 {
 				url = fmt.Sprintf("%v", row[2])
@@ -403,6 +421,7 @@ func fetchEvents(config ConfigData, srv *sheets.Service, eventType string, table
 			events = append(events, &Event{
 				eventType,
 				name,
+				nameOld,
 				date,
 				timeRange,
 				strings.Contains(strings.ToLower(date), "abgesagt"),
@@ -714,6 +733,45 @@ func updateAddedDates(events []*Event, added *utils.Added, eventType string, tim
 	}
 }
 
+func CreateHtaccess(events, events_old, groups, shops []*Event, outDir string) error {
+	if err := utils.MakeDir(outDir); err != nil {
+		return err
+	}
+
+	fileName := filepath.Join(outDir, ".htaccess")
+
+	destination, err := os.Create(fileName)
+	if err != nil {
+		return err
+	}
+	defer destination.Close()
+
+	destination.WriteString("ErrorDocument 404 /404.html\n")
+	destination.WriteString("Redirect /parkrun /dietenbach-parkrun.html\n")
+	for _, e := range events {
+		if old := e.SlugOld(); old != "" {
+			destination.WriteString(fmt.Sprintf("Redirect /%s /%s\n", old, e.Slug()))
+		}
+	}
+	for _, e := range events_old {
+		if old := e.SlugOld(); old != "" {
+			destination.WriteString(fmt.Sprintf("Redirect /%s /%s\n", old, e.Slug()))
+		}
+	}
+	for _, e := range groups {
+		if old := e.SlugOld(); old != "" {
+			destination.WriteString(fmt.Sprintf("Redirect /%s /%s\n", old, e.Slug()))
+		}
+	}
+	for _, e := range shops {
+		if old := e.SlugOld(); old != "" {
+			destination.WriteString(fmt.Sprintf("Redirect /%s /%s\n", old, e.Slug()))
+		}
+	}
+
+	return nil
+}
+
 func main() {
 	now := time.Now()
 	today := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
@@ -787,7 +845,6 @@ func main() {
 	sitemap.Add("datenschutz.html", "Datenschutz", "Allgemein")
 	sitemap.Add("impressum.html", "Impressum", "Allgemein")
 
-	utils.MustCopyHash("static/.htaccess", ".htaccess", options.outDir)
 	utils.MustCopyHash("static/robots.txt", "robots.txt", options.outDir)
 	utils.MustCopyHash("static/favicon.png", "favicon.png", options.outDir)
 	utils.MustCopyHash("static/favicon.ico", "favicon.ico", options.outDir)
@@ -1071,4 +1128,7 @@ func main() {
 		css_files,
 	}
 	utils.ExecuteTemplate("sitemap", filepath.Join(options.outDir, "sitemap.html"), sitemapTemplate)
+
+	err = CreateHtaccess(events, events_old, groups, shops, options.outDir)
+	utils.Check(err)
 }
