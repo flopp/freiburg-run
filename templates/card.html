@@ -1,5 +1,9 @@
 <div class="column is-half">
+    {{if .Special}}
+    <div class="card pulsating-border" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+    {{else}}
     <div class="card" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+    {{end}}
         <header class="card-header is-flex-direction-column">
             {{if .Cancelled}}
             <a class="button is-danger is-fullwidth is-radiusless" href="/{{.Slug}}" itemprop="item">

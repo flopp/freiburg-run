@@ -108,6 +108,7 @@ type Event struct {
 	Time      string
 	TimeRange TimeRange
 	Cancelled bool
+	Special   bool
 	Location  string
 	Geo       string
 	Distance  string
@@ -134,6 +135,7 @@ func createSeparatorEvent(label string) *Event {
 		"",
 		"",
 		TimeRange{},
+		false,
 		false,
 		"",
 		"",
@@ -425,6 +427,7 @@ func fetchEvents(config ConfigData, srv *sheets.Service, eventType string, table
 				date,
 				timeRange,
 				strings.Contains(strings.ToLower(date), "abgesagt"),
+				name == "100. Dietenbach parkrun",
 				location,
 				coordinates,
 				distance,
@@ -748,6 +751,8 @@ func CreateHtaccess(events, events_old, groups, shops []*Event, outDir string) e
 
 	destination.WriteString("ErrorDocument 404 /404.html\n")
 	destination.WriteString("Redirect /parkrun /dietenbach-parkrun.html\n")
+	destination.WriteString("Redirect /groups.html /lauftreffs.html\n")
+	destination.WriteString("Redirect /event/2024-32-teninger-allmendlauf.html?back=event /event/2024-32-teninger-allmendlauf.html\n")
 	for _, e := range events {
 		if old := e.SlugOld(); old != "" {
 			destination.WriteString(fmt.Sprintf("Redirect /%s /%s\n", old, e.Slug()))
