@@ -107,6 +107,7 @@ type Event struct {
 	NameOld   string
 	Time      string
 	TimeRange TimeRange
+	Old       bool
 	Cancelled bool
 	Special   bool
 	Location  string
@@ -135,6 +136,7 @@ func createSeparatorEvent(label string) *Event {
 		"",
 		"",
 		TimeRange{},
+		false,
 		false,
 		false,
 		"",
@@ -369,7 +371,7 @@ func SplitDetails(s string) (string, string) {
 	return s, ""
 }
 
-func fetchEvents(config ConfigData, srv *sheets.Service, eventType string, table string) []*Event {
+func fetchEvents(config ConfigData, srv *sheets.Service, today time.Time, eventType string, table string) []*Event {
 	events := make([]*Event, 0)
 	resp, err := srv.Spreadsheets.Values.Get(config.SheetId, fmt.Sprintf("%s!A2:Z", table)).Do()
 	utils.Check(err)
@@ -420,12 +422,15 @@ func fetchEvents(config ConfigData, srv *sheets.Service, eventType string, table
 			if err != nil {
 				log.Printf("event '%s': %v", name, err)
 			}
+			isOld := (!timeRange.From.IsZero()) && timeRange.To.Before(today)
+
 			events = append(events, &Event{
 				eventType,
 				name,
 				nameOld,
 				date,
 				timeRange,
+				isOld,
 				strings.Contains(strings.ToLower(date), "abgesagt"),
 				name == "100. Dietenbach parkrun",
 				location,
@@ -448,7 +453,7 @@ func fetchEvents(config ConfigData, srv *sheets.Service, eventType string, table
 	return events
 }
 
-func fetchParkrunEvents(config ConfigData, srv *sheets.Service, table string, now time.Time) []*ParkrunEvent {
+func fetchParkrunEvents(config ConfigData, srv *sheets.Service, today time.Time, table string) []*ParkrunEvent {
 	events := make([]*ParkrunEvent, 0)
 	resp, err := srv.Spreadsheets.Values.Get(config.SheetId, fmt.Sprintf("%s!A2:Z", table)).Do()
 	utils.Check(err)
@@ -481,7 +486,7 @@ func fetchParkrunEvents(config ConfigData, srv *sheets.Service, table string, no
 			currentWeek := false
 			d, err := utils.ParseDate(date)
 			if err == nil {
-				currentWeek = now.After(d) && now.Before(d.AddDate(0, 0, 7))
+				currentWeek = today.After(d) && today.Before(d.AddDate(0, 0, 7))
 			}
 
 			events = append(events, &ParkrunEvent{
@@ -590,14 +595,12 @@ func findPrevNextEvents(events []*Event) {
 	}
 }
 
-func splitEvents(events []*Event, today time.Time) ([]*Event, []*Event) {
+func splitEvents(events []*Event) ([]*Event, []*Event) {
 	futureEvents := make([]*Event, 0)
 	pastEvents := make([]*Event, 0)
 
 	for _, event := range events {
-		if event.TimeRange.From.IsZero() {
-			futureEvents = append(futureEvents, event)
-		} else if event.TimeRange.To.Before(today) {
+		if event.Old {
 			pastEvents = append(pastEvents, event)
 		} else {
 			futureEvents = append(futureEvents, event)
@@ -804,10 +807,10 @@ func main() {
 	srv, err := sheets.NewService(ctx, option.WithAPIKey(config.ApiKey))
 	utils.Check(err)
 
-	events = fetchEvents(config, srv, "event", "Events")
-	groups = fetchEvents(config, srv, "group", "Groups")
-	shops = fetchEvents(config, srv, "shop", "Shops")
-	parkrun = fetchParkrunEvents(config, srv, "Parkrun", now)
+	events = fetchEvents(config, srv, today, "event", "Events")
+	groups = fetchEvents(config, srv, today, "group", "Groups")
+	shops = fetchEvents(config, srv, today, "shop", "Shops")
+	parkrun = fetchParkrunEvents(config, srv, today, "Parkrun")
 
 	if options.addedFile != "" {
 		added, err := utils.ReadAdded(options.addedFile)
@@ -826,7 +829,7 @@ func main() {
 
 	validateDateOrder(events)
 	findPrevNextEvents(events)
-	events, events_old = splitEvents(events, today)
+	events, events_old = splitEvents(events)
 	events = addMonthSeparators(events)
 	events_old = reverse(events_old)
 	events_old = addMonthSeparatorsDescending(events_old)

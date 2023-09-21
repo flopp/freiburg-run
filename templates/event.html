@@ -22,7 +22,7 @@
                         {{if .Event.Time}}
                         <tr>
                             <th>Datum</th>
-                            <td class="is-w100">{{.Event.Time}}</td>
+                            <td class="is-w100">{{.Event.Time}}{{if .Event.Old}} <span class="has-text-danger">(Vergangenes Event)</span>{{end}}</td>
                         </tr>
                         {{end}}
                         <tr>
