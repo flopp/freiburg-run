@@ -486,7 +486,11 @@ func fetchParkrunEvents(config ConfigData, srv *sheets.Service, today time.Time,
 			currentWeek := false
 			d, err := utils.ParseDate(date)
 			if err == nil {
-				currentWeek = today.After(d) && today.Before(d.AddDate(0, 0, 7))
+
+				fmt.Printf("TODAY=%v D=%s=%v D+7=%v\n", today, date, d, d.AddDate(0, 0, 7))
+				today_y, today_m, today_d := today.Date()
+				d_y, d_m, d_d := d.Date()
+				currentWeek = (today_y == d_y && today_m == d_m && today_d == d_d) || (today.After(d) && today.Before(d.AddDate(0, 0, 7)))
 			}
 
 			events = append(events, &ParkrunEvent{

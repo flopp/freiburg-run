@@ -22,10 +22,12 @@ func DateYMS(s string) string {
 }
 
 func ParseDate(s string) (time.Time, error) {
-	d, err := time.Parse("2006-01-02", s)
+	loc, _ := time.LoadLocation("Europe/Berlin")
+
+	d, err := time.ParseInLocation("2006-01-02", s, loc)
 	if err == nil {
 		return d, nil
 	}
 
-	return time.Parse("02.01.2006", s)
+	return time.ParseInLocation("02.01.2006", s, loc)
 }
