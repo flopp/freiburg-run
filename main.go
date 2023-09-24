@@ -865,6 +865,7 @@ func main() {
 	utils.MustCopyHash("static/marker-grey-icon-2x.png", "images/marker-grey-icon-2x.png", options.outDir)
 	utils.MustCopyHash("static/circle-small.png", "images/circle-small.png", options.outDir)
 	utils.MustCopyHash("static/circle-big.png", "images/circle-big.png", options.outDir)
+	utils.MustCopyHash("static/freiburg-run-flyer.pdf", "freiburg-run-flyer.pdf", options.outDir)
 
 	js_files := make([]string, 0)
 	js_files = append(js_files, utils.MustDownloadHash("https://unpkg.com/leaflet@1.9.4/dist/leaflet.js", "leaflet-HASH.js", options.outDir))
