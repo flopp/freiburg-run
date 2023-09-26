@@ -810,6 +810,11 @@ func main() {
 	utils.Check(err)
 
 	events = fetchEvents(config, srv, today, "event", "Events")
+	events2023 := fetchEvents(config, srv, today, "event", "Events2023")
+	events = append(events, events2023...)
+	events2024 := fetchEvents(config, srv, today, "event", "Events2024")
+	events = append(events, events2024...)
+
 	groups = fetchEvents(config, srv, today, "group", "Groups")
 	shops = fetchEvents(config, srv, today, "shop", "Shops")
 	parkrun = fetchParkrunEvents(config, srv, today, "Parkrun")
