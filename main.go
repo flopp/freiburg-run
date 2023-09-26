@@ -371,6 +371,22 @@ func SplitDetails(s string) (string, string) {
 	return s, ""
 }
 
+func getAllSheets(config ConfigData, srv *sheets.Service) ([]string, error) {
+	response, err := srv.Spreadsheets.Get(config.SheetId).Fields("sheets(properties(sheetId,title))").Do()
+	if err != nil {
+		return nil, err
+	}
+	if response.HTTPStatusCode != 200 {
+		return nil, fmt.Errorf("http status %v when trying to get sheets", response.HTTPStatusCode)
+	}
+	sheets := make([]string, 0)
+	for _, v := range response.Sheets {
+		prop := v.Properties
+		sheets = append(sheets, prop.Title)
+	}
+	return sheets, nil
+}
+
 func fetchEvents(config ConfigData, srv *sheets.Service, today time.Time, eventType string, table string) []*Event {
 	events := make([]*Event, 0)
 	resp, err := srv.Spreadsheets.Values.Get(config.SheetId, fmt.Sprintf("%s!A2:Z", table)).Do()
@@ -809,15 +825,47 @@ func main() {
 	srv, err := sheets.NewService(ctx, option.WithAPIKey(config.ApiKey))
 	utils.Check(err)
 
-	events = fetchEvents(config, srv, today, "event", "Events")
-	events2023 := fetchEvents(config, srv, today, "event", "Events2023")
-	events = append(events, events2023...)
-	events2024 := fetchEvents(config, srv, today, "event", "Events2024")
-	events = append(events, events2024...)
+	sheets, err := getAllSheets(config, srv)
+	utils.Check(err)
+	eventSheets := make([]string, 0)
+	groupsSheet := ""
+	shopsSheet := ""
+	parkrunSheet := ""
+	for _, sheet := range sheets {
+		if strings.HasPrefix(sheet, "Events") {
+			eventSheets = append(eventSheets, sheet)
+		} else if sheet == "Groups" {
+			groupsSheet = sheet
+		} else if sheet == "Shops" {
+			shopsSheet = sheet
+		} else if sheet == "Parkrun" {
+			parkrunSheet = sheet
+		} else if strings.HasPrefix(sheet, "Notes") {
+			// ignore
+		} else {
+			log.Printf("irgnoring unknown sheet: '%s'", sheet)
+		}
+	}
+	if len(eventSheets) < 2 {
+		panic("unable to find enough 'Events' sheets")
+	}
+	if groupsSheet == "" {
+		panic("unable to find 'Groups' sheet")
+	}
+	if shopsSheet == "" {
+		panic("unable to find 'Shops' sheet")
+	}
+	if parkrunSheet == "" {
+		panic("unable to find 'Parkrun' sheet")
+	}
 
-	groups = fetchEvents(config, srv, today, "group", "Groups")
-	shops = fetchEvents(config, srv, today, "shop", "Shops")
-	parkrun = fetchParkrunEvents(config, srv, today, "Parkrun")
+	events = make([]*Event, 0)
+	for _, sheet := range eventSheets {
+		events = append(events, fetchEvents(config, srv, today, "event", sheet)...)
+	}
+	groups = fetchEvents(config, srv, today, "group", groupsSheet)
+	shops = fetchEvents(config, srv, today, "shop", shopsSheet)
+	parkrun = fetchParkrunEvents(config, srv, today, parkrunSheet)
 
 	if options.addedFile != "" {
 		added, err := utils.ReadAdded(options.addedFile)
