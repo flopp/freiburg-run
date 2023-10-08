@@ -22,7 +22,7 @@
             <thead>
                 <tr>
                     <th>#</th>
-                    <th>Datum</th>
+                    <th class="is-hidden-mobile">Datum</th>
                     <th>Spezial</th>
                     <th>Links</th>
                 </tr>
@@ -31,16 +31,22 @@
                 {{range .Parkrun}}
                 <tr {{if .IsCurrentWeek}}class="parkrun-event is-selected"{{else}}class="parkrun-event"{{end}}>
                     <td>
-                        {{.Index}}
+                        <span class="is-hidden-mobile">
+                            {{.Index}}
+                        </span>
+                        <span class="is-hidden-tablet">
+                            #{{.Index}}<br>
+                            <span class="is-size-7">{{.Date}}</span>
+                        </span>
                     </td>
-                    <td>
+                    <td class="is-hidden-mobile">
                         {{.Date}}
                     </td>
                     <td data-label="Spezial">
                         {{.Special}}
                     </td>
                     <td>
-                        <div class="field has-addons">
+                        <div class="field has-addons is-hidden-mobile">
                             {{if .Results}}
                             <p class="control">
                                 <a class="button no-external" href="{{.Results}}" target="_blank" title="Ergebnisse #{{.Index}}"><span class="icon"><i class="medal-icon"></i></span></a>
@@ -59,6 +65,19 @@
                             <p class="control">
                                 <a class="button no-external" href="{{.Photos}}" target="_blank" title="Fotogalerie #{{.Index}}"><span class="icon"><i class="images-icon"></i></span></a>
                             </p>
+                            {{end}}
+                        </div>
+                        <div class="is-hidden-tablet">
+                            {{if .Results}}
+                            <a class="no-external" href="{{.Results}}" target="_blank" title="Ergebnisse #{{.Index}}">Ergebnisse</a>
+                            {{end}}
+                            {{if .Report}}
+                            <a class="no-external" href="{{.Report}}" target="_blank" title="Laufbericht #{{.Index}}">Bericht</a>
+                            {{else if .Results}}
+                            <span disabled class="no-external" title="Laufbericht #{{.Index}} (in Arbeit)">(Bericht)</span>
+                            {{end}}
+                            {{if .Photos}}
+                            <a class="no-external" href="{{.Photos}}" target="_blank" title="Fotogalerie #{{.Index}}">Fotos</a>
                             {{end}}
                         </div>
                     </td>
