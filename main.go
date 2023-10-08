@@ -1009,6 +1009,7 @@ func main() {
 	data.Nav = "map"
 	data.Title = "Karte aller Laufveranstaltunge"
 	data.Type = "Karte"
+	data.Image = defaultImage
 	data.Description = "Karte"
 	data.Canonical = "https://freiburg.run/map.html"
 	data.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsBase, utils.Link{Name: "Karte", Url: "/map.html"})
