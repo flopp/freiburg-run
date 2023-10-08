@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="200cm"
+   height="120cm"
+   viewBox="0 0 2000 1200"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.3 (0e150ed, 2023-07-21)"
+   sodipodi:docname="parkrun.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="false"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="cm"
+     showgrid="false"
+     inkscape:zoom="0.076376389"
+     inkscape:cx="4268.3348"
+     inkscape:cy="3194.7046"
+     inkscape:window-width="1344"
+     inkscape:window-height="723"
+     inkscape:window-x="46"
+     inkscape:window-y="42"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="layer2" />
+  <defs
+     id="defs2" />
+  <g
+     inkscape:label="Hintergrund"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="font-variation-settings:'wght' 700;fill:#3e3e79;fill-opacity:1;stroke:none;stroke-width:0;stroke-dasharray:none"
+       id="rect1641"
+       height="1200"
+       x="0"
+       y="0"
+       width="2000" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer3"
+     inkscape:label="Logo">
+    <g
+       id="g4191"
+       transform="translate(-2081.9861,-418.59611)">
+      <path
+         d="m 2214.7092,418.59611 v 350.48512 c 0,0 113.2019,18.29065 198.7063,18.29065 85.5062,0 201.2937,-18.29065 201.2937,-18.29065 V 418.59611 Z"
+         style="fill:#f6a016;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:3.04565"
+         id="path328" />
+      <path
+         d="m 2429.5494,600.88096 c 0,-1.56609 -1.2656,-2.83182 -2.8317,-2.83182 -10.0535,0 -16.1391,3.52318 -19.8247,7.79071 v -38.94768 c 0,-1.56246 -1.2699,-2.82819 -2.8317,-2.82819 -1.5661,0 -2.8369,1.26573 -2.8369,2.82819 v 73.64061 c 0,1.55753 1.2708,2.82819 2.8369,2.82819 1.5618,0 2.8317,-1.27066 2.8317,-2.82819 v -19.8323 c 0,-16.98796 19.8247,-16.98796 19.8247,-16.98796 1.5661,0 2.8317,-1.27066 2.8317,-2.83156 z m -36.8202,-2.83182 c -2.5667,0 -4.8753,0.23138 -6.9559,0.64491 -12.6115,-0.42994 -22.6892,-10.75392 -22.7143,-23.46641 0,-12.785 10.2262,-23.16674 22.9466,-23.4576 l 3.1874,-0.0777 -0.708,-3.11412 c -0.3108,-1.36752 -0.4834,-2.76517 -0.4834,-4.19571 0,-10.45418 8.4753,-18.90456 18.9294,-18.92589 10.442,0.0259 18.8958,8.47171 18.9156,18.92589 0,1.03341 -0.095,2.05032 -0.259,3.04324 h 0.086 c 0.086,1.35802 1.1992,2.43106 2.5745,2.43106 1.3347,0 2.4147,-1.00052 2.5632,-2.29223 0.01,0 0,0 0,0 0.1468,-1.04187 0.2331,-2.10023 0.2331,-3.18544 0,-6.65198 -2.6936,-12.67804 -7.0448,-17.04736 -4.3676,-4.38141 -10.4117,-7.09478 -17.0888,-7.09478 -13.341,0 -24.1456,10.80953 -24.1508,24.14214 0,0.80981 0,1.6039 0.1209,2.38875 -14.1311,1.78866 -25.066,13.83905 -25.066,28.45544 0,12.47584 7.9642,23.08628 19.0813,27.04561 -9.6779,6.55882 -9.6822,18.42705 -9.6822,18.42705 v 19.83238 c 0,1.55754 1.2699,2.82819 2.836,2.82819 1.5618,0 2.8326,-1.27065 2.8326,-2.82819 v -19.83238 c 0,-16.98796 19.8238,-16.98796 19.8238,-16.98796 1.5609,0 2.8318,-1.27066 2.8318,-2.83156 0,-1.56609 -1.2709,-2.83182 -2.8318,-2.83182 z m -52.1928,0 c -22.6599,0 -22.6599,22.65134 -22.6599,22.65134 0,0 0,22.66049 22.6599,22.66049 6.3999,0 10.9782,-1.81119 14.2744,-4.40645 l 3.4947,3.51989 c 0,0.0345 0.086,0.0777 0.1123,0.10705 l 0.086,0.0863 v 0 c 0.5007,0.43943 1.1448,0.70966 1.857,0.70966 1.5627,0 2.8326,-1.27066 2.8326,-2.82819 0,-0.76319 -0.3022,-1.4479 -0.7856,-1.95899 v 0 l -3.6208,-3.87464 h -8.218 c -4.6888,2.99663 -10.0328,3.00181 -10.0328,3.00181 0,0 -16.9956,0 -16.9956,-16.99711 0,-16.98805 16.9956,-16.98805 16.9956,-16.98805 0,0 16.9921,0 16.9921,16.98805 v 8.50037 c 0,1.56608 1.2708,2.83155 2.8326,2.83155 1.5617,0 2.8326,-1.26547 2.8326,-2.83155 v -8.50037 c 0,0 0,-22.65143 -22.6573,-22.65143 z m -49.2462,0 c -22.6555,0 -22.6555,22.65134 -22.6555,22.65134 v 26.43437 l -3.2876,7.98384 c -0.3108,0.45584 -0.5007,1.00932 -0.5007,1.59993 0,1.566 1.2708,2.83181 2.8369,2.83181 1.0204,0 1.9071,-0.5439 2.4044,-1.35716 h 0.01 v -0.0518 c 0.1209,-0.20719 0.2158,-0.43425 0.2849,-0.6708 l 3.601,-8.70326 c 0.1899,-0.37555 0.2935,-0.78908 0.2935,-1.23197 v -26.83487 c 0,-16.98797 16.9904,-16.98797 16.9904,-16.98797 0,0 16.9973,0 16.9973,16.98797 0,16.9972 -16.9973,16.9972 -16.9973,16.9972 h -10.4921 v 0 c -1.5566,0 -2.8153,1.27091 -2.8153,2.82844 0,1.56609 1.2673,2.83156 2.8326,2.83156 0,0 0.086,0 0.086,0 v 0 h 10.3988 c 22.6616,0 22.6616,-22.66049 22.6616,-22.66049 0,0 0,-22.65142 -22.6616,-22.65142 z m 250.6245,0 c -6.3981,0 -10.9815,1.81455 -14.2743,4.40645 l -3.5034,-3.51627 c 0,-0.0432 -0.086,-0.0777 -0.1036,-0.10964 l -0.086,-0.0777 v 0 c -0.5008,-0.43425 -1.1439,-0.70793 -1.8571,-0.70793 -1.566,0 -2.8317,1.26582 -2.8317,2.8319 0,0.75455 0.3022,1.44237 0.7856,1.95346 v 0 l 3.6217,3.87921 h 8.2163 c 4.6939,-2.99749 10.0371,-3.0012 10.0371,-3.0012 0,0 16.9921,0 16.9921,16.98805 v 19.8323 c 0,1.55754 1.2708,2.82819 2.8317,2.82819 1.5661,0 2.8318,-1.27065 2.8318,-2.82819 v -19.83204 c 0,0 0,-22.65134 -22.6556,-22.65134 z m -31.1568,0 c -1.566,0 -2.8317,1.26573 -2.8317,2.83182 v 28.31989 c 0,1.56608 1.2657,2.83156 2.8317,2.83156 1.5627,0 2.8283,-1.26548 2.8283,-2.83156 v -28.31989 c 0,-1.56609 -1.2656,-2.83182 -2.8283,-2.83182 z m 11.3287,11.32701 c -1.5661,0 -2.8317,1.26728 -2.8317,2.82819 v 28.32844 c 0,1.55753 1.2656,2.82819 2.8317,2.82819 1.5618,0 2.8317,-1.27066 2.8317,-2.82819 v -28.32844 c 0,-1.56091 -1.2699,-2.82819 -2.8317,-2.82819 z m -9.2817,29.19436 -3.6251,-3.87472 h -8.2129 c -4.694,2.99662 -10.0363,3.0018 -10.0363,3.0018 0,0 -16.9929,0 -16.9929,-16.99711 v -19.81952 c 0,-1.56609 -1.27,-2.83182 -2.8361,-2.83182 -1.5617,0 -2.8326,1.26573 -2.8326,2.83182 v 19.81952 c 0,0 0,22.66049 22.6616,22.66049 6.4017,0 10.9816,-1.81119 14.2735,-4.40645 l 3.4982,3.51989 c 0.086,0.0345 0.086,0.0777 0.1123,0.10705 l 0.086,0.0863 h 0.01 c 0.5007,0.43943 1.1404,0.70966 1.857,0.70966 1.5626,0 2.8283,-1.27066 2.8283,-2.82819 0,-0.76319 -0.3022,-1.4479 -0.7857,-1.95899 v 0 z m -52.0995,-40.52137 c -25.4873,0 -25.4873,22.65134 -25.4873,22.65134 v 13.35912 l -17.4773,-17.76039 c -0.1899,-0.29267 -0.4403,-0.53613 -0.7252,-0.73988 v 0 c -0.4576,-0.32374 -1.0127,-0.51368 -1.6119,-0.51368 -1.5626,0 -2.8325,1.27005 -2.8325,2.83614 0,0.71656 0.2762,1.3632 0.7165,1.86574 v 0 l 0.086,0.0604 c 0.086,0.0432 0.086,0.0881 0.1295,0.12777 l 22.1997,22.10804 c 0.2245,0.35397 0.5353,0.65786 0.8901,0.88172 v 0 0 c 0.4316,0.26504 0.9367,0.42562 1.4849,0.42562 1.5635,0 2.8291,-1.27065 2.8291,-2.82819 V 620.6906 c 0,-16.98805 19.8265,-16.98805 19.8265,-16.98805 1.5661,0 2.8334,-1.27065 2.8334,-2.83156 0,-1.566 -1.2673,-2.83182 -2.8334,-2.83182"
+         style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:3.04565"
+         id="path330" />
+    </g>
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="Text">
+    <text
+       xml:space="preserve"
+       style="font-size:5.64444px;font-family:Montserrat;-inkscape-font-specification:'Montserrat, @wght=700';font-variation-settings:'wght' 700;fill:#3e3e79;fill-opacity:1;stroke:none;stroke-width:0;stroke-dasharray:none"
+       x="623.55652"
+       y="264.73819"
+       id="text2579"
+       inkscape:label="Titel"><tspan
+         sodipodi:role="line"
+         id="tspan2577"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:211.667px;font-family:Montserrat;-inkscape-font-specification:'Montserrat, @wght=700';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;font-variation-settings:'wght' 700;fill:#ffffff;fill-opacity:1;stroke-width:0"
+         x="623.55652"
+         y="264.73819">Dietenbach</tspan><tspan
+         sodipodi:role="line"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:211.667px;font-family:Montserrat;-inkscape-font-specification:'Montserrat, @wght=700';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;font-variation-settings:'wght' 700;fill:#ffffff;fill-opacity:1;stroke-width:0"
+         x="623.55652"
+         y="529.32196"
+         id="tspan1">parkrun</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:50.8px;font-family:Montserrat;-inkscape-font-specification:'Montserrat, @wght=700';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;font-variation-settings:'wght' 700;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0;stroke-dasharray:none"
+       x="630.01239"
+       y="768.87244"
+       id="text2635"><tspan
+         sodipodi:role="line"
+         id="tspan2633"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:105.833px;font-family:Montserrat;-inkscape-font-specification:'Montserrat, @wght=700';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;font-variation-settings:'wght' 700;stroke-width:0"
+         x="630.01239"
+         y="768.87244">Fotos</tspan><tspan
+         sodipodi:role="line"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:105.833px;font-family:Montserrat;-inkscape-font-specification:'Montserrat, @wght=700';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;font-variation-settings:'wght' 700;stroke-width:0"
+         x="630.01239"
+         y="901.1637"
+         id="tspan2">Berichte</tspan><tspan
+         sodipodi:role="line"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:105.833px;font-family:Montserrat;-inkscape-font-specification:'Montserrat, @wght=700';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;font-variation-settings:'wght' 700;stroke-width:0"
+         x="630.01239"
+         y="1033.455"
+         id="tspan3">Ergebnisse</tspan></text>
+  </g>
+</svg>

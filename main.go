@@ -914,6 +914,7 @@ func main() {
 	utils.MustCopyHash("static/apple-touch-icon.png", "apple-touch-icon.png", options.outDir)
 	utils.MustCopyHash("static/freiburg-run.svg", "images/freiburg-run.svg", options.outDir)
 	utils.MustCopyHash("static/events2023.jpg", "images/events2023.jpg", options.outDir)
+	utils.MustCopyHash("static/parkrun.png", "images/parkrun.png", options.outDir)
 	utils.MustCopyHash("static/marker-grey-icon.png", "images/marker-grey-icon.png", options.outDir)
 	utils.MustCopyHash("static/marker-grey-icon-2x.png", "images/marker-grey-icon-2x.png", options.outDir)
 	utils.MustCopyHash("static/circle-small.png", "images/circle-small.png", options.outDir)
@@ -999,6 +1000,7 @@ func main() {
 	data.Nav = "parkrun"
 	data.Title = "Dietenbach parkrun"
 	data.Type = "Dietenbach parkrun"
+	data.Image = "/images/parkrun.png"
 	data.Description = "Vollständige Liste aller Ergebnisse, Laufberichte und Fotogalerien des 'Dietenbach parkrun' im Freiburger Dietenbachpark."
 	data.Canonical = "https://freiburg.run/dietenbach-parkrun.html"
 	data.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsBase, utils.Link{Name: "Dietenbach parkrun", Url: "/dietenbach-parkrun.html"})
