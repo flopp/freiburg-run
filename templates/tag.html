@@ -23,6 +23,26 @@
         </div>
 {{end}}
 
+{{if .Tag.Groups}}
+        <h2 class="title">Lauftreffs</h2>
+
+        <div class="columns is-multiline">
+            {{range .Tag.Groups}}
+            {{template "card.html" .}}
+            {{end}}
+        </div>
+{{end}}
+
+{{if .Tag.Shops}}
+        <h2 class="title">Lauf-Shops</h2>
+
+        <div class="columns is-multiline">
+            {{range .Tag.Shops}}
+            {{template "card.html" .}}
+            {{end}}
+        </div>
+{{end}}
+
 {{if .Tag.EventsOld}}
         <h2 class="title">Vergangene Laufveranstaltungen</h2>
         <div class="notification is-info is-light">

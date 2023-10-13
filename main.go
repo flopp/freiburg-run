@@ -237,6 +237,12 @@ type Tag struct {
 	Name      string
 	Events    []*Event
 	EventsOld []*Event
+	Groups    []*Event
+	Shops     []*Event
+}
+
+func CreateTag(name string) *Tag {
+	return &Tag{name, make([]*Event, 0), make([]*Event, 0), make([]*Event, 0), make([]*Event, 0)}
 }
 
 func (tag *Tag) Slug() string {
@@ -249,6 +255,14 @@ func (tag *Tag) NumEvents() int {
 
 func (tag *Tag) NumOldEvents() int {
 	return len(tag.EventsOld)
+}
+
+func (tag *Tag) NumGroups() int {
+	return len(tag.Groups)
+}
+
+func (tag *Tag) NumShops() int {
+	return len(tag.Shops)
 }
 
 type TemplateData struct {
@@ -747,28 +761,39 @@ func reverse(s []*Event) []*Event {
 	return a
 }
 
-func collectTags(events []*Event, eventsOld []*Event) (map[string]*Tag, []*Tag) {
+func getTag(tags map[string]*Tag, name string) *Tag {
+	if tag, found := tags[name]; found {
+		return tag
+	}
+	tag := CreateTag(name)
+	tags[name] = tag
+	return tag
+}
+
+func collectTags(events []*Event, eventsOld []*Event, groups []*Event, shops []*Event) (map[string]*Tag, []*Tag) {
 	tags := make(map[string]*Tag)
 	for _, e := range events {
 		for _, t := range e.Tags {
-			if tag, found := tags[t]; found {
-				tag.Events = append(tag.Events, e)
-			} else {
-				tag := &Tag{t, make([]*Event, 0), make([]*Event, 0)}
-				tag.Events = append(tag.Events, e)
-				tags[t] = tag
-			}
+			tag := getTag(tags, t)
+			tag.Events = append(tag.Events, e)
 		}
 	}
 	for _, e := range eventsOld {
 		for _, t := range e.Tags {
-			if tag, found := tags[t]; found {
-				tag.EventsOld = append(tag.EventsOld, e)
-			} else {
-				tag := &Tag{t, make([]*Event, 0), make([]*Event, 0)}
-				tag.EventsOld = append(tag.EventsOld, e)
-				tags[t] = tag
-			}
+			tag := getTag(tags, t)
+			tag.EventsOld = append(tag.EventsOld, e)
+		}
+	}
+	for _, e := range groups {
+		for _, t := range e.Tags {
+			tag := getTag(tags, t)
+			tag.Groups = append(tag.Groups, e)
+		}
+	}
+	for _, e := range shops {
+		for _, t := range e.Tags {
+			tag := getTag(tags, t)
+			tag.Shops = append(tag.Shops, e)
 		}
 	}
 
@@ -932,7 +957,7 @@ func main() {
 	events = addMonthSeparators(events)
 	events_old = reverse(events_old)
 	events_old = addMonthSeparatorsDescending(events_old)
-	tags, tagsList := collectTags(events, events_old)
+	tags, tagsList := collectTags(events, events_old, groups, shops)
 
 	sitemap := utils.CreateSitemap("https://freiburg.run")
 	sitemap.AddCategory("Allgemein")
