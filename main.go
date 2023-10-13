@@ -347,12 +347,11 @@ func parseTags(s string) []string {
 	return tags
 }
 
-func parseLinks(ss []interface{}) []NameUrl {
+func parseLinks(ss []string) []NameUrl {
 	links := make([]NameUrl, 0)
-	for _, i := range ss {
-		s := fmt.Sprintf("%v", i)
+	for _, s := range ss {
 		if s == "" {
-			break
+			continue
 		}
 		a := strings.Split(s, "|")
 		if len(a) != 2 {
@@ -387,52 +386,82 @@ func getAllSheets(config ConfigData, srv *sheets.Service) ([]string, error) {
 	return sheets, nil
 }
 
+type Columns struct {
+	index map[string]int
+}
+
+func initColumns(row []interface{}) (Columns, error) {
+	index := make(map[string]int)
+	for col, value := range row {
+		s := fmt.Sprintf("%v", value)
+		if existingCol, found := index[s]; found {
+			return Columns{}, fmt.Errorf("duplicate title '%s' in columns %d and %d", s, existingCol, col)
+		}
+		index[s] = col
+	}
+	return Columns{index}, nil
+}
+
+func (cols *Columns) getValue(title string, row []interface{}) string {
+	col, found := cols.index[title]
+	if !found {
+		panic(fmt.Errorf("requested column not found: %s", title))
+	}
+
+	if col >= len(row) {
+		return ""
+	}
+	return fmt.Sprintf("%v", row[col])
+}
+
 func fetchEvents(config ConfigData, srv *sheets.Service, today time.Time, eventType string, table string) []*Event {
 	events := make([]*Event, 0)
-	resp, err := srv.Spreadsheets.Values.Get(config.SheetId, fmt.Sprintf("%s!A2:Z", table)).Do()
+	resp, err := srv.Spreadsheets.Values.Get(config.SheetId, fmt.Sprintf("%s!A1:Z", table)).Do()
 	utils.Check(err)
 	if len(resp.Values) == 0 {
 		panic("No events data found.")
 	} else {
-		for _, row := range resp.Values {
-			var date, name, nameOld, url, description1, description2, location, coordinates, distance, direction string
-			tags := make([]string, 0)
-			links := make([]NameUrl, 0)
-
-			ll := len(row)
-			if ll > 0 {
-				date = fmt.Sprintf("%v", row[0])
-			}
-			if ll > 1 {
-				name, nameOld = SplitDetails(fmt.Sprintf("%v", row[1]))
-			}
-			if ll > 2 {
-				url = fmt.Sprintf("%v", row[2])
-			}
-			if ll > 3 {
-				description1, description2 = SplitDetails(fmt.Sprintf("%v", row[3]))
-			}
-			if ll > 4 {
-				location = fmt.Sprintf("%v", row[4])
-			}
-			if ll > 5 {
-				coordinates = utils.NormalizeGeo(fmt.Sprintf("%v", row[5]))
-				lat, lon, err := utils.LatLon(coordinates)
-				if err == nil {
-					// Freiburg
-					lat0 := 47.996090
-					lon0 := 7.849400
-					d, b := utils.DistanceBearing(lat0, lon0, lat, lon)
-					distance = fmt.Sprintf("%.1fkm", d)
-					direction = utils.ApproxDirection(b)
+		cols := Columns{}
+		for line, row := range resp.Values {
+			if line == 0 {
+				cols, err = initColumns(row)
+				if err != nil {
+					panic(fmt.Errorf("when fetching table '%s': %v", table, err))
 				}
+				continue
 			}
-			if ll > 6 {
-				tags = parseTags(fmt.Sprintf("%v", row[6]))
+			dateS := cols.getValue("DATE", row)
+			nameS := cols.getValue("NAME", row)
+			urlS := cols.getValue("URL", row)
+			descriptionS := cols.getValue("DESCRIPTION", row)
+			locationS := cols.getValue("LOCATION", row)
+			coordinatesS := cols.getValue("COORDINATES", row)
+			tagsS := cols.getValue("TAGS", row)
+			linksS := make([]string, 4)
+			linksS[0] = cols.getValue("LINK1", row)
+			linksS[1] = cols.getValue("LINK2", row)
+			linksS[2] = cols.getValue("LINK3", row)
+			linksS[3] = cols.getValue("LINK4", row)
+
+			date := dateS
+			name, nameOld := SplitDetails(nameS)
+			url := urlS
+			description1, description2 := SplitDetails(descriptionS)
+			location := locationS
+			coordinates := utils.NormalizeGeo(coordinatesS)
+			lat, lon, err := utils.LatLon(coordinates)
+			distance := ""
+			direction := ""
+			if err == nil {
+				// Freiburg
+				lat0 := 47.996090
+				lon0 := 7.849400
+				d, b := utils.DistanceBearing(lat0, lon0, lat, lon)
+				distance = fmt.Sprintf("%.1fkm", d)
+				direction = utils.ApproxDirection(b)
 			}
-			if ll > 7 {
-				links = parseLinks(row[7:])
-			}
+			tags := parseTags(tagsS)
+			links := parseLinks(linksS)
 
 			timeRange, err := parseTimeRange(date)
 			if err != nil {
