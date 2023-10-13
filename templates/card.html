@@ -35,7 +35,7 @@
                     <tr>
                         <th class="w-2em no-border" title="Ort">🗺</th>
                         <td class="no-border">
-                        {{if .Geo}}<a href="https://www.google.com/maps/place/{{.Geo}}" target="_blank">{{.Location}}</a> (<span title="Distanz und Richtung von Freiburg Zentrum">{{.Distance}} {{.Direction}}</span>){{else}}{{.Location}}{{end}}
+                        {{if .Geo}}<a href="https://www.google.com/maps/place/{{.Geo}}" target="_blank">{{.Location}}</a> (<span title="Distanz und Richtung von Freiburg Zentrum">{{.Distance}} {{.Direction}} von Freiburg</span>){{else}}{{.Location}}{{end}}
                         </td>
                     </tr>
                     {{if .Details}}<tr><th class="w-2em no-border" title="Details">ℹ️</th><td class="no-border">{{.Details}}</td></tr>{{end}}
