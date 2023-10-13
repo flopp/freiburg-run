@@ -1012,9 +1012,9 @@ func main() {
 	defaultImage := "/images/events2023.jpg"
 
 	data := TemplateData{
-		"Aktuelle und zukünftige Laufveranstaltungen im Raum Freiburg / Südbaden",
+		"Aktuelle und zukünftige Laufveranstaltungen im Raum Freiburg",
 		"Veranstaltung",
-		"Liste von aktuellen und zukünftigen Laufveranstaltungen, Lauf-Wettkämpfen, Volksläufen im Raum Freiburg / Südbaden",
+		"Liste von aktuellen und zukünftigen Laufveranstaltungen, Lauf-Wettkämpfen, Volksläufen im Raum Freiburg",
 		"events",
 		"https://freiburg.run/",
 		defaultImage,
@@ -1035,33 +1035,33 @@ func main() {
 	utils.ExecuteTemplate("events", filepath.Join(options.outDir, "index.html"), data)
 
 	breadcrumbsEventsOld := utils.PushBreadcrumb(breadcrumbsEvents, utils.Link{Name: "Archiv", Url: "/events-old.html"})
-	data.Title = "Vergangene Laufveranstaltungen im Raum Freiburg / Südbaden"
-	data.Description = "Liste von vergangenen Laufveranstaltungen, Lauf-Wettkämpfen, Volksläufen im Raum Freiburg / Südbaden"
+	data.Title = "Vergangene Laufveranstaltungen im Raum Freiburg "
+	data.Description = "Liste von vergangenen Laufveranstaltungen, Lauf-Wettkämpfen, Volksläufen im Raum Freiburg "
 	data.Canonical = "https://freiburg.run/events-old.html"
 	data.Breadcrumbs = breadcrumbsEventsOld
 	utils.ExecuteTemplate("events-old", filepath.Join(options.outDir, "events-old.html"), data)
 
 	breadcrumbsEventsTags := utils.PushBreadcrumb(breadcrumbsEvents, utils.Link{Name: "Kategorien", Url: "/tags.html"})
 	data.Title = "Kategorien"
-	data.Description = "Liste aller Kategorien von vergangenen Laufveranstaltungen, Lauf-Wettkämpfen, Volksläufen im Raum Freiburg / Südbaden"
+	data.Description = "Liste aller Kategorien von vergangenen Laufveranstaltungen, Lauf-Wettkämpfen, Volksläufen im Raum Freiburg "
 	data.Canonical = "https://freiburg.run/tags.html"
 	data.Breadcrumbs = breadcrumbsEventsTags
 	utils.ExecuteTemplate("tags", filepath.Join(options.outDir, "tags.html"), data)
 
 	breadcrumbsGroups := utils.PushBreadcrumb(breadcrumbsBase, utils.Link{Name: "Lauftreffs", Url: "/lauftreffs.html"})
 	data.Nav = "groups"
-	data.Title = "Lauftreffs im Raum Freiburg / Südbaden"
+	data.Title = "Lauftreffs im Raum Freiburg "
 	data.Type = "Lauftreff"
-	data.Description = "Liste von Lauftreffs, Laufgruppen, Lauf-Trainingsgruppen im Raum Freiburg / Südbaden"
+	data.Description = "Liste von Lauftreffs, Laufgruppen, Lauf-Trainingsgruppen im Raum Freiburg "
 	data.Canonical = "https://freiburg.run/lauftreffs.html"
 	data.Breadcrumbs = breadcrumbsGroups
 	utils.ExecuteTemplate("groups", filepath.Join(options.outDir, "lauftreffs.html"), data)
 
 	breadcrumbsShops := utils.PushBreadcrumb(breadcrumbsBase, utils.Link{Name: "Lauf-Shops", Url: "/shops.html"})
 	data.Nav = "shops"
-	data.Title = "Lauf-Shops im Raum Freiburg / Südbaden"
+	data.Title = "Lauf-Shops im Raum Freiburg "
 	data.Type = "Lauf-Shop"
-	data.Description = "Liste von Lauf-Shops und Einzelhandelsgeschäften mit Laufschuh-Auswahl im Raum Freiburg / Südbaden"
+	data.Description = "Liste von Lauf-Shops und Einzelhandelsgeschäften mit Laufschuh-Auswahl im Raum Freiburg "
 	data.Canonical = "https://freiburg.run/shops.html"
 	data.Breadcrumbs = breadcrumbsShops
 	utils.ExecuteTemplate("shops", filepath.Join(options.outDir, "shops.html"), data)
@@ -1239,7 +1239,7 @@ func main() {
 	for _, tag := range tags {
 		tagdata.Tag = tag
 		tagdata.Title = fmt.Sprintf("Laufveranstaltungen der Kategorie '%s'", tag.Name)
-		tagdata.Description = fmt.Sprintf("Liste an Laufveranstaltungen im Raum Freiburg/Südbaden, die mit der Kategorie '%s' getaggt sind", tag.Name)
+		tagdata.Description = fmt.Sprintf("Liste an Laufveranstaltungen im Raum Freiburg, die mit der Kategorie '%s' getaggt sind", tag.Name)
 		slug := fmt.Sprintf("tag/%s.html", tag.Name)
 		tagdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
 		tagdata.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsEventsTags, utils.Link{Name: tag.Name, Url: fmt.Sprintf("/%s", slug)})
