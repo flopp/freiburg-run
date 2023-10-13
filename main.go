@@ -433,6 +433,21 @@ func fetchEvents(config ConfigData, srv *sheets.Service, today time.Time, eventT
 			dateS := cols.getValue("DATE", row)
 			nameS := cols.getValue("NAME", row)
 			urlS := cols.getValue("URL", row)
+			if eventType == "event" {
+				if dateS == "" {
+					log.Printf("table '%s', line '%d': skipping row with empty date", table, line)
+					continue
+				}
+			}
+			if nameS == "" {
+				log.Printf("table '%s', line '%d': skipping row with empty name", table, line)
+				continue
+			}
+			if urlS == "" {
+				log.Printf("table '%s', line '%d': skipping row with empty url", table, line)
+				continue
+			}
+
 			descriptionS := cols.getValue("DESCRIPTION", row)
 			locationS := cols.getValue("LOCATION", row)
 			coordinatesS := cols.getValue("COORDINATES", row)
