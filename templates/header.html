@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de" class="has-navbar-fixed-top">
+<html lang="de">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -33,7 +33,7 @@
         <link rel="stylesheet" href="/{{.}}"/>
         {{end}}
     </head>
-    <body data-itemtype="{{.Type}}">
+    <body data-itemtype="{{.Type}}" class="has-two-navbars-fixed-top">
         <nav class="navbar is-info is-fixed-top z-top is-hidden-touch" role="navigation" aria-label="main navigation">
             <div class="navbar-brand">
                 <a class="navbar-item" href="/">
@@ -71,13 +71,21 @@
                         Karte
                     </a>
                     <a id="nav-info" class="navbar-item {{if eq .Nav "info"}}is-active{{end}}" href="/info.html">
-                        Info
+                        <span class="icon mr-1"><i class="info-icon"></i></span>Info
                     </a>
                 </div>
             </div>
         </nav>
 
         <nav class="navbar is-info is-fixed-top z-top is-hidden-desktop" role="navigation">
+            <div class="navbar-brand is-justify-content-space-between">
+                <a class="navbar-item" href="/">
+                    <img alt="Logo freiburg.run" src="/images/freiburg-run.svg">&nbsp;<strong>freiburg.run</strong>
+                </a>
+                <a id="nav-info" class="navbar-item {{if eq .Nav "info"}}is-active{{end}}" href="/info.html">
+                    <span class="icon"><i class="info-icon"></i></span>
+                </a>
+            </div>
             <div class="navbar-brand">
                 <a id="nav-events" class="navbar-item {{if eq .Nav "events"}}is-active{{end}}" href="/">
                     Veranstaltungen
@@ -85,14 +93,15 @@
                 <a id="nav-groups" class="navbar-item {{if eq .Nav "groups"}}is-active{{end}}" href="/lauftreffs.html">
                     Lauftreffs
                 </a>
+                <a id="nav-groups" class="navbar-item {{if eq .Nav "shops"}}is-active{{end}}" href="/shops.html">
+                    Shops
+                </a>
                 <a id="nav-parkrun" class="navbar-item {{if eq .Nav "parkrun"}}is-active{{end}}" href="/dietenbach-parkrun.html">
                     parkrun
                 </a>
-                <a id="nav-info" class="navbar-item {{if eq .Nav "info"}}is-active{{end}}" href="/info.html">
-                    <span class="icon"><i class="info-icon"></i></span>
-                </a>
             </div>
         </nav>
+
 
         {{if .Breadcrumbs}}
         <section class="section pt-2 pb-0">
