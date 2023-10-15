@@ -5,14 +5,12 @@
         <h1 class="title" itemprop="name">{{.Title}}</h1>
 
         <div class="notification is-info is-light">
-            Liste von Laufveranstaltungen, Lauf-Wettkämpfen, Volksläufen im Raum Freiburg , die in die <b>Kategorie '{{.Tag.Name}}'</b> einsortiert sind.
+            Liste von Laufveranstaltungen, Lauf-Wettkämpfen, Volksläufen im Raum Freiburg, die in die <b>Kategorie '{{.Tag.Name}}'</b> einsortiert sind.
             <br />
             Ist ein Eintrag fehlerhaft oder fehlt eine Veranstaltung? - bitte <a href="/info.html#kontakt">melden</a>. 
             <br />
             <br />
             <a href="/tags.html">Hier geht's zur Liste <b>aller</b> Kategorien.</a>
-            <br />
-            <a href="/">Hier geht's zur Liste <b>aller</b> aktuellen und zukünftigen Veranstaltungen.</a>
         </div>
 
 {{if .Tag.Events}}
@@ -24,7 +22,7 @@
 {{end}}
 
 {{if .Tag.Groups}}
-        <h2 class="title">Lauftreffs</h2>
+        <h2 class="title">Lauftreffs / Laufgruppen</h2>
 
         <div class="columns is-multiline">
             {{range .Tag.Groups}}
