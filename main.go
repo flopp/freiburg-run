@@ -234,15 +234,16 @@ type ParkrunEvent struct {
 }
 
 type Tag struct {
-	Name      string
-	Events    []*Event
-	EventsOld []*Event
-	Groups    []*Event
-	Shops     []*Event
+	Name        string
+	Description string
+	Events      []*Event
+	EventsOld   []*Event
+	Groups      []*Event
+	Shops       []*Event
 }
 
 func CreateTag(name string) *Tag {
-	return &Tag{name, make([]*Event, 0), make([]*Event, 0), make([]*Event, 0), make([]*Event, 0)}
+	return &Tag{name, "", make([]*Event, 0), make([]*Event, 0), make([]*Event, 0), make([]*Event, 0)}
 }
 
 func (tag *Tag) Slug() string {
@@ -580,6 +581,27 @@ func fetchParkrunEvents(config ConfigData, srv *sheets.Service, today time.Time,
 	return events
 }
 
+func fetchTagDescriptions(config ConfigData, srv *sheets.Service, table string) map[string]string {
+	descriptions := make(map[string]string)
+	resp, err := srv.Spreadsheets.Values.Get(config.SheetId, fmt.Sprintf("%s!A1:B", table)).Do()
+	utils.Check(err)
+	if len(resp.Values) == 0 {
+		panic("No tags data found.")
+	} else {
+		for _, row := range resp.Values {
+			if len(row) >= 2 {
+				name := fmt.Sprintf("%v", row[0])
+				desc := fmt.Sprintf("%v", row[1])
+				if name != "" && desc != "" {
+					descriptions[name] = desc
+				}
+			}
+		}
+	}
+
+	return descriptions
+}
+
 func createMonthLabel(t time.Time) string {
 	if t.Month() == time.January {
 		return fmt.Sprintf("Januar %d", t.Year())
@@ -770,7 +792,7 @@ func getTag(tags map[string]*Tag, name string) *Tag {
 	return tag
 }
 
-func collectTags(events []*Event, eventsOld []*Event, groups []*Event, shops []*Event) (map[string]*Tag, []*Tag) {
+func collectTags(descriptions map[string]string, events []*Event, eventsOld []*Event, groups []*Event, shops []*Event) (map[string]*Tag, []*Tag) {
 	tags := make(map[string]*Tag)
 	for _, e := range events {
 		for _, t := range e.Tags {
@@ -799,6 +821,10 @@ func collectTags(events []*Event, eventsOld []*Event, groups []*Event, shops []*
 
 	tagsList := make([]*Tag, 0, len(tags))
 	for _, tag := range tags {
+		desc, found := descriptions[tag.Name]
+		if found {
+			tag.Description = desc
+		}
 		tagsList = append(tagsList, tag)
 	}
 	sort.Slice(tagsList, func(i, j int) bool { return tagsList[i].Name < tagsList[j].Name })
@@ -900,6 +926,7 @@ func main() {
 	groupsSheet := ""
 	shopsSheet := ""
 	parkrunSheet := ""
+	tagsSheet := ""
 	for _, sheet := range sheets {
 		if strings.HasPrefix(sheet, "Events") {
 			eventSheets = append(eventSheets, sheet)
@@ -909,6 +936,8 @@ func main() {
 			shopsSheet = sheet
 		} else if sheet == "Parkrun" {
 			parkrunSheet = sheet
+		} else if sheet == "Tags" {
+			tagsSheet = sheet
 		} else if strings.HasPrefix(sheet, "Notes") {
 			// ignore
 		} else {
@@ -927,6 +956,9 @@ func main() {
 	if parkrunSheet == "" {
 		panic("unable to find 'Parkrun' sheet")
 	}
+	if tagsSheet == "" {
+		panic("unable to find 'Tags' sheet")
+	}
 
 	events = make([]*Event, 0)
 	for _, sheet := range eventSheets {
@@ -935,6 +967,7 @@ func main() {
 	groups = fetchEvents(config, srv, today, "group", groupsSheet)
 	shops = fetchEvents(config, srv, today, "shop", shopsSheet)
 	parkrun = fetchParkrunEvents(config, srv, today, parkrunSheet)
+	tagDescriptions := fetchTagDescriptions(config, srv, tagsSheet)
 
 	if options.addedFile != "" {
 		added, err := utils.ReadAdded(options.addedFile)
@@ -957,7 +990,7 @@ func main() {
 	events = addMonthSeparators(events)
 	events_old = reverse(events_old)
 	events_old = addMonthSeparatorsDescending(events_old)
-	tags, tagsList := collectTags(events, events_old, groups, shops)
+	tags, tagsList := collectTags(tagDescriptions, events, events_old, groups, shops)
 
 	sitemap := utils.CreateSitemap("https://freiburg.run")
 	sitemap.AddCategory("Allgemein")
