@@ -498,6 +498,9 @@ func fetchEvents(config ConfigData, srv *sheets.Service, today time.Time, eventT
 				log.Printf("event '%s': %v", name, err)
 			}
 			isOld := (!timeRange.From.IsZero()) && timeRange.To.Before(today)
+			if !timeRange.From.IsZero() {
+				tags = append(tags, fmt.Sprintf("%d", timeRange.From.Year()))
+			}
 
 			events = append(events, &Event{
 				eventType,

@@ -1,5 +1,6 @@
 .added
 .hashes
+.repo
 .out
 .DS_Store
 config.json
