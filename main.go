@@ -711,9 +711,12 @@ func addMonthSeparators(events []*Event) []*Event {
 	result := make([]*Event, 0, len(events))
 	var last time.Time
 
-	for _, event := range events {
+	for i, event := range events {
 		d := event.TimeRange.From
 		if event.TimeRange.From.IsZero() {
+			if i == 0 {
+				result = append(result, createSeparatorEvent("Wöchentlich"))
+			}
 			// no label
 		} else if last.IsZero() {
 			// initial label
