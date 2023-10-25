@@ -593,7 +593,7 @@ func fetchTagDescriptions(config ConfigData, srv *sheets.Service, table string) 
 	} else {
 		for _, row := range resp.Values {
 			if len(row) >= 2 {
-				name := fmt.Sprintf("%v", row[0])
+				name := utils.SanitizeName(fmt.Sprintf("%v", row[0]))
 				desc := fmt.Sprintf("%v", row[1])
 				if name != "" && desc != "" {
 					descriptions[name] = desc

@@ -27,3 +27,8 @@ sync: .repo/.git/config
 .phony: run-script
 run-script: sync
 	ssh echeclus.uberspace.de packages/freiburg.run/cronjob.sh
+
+.phony: upload-goaccess
+upload-goaccess:
+	scp scripts/goaccess.sh echeclus.uberspace.de:cron-scripts/freiburg-run.sh
+	ssh echeclus.uberspace.de cron-scripts/freiburg-run.sh
