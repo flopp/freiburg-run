@@ -83,28 +83,28 @@ func ApproxDirection(deg float64) string {
 	d := 22.5
 
 	if deg <= d {
-		return "N"
+		return "nördl."
 	}
 	if deg <= 3*d {
-		return "NO"
+		return "nordöstl."
 	}
 	if deg <= 5*d {
-		return "O"
+		return "östli."
 	}
 	if deg <= 7*d {
-		return "SO"
+		return "südostl."
 	}
 	if deg <= 9*d {
-		return "S"
+		return "südl."
 	}
 	if deg <= 11*d {
-		return "SW"
+		return "südwestl."
 	}
 	if deg <= 13*d {
-		return "W"
+		return "westl."
 	}
 	if deg <= 15*d {
-		return "NW"
+		return "nordwestl."
 	}
-	return "N"
+	return ""
 }
