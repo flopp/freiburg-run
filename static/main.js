@@ -115,26 +115,31 @@ var main = () => {
 
         // second: future events
         document.querySelectorAll(".event").forEach(el => {
-            if (el.dataset.type === "vergangene Veranstaltung") {
-                return
-            }
             let geo = parseGeo(el.dataset.geo);
             if (geo !== null) {
                 let icon = null;
+                let zOffset = 0;
                 switch (el.dataset.type) {
                     case "Lauftreff":
+                        zOffset = 1000;
                         icon = redIcon;
                         break;
                     case "Lauf-Shop":
+                        zOffset = 1000;
                         icon = greenIcon;
+                        break;
+                    case "vergangene Veranstaltung":
+                        zOffset = -1000;
+                        icon = greyIcon;
                         break;
                     case "Veranstaltung":
                     default:
+                        zOffset = 1000;
                         icon = blueIcon;
                         break;
                 }
 
-                let m = L.marker(geo, {icon: icon});
+                let m = L.marker(geo, {icon: icon, zIndexOffset: zOffset});
                 markers.push(m);
                 m.addTo(map);
                 if (el.dataset.time !== undefined) {
