@@ -13,5 +13,17 @@
     <div class="event" data-type="vergangene Veranstaltung" data-name="{{.Name}}" data-time="{{.Time}}" data-geo="{{.Geo}}" data-location="{{.Location}}" data-slug="{{.Slug}}"></div>
     {{end}}
     {{end}}
+
+    {{range .Groups}}
+    {{if .Geo}}
+    <div class="event" data-type="Lauftreff" data-name="{{.Name}}" data-time="{{.Time}}" data-geo="{{.Geo}}" data-location="{{.Location}}" data-slug="{{.Slug}}"></div>
+    {{end}}
+    {{end}}
+
+    {{range .Shops}}
+    {{if .Geo}}
+    <div class="event" data-type="Lauf-Shop" data-name="{{.Name}}" data-time="{{.Time}}" data-geo="{{.Geo}}" data-location="{{.Location}}" data-slug="{{.Slug}}"></div>
+    {{end}}
+    {{end}}
 </div>
 {{template "tail.html" .}}

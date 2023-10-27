@@ -17,6 +17,26 @@ var toggle_menuitem = function (id) {
     }
 };
 
+var load_marker = function (color) {
+    let url = "images/marker-icon.png";
+    let url2x = "images/marker-icon-2x.png";
+    if (color !== "") {
+        url = "images/marker-" + color + "-icon.png";
+        url2x = "images/marker-" + color + "-icon-2x.png";
+    }
+    let options = {
+        iconAnchor: [12, 41],
+        iconRetinaUrl: url2x,
+        iconSize: [25, 41],
+        iconUrl: url,
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41],
+        shadowUrl: "images/marker-shadow.png",
+        tooltipAnchor: [16, -28],
+    };
+    return L.icon(options);
+}
+
 var main = () => {
     document.querySelectorAll('.navbar-burger').forEach(el => {
         el.addEventListener('click', () => {
@@ -68,31 +88,13 @@ var main = () => {
             radius: 50000
         }).addTo(map).bindPopup("Freiburg, 50km")
 
-        let blueOptions = {
-            iconAnchor: [12, 41],
-            iconRetinaUrl: "images/marker-icon-2x.png",
-            iconSize: [25, 41],
-            iconUrl: "images/marker-icon.png",
-            popupAnchor: [1, -34],
-            shadowSize: [41, 41],
-            shadowUrl: "images/marker-shadow.png",
-            tooltipAnchor: [16, -28],
-        };
-        let blueIcon = L.icon(blueOptions);
-
-        let greyOptions = {
-            iconAnchor: [12, 41],
-            iconRetinaUrl: "images/marker-grey-icon-2x.png",
-            iconSize: [25, 41],
-            iconUrl: "images/marker-grey-icon.png",
-            popupAnchor: [1, -34],
-            shadowSize: [41, 41],
-            shadowUrl: "images/marker-shadow.png",
-            tooltipAnchor: [16, -28],
-        };
-        let greyIcon = L.icon(greyOptions);
+        let blueIcon = load_marker("");
+        let greyIcon = load_marker("grey");
+        let greenIcon = load_marker("green");
+        let redIcon = load_marker("red");
 
         let markers = [];
+
         // first: past events (so that they are displayed below future events)
         document.querySelectorAll(".event").forEach(el => {
             if (el.dataset.type !== "vergangene Veranstaltung") {
@@ -110,6 +112,7 @@ var main = () => {
                 }
             }
         });
+
         // second: future events
         document.querySelectorAll(".event").forEach(el => {
             if (el.dataset.type === "vergangene Veranstaltung") {
@@ -117,7 +120,21 @@ var main = () => {
             }
             let geo = parseGeo(el.dataset.geo);
             if (geo !== null) {
-                let m = L.marker(geo, {icon: blueIcon});
+                let icon = null;
+                switch (el.dataset.type) {
+                    case "Lauftreff":
+                        icon = redIcon;
+                        break;
+                    case "Lauf-Shop":
+                        icon = greenIcon;
+                        break;
+                    case "Veranstaltung":
+                    default:
+                        icon = blueIcon;
+                        break;
+                }
+
+                let m = L.marker(geo, {icon: icon});
                 markers.push(m);
                 m.addTo(map);
                 if (el.dataset.time !== undefined) {
@@ -136,6 +153,14 @@ var main = () => {
             label: "vergangene Veranstaltung",
             type: "image",
             url: "images/marker-grey-icon.png",
+        },{
+            label: "Lauftreff",
+            type: "image",
+            url: "images/marker-red-icon.png",
+        },{
+            label: "Lauf-Shop",
+            type: "image",
+            url: "images/marker-green-icon.png",
         }];
         items.push(
             {
