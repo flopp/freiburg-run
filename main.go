@@ -1085,6 +1085,7 @@ func main() {
 	utils.ExecuteTemplate("events-old", filepath.Join(options.outDir, "events-old.html"), data)
 
 	breadcrumbsEventsTags := utils.PushBreadcrumb(breadcrumbsEvents, utils.Link{Name: "Kategorien", Url: "/tags.html"})
+	data.Nav = "tags"
 	data.Title = "Kategorien"
 	data.Description = "Liste aller Kategorien von vergangenen Laufveranstaltungen, Lauf-Wettkämpfen, Volksläufen im Raum Freiburg "
 	data.Canonical = "https://freiburg.run/tags.html"
@@ -1268,7 +1269,7 @@ func main() {
 		"",
 		"Kategorie",
 		"",
-		"events",
+		"tags",
 		"",
 		defaultImage,
 		breadcrumbsEventsTags,

@@ -82,17 +82,16 @@
                 <a class="navbar-item" href="/">
                     <img alt="Logo freiburg.run" src="/images/freiburg-run.svg">&nbsp;<strong>freiburg.run</strong>
                 </a>
-                <div class="is-flex">
-                    <a class="navbar-item {{if eq .Nav "tags"}}is-active{{end}}" href="/tags.html" title="Kategorien">
-                        <span class="icon"><i class="tags-icon"></i></span>
-                    </a>
-                    <a class="navbar-item {{if eq .Nav "map"}}is-active{{end}}" href="/map.html" title="Karte">
-                        <span class="icon"><i class="map-icon"></i></span>
-                    </a>
-                    <a class="navbar-item {{if eq .Nav "info"}}is-active{{end}}" href="/info.html" title="Info/Kontakt">
-                        <span class="icon"><i class="info-icon"></i></span>
-                    </a>
-                </div>
+                <div class="flex-grow-1"></div>
+                <a class="navbar-item {{if eq .Nav "tags"}}is-active{{end}}" href="/tags.html" title="Kategorien">
+                    <span class="icon"><i class="tags-icon"></i></span>
+                </a>
+                <a class="navbar-item {{if eq .Nav "map"}}is-active{{end}}" href="/map.html" title="Karte">
+                    <span class="icon"><i class="map-icon"></i></span>
+                </a>
+                <a class="navbar-item {{if eq .Nav "info"}}is-active{{end}}" href="/info.html" title="Info/Kontakt">
+                    <span class="icon"><i class="info-icon"></i></span>
+                </a>
             </div>
             <div class="navbar-brand">
                 <a id="nav-events" class="navbar-item {{if eq .Nav "events"}}is-active{{end}}" href="/">
