@@ -1052,7 +1052,11 @@ func main() {
 	breadcrumbsBase := utils.InitBreadcrumbs(utils.Link{Name: "freiburg.run", Url: "/"})
 	breadcrumbsEvents := utils.PushBreadcrumb(breadcrumbsBase, utils.Link{Name: "Laufveranstaltungen", Url: "/"})
 
-	defaultImage := "/images/events2023.jpg"
+	defaultImage := "/images/preview.png"
+	if err = utils.GenImage2(filepath.Join(options.outDir, "images/preview.png"), "Laufveranstaltungen", "im Raum Freiburg"); err != nil {
+		defaultImage = "/images/events2023.jpg"
+		log.Printf("defaultimage: %v", err)
+	}
 
 	data := TemplateData{
 		"Aktuelle und zukünftige Laufveranstaltungen im Raum Freiburg",
