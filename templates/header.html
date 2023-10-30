@@ -110,7 +110,7 @@
         </nav>
 
 
-        {{if .Breadcrumbs}}
+        {{if ne .Nav "map"}}{{if .Breadcrumbs}}
         <section class="section pt-2 pb-0">
             <div class="container is-max-desktop">
                 <nav class="breadcrumb">
@@ -127,4 +127,4 @@
                 </nav>
             </div>
         </section>
-        {{end}}
+        {{end}}{{end}}

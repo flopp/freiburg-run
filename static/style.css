@@ -23,6 +23,11 @@
     top: 3.25rem;
     bottom: 0;
 }
+@media screen and (max-width: 1023px) {
+#big-map {
+    top: 6.5rem;
+}
+}
 
 .navbar.z-top {
     z-index: 9999;
