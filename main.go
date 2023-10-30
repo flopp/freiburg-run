@@ -359,6 +359,7 @@ func parseTags(s string) []string {
 			tags = append(tags, tag)
 		}
 	}
+	sort.Slice(tags, func(i, j int) bool { return tags[i] < tags[j] })
 	return tags
 }
 
