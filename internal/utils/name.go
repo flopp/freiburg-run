@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"sort"
 	"strings"
 	"unicode"
 
@@ -47,4 +48,29 @@ func SanitizeName(s string) string {
 	}
 
 	return s
+}
+
+func SplitAndSanitize(s string) []string {
+	res := make([]string, 0)
+	for _, tag := range strings.Split(s, ",") {
+		tag = SanitizeName(tag)
+		if len(tag) > 0 {
+			res = append(res, tag)
+		}
+	}
+	return res
+}
+
+func SortAndUniquify(a []string) []string {
+	m := make(map[string]bool)
+	for _, s := range a {
+		m[s] = true
+	}
+
+	tags := make([]string, 0, len(m))
+	for tag, _ := range m {
+		tags = append(tags, tag)
+	}
+	sort.Slice(tags, func(i, j int) bool { return tags[i] < tags[j] })
+	return tags
 }

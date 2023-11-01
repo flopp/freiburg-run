@@ -101,6 +101,95 @@ func parseTimeRange(s string) (TimeRange, error) {
 	return TimeRange{from, to}, nil
 }
 
+type Location struct {
+	City      string
+	Country   string
+	Geo       string
+	Distance  string
+	Direction string
+}
+
+func (loc Location) Name() string {
+	if loc.City == "" {
+		return ""
+	}
+	if loc.Country == "Frankreich" {
+		return fmt.Sprintf(`%s, FR 🇫🇷`, loc.City)
+	}
+	if loc.Country == "Schweiz" {
+		return fmt.Sprintf(`%s, CH 🇨🇭`, loc.City)
+	}
+	return loc.City
+}
+
+func (loc Location) NameNoFlag() string {
+	if loc.City == "" {
+		return ""
+	}
+	if loc.Country == "Frankreich" {
+		return fmt.Sprintf(`%s, FR`, loc.City)
+	}
+	if loc.Country == "Schweiz" {
+		return fmt.Sprintf(`%s, CH`, loc.City)
+	}
+	return loc.City
+}
+
+func (loc Location) HasGeo() bool {
+	return loc.Geo != ""
+}
+
+func (loc Location) Dir() string {
+	return fmt.Sprintf(`%s %s von Freiburg`, loc.Distance, loc.Direction)
+}
+
+func (loc Location) DirLong() string {
+	return fmt.Sprintf(`%s %s von Freiburg Zentrum`, loc.Distance, loc.Direction)
+}
+
+func (loc Location) GoogleMaps() string {
+	return fmt.Sprintf(`https://www.google.com/maps/place/%s`, loc.Geo)
+}
+
+func (loc Location) Tags() []string {
+	tags := make([]string, 0)
+	if loc.Country != "" {
+		tags = append(tags, utils.SanitizeName(loc.Country))
+	}
+	// tags = append(tags, utils.SplitAndSanitize(loc.City)...)
+
+	return tags
+}
+
+var reFr = regexp.MustCompile(`\s*^(.*)\s*,\s*FR\s*🇫🇷\s*$`)
+var reCh = regexp.MustCompile(`\s*^(.*)\s*,\s*CH\s*🇨🇭\s*$`)
+
+func createLocation(locationS, coordinatesS string) Location {
+	country := ""
+	if m := reFr.FindStringSubmatch(locationS); m != nil {
+		country = "Frankreich"
+		locationS = m[1]
+	} else if m := reCh.FindStringSubmatch(locationS); m != nil {
+		country = "Schweiz"
+		locationS = m[1]
+	}
+
+	coordinates := utils.NormalizeGeo(coordinatesS)
+	lat, lon, err := utils.LatLon(coordinates)
+	distance := ""
+	direction := ""
+	if err == nil {
+		// Freiburg
+		lat0 := 47.996090
+		lon0 := 7.849400
+		d, b := utils.DistanceBearing(lat0, lon0, lat, lon)
+		distance = fmt.Sprintf("%.1fkm", d)
+		direction = utils.ApproxDirection(b)
+	}
+
+	return Location{locationS, country, coordinates, distance, direction}
+}
+
 type Event struct {
 	Type      string
 	Name      string
@@ -110,10 +199,7 @@ type Event struct {
 	Old       bool
 	Cancelled bool
 	Special   bool
-	Location  string
-	Geo       string
-	Distance  string
-	Direction string
+	Location  Location
 	Details   string
 	Details2  template.HTML
 	Url       string
@@ -139,10 +225,7 @@ func createSeparatorEvent(label string) *Event {
 		false,
 		false,
 		false,
-		"",
-		"",
-		"",
-		"",
+		Location{},
 		"",
 		"",
 		"",
@@ -351,18 +434,6 @@ type ConfigData struct {
 	SheetId string `json:"sheet_id"`
 }
 
-func parseTags(s string) []string {
-	tags := make([]string, 0)
-	for _, tag := range strings.Split(s, ",") {
-		tag = utils.SanitizeName(tag)
-		if len(tag) > 0 {
-			tags = append(tags, tag)
-		}
-	}
-	sort.Slice(tags, func(i, j int) bool { return tags[i] < tags[j] })
-	return tags
-}
-
 func parseLinks(ss []string) []NameUrl {
 	links := make([]NameUrl, 0)
 	for _, s := range ss {
@@ -478,22 +549,9 @@ func fetchEvents(config ConfigData, srv *sheets.Service, today time.Time, eventT
 			name, nameOld := SplitDetails(nameS)
 			url := urlS
 			description1, description2 := SplitDetails(descriptionS)
-			location := locationS
-			coordinates := utils.NormalizeGeo(coordinatesS)
-			lat, lon, err := utils.LatLon(coordinates)
-			distance := ""
-			direction := ""
-			if err == nil {
-				// Freiburg
-				lat0 := 47.996090
-				lon0 := 7.849400
-				d, b := utils.DistanceBearing(lat0, lon0, lat, lon)
-				distance = fmt.Sprintf("%.1fkm", d)
-				direction = utils.ApproxDirection(b)
-			}
-			tags := parseTags(tagsS)
-			links := parseLinks(linksS)
-
+			tags := utils.SplitAndSanitize(tagsS)
+			location := createLocation(locationS, coordinatesS)
+			tags = append(tags, location.Tags()...)
 			timeRange, err := parseTimeRange(date)
 			if err != nil {
 				log.Printf("event '%s': %v", name, err)
@@ -502,6 +560,7 @@ func fetchEvents(config ConfigData, srv *sheets.Service, today time.Time, eventT
 			if !timeRange.From.IsZero() {
 				tags = append(tags, fmt.Sprintf("%d", timeRange.From.Year()))
 			}
+			links := parseLinks(linksS)
 
 			events = append(events, &Event{
 				eventType,
@@ -513,13 +572,10 @@ func fetchEvents(config ConfigData, srv *sheets.Service, today time.Time, eventT
 				strings.Contains(strings.ToLower(date), "abgesagt"),
 				name == "100. Dietenbach parkrun",
 				location,
-				coordinates,
-				distance,
-				direction,
 				description1,
 				template.HTML(description2),
 				url,
-				tags,
+				utils.SortAndUniquify(tags),
 				links,
 				"",
 				false,
@@ -685,7 +741,7 @@ func findPrevNextEvents(events []*Event) {
 				break
 			}
 
-			if isSimilarName(event2.Name, event.Name) && event2.Geo == event.Geo {
+			if isSimilarName(event2.Name, event.Name) && event2.Location.Geo == event.Location.Geo {
 				prev = event2
 			}
 		}
@@ -1188,11 +1244,11 @@ func main() {
 		}
 		eventdata.Event = event
 		eventdata.Title = event.Name
-		eventdata.Description = fmt.Sprintf("Informationen zu %s in %s am %s", event.Name, event.Location, event.Time)
+		eventdata.Description = fmt.Sprintf("Informationen zu %s in %s am %s", event.Name, event.Location.NameNoFlag(), event.Time)
 		slug := event.Slug()
 		eventdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
 		image := event.ImageSlug()
-		if utils.GenImage(filepath.Join(options.outDir, image), event.Name, event.Time, event.Location) == nil {
+		if utils.GenImage(filepath.Join(options.outDir, image), event.Name, event.Time, event.Location.NameNoFlag()) == nil {
 			eventdata.Image = fmt.Sprintf("/%s", image)
 		} else {
 			eventdata.Image = defaultImage
@@ -1209,11 +1265,11 @@ func main() {
 		}
 		eventdata.Event = event
 		eventdata.Title = event.Name
-		eventdata.Description = fmt.Sprintf("Informationen zu %s in %s am %s", event.Name, event.Location, event.Time)
+		eventdata.Description = fmt.Sprintf("Informationen zu %s in %s am %s", event.Name, event.Location.NameNoFlag(), event.Time)
 		slug := event.Slug()
 		eventdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
 		image := event.ImageSlug()
-		if err = utils.GenImage(filepath.Join(options.outDir, image), event.Name, event.Time, event.Location); err != nil {
+		if err = utils.GenImage(filepath.Join(options.outDir, image), event.Name, event.Time, event.Location.NameNoFlag()); err != nil {
 			eventdata.Image = defaultImage
 			log.Printf("event '%s': %v", event.Name, err)
 		} else {
@@ -1233,11 +1289,11 @@ func main() {
 		}
 		eventdata.Event = event
 		eventdata.Title = event.Name
-		eventdata.Description = fmt.Sprintf("Informationen zu %s in %s am %s", event.Name, event.Location, event.Time)
+		eventdata.Description = fmt.Sprintf("Informationen zu %s in %s am %s", event.Name, event.Location.NameNoFlag(), event.Time)
 		slug := event.Slug()
 		eventdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
 		image := event.ImageSlug()
-		if err = utils.GenImage(filepath.Join(options.outDir, image), event.Name, event.Time, event.Location); err != nil {
+		if err = utils.GenImage(filepath.Join(options.outDir, image), event.Name, event.Time, event.Location.NameNoFlag()); err != nil {
 			eventdata.Image = defaultImage
 			log.Printf("event '%s': %v", event.Name, err)
 		} else {
@@ -1254,11 +1310,11 @@ func main() {
 	for _, event := range shops {
 		eventdata.Event = event
 		eventdata.Title = event.Name
-		eventdata.Description = fmt.Sprintf("Informationen zu %s in %s", event.Name, event.Location)
+		eventdata.Description = fmt.Sprintf("Informationen zu %s in %s", event.Name, event.Location.NameNoFlag())
 		slug := event.Slug()
 		eventdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
 		image := event.ImageSlug()
-		if err = utils.GenImage2(filepath.Join(options.outDir, image), event.Name, event.Location); err != nil {
+		if err = utils.GenImage2(filepath.Join(options.outDir, image), event.Name, event.Location.NameNoFlag()); err != nil {
 			eventdata.Image = defaultImage
 			log.Printf("event '%s': %v", event.Name, err)
 		} else {

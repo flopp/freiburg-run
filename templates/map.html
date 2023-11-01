@@ -3,26 +3,26 @@
 
 <div class="is-hidden">
     {{range .Events}}
-    {{if .Geo}}
-    <div class="event" data-type="Veranstaltung" data-name="{{.Name}}" data-time="{{.Time}}" data-geo="{{.Geo}}" data-location="{{.Location}}" data-slug="{{.Slug}}"></div>
+    {{if .Location.HasGeo}}
+    <div class="event" data-type="Veranstaltung" data-name="{{.Name}}" data-time="{{.Time}}" data-geo="{{.Location.Geo}}" data-location="{{.Location.Name}}" data-slug="{{.Slug}}"></div>
     {{end}}
     {{end}}
 
     {{range .EventsOld}}
-    {{if .Geo}}
-    <div class="event" data-type="vergangene Veranstaltung" data-name="{{.Name}}" data-time="{{.Time}}" data-geo="{{.Geo}}" data-location="{{.Location}}" data-slug="{{.Slug}}"></div>
+    {{if .Location.HasGeo}}
+    <div class="event" data-type="vergangene Veranstaltung" data-name="{{.Name}}" data-time="{{.Time}}" data-geo="{{.Location.Geo}}" data-location="{{.Location.Name}}" data-slug="{{.Slug}}"></div>
     {{end}}
     {{end}}
 
     {{range .Groups}}
-    {{if .Geo}}
-    <div class="event" data-type="Lauftreff" data-name="{{.Name}}" data-time="{{.Time}}" data-geo="{{.Geo}}" data-location="{{.Location}}" data-slug="{{.Slug}}"></div>
+    {{if .Location.HasGeo}}
+    <div class="event" data-type="Lauftreff" data-name="{{.Name}}" data-time="{{.Time}}" data-geo="{{.Location.Geo}}" data-location="{{.Location.Name}}" data-slug="{{.Slug}}"></div>
     {{end}}
     {{end}}
 
     {{range .Shops}}
-    {{if .Geo}}
-    <div class="event" data-type="Lauf-Shop" data-name="{{.Name}}" data-time="{{.Time}}" data-geo="{{.Geo}}" data-location="{{.Location}}" data-slug="{{.Slug}}"></div>
+    {{if .Location.HasGeo}}
+    <div class="event" data-type="Lauf-Shop" data-name="{{.Name}}" data-time="{{.Time}}" data-geo="{{.Location.Geo}}" data-location="{{.Location.Name}}" data-slug="{{.Slug}}"></div>
     {{end}}
     {{end}}
 </div>

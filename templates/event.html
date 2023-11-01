@@ -28,11 +28,11 @@
                         <tr>
                             <th>Ort</th>
                             <td class="is-w100">
-                                {{if .Event.Geo}}
-                                <a href="https://www.google.com/maps/place/{{.Event.Geo}}" target="_blank">{{.Event.Location}}</a>
-                                ({{.Event.Distance}} {{.Event.Direction}} von Freiburg Zentrum)
+                                {{if .Event.Location.HasGeo}}
+                                <a href="{{.Event.Location.GoogleMaps}}" target="_blank">{{.Event.Location.Name}}</a>
+                                ({{.Event.Location.DirLong}})
                                 {{else}}
-                                {{.Event.Location}}
+                                {{.Event.Location.Name}}
                                 {{end}}
                             </td>
                         </tr>
@@ -94,8 +94,8 @@
                 </div>
             </div>
         </div>
-        {{if .Event.Geo}}
-        <div id="event-map" data-geo="{{.Event.Geo}}" data-name="{{.Event.Name}}"></div>
+        {{if .Event.Location.HasGeo}}
+        <div id="event-map" data-geo="{{.Event.Location.Geo}}" data-name="{{.Event.Name}}"></div>
         {{end}}
     </div>
 </section>
