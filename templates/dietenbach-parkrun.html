@@ -68,17 +68,19 @@
                             {{end}}
                         </div>
                         <div class="is-hidden-tablet">
-                            {{if .Results}}
-                            <a class="no-external" href="{{.Results}}" target="_blank" title="Ergebnisse #{{.Index}}">Ergebnisse</a>
-                            {{end}}
-                            {{if .Report}}
-                            <a class="no-external" href="{{.Report}}" target="_blank" title="Laufbericht #{{.Index}}">Bericht</a>
-                            {{else if .Results}}
-                            <span disabled class="no-external" title="Laufbericht #{{.Index}} (in Arbeit)">(Bericht)</span>
-                            {{end}}
-                            {{if .Photos}}
-                            <a class="no-external" href="{{.Photos}}" target="_blank" title="Fotogalerie #{{.Index}}">Fotos</a>
-                            {{end}}
+                            <div class="is-flex is-flex-direction-column">
+                                {{if .Results}}
+                                <a class="no-external" href="{{.Results}}" target="_blank" title="Ergebnisse #{{.Index}}">Ergebnisse</a>
+                                {{end}}
+                                {{if .Report}}
+                                <a class="no-external" href="{{.Report}}" target="_blank" title="Laufbericht #{{.Index}}">Bericht</a>
+                                {{else if .Results}}
+                                <span disabled class="no-external" title="Laufbericht #{{.Index}} (in Arbeit)">(Bericht)</span>
+                                {{end}}
+                                {{if .Photos}}
+                                <a class="no-external" href="{{.Photos}}" target="_blank" title="Fotogalerie #{{.Index}}">Fotos</a>
+                                {{end}}
+                            </div>
                         </div>
                     </td>
                 </tr>

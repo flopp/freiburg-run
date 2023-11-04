@@ -434,8 +434,12 @@ type ConfigData struct {
 	SheetId string `json:"sheet_id"`
 }
 
-func parseLinks(ss []string) []NameUrl {
+func parseLinks(ss []string, registration string) []NameUrl {
 	links := make([]NameUrl, 0)
+	hasRegistration := registration != ""
+	if hasRegistration {
+		links = append(links, NameUrl{"Anmeldung", registration})
+	}
 	for _, s := range ss {
 		if s == "" {
 			continue
@@ -444,7 +448,9 @@ func parseLinks(ss []string) []NameUrl {
 		if len(a) != 2 {
 			panic(fmt.Errorf("bad link: <%s>", s))
 		}
-		links = append(links, NameUrl{a[0], a[1]})
+		if !hasRegistration || a[0] != "Anmeldung" {
+			links = append(links, NameUrl{a[0], a[1]})
+		}
 	}
 	return links
 }
@@ -538,6 +544,7 @@ func fetchEvents(config ConfigData, srv *sheets.Service, today time.Time, eventT
 			descriptionS := cols.getValue("DESCRIPTION", row)
 			locationS := cols.getValue("LOCATION", row)
 			coordinatesS := cols.getValue("COORDINATES", row)
+			registration := cols.getValue("REGISTRATION", row)
 			tagsS := cols.getValue("TAGS", row)
 			linksS := make([]string, 4)
 			linksS[0] = cols.getValue("LINK1", row)
@@ -560,7 +567,7 @@ func fetchEvents(config ConfigData, srv *sheets.Service, today time.Time, eventT
 			if !timeRange.From.IsZero() {
 				tags = append(tags, fmt.Sprintf("%d", timeRange.From.Year()))
 			}
-			links := parseLinks(linksS)
+			links := parseLinks(linksS, registration)
 
 			events = append(events, &Event{
 				eventType,
