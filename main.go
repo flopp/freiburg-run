@@ -63,44 +63,6 @@ type NameUrl struct {
 	Url  string
 }
 
-type EventJson struct {
-	Name     string
-	Time     string
-	Location string
-	Geo      string
-	Details  string
-	Url      string
-	Reports  []NameUrl
-	Added    string
-}
-
-type TimeRange struct {
-	From time.Time
-	To   time.Time
-}
-
-func parseTimeRange(s string) (TimeRange, error) {
-	dateRe := regexp.MustCompile(`\b(\d\d\.\d\d\.\d\d\d\d)\b`)
-
-	var from, to time.Time
-	for _, mm := range dateRe.FindAllStringSubmatch(s, -1) {
-		d, err := time.Parse("02.01.2006", mm[1])
-		if err != nil {
-			return TimeRange{}, fmt.Errorf("cannot parse date '%s' from '%s'", mm[1], s)
-		}
-		if from.IsZero() {
-			from = d
-		} else {
-			if d.Before(to) {
-				return TimeRange{}, fmt.Errorf("invalid time range '%s' (wrongly ordered components)", s)
-			}
-		}
-		to = d
-	}
-
-	return TimeRange{from, to}, nil
-}
-
 type Location struct {
 	City      string
 	Country   string
@@ -195,7 +157,7 @@ type Event struct {
 	Name      string
 	NameOld   string
 	Time      string
-	TimeRange TimeRange
+	TimeRange utils.TimeRange
 	Old       bool
 	Cancelled bool
 	Special   bool
@@ -221,7 +183,7 @@ func createSeparatorEvent(label string) *Event {
 		label,
 		"",
 		"",
-		TimeRange{},
+		utils.TimeRange{},
 		false,
 		false,
 		false,
@@ -552,14 +514,17 @@ func fetchEvents(config ConfigData, srv *sheets.Service, today time.Time, eventT
 			linksS[2] = cols.getValue("LINK3", row)
 			linksS[3] = cols.getValue("LINK4", row)
 
-			date := dateS
 			name, nameOld := SplitDetails(nameS)
 			url := urlS
 			description1, description2 := SplitDetails(descriptionS)
 			tags := utils.SplitAndSanitize(tagsS)
 			location := createLocation(locationS, coordinatesS)
 			tags = append(tags, location.Tags()...)
-			timeRange, err := parseTimeRange(date)
+			timeRange, err := utils.ParseTimeRange(dateS)
+			if err != nil {
+				log.Printf("event '%s': %v", name, err)
+			}
+			date, err := utils.InsertWeekdays(dateS)
 			if err != nil {
 				log.Printf("event '%s': %v", name, err)
 			}
@@ -1123,7 +1088,7 @@ func main() {
 	}
 
 	data := TemplateData{
-		"Aktuelle und zukünftige Laufveranstaltungen im Raum Freiburg",
+		"Laufveranstaltungen im Raum Freiburg",
 		"Veranstaltung",
 		"Liste von aktuellen und zukünftigen Laufveranstaltungen, Lauf-Wettkämpfen, Volksläufen im Raum Freiburg",
 		"events",

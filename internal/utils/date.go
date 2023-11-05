@@ -3,6 +3,7 @@ package utils
 import (
 	"fmt"
 	"regexp"
+	"strings"
 	"time"
 )
 
@@ -30,4 +31,71 @@ func ParseDate(s string) (time.Time, error) {
 	}
 
 	return time.ParseInLocation("02.01.2006", s, loc)
+}
+
+type TimeRange struct {
+	From time.Time
+	To   time.Time
+}
+
+var dateRe = regexp.MustCompile(`\b(\d\d\.\d\d\.\d\d\d\d)\b`)
+
+func ParseTimeRange(s string) (TimeRange, error) {
+	var from, to time.Time
+	for _, mm := range dateRe.FindAllStringSubmatch(s, -1) {
+		d, err := ParseDate(mm[1])
+		if err != nil {
+			return TimeRange{}, fmt.Errorf("cannot parse date '%s' from '%s'", mm[1], s)
+		}
+		if from.IsZero() {
+			from = d
+		} else {
+			if d.Before(to) {
+				return TimeRange{}, fmt.Errorf("invalid time range '%s' (wrongly ordered components)", s)
+			}
+		}
+		to = d
+	}
+
+	return TimeRange{from, to}, nil
+}
+
+func WeekdayStr(d time.Weekday) string {
+	switch d {
+	case time.Monday:
+		return "Montag"
+	case time.Tuesday:
+		return "Dienstag"
+	case time.Wednesday:
+		return "Mittwoch"
+	case time.Thursday:
+		return "Donnerstag"
+	case time.Friday:
+		return "Freitag"
+	case time.Saturday:
+		return "Samstag"
+	case time.Sunday:
+	default:
+		return "Sonntag"
+	}
+	return "Sonntag"
+}
+
+func InsertWeekdays(s string) (string, error) {
+	replacements := make(map[string]string)
+
+	for _, mm := range dateRe.FindAllStringSubmatch(s, -1) {
+		d, err := ParseDate(mm[1])
+		if err != nil {
+			return s, fmt.Errorf("cannot parse date '%s' from '%s'", mm[1], s)
+		}
+		replacements[mm[1]] = fmt.Sprintf("%s, %s", WeekdayStr(d.Weekday()), mm[1])
+	}
+
+	// insert weekdays
+	for s1, s2 := range replacements {
+		s = strings.ReplaceAll(s, s1, s2)
+	}
+
+	return s, nil
 }
