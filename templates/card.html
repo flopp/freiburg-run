@@ -48,7 +48,7 @@
                     {{if .Tags}}<tr>
                         <th class="w-2em no-border" title="Kategorien">🏷</th>
                         <td class="no-border">
-                        {{range .Tags}}<a class="tag is-link is-light mr-2" href="/tag/{{.}}.html">{{.}}</a>{{end}}
+                        {{range .Tags}}<a class="tag is-link is-light mr-2" href="{{.Slug}}">{{.Name}}</a>{{end}}
                         </td>
                     </tr>{{end}}
                 </table>

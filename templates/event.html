@@ -62,7 +62,7 @@
                             <th>Kategorien</th>
                             <td class="is-w100">
                                 {{range .Event.Tags}}
-                                    <a class="tag is-link is-light" href="/tag/{{.}}.html">{{.}}</a>
+                                    <a class="tag is-link is-light" href="{{.Slug}}">{{.Name}}</a>
                                 {{end}}
                             </td>
                         </tr>

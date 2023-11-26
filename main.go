@@ -165,7 +165,8 @@ type Event struct {
 	Details   string
 	Details2  template.HTML
 	Url       string
-	Tags      []string
+	RawTags   []string
+	Tags      []*Tag
 	Links     []NameUrl
 	Added     string
 	New       bool
@@ -191,6 +192,7 @@ func createSeparatorEvent(label string) *Event {
 		"",
 		"",
 		"",
+		nil,
 		nil,
 		nil,
 		"",
@@ -279,6 +281,7 @@ type ParkrunEvent struct {
 }
 
 type Tag struct {
+	Sanitized   string
 	Name        string
 	Description string
 	Events      []*Event
@@ -288,11 +291,11 @@ type Tag struct {
 }
 
 func CreateTag(name string) *Tag {
-	return &Tag{name, "", make([]*Event, 0), make([]*Event, 0), make([]*Event, 0), make([]*Event, 0)}
+	return &Tag{name, name, "", make([]*Event, 0), make([]*Event, 0), make([]*Event, 0), make([]*Event, 0)}
 }
 
 func (tag *Tag) Slug() string {
-	return fmt.Sprintf("/tag/%s.html", tag.Name)
+	return fmt.Sprintf("/tag/%s.html", tag.Sanitized)
 }
 
 func (tag *Tag) NumEvents() int {
@@ -548,6 +551,7 @@ func fetchEvents(config ConfigData, srv *sheets.Service, today time.Time, eventT
 				template.HTML(description2),
 				url,
 				utils.SortAndUniquify(tags),
+				nil,
 				links,
 				"",
 				false,
@@ -613,8 +617,8 @@ func fetchParkrunEvents(config ConfigData, srv *sheets.Service, today time.Time,
 	return events
 }
 
-func fetchTagDescriptions(config ConfigData, srv *sheets.Service, table string) map[string]string {
-	descriptions := make(map[string]string)
+func fetchTagDescriptions(config ConfigData, srv *sheets.Service, table string) map[string]NameDescription {
+	descriptions := make(map[string]NameDescription)
 	resp, err := srv.Spreadsheets.Values.Get(config.SheetId, fmt.Sprintf("%s!A1:C", table)).Do()
 	utils.Check(err)
 	if len(resp.Values) == 0 {
@@ -630,12 +634,12 @@ func fetchTagDescriptions(config ConfigData, srv *sheets.Service, table string) 
 				continue
 			}
 			tagS := cols.getValue("TAG", row)
-			//nameS := cols.getValue("NAME", row)
+			nameS := cols.getValue("NAME", row)
 			descriptionS := cols.getValue("DESCRIPTION", row)
 
 			tag := utils.SanitizeName(tagS)
 			if tag != "" && descriptionS != "" {
-				descriptions[tag] = descriptionS
+				descriptions[tag] = NameDescription{nameS, descriptionS}
 			}
 		}
 	}
@@ -836,42 +840,58 @@ func getTag(tags map[string]*Tag, name string) *Tag {
 	return tag
 }
 
-func collectTags(descriptions map[string]string, events []*Event, eventsOld []*Event, groups []*Event, shops []*Event) (map[string]*Tag, []*Tag) {
+type NameDescription struct {
+	Name        string
+	Description string
+}
+
+func collectTags(descriptions map[string]NameDescription, events []*Event, eventsOld []*Event, groups []*Event, shops []*Event) (map[string]*Tag, []*Tag) {
 	tags := make(map[string]*Tag)
 	for _, e := range events {
-		for _, t := range e.Tags {
+		e.Tags = make([]*Tag, 0, len(e.RawTags))
+		for _, t := range e.RawTags {
 			tag := getTag(tags, t)
+			e.Tags = append(e.Tags, tag)
 			tag.Events = append(tag.Events, e)
 		}
 	}
 	for _, e := range eventsOld {
-		for _, t := range e.Tags {
+		e.Tags = make([]*Tag, 0, len(e.RawTags))
+		for _, t := range e.RawTags {
 			tag := getTag(tags, t)
+			e.Tags = append(e.Tags, tag)
 			tag.EventsOld = append(tag.EventsOld, e)
 		}
 	}
 	for _, e := range groups {
-		for _, t := range e.Tags {
+		e.Tags = make([]*Tag, 0, len(e.RawTags))
+		for _, t := range e.RawTags {
 			tag := getTag(tags, t)
+			e.Tags = append(e.Tags, tag)
 			tag.Groups = append(tag.Groups, e)
 		}
 	}
 	for _, e := range shops {
-		for _, t := range e.Tags {
+		e.Tags = make([]*Tag, 0, len(e.RawTags))
+		for _, t := range e.RawTags {
 			tag := getTag(tags, t)
+			e.Tags = append(e.Tags, tag)
 			tag.Shops = append(tag.Shops, e)
 		}
 	}
 
 	tagsList := make([]*Tag, 0, len(tags))
 	for _, tag := range tags {
-		desc, found := descriptions[tag.Name]
+		desc, found := descriptions[tag.Sanitized]
 		if found {
-			tag.Description = desc
+			if desc.Name != "" {
+				tag.Name = desc.Name
+			}
+			tag.Description = desc.Description
 		}
 		tagsList = append(tagsList, tag)
 	}
-	sort.Slice(tagsList, func(i, j int) bool { return tagsList[i].Name < tagsList[j].Name })
+	sort.Slice(tagsList, func(i, j int) bool { return tagsList[i].Sanitized < tagsList[j].Sanitized })
 
 	return tags, tagsList
 }
@@ -1162,7 +1182,7 @@ func main() {
 	utils.ExecuteTemplate("dietenbach-parkrun", filepath.Join(options.outDir, "dietenbach-parkrun.html"), data)
 
 	data.Nav = "map"
-	data.Title = "Karte aller Laufveranstaltunge"
+	data.Title = "Karte aller Laufveranstaltungen"
 	data.Type = "Karte"
 	data.Image = defaultImage
 	data.Description = "Karte"
@@ -1326,9 +1346,9 @@ func main() {
 		tagdata.Tag = tag
 		tagdata.Title = fmt.Sprintf("Laufveranstaltungen der Kategorie '%s'", tag.Name)
 		tagdata.Description = fmt.Sprintf("Liste an Laufveranstaltungen im Raum Freiburg, die mit der Kategorie '%s' getaggt sind", tag.Name)
-		slug := fmt.Sprintf("tag/%s.html", tag.Name)
+		slug := tag.Slug()
 		tagdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
-		tagdata.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsEventsTags, utils.Link{Name: tag.Name, Url: fmt.Sprintf("/%s", slug)})
+		tagdata.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsEventsTags, utils.Link{Name: tag.Name, Url: slug})
 		utils.ExecuteTemplate("tag", filepath.Join(options.outDir, slug), tagdata)
 		sitemap.Add(slug, tag.Name, "Kategorien")
 	}
