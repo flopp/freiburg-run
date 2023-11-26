@@ -166,7 +166,7 @@ type Event struct {
 	Details2  template.HTML
 	Url       string
 	Tags      []string
-	Reports   []NameUrl
+	Links     []NameUrl
 	Added     string
 	New       bool
 	Prev      *Event

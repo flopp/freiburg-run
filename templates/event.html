@@ -29,7 +29,7 @@
                             <th>Ort</th>
                             <td class="is-w100">
                                 {{if .Event.Location.HasGeo}}
-                                <a href="{{.Event.Location.GoogleMaps}}" target="_blank">{{.Event.Location.Name}}</a>
+                                <a href="{{.Event.Location.GoogleMaps}}" title="{{.Event.Name}}: {{.Event.Location.Name}}" target="_blank">{{.Event.Location.Name}}</a>
                                 ({{.Event.Location.DirLong}})
                                 {{else}}
                                 {{.Event.Location.Name}}
@@ -47,12 +47,12 @@
                             </td>
                         </tr>
                         {{end}}
-                        {{if .Event.Reports}}
+                        {{if .Event.Links}}
                         <tr>
                             <th>Infos</th>
                             <td class="is-w100">
-                                {{range .Event.Reports}}
-                                    <a class="tag is-link is-light" href="{{.Url}}" target="_blank">{{.Name}}</a>
+                                {{range .Event.Links}}
+                                    <a class="tag is-link is-light" href="{{.Url}}"  title="{{$.Event.Name}}: {{.Name}}" target="_blank">{{.Name}}</a>
                                 {{end}}
                             </td>
                         </tr>

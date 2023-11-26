@@ -35,14 +35,14 @@
                     <tr>
                         <th class="w-2em no-border" title="Ort">🗺</th>
                         <td class="no-border">
-                        {{if .Location.HasGeo}}<a href="{{.Location.GoogleMaps}}" target="_blank">{{.Location.Name}}</a> (<span title="Distanz und Richtung von Freiburg Zentrum">{{.Location.Dir}}</span>){{else}}{{.Location.Name}}{{end}}
+                        {{if .Location.HasGeo}}<a href="{{.Location.GoogleMaps}}" title="{{$.Name}}: {{.Location.Name}}" target="_blank">{{.Location.Name}}</a> (<span title="Distanz und Richtung von Freiburg Zentrum">{{.Location.Dir}}</span>){{else}}{{.Location.Name}}{{end}}
                         </td>
                     </tr>
                     {{if .Details}}<tr><th class="w-2em no-border" title="Details">ℹ️</th><td class="no-border">{{.Details}}</td></tr>{{end}}
-                    {{if .Reports}}<tr>
+                    {{if .Links}}<tr>
                         <th class="w-2em no-border" title="Infos">🔗</th>
                         <td class="no-border">
-                            {{range .Reports}}<a class="tag is-link is-light mr-2" href="{{.Url}}" target="_blank">{{.Name}}</a>{{end}}
+                            {{range .Links}}<a class="tag is-link is-light mr-2" href="{{.Url}}" title="{{$.Name}}: {{.Name}}" target="_blank">{{.Name}}</a>{{end}}
                         </td>
                     </tr>{{end}}
                     {{if .Tags}}<tr>
@@ -57,7 +57,7 @@
         <footer class="card-footer">
             <p class="card-footer-item">
                 <span>
-                    <a href="{{.Url}}" target="_blank">{{.LinkTitle}}</a>
+                    <a href="{{.Url}}" title="{{.Name}}: {{.LinkTitle}}" target="_blank">{{.LinkTitle}}</a>
                 </span>
             </p>
         </footer>
