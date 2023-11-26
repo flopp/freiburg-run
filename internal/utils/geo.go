@@ -89,7 +89,7 @@ func ApproxDirection(deg float64) string {
 		return "nordöstl."
 	}
 	if deg <= 5*d {
-		return "östli."
+		return "östl."
 	}
 	if deg <= 7*d {
 		return "südostl."
