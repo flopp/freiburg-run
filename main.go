@@ -615,18 +615,27 @@ func fetchParkrunEvents(config ConfigData, srv *sheets.Service, today time.Time,
 
 func fetchTagDescriptions(config ConfigData, srv *sheets.Service, table string) map[string]string {
 	descriptions := make(map[string]string)
-	resp, err := srv.Spreadsheets.Values.Get(config.SheetId, fmt.Sprintf("%s!A1:B", table)).Do()
+	resp, err := srv.Spreadsheets.Values.Get(config.SheetId, fmt.Sprintf("%s!A1:C", table)).Do()
 	utils.Check(err)
 	if len(resp.Values) == 0 {
 		panic("No tags data found.")
 	} else {
-		for _, row := range resp.Values {
-			if len(row) >= 2 {
-				name := utils.SanitizeName(fmt.Sprintf("%v", row[0]))
-				desc := fmt.Sprintf("%v", row[1])
-				if name != "" && desc != "" {
-					descriptions[name] = desc
+		cols := Columns{}
+		for line, row := range resp.Values {
+			if line == 0 {
+				cols, err = initColumns(row)
+				if err != nil {
+					panic(fmt.Errorf("when fetching table '%s': %v", table, err))
 				}
+				continue
+			}
+			tagS := cols.getValue("TAG", row)
+			//nameS := cols.getValue("NAME", row)
+			descriptionS := cols.getValue("DESCRIPTION", row)
+
+			tag := utils.SanitizeName(tagS)
+			if tag != "" && descriptionS != "" {
+				descriptions[tag] = descriptionS
 			}
 		}
 	}
