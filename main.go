@@ -638,7 +638,7 @@ func fetchTagDescriptions(config ConfigData, srv *sheets.Service, table string) 
 			descriptionS := cols.getValue("DESCRIPTION", row)
 
 			tag := utils.SanitizeName(tagS)
-			if tag != "" && descriptionS != "" {
+			if tag != "" && (nameS != "" || descriptionS != "") {
 				descriptions[tag] = NameDescription{nameS, descriptionS}
 			}
 		}
