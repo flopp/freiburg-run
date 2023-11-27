@@ -295,7 +295,7 @@ func CreateTag(name string) *Tag {
 }
 
 func (tag *Tag) Slug() string {
-	return fmt.Sprintf("/tag/%s.html", tag.Sanitized)
+	return fmt.Sprintf("tag/%s.html", tag.Sanitized)
 }
 
 func (tag *Tag) NumEvents() int {
