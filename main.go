@@ -444,17 +444,6 @@ func getAllSheets(config ConfigData, srv *sheets.Service) ([]string, error) {
 	return sheets, nil
 }
 
-func fetchTable(config ConfigData, srv *sheets.Service, table string) ([][]interface{}, error) {
-	resp, err := srv.Spreadsheets.Values.Get(config.SheetId, fmt.Sprintf("%s!A1:Z", table)).Do()
-	if err != nil {
-		return nil, fmt.Errorf("cannot fetch table '%s': %v", table, err)
-	}
-	if len(resp.Values) == 0 {
-		return nil, fmt.Errorf("got 0 rows when fetching table '%s'", table)
-	}
-	return resp.Values, nil
-}
-
 type Columns struct {
 	index map[string]int
 }
@@ -483,19 +472,34 @@ func (cols *Columns) getValue(title string, row []interface{}) string {
 	return fmt.Sprintf("%v", row[col])
 }
 
-func fetchEvents(config ConfigData, srv *sheets.Service, today time.Time, eventType string, table string) []*Event {
-	rows, err := fetchTable(config, srv, table)
-	utils.Check(err)
-	events := make([]*Event, 0)
+func fetchTable(config ConfigData, srv *sheets.Service, table string) (Columns, [][]interface{}, error) {
+	resp, err := srv.Spreadsheets.Values.Get(config.SheetId, fmt.Sprintf("%s!A1:Z", table)).Do()
+	if err != nil {
+		return Columns{}, nil, fmt.Errorf("cannot fetch table '%s': %v", table, err)
+	}
+	if len(resp.Values) == 0 {
+		return Columns{}, nil, fmt.Errorf("got 0 rows when fetching table '%s'", table)
+	}
 	cols := Columns{}
-	for line, row := range rows {
+	rows := make([][]interface{}, 0, len(resp.Values)-1)
+	for line, row := range resp.Values {
 		if line == 0 {
 			cols, err = initColumns(row)
 			if err != nil {
-				panic(fmt.Errorf("when fetching table '%s': %v", table, err))
+				return Columns{}, nil, fmt.Errorf("failed to parse rows when fetching table '%s': %v", table, err)
 			}
 			continue
 		}
+		rows = append(rows, row)
+	}
+	return cols, rows, nil
+}
+
+func fetchEvents(config ConfigData, srv *sheets.Service, today time.Time, eventType string, table string) []*Event {
+	cols, rows, err := fetchTable(config, srv, table)
+	utils.Check(err)
+	events := make([]*Event, 0)
+	for line, row := range rows {
 		dateS := cols.getValue("DATE", row)
 		nameS := cols.getValue("NAME", row)
 		urlS := cols.getValue("URL", row)
@@ -572,18 +576,10 @@ func fetchEvents(config ConfigData, srv *sheets.Service, today time.Time, eventT
 }
 
 func fetchParkrunEvents(config ConfigData, srv *sheets.Service, today time.Time, table string) []*ParkrunEvent {
-	rows, err := fetchTable(config, srv, table)
+	cols, rows, err := fetchTable(config, srv, table)
 	utils.Check(err)
 	events := make([]*ParkrunEvent, 0)
-	cols := Columns{}
-	for line, row := range rows {
-		if line == 0 {
-			cols, err = initColumns(row)
-			if err != nil {
-				panic(fmt.Errorf("when fetching table '%s': %v", table, err))
-			}
-			continue
-		}
+	for _, row := range rows {
 		index := cols.getValue("INDEX", row)
 		date := cols.getValue("DATE", row)
 		special := cols.getValue("SPECIAL", row)
@@ -614,18 +610,10 @@ func fetchParkrunEvents(config ConfigData, srv *sheets.Service, today time.Time,
 }
 
 func fetchTagDescriptions(config ConfigData, srv *sheets.Service, table string) map[string]NameDescription {
-	rows, err := fetchTable(config, srv, table)
+	cols, rows, err := fetchTable(config, srv, table)
 	utils.Check(err)
 	descriptions := make(map[string]NameDescription)
-	cols := Columns{}
-	for line, row := range rows {
-		if line == 0 {
-			cols, err = initColumns(row)
-			if err != nil {
-				panic(fmt.Errorf("when fetching table '%s': %v", table, err))
-			}
-			continue
-		}
+	for _, row := range rows {
 		tagS := cols.getValue("TAG", row)
 		nameS := cols.getValue("NAME", row)
 		descriptionS := cols.getValue("DESCRIPTION", row)
