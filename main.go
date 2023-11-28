@@ -505,6 +505,11 @@ func fetchEvents(config ConfigData, srv *sheets.Service, today time.Time, eventT
 		dateS := cols.getValue("DATE", row)
 		nameS := cols.getValue("NAME", row)
 		statusS := cols.getValue("STATUS", row)
+		special := statusS == "spezial"
+		cancelled := statusS == "abgesagt"
+		if special || cancelled {
+			statusS = ""
+		}
 		urlS := cols.getValue("URL", row)
 		if eventType == "event" {
 			if dateS == "" {
@@ -560,8 +565,8 @@ func fetchEvents(config ConfigData, srv *sheets.Service, today time.Time, eventT
 			timeRange,
 			isOld,
 			statusS,
-			strings.Contains(strings.ToLower(statusS), "abgesagt"),
-			strings.Contains(strings.ToLower(statusS), "special"),
+			cancelled,
+			special,
 			location,
 			description1,
 			template.HTML(description2),

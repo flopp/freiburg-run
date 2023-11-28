@@ -13,6 +13,14 @@
                 {{end}}
                 <table class="table is-fullwidth is-narrow">
                     <tbody>
+                        {{if .Event.Status}}
+                        <tr>
+                            <th>Hinweis</th>
+                            <td class="is-w100">
+                                {{.Event.Status}}
+                            </td>
+                        </tr>
+                        {{end}}
                         <tr>
                             <th>Link</th>
                             <td class="is-w100">
