@@ -159,6 +159,7 @@ type Event struct {
 	Time      string
 	TimeRange utils.TimeRange
 	Old       bool
+	Status    string
 	Cancelled bool
 	Special   bool
 	Location  Location
@@ -186,6 +187,7 @@ func createSeparatorEvent(label string) *Event {
 		"",
 		utils.TimeRange{},
 		false,
+		"",
 		false,
 		false,
 		Location{},
@@ -502,6 +504,7 @@ func fetchEvents(config ConfigData, srv *sheets.Service, today time.Time, eventT
 	for line, row := range rows {
 		dateS := cols.getValue("DATE", row)
 		nameS := cols.getValue("NAME", row)
+		statusS := cols.getValue("STATUS", row)
 		urlS := cols.getValue("URL", row)
 		if eventType == "event" {
 			if dateS == "" {
@@ -556,8 +559,9 @@ func fetchEvents(config ConfigData, srv *sheets.Service, today time.Time, eventT
 			date,
 			timeRange,
 			isOld,
-			strings.Contains(strings.ToLower(date), "abgesagt"),
-			name == "100. Dietenbach parkrun",
+			statusS,
+			strings.Contains(strings.ToLower(statusS), "abgesagt"),
+			strings.Contains(strings.ToLower(statusS), "special"),
 			location,
 			description1,
 			template.HTML(description2),
