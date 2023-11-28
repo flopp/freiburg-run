@@ -444,6 +444,17 @@ func getAllSheets(config ConfigData, srv *sheets.Service) ([]string, error) {
 	return sheets, nil
 }
 
+func fetchTable(config ConfigData, srv *sheets.Service, table string) ([][]interface{}, error) {
+	resp, err := srv.Spreadsheets.Values.Get(config.SheetId, fmt.Sprintf("%s!A1:Z", table)).Do()
+	if err != nil {
+		return nil, fmt.Errorf("cannot fetch table '%s': %v", table, err)
+	}
+	if len(resp.Values) == 0 {
+		return nil, fmt.Errorf("got 0 rows when fetching table '%s'", table)
+	}
+	return resp.Values, nil
+}
+
 type Columns struct {
 	index map[string]int
 }
@@ -473,174 +484,155 @@ func (cols *Columns) getValue(title string, row []interface{}) string {
 }
 
 func fetchEvents(config ConfigData, srv *sheets.Service, today time.Time, eventType string, table string) []*Event {
-	events := make([]*Event, 0)
-	resp, err := srv.Spreadsheets.Values.Get(config.SheetId, fmt.Sprintf("%s!A1:Z", table)).Do()
+	rows, err := fetchTable(config, srv, table)
 	utils.Check(err)
-	if len(resp.Values) == 0 {
-		panic("No events data found.")
-	} else {
-		cols := Columns{}
-		for line, row := range resp.Values {
-			if line == 0 {
-				cols, err = initColumns(row)
-				if err != nil {
-					panic(fmt.Errorf("when fetching table '%s': %v", table, err))
-				}
-				continue
-			}
-			dateS := cols.getValue("DATE", row)
-			nameS := cols.getValue("NAME", row)
-			urlS := cols.getValue("URL", row)
-			if eventType == "event" {
-				if dateS == "" {
-					log.Printf("table '%s', line '%d': skipping row with empty date", table, line)
-					continue
-				}
-			}
-			if nameS == "" {
-				log.Printf("table '%s', line '%d': skipping row with empty name", table, line)
-				continue
-			}
-			if urlS == "" {
-				log.Printf("table '%s', line '%d': skipping row with empty url", table, line)
-				continue
-			}
-
-			descriptionS := cols.getValue("DESCRIPTION", row)
-			locationS := cols.getValue("LOCATION", row)
-			coordinatesS := cols.getValue("COORDINATES", row)
-			registration := cols.getValue("REGISTRATION", row)
-			tagsS := cols.getValue("TAGS", row)
-			linksS := make([]string, 4)
-			linksS[0] = cols.getValue("LINK1", row)
-			linksS[1] = cols.getValue("LINK2", row)
-			linksS[2] = cols.getValue("LINK3", row)
-			linksS[3] = cols.getValue("LINK4", row)
-
-			name, nameOld := SplitDetails(nameS)
-			url := urlS
-			description1, description2 := SplitDetails(descriptionS)
-			tags := utils.SplitAndSanitize(tagsS)
-			location := createLocation(locationS, coordinatesS)
-			tags = append(tags, location.Tags()...)
-			timeRange, err := utils.ParseTimeRange(dateS)
+	events := make([]*Event, 0)
+	cols := Columns{}
+	for line, row := range rows {
+		if line == 0 {
+			cols, err = initColumns(row)
 			if err != nil {
-				log.Printf("event '%s': %v", name, err)
+				panic(fmt.Errorf("when fetching table '%s': %v", table, err))
 			}
-			date, err := utils.InsertWeekdays(dateS)
-			if err != nil {
-				log.Printf("event '%s': %v", name, err)
-			}
-			isOld := (!timeRange.From.IsZero()) && timeRange.To.Before(today)
-			if !timeRange.From.IsZero() {
-				tags = append(tags, fmt.Sprintf("%d", timeRange.From.Year()))
-			}
-			links := parseLinks(linksS, registration)
-
-			events = append(events, &Event{
-				eventType,
-				name,
-				nameOld,
-				date,
-				timeRange,
-				isOld,
-				strings.Contains(strings.ToLower(date), "abgesagt"),
-				name == "100. Dietenbach parkrun",
-				location,
-				description1,
-				template.HTML(description2),
-				url,
-				utils.SortAndUniquify(tags),
-				nil,
-				links,
-				"",
-				false,
-				nil,
-				nil,
-			})
+			continue
 		}
+		dateS := cols.getValue("DATE", row)
+		nameS := cols.getValue("NAME", row)
+		urlS := cols.getValue("URL", row)
+		if eventType == "event" {
+			if dateS == "" {
+				log.Printf("table '%s', line '%d': skipping row with empty date", table, line)
+				continue
+			}
+		}
+		if nameS == "" {
+			log.Printf("table '%s', line '%d': skipping row with empty name", table, line)
+			continue
+		}
+		if urlS == "" {
+			log.Printf("table '%s', line '%d': skipping row with empty url", table, line)
+			continue
+		}
+
+		descriptionS := cols.getValue("DESCRIPTION", row)
+		locationS := cols.getValue("LOCATION", row)
+		coordinatesS := cols.getValue("COORDINATES", row)
+		registration := cols.getValue("REGISTRATION", row)
+		tagsS := cols.getValue("TAGS", row)
+		linksS := make([]string, 4)
+		linksS[0] = cols.getValue("LINK1", row)
+		linksS[1] = cols.getValue("LINK2", row)
+		linksS[2] = cols.getValue("LINK3", row)
+		linksS[3] = cols.getValue("LINK4", row)
+
+		name, nameOld := SplitDetails(nameS)
+		url := urlS
+		description1, description2 := SplitDetails(descriptionS)
+		tags := utils.SplitAndSanitize(tagsS)
+		location := createLocation(locationS, coordinatesS)
+		tags = append(tags, location.Tags()...)
+		timeRange, err := utils.ParseTimeRange(dateS)
+		if err != nil {
+			log.Printf("event '%s': %v", name, err)
+		}
+		date, err := utils.InsertWeekdays(dateS)
+		if err != nil {
+			log.Printf("event '%s': %v", name, err)
+		}
+		isOld := (!timeRange.From.IsZero()) && timeRange.To.Before(today)
+		if !timeRange.From.IsZero() {
+			tags = append(tags, fmt.Sprintf("%d", timeRange.From.Year()))
+		}
+		links := parseLinks(linksS, registration)
+
+		events = append(events, &Event{
+			eventType,
+			name,
+			nameOld,
+			date,
+			timeRange,
+			isOld,
+			strings.Contains(strings.ToLower(date), "abgesagt"),
+			name == "100. Dietenbach parkrun",
+			location,
+			description1,
+			template.HTML(description2),
+			url,
+			utils.SortAndUniquify(tags),
+			nil,
+			links,
+			"",
+			false,
+			nil,
+			nil,
+		})
 	}
 
 	return events
 }
 
 func fetchParkrunEvents(config ConfigData, srv *sheets.Service, today time.Time, table string) []*ParkrunEvent {
-	events := make([]*ParkrunEvent, 0)
-	resp, err := srv.Spreadsheets.Values.Get(config.SheetId, fmt.Sprintf("%s!A2:Z", table)).Do()
+	rows, err := fetchTable(config, srv, table)
 	utils.Check(err)
-	if len(resp.Values) == 0 {
-		panic("No events data found.")
-	} else {
-		for _, row := range resp.Values {
-			var index, date, special, results, report, photos string
-
-			ll := len(row)
-			if ll > 0 {
-				index = fmt.Sprintf("%v", row[0])
+	events := make([]*ParkrunEvent, 0)
+	cols := Columns{}
+	for line, row := range rows {
+		if line == 0 {
+			cols, err = initColumns(row)
+			if err != nil {
+				panic(fmt.Errorf("when fetching table '%s': %v", table, err))
 			}
-			if ll > 1 {
-				date = fmt.Sprintf("%v", row[1])
-			}
-			if ll > 2 {
-				special = fmt.Sprintf("%v", row[2])
-			}
-			if ll > 3 {
-				results = fmt.Sprintf("%v", row[3])
-			}
-			if ll > 4 {
-				report = fmt.Sprintf("%v", row[4])
-			}
-			if ll > 5 {
-				photos = fmt.Sprintf("%v", row[5])
-			}
-
-			currentWeek := false
-			d, err := utils.ParseDate(date)
-			if err == nil {
-				today_y, today_m, today_d := today.Date()
-				d_y, d_m, d_d := d.Date()
-				currentWeek = (today_y == d_y && today_m == d_m && today_d == d_d) || (today.After(d) && today.Before(d.AddDate(0, 0, 7)))
-			}
-
-			events = append(events, &ParkrunEvent{
-				currentWeek,
-				index,
-				date,
-				special,
-				results,
-				report,
-				photos,
-			})
+			continue
 		}
+		index := cols.getValue("INDEX", row)
+		date := cols.getValue("DATE", row)
+		special := cols.getValue("SPECIAL", row)
+		results := cols.getValue("RESULTS", row)
+		report := cols.getValue("REPORT", row)
+		photos := cols.getValue("PHOTOS", row)
+
+		currentWeek := false
+		d, err := utils.ParseDate(date)
+		if err == nil {
+			today_y, today_m, today_d := today.Date()
+			d_y, d_m, d_d := d.Date()
+			currentWeek = (today_y == d_y && today_m == d_m && today_d == d_d) || (today.After(d) && today.Before(d.AddDate(0, 0, 7)))
+		}
+
+		events = append(events, &ParkrunEvent{
+			currentWeek,
+			index,
+			date,
+			special,
+			results,
+			report,
+			photos,
+		})
 	}
 
 	return events
 }
 
 func fetchTagDescriptions(config ConfigData, srv *sheets.Service, table string) map[string]NameDescription {
-	descriptions := make(map[string]NameDescription)
-	resp, err := srv.Spreadsheets.Values.Get(config.SheetId, fmt.Sprintf("%s!A1:C", table)).Do()
+	rows, err := fetchTable(config, srv, table)
 	utils.Check(err)
-	if len(resp.Values) == 0 {
-		panic("No tags data found.")
-	} else {
-		cols := Columns{}
-		for line, row := range resp.Values {
-			if line == 0 {
-				cols, err = initColumns(row)
-				if err != nil {
-					panic(fmt.Errorf("when fetching table '%s': %v", table, err))
-				}
-				continue
+	descriptions := make(map[string]NameDescription)
+	cols := Columns{}
+	for line, row := range rows {
+		if line == 0 {
+			cols, err = initColumns(row)
+			if err != nil {
+				panic(fmt.Errorf("when fetching table '%s': %v", table, err))
 			}
-			tagS := cols.getValue("TAG", row)
-			nameS := cols.getValue("NAME", row)
-			descriptionS := cols.getValue("DESCRIPTION", row)
+			continue
+		}
+		tagS := cols.getValue("TAG", row)
+		nameS := cols.getValue("NAME", row)
+		descriptionS := cols.getValue("DESCRIPTION", row)
 
-			tag := utils.SanitizeName(tagS)
-			if tag != "" && (nameS != "" || descriptionS != "") {
-				descriptions[tag] = NameDescription{nameS, descriptionS}
-			}
+		tag := utils.SanitizeName(tagS)
+		if tag != "" && (nameS != "" || descriptionS != "") {
+			descriptions[tag] = NameDescription{nameS, descriptionS}
 		}
 	}
 
