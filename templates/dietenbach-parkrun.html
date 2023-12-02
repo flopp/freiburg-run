@@ -23,6 +23,7 @@
                 <tr>
                     <th>#</th>
                     <th class="is-hidden-mobile">Datum</th>
+                    <th>Temp</th>
                     <th>Spezial</th>
                     <th>Links</th>
                 </tr>
@@ -41,6 +42,9 @@
                     </td>
                     <td class="is-hidden-mobile">
                         {{.Date}}
+                    </td>
+                    <td data-label="Temp">
+                        {{.Temp}}
                     </td>
                     <td data-label="Spezial">
                         {{.Special}}

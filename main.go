@@ -276,6 +276,7 @@ type ParkrunEvent struct {
 	IsCurrentWeek bool
 	Index         string
 	Date          string
+	Temp          string
 	Special       string
 	Results       string
 	Report        string
@@ -591,10 +592,15 @@ func fetchParkrunEvents(config ConfigData, srv *sheets.Service, today time.Time,
 	for _, row := range rows {
 		index := cols.getValue("INDEX", row)
 		date := cols.getValue("DATE", row)
+		temp := cols.getValue("TEMP", row)
 		special := cols.getValue("SPECIAL", row)
 		results := cols.getValue("RESULTS", row)
 		report := cols.getValue("REPORT", row)
 		photos := cols.getValue("PHOTOS", row)
+
+		if temp != "" {
+			temp = fmt.Sprintf("%s°C", temp)
+		}
 
 		currentWeek := false
 		d, err := utils.ParseDate(date)
@@ -608,6 +614,7 @@ func fetchParkrunEvents(config ConfigData, srv *sheets.Service, today time.Time,
 			currentWeek,
 			index,
 			date,
+			temp,
 			special,
 			results,
 			report,
