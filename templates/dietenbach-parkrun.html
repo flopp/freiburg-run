@@ -23,7 +23,7 @@
                 <tr>
                     <th>#</th>
                     <th class="is-hidden-mobile">Datum</th>
-                    <th>Temp</th>
+                    <th class="is-hidden-mobile">Temp</th>
                     <th>Spezial</th>
                     <th>Links</th>
                 </tr>
@@ -43,11 +43,20 @@
                     <td class="is-hidden-mobile">
                         {{.Date}}
                     </td>
-                    <td data-label="Temp">
+                    <td class="is-hidden-mobile">
                         {{.Temp}}
                     </td>
                     <td data-label="Spezial">
-                        {{.Special}}
+                        <span class="is-hidden-mobile">
+                            {{.Special}}
+                        </span>
+                        <span class="is-hidden-tablet">
+                            {{if .Temp}}
+                            <span class="is-size-7">Temp={{.Temp}}</span>
+                            <br>
+                            {{end}}
+                            {{.Special}}
+                        </span>
                     </td>
                     <td>
                         <div class="field has-addons is-hidden-mobile">
