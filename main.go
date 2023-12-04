@@ -1344,7 +1344,7 @@ func main() {
 		tagdata.Description = fmt.Sprintf("Liste an Laufveranstaltungen im Raum Freiburg, die mit der Kategorie '%s' getaggt sind", tag.Name)
 		slug := tag.Slug()
 		tagdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
-		tagdata.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsEventsTags, utils.Link{Name: tag.Name, Url: slug})
+		tagdata.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsEventsTags, utils.Link{Name: tag.Name, Url: fmt.Sprintf("/%s", slug)})
 		utils.ExecuteTemplate("tag", filepath.Join(options.outDir, slug), tagdata)
 		sitemap.Add(slug, tag.Name, "Kategorien")
 	}
