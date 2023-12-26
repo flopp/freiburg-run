@@ -18,11 +18,11 @@ var toggle_menuitem = function (id) {
 };
 
 var load_marker = function (color) {
-    let url = "images/marker-icon.png";
-    let url2x = "images/marker-icon-2x.png";
+    let url = "/images/marker-icon.png";
+    let url2x = "/images/marker-icon-2x.png";
     if (color !== "") {
-        url = "images/marker-" + color + "-icon.png";
-        url2x = "images/marker-" + color + "-icon-2x.png";
+        url = "/images/marker-" + color + "-icon.png";
+        url2x = "/images/marker-" + color + "-icon-2x.png";
     }
     let options = {
         iconAnchor: [12, 41],
@@ -31,7 +31,7 @@ var load_marker = function (color) {
         iconUrl: url,
         popupAnchor: [1, -34],
         shadowSize: [41, 41],
-        shadowUrl: "images/marker-shadow.png",
+        shadowUrl: "/images/marker-shadow.png",
         tooltipAnchor: [16, -28],
     };
     return L.icon(options);
@@ -66,10 +66,15 @@ var main = () => {
         return null;
     };
 
-    var leafletMap = null;
-
+    var bigMapId = "";
     if (document.querySelector("#big-map") !== null) {
-        var map = L.map('big-map').setView([48.000548, 7.804842], 15);
+        bigMapId = "big-map";
+    } else if (document.querySelector("#serie-map") !== null) {
+        bigMapId = "serie-map";
+    }
+    if (bigMapId !== "") {
+        var map = L.map(bigMapId).setView([48.000548, 7.804842], 15);
+
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
@@ -153,29 +158,29 @@ var main = () => {
         const items = [{
             label: "Veranstaltung",
             type: "image",
-            url: "images/marker-icon.png",
+            url: "/images/marker-icon.png",
         },{
             label: "vergangene Veranstaltung",
             type: "image",
-            url: "images/marker-grey-icon.png",
+            url: "/images/marker-grey-icon.png",
         },{
             label: "Lauftreff",
             type: "image",
-            url: "images/marker-red-icon.png",
+            url: "/images/marker-red-icon.png",
         },{
             label: "Lauf-Shop",
             type: "image",
-            url: "images/marker-green-icon.png",
+            url: "/images/marker-green-icon.png",
         }];
         items.push(
             {
                 label: "25km um Freiburg",
                 type: "image",
-                url: "images/circle-small.png"
+                url: "/images/circle-small.png"
             }, {
                 label: "50km um Freiburg",
                 type: "image",
-                url: "images/circle-big.png"
+                url: "/images/circle-big.png"
             }
         );
         const legend = L.control.Legend({
@@ -195,7 +200,6 @@ var main = () => {
 
     if (document.querySelector("#parkrun-map") !== null) {
         var map = L.map('parkrun-map').setView([48.000548, 7.804842], 15);
-        leafletMap = map;
 
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -206,24 +210,24 @@ var main = () => {
 
         let blueOptions = {
             iconAnchor: [12, 41],
-            iconRetinaUrl: "images/marker-icon-2x.png",
+            iconRetinaUrl: "/images/marker-icon-2x.png",
             iconSize: [25, 41],
-            iconUrl: "images/marker-icon.png",
+            iconUrl: "/images/marker-icon.png",
             popupAnchor: [1, -34],
             shadowSize: [41, 41],
-            shadowUrl: "images/marker-shadow.png",
+            shadowUrl: "/images/marker-shadow.png",
             tooltipAnchor: [16, -28],
         };
         let blueIcon = L.icon(blueOptions);
 
         let greyOptions = {
             iconAnchor: [12, 41],
-            iconRetinaUrl: "images/marker-grey-icon-2x.png",
+            iconRetinaUrl: "/images/marker-grey-icon-2x.png",
             iconSize: [25, 41],
-            iconUrl: "images/marker-grey-icon.png",
+            iconUrl: "/images/marker-grey-icon.png",
             popupAnchor: [1, -34],
             shadowSize: [41, 41],
-            shadowUrl: "images/marker-shadow.png",
+            shadowUrl: "/images/marker-shadow.png",
             tooltipAnchor: [16, -28],
         };
         let greyIcon = L.icon(greyOptions);

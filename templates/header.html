@@ -55,6 +55,9 @@
                     <a id="nav-events" class="navbar-item {{if eq .Nav "events-old"}}is-active{{end}}" href="/events-old.html" title="Vergangene Laufveranstaltungen">
                         <span class="icon"><i class="old-icon"></i></span>
                     </a>
+                    <a id="nav-events" class="navbar-item {{if eq .Nav "series"}}is-active{{end}}" href="/series.html" title="Serien">
+                        <span class="icon"><i class="series-icon"></i></span>
+                    </a>
                     <a id="nav-events" class="navbar-item {{if eq .Nav "tags"}}is-active{{end}}" href="/tags.html" title="Kategorien">
                         <span class="icon"><i class="tags-icon"></i></span>
                     </a>
@@ -85,6 +88,9 @@
                 <div class="is-flex-grow-1"></div>
                 <a class="navbar-item {{if eq .Nav "tags"}}is-active{{end}}" href="/tags.html" title="Kategorien">
                     <span class="icon"><i class="tags-icon"></i></span>
+                </a>
+                <a class="navbar-item {{if eq .Nav "series"}}is-active{{end}}" href="/series.html" title="Serien">
+                    <span class="icon"><i class="series-icon"></i></span>
                 </a>
                 <a class="navbar-item {{if eq .Nav "map"}}is-active{{end}}" href="/map.html" title="Karte">
                     <span class="icon"><i class="map-icon"></i></span>

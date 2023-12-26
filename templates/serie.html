@@ -1,0 +1,75 @@
+{{template "header.html" .}}
+
+<section class="section">
+    <div class="container is-max-desktop" itemscope itemtype="https://schema.org/ItemList">
+        <h1 class="title" itemprop="name">{{.Title}}</h1>
+
+        <div class="notification is-info is-light">
+{{if .Serie.Description}}
+            <p class="block is-italic">
+                {{.Serie.Description}}
+            </p>
+{{else}}
+            <p class="block">
+                Lauf-Serie <b>{{.Serie.Name}}</b>
+            </p>
+{{end}}
+{{if .Serie.Links}}
+            <p class="block">
+                {{range .Serie.Links}}
+                    <a class="tag is-white" href="{{.Url}}" title="{{$.Serie.Name}}: {{.Name}}" target="_blank">{{.Name}}</a>
+                {{end}}
+            </p>
+{{end}}
+
+            <p class="block">
+                Ist ein Eintrag fehlerhaft oder fehlt eine Veranstaltung? - bitte <a href="/info.html#kontakt">melden</a>. 
+            </p>
+        </div>
+
+        <div id="serie-map"></div>
+
+{{if .Serie.Events}}
+        <div class="columns is-multiline">
+            {{range .Serie.Events}}
+            {{template "card.html" .}}
+            {{end}}
+        </div>
+{{end}}
+
+{{if .Serie.Groups}}
+        <h2 class="title">Lauftreffs / Laufgruppen</h2>
+
+        <div class="columns is-multiline">
+            {{range .Serie.Groups}}
+            {{template "card.html" .}}
+            {{end}}
+        </div>
+{{end}}
+
+{{if .Serie.Shops}}
+        <h2 class="title">Lauf-Shops</h2>
+
+        <div class="columns is-multiline">
+            {{range .Serie.Shops}}
+            {{template "card.html" .}}
+            {{end}}
+        </div>
+{{end}}
+
+{{if .Serie.EventsOld}}
+        <h2 class="title">Vergangene Laufveranstaltungen</h2>
+        <div class="notification is-info is-light">
+            In umgekehrt chronologischer Reihenfolge.
+        </div>
+
+        <div class="columns is-multiline">
+            {{range .Serie.EventsOld}}
+            {{template "card.html" .}}
+            {{end}}
+        </div>
+{{end}}
+    </div>
+</section>
+
+{{template "footer.html" .}}

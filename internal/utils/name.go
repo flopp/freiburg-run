@@ -50,12 +50,12 @@ func SanitizeName(s string) string {
 	return s
 }
 
-func SplitAndSanitize(s string) []string {
+func Split(s string) []string {
 	res := make([]string, 0)
-	for _, tag := range strings.Split(s, ",") {
-		tag = SanitizeName(tag)
-		if len(tag) > 0 {
-			res = append(res, tag)
+	for _, ss := range strings.Split(s, ",") {
+		ss = strings.TrimSpace(ss)
+		if len(ss) > 0 {
+			res = append(res, ss)
 		}
 	}
 	return res

@@ -1,0 +1,69 @@
+{{template "header.html" .}}
+
+<section class="section">
+    <div class="container is-max-desktop">
+        <h1 class="title">{{.Title}}</h1>
+        
+        <div class="notification is-info is-light">
+            Liste aller Lauf-Serien auf freiburg.run.
+        </div>
+
+        <div class="b-table">
+            <div class="table-wrapper">
+                <table class="table is-fullwidth is-narrow">
+                    <thead>
+                        <tr>
+                            <th>Serie</th>
+                            <th># Veranstaltungen</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{range .Series}}
+                        <tr>
+                            <td>
+                                <a href="/{{.Slug}}">{{.Name}}</a>
+                            </td>
+                            <td>
+                                {{.Num}}
+                            </td>
+                        </tr>
+                        {{end}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        {{if .SeriesOld}}
+        <div class="notification is-info is-light">
+            Liste aller vergangenen Lauf-Serien.
+        </div>
+
+        <div class="b-table">
+            <div class="table-wrapper">
+                <table class="table is-fullwidth is-narrow">
+                    <thead>
+                        <tr>
+                            <th>Serie</th>
+                            <th># Veranstaltungen</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{range .SeriesOld}}
+                        <tr>
+                            <td>
+                                <a href="/{{.Slug}}">{{.Name}}</a>
+                            </td>
+                            <td>
+                                {{.Num}}
+                            </td>
+                        </tr>
+                        {{end}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {{end}}
+    </div>
+</section>
+
+{{template "footer.html" .}}

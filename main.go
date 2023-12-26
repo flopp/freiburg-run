@@ -168,6 +168,8 @@ type Event struct {
 	Url       string
 	RawTags   []string
 	Tags      []*Tag
+	RawSeries []string
+	Series    []*Serie
 	Links     []NameUrl
 	Added     string
 	New       bool
@@ -194,6 +196,8 @@ func createSeparatorEvent(label string) *Event {
 		"",
 		"",
 		"",
+		nil,
+		nil,
 		nil,
 		nil,
 		nil,
@@ -269,6 +273,22 @@ func (event *Event) LinkTitle() string {
 	return "Zur Veranstaltung"
 }
 
+func (event *Event) NiceType() string {
+	if event.Type == "event" {
+		if event.Old {
+			return "vergangene Veranstaltung"
+		}
+		return "Veranstaltung"
+	}
+	if event.Type == "group" {
+		return "Lauftreff"
+	}
+	if event.Type == "shop" {
+		return "Lauf-Shop"
+	}
+	return "Veranstaltung"
+}
+
 type ParkrunEvent struct {
 	IsCurrentWeek bool
 	Index         string
@@ -315,6 +335,33 @@ func (tag *Tag) NumShops() int {
 	return len(tag.Shops)
 }
 
+type Serie struct {
+	Sanitized   string
+	Name        string
+	Description string
+	Links       []NameUrl
+	Events      []*Event
+	EventsOld   []*Event
+	Groups      []*Event
+	Shops       []*Event
+}
+
+func (s Serie) IsOld() bool {
+	return len(s.Events) == 0 && len(s.Groups) == 0 && len(s.Shops) == 0
+}
+
+func (s Serie) Num() int {
+	return len(s.Events) + len(s.EventsOld) + len(s.Groups) + len(s.Shops)
+}
+
+func CreateSerie(id string, name string) *Serie {
+	return &Serie{id, name, "", make([]NameUrl, 0), make([]*Event, 0), make([]*Event, 0), make([]*Event, 0), make([]*Event, 0)}
+}
+
+func (serie *Serie) Slug() string {
+	return fmt.Sprintf("serie/%s.html", serie.Sanitized)
+}
+
 type TemplateData struct {
 	Title         string
 	Type          string
@@ -332,6 +379,8 @@ type TemplateData struct {
 	Shops         []*Event
 	Parkrun       []*ParkrunEvent
 	Tags          []*Tag
+	Series        []*Serie
+	SeriesOld     []*Serie
 	JsFiles       []string
 	CssFiles      []string
 }
@@ -355,6 +404,23 @@ type EventTemplateData struct {
 
 type TagTemplateData struct {
 	Tag           *Tag
+	Title         string
+	Type          string
+	Description   string
+	Nav           string
+	Canonical     string
+	Image         string
+	Breadcrumbs   []utils.Breadcrumb
+	Main          string
+	Timestamp     string
+	TimestampFull string
+	SheetUrl      string
+	JsFiles       []string
+	CssFiles      []string
+}
+
+type SerieTemplateData struct {
+	Serie         *Serie
 	Title         string
 	Type          string
 	Description   string
@@ -539,7 +605,15 @@ func fetchEvents(config ConfigData, srv *sheets.Service, today time.Time, eventT
 		name, nameOld := SplitDetails(nameS)
 		url := urlS
 		description1, description2 := SplitDetails(descriptionS)
-		tags := utils.SplitAndSanitize(tagsS)
+		tags := make([]string, 0)
+		series := make([]string, 0)
+		for _, t := range utils.Split(tagsS) {
+			if strings.HasPrefix(t, "serie:") {
+				series = append(series, t[6:])
+			} else {
+				tags = append(tags, utils.SanitizeName(t))
+			}
+		}
 		location := createLocation(locationS, coordinatesS)
 		tags = append(tags, location.Tags()...)
 		timeRange, err := utils.ParseTimeRange(dateS)
@@ -571,6 +645,8 @@ func fetchEvents(config ConfigData, srv *sheets.Service, today time.Time, eventT
 			template.HTML(description2),
 			url,
 			utils.SortAndUniquify(tags),
+			nil,
+			series,
 			nil,
 			links,
 			"",
@@ -641,6 +717,28 @@ func fetchTagDescriptions(config ConfigData, srv *sheets.Service, table string) 
 	}
 
 	return descriptions
+}
+
+func fetchSeries(config ConfigData, srv *sheets.Service, table string) map[string]*Serie {
+	cols, rows, err := fetchTable(config, srv, table)
+	utils.Check(err)
+	series := make(map[string]*Serie)
+	for _, row := range rows {
+		nameS := cols.getValue("NAME", row)
+		descriptionS := cols.getValue("DESCRIPTION", row)
+		linksS := make([]string, 4)
+		linksS[0] = cols.getValue("LINK1", row)
+		linksS[1] = cols.getValue("LINK2", row)
+		linksS[2] = cols.getValue("LINK3", row)
+		linksS[3] = cols.getValue("LINK4", row)
+
+		id := utils.SanitizeName(nameS)
+		if id != "" {
+			series[id] = &Serie{id, nameS, descriptionS, parseLinks(linksS, ""), make([]*Event, 0), make([]*Event, 0), make([]*Event, 0), make([]*Event, 0)}
+		}
+	}
+
+	return series
 }
 
 func createMonthLabel(t time.Time) string {
@@ -846,9 +944,6 @@ func collectTags(descriptions map[string]NameDescription, events []*Event, event
 	for _, e := range events {
 		e.Tags = make([]*Tag, 0, len(e.RawTags))
 		for _, t := range e.RawTags {
-			if strings.Contains(t, "serie:") {
-				continue
-			}
 			tag := getTag(tags, t)
 			e.Tags = append(e.Tags, tag)
 			tag.Events = append(tag.Events, e)
@@ -857,9 +952,6 @@ func collectTags(descriptions map[string]NameDescription, events []*Event, event
 	for _, e := range eventsOld {
 		e.Tags = make([]*Tag, 0, len(e.RawTags))
 		for _, t := range e.RawTags {
-			if strings.Contains(t, "serie:") {
-				continue
-			}
 			tag := getTag(tags, t)
 			e.Tags = append(e.Tags, tag)
 			tag.EventsOld = append(tag.EventsOld, e)
@@ -868,9 +960,6 @@ func collectTags(descriptions map[string]NameDescription, events []*Event, event
 	for _, e := range groups {
 		e.Tags = make([]*Tag, 0, len(e.RawTags))
 		for _, t := range e.RawTags {
-			if strings.Contains(t, "serie:") {
-				continue
-			}
 			tag := getTag(tags, t)
 			e.Tags = append(e.Tags, tag)
 			tag.Groups = append(tag.Groups, e)
@@ -879,9 +968,6 @@ func collectTags(descriptions map[string]NameDescription, events []*Event, event
 	for _, e := range shops {
 		e.Tags = make([]*Tag, 0, len(e.RawTags))
 		for _, t := range e.RawTags {
-			if strings.Contains(t, "serie:") {
-				continue
-			}
 			tag := getTag(tags, t)
 			e.Tags = append(e.Tags, tag)
 			tag.Shops = append(tag.Shops, e)
@@ -902,6 +988,65 @@ func collectTags(descriptions map[string]NameDescription, events []*Event, event
 	sort.Slice(tagsList, func(i, j int) bool { return tagsList[i].Sanitized < tagsList[j].Sanitized })
 
 	return tags, tagsList
+}
+
+func getSerie(series map[string]*Serie, name string) *Serie {
+	id := utils.SanitizeName(name)
+	if s, found := series[id]; found {
+		return s
+	}
+	serie := CreateSerie(id, name)
+	series[id] = serie
+	return serie
+}
+
+func collectSeries(series map[string]*Serie, events []*Event, eventsOld []*Event, groups []*Event, shops []*Event) (map[string]*Serie, []*Serie, []*Serie) {
+	for _, e := range events {
+		e.Series = make([]*Serie, 0)
+		for _, t := range e.RawSeries {
+			serie := getSerie(series, t)
+			e.Series = append(e.Series, serie)
+			serie.Events = append(serie.Events, e)
+		}
+	}
+	for _, e := range eventsOld {
+		e.Series = make([]*Serie, 0)
+		for _, t := range e.RawSeries {
+			serie := getSerie(series, t)
+			e.Series = append(e.Series, serie)
+			serie.EventsOld = append(serie.EventsOld, e)
+		}
+	}
+	for _, e := range groups {
+		e.Series = make([]*Serie, 0)
+		for _, t := range e.RawSeries {
+			serie := getSerie(series, t)
+			e.Series = append(e.Series, serie)
+			serie.Groups = append(serie.Groups, e)
+		}
+	}
+	for _, e := range shops {
+		e.Series = make([]*Serie, 0)
+		for _, t := range e.RawSeries {
+			serie := getSerie(series, t)
+			e.Series = append(e.Series, serie)
+			serie.Shops = append(serie.Shops, e)
+		}
+	}
+
+	seriesList := make([]*Serie, 0, len(series))
+	seriesListOld := make([]*Serie, 0, len(series))
+	for _, s := range series {
+		if s.IsOld() {
+			seriesListOld = append(seriesListOld, s)
+		} else {
+			seriesList = append(seriesList, s)
+		}
+	}
+	sort.Slice(seriesList, func(i, j int) bool { return seriesList[i].Sanitized < seriesList[j].Sanitized })
+	sort.Slice(seriesListOld, func(i, j int) bool { return seriesListOld[i].Sanitized < seriesListOld[j].Sanitized })
+
+	return series, seriesList, seriesListOld
 }
 
 func updateAddedDates(events []*Event, added *utils.Added, eventType string, timestamp string, now time.Time) {
@@ -1001,6 +1146,7 @@ func main() {
 	shopsSheet := ""
 	parkrunSheet := ""
 	tagsSheet := ""
+	seriesSheet := ""
 	for _, sheet := range sheets {
 		if strings.HasPrefix(sheet, "Events") {
 			eventSheets = append(eventSheets, sheet)
@@ -1012,6 +1158,8 @@ func main() {
 			parkrunSheet = sheet
 		} else if sheet == "Tags" {
 			tagsSheet = sheet
+		} else if sheet == "Series" {
+			seriesSheet = sheet
 		} else if strings.HasPrefix(sheet, "Notes") {
 			// ignore
 		} else {
@@ -1033,6 +1181,9 @@ func main() {
 	if tagsSheet == "" {
 		panic("unable to find 'Tags' sheet")
 	}
+	if seriesSheet == "" {
+		panic("unable to find 'Series' sheet")
+	}
 
 	events = make([]*Event, 0)
 	for _, sheet := range eventSheets {
@@ -1042,6 +1193,7 @@ func main() {
 	shops = fetchEvents(config, srv, today, "shop", shopsSheet)
 	parkrun = fetchParkrunEvents(config, srv, today, parkrunSheet)
 	tagDescriptions := fetchTagDescriptions(config, srv, tagsSheet)
+	series := fetchSeries(config, srv, seriesSheet)
 
 	if options.addedFile != "" {
 		added, err := utils.ReadAdded(options.addedFile)
@@ -1065,12 +1217,14 @@ func main() {
 	events_old = reverse(events_old)
 	events_old = addMonthSeparatorsDescending(events_old)
 	tags, tagsList := collectTags(tagDescriptions, events, events_old, groups, shops)
+	series, seriesList, seriesListOld := collectSeries(series, events, events_old, groups, shops)
 
 	sitemap := utils.CreateSitemap("https://freiburg.run")
 	sitemap.AddCategory("Allgemein")
 	sitemap.AddCategory("Laufveranstaltungen")
 	sitemap.AddCategory("Vergangene Laufveranstaltungen")
 	sitemap.AddCategory("Kategorien")
+	sitemap.AddCategory("Serien")
 	sitemap.AddCategory("Lauftreffs")
 	sitemap.AddCategory("Lauf-Shops")
 	sitemap.Add("", "Alle Laufveranstaltungen", "Laufveranstaltungen")
@@ -1080,6 +1234,7 @@ func main() {
 	sitemap.Add("shops.html", "Alle Lauf-Shops", "Lauf-Shops")
 	sitemap.Add("dietenbach-parkrun.html", "Dietenbach parkrun", "Allgemein")
 	sitemap.Add("map.html", "Karte", "Laufveranstaltungen")
+	sitemap.Add("series.html", "Alle Lauf-Serien", "Serien")
 	sitemap.Add("info.html", "Informationen", "Allgemein")
 	sitemap.Add("datenschutz.html", "Datenschutz", "Allgemein")
 	sitemap.Add("impressum.html", "Impressum", "Allgemein")
@@ -1143,6 +1298,8 @@ func main() {
 		shops,
 		parkrun,
 		tagsList,
+		seriesList,
+		seriesListOld,
 		js_files,
 		css_files,
 	}
@@ -1159,7 +1316,7 @@ func main() {
 	breadcrumbsEventsTags := utils.PushBreadcrumb(breadcrumbsEvents, utils.Link{Name: "Kategorien", Url: "/tags.html"})
 	data.Nav = "tags"
 	data.Title = "Kategorien"
-	data.Description = "Liste aller Kategorien von vergangenen Laufveranstaltungen, Lauf-Wettkämpfen, Volksläufen im Raum Freiburg "
+	data.Description = "Liste aller Kategorien von Laufveranstaltungen, Lauf-Wettkämpfen, Volksläufen im Raum Freiburg "
 	data.Canonical = "https://freiburg.run/tags.html"
 	data.Breadcrumbs = breadcrumbsEventsTags
 	utils.ExecuteTemplate("tags", filepath.Join(options.outDir, "tags.html"), data)
@@ -1190,6 +1347,14 @@ func main() {
 	data.Canonical = "https://freiburg.run/dietenbach-parkrun.html"
 	data.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsBase, utils.Link{Name: "Dietenbach parkrun", Url: "/dietenbach-parkrun.html"})
 	utils.ExecuteTemplate("dietenbach-parkrun", filepath.Join(options.outDir, "dietenbach-parkrun.html"), data)
+
+	breadcrumbsEventsSeries := utils.PushBreadcrumb(breadcrumbsEvents, utils.Link{Name: "Serien", Url: "/series.html"})
+	data.Nav = "series"
+	data.Title = "Serien"
+	data.Description = "Liste aller Serien von Laufveranstaltungen, Lauf-Wettkämpfen, Volksläufen im Raum Freiburg "
+	data.Canonical = "https://freiburg.run/series.html"
+	data.Breadcrumbs = breadcrumbsEventsSeries
+	utils.ExecuteTemplate("series", filepath.Join(options.outDir, "series.html"), data)
 
 	data.Nav = "map"
 	data.Title = "Karte aller Laufveranstaltungen"
@@ -1358,6 +1523,33 @@ func main() {
 		tagdata.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsEventsTags, utils.Link{Name: tag.Name, Url: fmt.Sprintf("/%s", slug)})
 		utils.ExecuteTemplate("tag", filepath.Join(options.outDir, slug), tagdata)
 		sitemap.Add(slug, tag.Name, "Kategorien")
+	}
+
+	seriedata := SerieTemplateData{
+		nil,
+		"",
+		"Serie",
+		"",
+		"series",
+		"",
+		defaultImage,
+		breadcrumbsEventsSeries,
+		"/series.html",
+		timestamp,
+		timestampFull,
+		sheetUrl,
+		js_files,
+		css_files,
+	}
+	for _, s := range series {
+		seriedata.Serie = s
+		seriedata.Title = s.Name
+		seriedata.Description = fmt.Sprintf("Lauf-Serie '%s'", s.Name)
+		slug := s.Slug()
+		seriedata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
+		seriedata.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsEventsSeries, utils.Link{Name: s.Name, Url: fmt.Sprintf("/%s", slug)})
+		utils.ExecuteTemplate("serie", filepath.Join(options.outDir, slug), seriedata)
+		sitemap.Add(slug, s.Name, "Serien")
 	}
 
 	sitemap.Gen(filepath.Join(options.outDir, "sitemap.xml"), options.hashFile, options.outDir)

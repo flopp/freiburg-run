@@ -216,7 +216,7 @@ func (sitemap Sitemap) GenHTML() []SitemapCategory {
 	for _, e := range sitemap.Entries {
 		c, found := byCategory[e.Category]
 		if !found {
-			log.Printf("Sitemap: event '%s' has bad category '%s", e.Name, e.Category)
+			log.Printf("Sitemap: event '%s' has bad category '%s'", e.Name, e.Category)
 			continue
 		}
 

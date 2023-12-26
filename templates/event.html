@@ -60,7 +60,17 @@
                             <th>Infos</th>
                             <td class="is-w100">
                                 {{range .Event.Links}}
-                                    <a class="tag is-link is-light" href="{{.Url}}"  title="{{$.Event.Name}}: {{.Name}}" target="_blank">{{.Name}}</a>
+                                    <a class="tag is-link is-light" href="{{.Url}}" title="{{$.Event.Name}}: {{.Name}}" target="_blank">{{.Name}}</a>
+                                {{end}}
+                            </td>
+                        </tr>
+                        {{end}}
+                        {{if .Event.Series}}
+                        <tr>
+                            <th>Serien</th>
+                            <td class="is-w100">
+                                {{range .Event.Series}}
+                                    <a class="tag is-link is-light" title="Serie: {{.Name}}" href="/{{.Slug}}">{{.Name}}</a>
                                 {{end}}
                             </td>
                         </tr>
@@ -70,7 +80,7 @@
                             <th>Kategorien</th>
                             <td class="is-w100">
                                 {{range .Event.Tags}}
-                                    <a class="tag is-link is-light" href="/{{.Slug}}">{{.Name}}</a>
+                                    <a class="tag is-link is-light" title="Kategorie: {{.Name}}" href="/{{.Slug}}">{{.Name}}</a>
                                 {{end}}
                             </td>
                         </tr>

@@ -1,4 +1,8 @@
+{{if .Location.HasGeo}}
+<div class="column is-half event" data-type="Veranstaltung" data-name="{{.Name}}" data-time="{{.Time}}" data-geo="{{.Location.Geo}}" data-location="{{.Location.Name}}" data-slug="{{.Slug}}">
+{{else}}
 <div class="column is-half">
+{{end}}
     {{if .Special}}
     <div class="card pulsating-border" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
     {{else}}
@@ -44,6 +48,12 @@
                         <th class="w-2em no-border" title="Infos">🔗</th>
                         <td class="no-border">
                             {{range .Links}}<a class="tag is-link is-light mr-2" href="{{.Url}}" title="{{$.Name}}: {{.Name}}" target="_blank">{{.Name}}</a>{{end}}
+                        </td>
+                    </tr>{{end}}
+                    {{if .Series}}<tr>
+                        <th class="w-2em no-border" title="Serien">🔢</th>
+                        <td class="no-border">
+                        {{range .Series}}<a class="tag is-link is-light mr-2" href="/{{.Slug}}">{{.Name}}</a>{{end}}
                         </td>
                     </tr>{{end}}
                     {{if .Tags}}<tr>
