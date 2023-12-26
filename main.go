@@ -362,6 +362,10 @@ func (serie *Serie) Slug() string {
 	return fmt.Sprintf("serie/%s.html", serie.Sanitized)
 }
 
+func (serie *Serie) ImageSlug() string {
+	return fmt.Sprintf("serie/%s.png", serie.Sanitized)
+}
+
 type TemplateData struct {
 	Title         string
 	Type          string
@@ -1547,6 +1551,12 @@ func main() {
 		seriedata.Description = fmt.Sprintf("Lauf-Serie '%s'", s.Name)
 		slug := s.Slug()
 		seriedata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
+		image := s.ImageSlug()
+		if utils.GenImage(filepath.Join(options.outDir, image), s.Name, "", "") == nil {
+			eventdata.Image = fmt.Sprintf("/%s", image)
+		} else {
+			eventdata.Image = defaultImage
+		}
 		seriedata.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsEventsSeries, utils.Link{Name: s.Name, Url: fmt.Sprintf("/%s", slug)})
 		utils.ExecuteTemplate("serie", filepath.Join(options.outDir, slug), seriedata)
 		sitemap.Add(slug, s.Name, "Serien")
