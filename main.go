@@ -274,10 +274,10 @@ func (event *Event) LinkTitle() string {
 }
 
 func (event *Event) NiceType() string {
+	if event.Old {
+		return "vergangene Veranstaltung"
+	}
 	if event.Type == "event" {
-		if event.Old {
-			return "vergangene Veranstaltung"
-		}
 		return "Veranstaltung"
 	}
 	if event.Type == "group" {
@@ -608,7 +608,7 @@ func fetchEvents(config ConfigData, srv *sheets.Service, today time.Time, eventT
 		tags := make([]string, 0)
 		series := make([]string, 0)
 		for _, t := range utils.Split(tagsS) {
-			if strings.HasPrefix(t, "serie:") {
+			if strings.HasPrefix(t, "serie") {
 				series = append(series, t[6:])
 			} else {
 				tags = append(tags, utils.SanitizeName(t))

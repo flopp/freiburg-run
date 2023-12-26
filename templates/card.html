@@ -1,5 +1,5 @@
 {{if .Location.HasGeo}}
-<div class="column is-half event" data-type="Veranstaltung" data-name="{{.Name}}" data-time="{{.Time}}" data-geo="{{.Location.Geo}}" data-location="{{.Location.Name}}" data-slug="{{.Slug}}">
+<div class="column is-half event" data-type="{{.NiceType}}" data-name="{{.Name}}" data-time="{{.Time}}" data-geo="{{.Location.Geo}}" data-location="{{.Location.Name}}" data-slug="{{.Slug}}">
 {{else}}
 <div class="column is-half">
 {{end}}
