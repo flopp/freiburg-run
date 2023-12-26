@@ -1553,9 +1553,9 @@ func main() {
 		seriedata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
 		image := s.ImageSlug()
 		if utils.GenImage(filepath.Join(options.outDir, image), s.Name, "", "") == nil {
-			eventdata.Image = fmt.Sprintf("/%s", image)
+			seriedata.Image = fmt.Sprintf("/%s", image)
 		} else {
-			eventdata.Image = defaultImage
+			seriedata.Image = defaultImage
 		}
 		seriedata.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsEventsSeries, utils.Link{Name: s.Name, Url: fmt.Sprintf("/%s", slug)})
 		utils.ExecuteTemplate("serie", filepath.Join(options.outDir, slug), seriedata)
