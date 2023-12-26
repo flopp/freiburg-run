@@ -55,13 +55,15 @@
                             {{.Special}}
                         </span>
                         <span class="is-hidden-tablet">
+                            {{if .Special}}
                             {{.Special}}
+                            <br>
+                            {{end}}
                             {{if .Runners}}
                             <br>
                             <span class="is-size-7">Teilnehmer: {{.Runners}}</span>
                             {{end}}
                             {{if .Temp}}
-                            <br>
                             <span class="is-size-7">Temperatur: {{.Temp}}</span>
                             {{end}}
                         </span>
