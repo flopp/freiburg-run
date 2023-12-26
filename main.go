@@ -219,9 +219,6 @@ var yearRe = regexp.MustCompile(`\b(\d\d\d\d)\b`)
 
 func (event *Event) slug(ext string) string {
 	t := event.Type
-	if strings.Contains(event.Name, "parkrun") {
-		t = "event"
-	}
 
 	if m := yearRe.FindStringSubmatch(event.Time); m != nil {
 		return fmt.Sprintf("%s/%s-%s.%s", t, m[1], utils.SanitizeName(event.Name), ext)
@@ -929,6 +926,8 @@ func CreateHtaccess(events, events_old, groups, shops []*Event, outDir string) e
 	destination.WriteString("Redirect /parkrun /dietenbach-parkrun.html\n")
 	destination.WriteString("Redirect /groups.html /lauftreffs.html\n")
 	destination.WriteString("Redirect /event/2024-32-teninger-allmendlauf.html?back=event /event/2024-32-teninger-allmendlauf.html\n")
+	destination.WriteString("Redirect /event/dietenbach-parkrun.html /group/dietenbach-parkrun.html\n")
+	destination.WriteString("Redirect /event/dreilaendergarten-parkrun.html /group/dreilaendergarten-parkrun.html\n")
 	for _, e := range events {
 		if old := e.SlugOld(); old != "" {
 			destination.WriteString(fmt.Sprintf("Redirect /%s /%s\n", old, e.Slug()))
@@ -1281,9 +1280,6 @@ func main() {
 	eventdata.Nav = "groups"
 	eventdata.Main = "/lauftreffs.html"
 	for _, event := range groups {
-		if strings.Contains(event.Name, "parkrun") {
-			continue
-		}
 		eventdata.Event = event
 		eventdata.Title = event.Name
 		eventdata.Description = fmt.Sprintf("Informationen zu %s in %s am %s", event.Name, event.Location.NameNoFlag(), event.Time)
