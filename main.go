@@ -846,6 +846,9 @@ func collectTags(descriptions map[string]NameDescription, events []*Event, event
 	for _, e := range events {
 		e.Tags = make([]*Tag, 0, len(e.RawTags))
 		for _, t := range e.RawTags {
+			if strings.Contains(t, "serie:") {
+				continue
+			}
 			tag := getTag(tags, t)
 			e.Tags = append(e.Tags, tag)
 			tag.Events = append(tag.Events, e)
@@ -854,6 +857,9 @@ func collectTags(descriptions map[string]NameDescription, events []*Event, event
 	for _, e := range eventsOld {
 		e.Tags = make([]*Tag, 0, len(e.RawTags))
 		for _, t := range e.RawTags {
+			if strings.Contains(t, "serie:") {
+				continue
+			}
 			tag := getTag(tags, t)
 			e.Tags = append(e.Tags, tag)
 			tag.EventsOld = append(tag.EventsOld, e)
@@ -862,6 +868,9 @@ func collectTags(descriptions map[string]NameDescription, events []*Event, event
 	for _, e := range groups {
 		e.Tags = make([]*Tag, 0, len(e.RawTags))
 		for _, t := range e.RawTags {
+			if strings.Contains(t, "serie:") {
+				continue
+			}
 			tag := getTag(tags, t)
 			e.Tags = append(e.Tags, tag)
 			tag.Groups = append(tag.Groups, e)
@@ -870,6 +879,9 @@ func collectTags(descriptions map[string]NameDescription, events []*Event, event
 	for _, e := range shops {
 		e.Tags = make([]*Tag, 0, len(e.RawTags))
 		for _, t := range e.RawTags {
+			if strings.Contains(t, "serie:") {
+				continue
+			}
 			tag := getTag(tags, t)
 			e.Tags = append(e.Tags, tag)
 			tag.Shops = append(tag.Shops, e)
