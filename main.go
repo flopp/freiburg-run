@@ -338,7 +338,7 @@ func (tag *Tag) NumShops() int {
 type Serie struct {
 	Sanitized   string
 	Name        string
-	Description string
+	Description template.HTML
 	Links       []NameUrl
 	Events      []*Event
 	EventsOld   []*Event
@@ -738,7 +738,7 @@ func fetchSeries(config ConfigData, srv *sheets.Service, table string) map[strin
 
 		id := utils.SanitizeName(nameS)
 		if id != "" {
-			series[id] = &Serie{id, nameS, descriptionS, parseLinks(linksS, ""), make([]*Event, 0), make([]*Event, 0), make([]*Event, 0), make([]*Event, 0)}
+			series[id] = &Serie{id, nameS, template.HTML(descriptionS), parseLinks(linksS, ""), make([]*Event, 0), make([]*Event, 0), make([]*Event, 0), make([]*Event, 0)}
 		}
 	}
 
