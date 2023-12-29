@@ -38,7 +38,7 @@ const parseGeo = function (s) {
 };
 
 const loadMap = function (id) {
-    var map = L.map(id).setView([48.000548, 7.804842], 15);
+    var map = L.map(id, {gestureHandling: true}).setView([48.000548, 7.804842], 15);
 
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -193,7 +193,7 @@ var main = () => {
     }
 
     if (document.querySelector("#parkrun-map") !== null) {
-        var map = L.map('parkrun-map').setView([48.000548, 7.804842], 15);
+        var map = L.map('parkrun-map', {gestureHandling: true}).setView([48.000548, 7.804842], 15);
 
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -247,7 +247,7 @@ var main = () => {
     if (eventMap !== null) {
         let geo = parseGeo(eventMap.dataset.geo);
         if (geo !== null) {
-            var map = L.map('event-map').setView(geo, 15);
+            var map = L.map('event-map', {gestureHandling: true}).setView(geo, 15);
         
             let blueOptions = {
                 iconAnchor: [12, 41],
