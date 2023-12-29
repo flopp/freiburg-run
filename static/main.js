@@ -17,6 +17,132 @@ var toggle_menuitem = function (id) {
     }
 };
 
+const parseGeo = function (s) {
+    const re1 = /\s*N\s*(?<lat>\d+\.\d+)\s+E\s*(?<lng>\d+\.\d+)\s*$/gm;
+    const match1 = re1.exec(s);
+    if (match1 !== null) {
+        let lat = parseFloat(match1.groups.lat);
+        let lng = parseFloat(match1.groups.lng);
+        return [lat, lng];
+    }
+
+    const re2 = /\s*(?<lat>\d+\.\d+)\s*,\s*(?<lng>\d+\.\d+)\s*$/gm;
+    const match2 = re2.exec(s);
+    if (match2 !== null) {
+        let lat = parseFloat(match2.groups.lat);
+        let lng = parseFloat(match2.groups.lng);
+        return [lat, lng];
+    }
+
+    return null;
+};
+
+const loadMap = function (id) {
+    var map = L.map(id).setView([48.000548, 7.804842], 15);
+
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    var freiburg = [47.996090, 7.849400];
+    L.circle(freiburg, {
+        color: '#3e8ed0',
+        fill: false,
+        weight: 1,
+        radius: 25000
+    }).addTo(map).bindPopup("Freiburg, 25km");
+    L.circle(freiburg, {
+        color: '#3e8ed0',
+        fill: false,
+        weight: 1,
+        radius: 50000
+    }).addTo(map).bindPopup("Freiburg, 50km")
+
+    let blueIcon = load_marker("");
+    let greyIcon = load_marker("grey");
+    let greenIcon = load_marker("green");
+    let redIcon = load_marker("red");
+
+    let markers = [];
+    document.querySelectorAll(".event").forEach(el => {
+        let geo = parseGeo(el.dataset.geo);
+        if (geo !== null) {
+            let icon = null;
+            let zOffset = 0;
+            switch (el.dataset.type) {
+                case "Lauftreff":
+                    zOffset = 1000;
+                    icon = redIcon;
+                    break;
+                case "Lauf-Shop":
+                    zOffset = 1000;
+                    icon = greenIcon;
+                    break;
+                case "vergangene Veranstaltung":
+                    zOffset = -1000;
+                    icon = greyIcon;
+                    break;
+                case "Veranstaltung":
+                default:
+                    zOffset = 1000;
+                    icon = blueIcon;
+                    break;
+            }
+
+            let m = L.marker(geo, {icon: icon, zIndexOffset: zOffset});
+            markers.push(m);
+            m.addTo(map);
+            if (el.dataset.time !== undefined) {
+                m.bindPopup(`<a href="/${el.dataset.slug}">${el.dataset.name}</a><br>(${el.dataset.type})<br>${el.dataset.time}<br>${el.dataset.location}`);
+            } else {
+                m.bindPopup(`<a href="/${el.dataset.slug}">${el.dataset.name}</a><br>(${el.dataset.type})<br>${el.dataset.location}`);
+            }
+        }
+    });
+
+    const items = [{
+        label: "Veranstaltung",
+        type: "image",
+        url: "/images/marker-icon.png",
+    },{
+        label: "vergangene Veranstaltung",
+        type: "image",
+        url: "/images/marker-grey-icon.png",
+    },{
+        label: "Lauftreff",
+        type: "image",
+        url: "/images/marker-red-icon.png",
+    },{
+        label: "Lauf-Shop",
+        type: "image",
+        url: "/images/marker-green-icon.png",
+    }];
+    items.push(
+        {
+            label: "25km um Freiburg",
+            type: "image",
+            url: "/images/circle-small.png"
+        }, {
+            label: "50km um Freiburg",
+            type: "image",
+            url: "/images/circle-big.png"
+        }
+    );
+    const legend = L.control.Legend({
+        title: "Legende",
+        position: "bottomleft",
+        collapsed: true,
+        symbolWidth: 30,
+        opacity: 1,
+        column: 1,
+        legends: items
+    });
+    legend.addTo(map);
+
+    var group = new L.featureGroup(markers);
+    map.fitBounds(group.getBounds(), {padding: L.point(40, 40)});
+};
+
 var load_marker = function (color) {
     let url = "/images/marker-icon.png";
     let url2x = "/images/marker-icon-2x.png";
@@ -46,26 +172,6 @@ var main = () => {
         });
     });
 
-    const parseGeo = function (s) {
-        const re1 = /\s*N\s*(?<lat>\d+\.\d+)\s+E\s*(?<lng>\d+\.\d+)\s*$/gm;
-        const match1 = re1.exec(s);
-        if (match1 !== null) {
-            let lat = parseFloat(match1.groups.lat);
-            let lng = parseFloat(match1.groups.lng);
-            return [lat, lng];
-        }
-
-        const re2 = /\s*(?<lat>\d+\.\d+)\s*,\s*(?<lng>\d+\.\d+)\s*$/gm;
-        const match2 = re2.exec(s);
-        if (match2 !== null) {
-            let lat = parseFloat(match2.groups.lat);
-            let lng = parseFloat(match2.groups.lng);
-            return [lat, lng];
-        }
-
-        return null;
-    };
-
     var bigMapId = "";
     if (document.querySelector("#big-map") !== null) {
         bigMapId = "big-map";
@@ -73,129 +179,17 @@ var main = () => {
         bigMapId = "serie-map";
     }
     if (bigMapId !== "") {
-        var map = L.map(bigMapId).setView([48.000548, 7.804842], 15);
+        loadMap(bigMapId);
+    }
 
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
-
-        var freiburg = [47.996090, 7.849400];
-        L.circle(freiburg, {
-            color: '#3e8ed0',
-            fill: false,
-            weight: 1,
-            radius: 25000
-        }).addTo(map).bindPopup("Freiburg, 25km");
-        L.circle(freiburg, {
-            color: '#3e8ed0',
-            fill: false,
-            weight: 1,
-            radius: 50000
-        }).addTo(map).bindPopup("Freiburg, 50km")
-
-        let blueIcon = load_marker("");
-        let greyIcon = load_marker("grey");
-        let greenIcon = load_marker("green");
-        let redIcon = load_marker("red");
-
-        let markers = [];
-
-        // first: past events (so that they are displayed below future events)
-        document.querySelectorAll(".event").forEach(el => {
-            if (el.dataset.type !== "vergangene Veranstaltung") {
-                return
-            }
-            let geo = parseGeo(el.dataset.geo);
-            if (geo !== null) {
-                let m = L.marker(geo, {icon: greyIcon});
-                markers.push(m);
-                m.addTo(map);
-                if (el.dataset.time !== undefined) {
-                    m.bindPopup(`<a href="${el.dataset.slug}#map">${el.dataset.name}</a><br>(${el.dataset.type})<br>${el.dataset.time}<br>${el.dataset.location}`);
-                } else {
-                    m.bindPopup(`<a href="${el.dataset.slug}#map">${el.dataset.name}</a><br>(${el.dataset.type})<br>${el.dataset.location}`);
-                }
-            }
+    const mapBtn = document.querySelector("#map-toggle-btn");
+    if (mapBtn !== null) {
+        mapBtn.addEventListener('click', () => {
+            mapBtn.remove();
+            const mapDiv = document.querySelector("#map-toggle");
+            mapDiv.classList.add("is-active"); 
+            loadMap("map-toggle");
         });
-
-        // second: future events
-        document.querySelectorAll(".event").forEach(el => {
-            let geo = parseGeo(el.dataset.geo);
-            if (geo !== null) {
-                let icon = null;
-                let zOffset = 0;
-                switch (el.dataset.type) {
-                    case "Lauftreff":
-                        zOffset = 1000;
-                        icon = redIcon;
-                        break;
-                    case "Lauf-Shop":
-                        zOffset = 1000;
-                        icon = greenIcon;
-                        break;
-                    case "vergangene Veranstaltung":
-                        zOffset = -1000;
-                        icon = greyIcon;
-                        break;
-                    case "Veranstaltung":
-                    default:
-                        zOffset = 1000;
-                        icon = blueIcon;
-                        break;
-                }
-
-                let m = L.marker(geo, {icon: icon, zIndexOffset: zOffset});
-                markers.push(m);
-                m.addTo(map);
-                if (el.dataset.time !== undefined) {
-                    m.bindPopup(`<a href="${el.dataset.slug}">${el.dataset.name}</a><br>(${el.dataset.type})<br>${el.dataset.time}<br>${el.dataset.location}`);
-                } else {
-                    m.bindPopup(`<a href="${el.dataset.slug}">${el.dataset.name}</a><br>(${el.dataset.type})<br>${el.dataset.location}`);
-                }
-            }
-        });
-
-        const items = [{
-            label: "Veranstaltung",
-            type: "image",
-            url: "/images/marker-icon.png",
-        },{
-            label: "vergangene Veranstaltung",
-            type: "image",
-            url: "/images/marker-grey-icon.png",
-        },{
-            label: "Lauftreff",
-            type: "image",
-            url: "/images/marker-red-icon.png",
-        },{
-            label: "Lauf-Shop",
-            type: "image",
-            url: "/images/marker-green-icon.png",
-        }];
-        items.push(
-            {
-                label: "25km um Freiburg",
-                type: "image",
-                url: "/images/circle-small.png"
-            }, {
-                label: "50km um Freiburg",
-                type: "image",
-                url: "/images/circle-big.png"
-            }
-        );
-        const legend = L.control.Legend({
-            title: "Legende",
-            position: "bottomleft",
-            collapsed: true,
-            symbolWidth: 30,
-            opacity: 1,
-            column: 1,
-            legends: items
-        });
-        legend.addTo(map);
-
-        var group = new L.featureGroup(markers);
-        map.fitBounds(group.getBounds(), {padding: L.point(40, 40)});
     }
 
     if (document.querySelector("#parkrun-map") !== null) {

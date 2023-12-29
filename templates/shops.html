@@ -10,6 +10,10 @@
             Ist ein Eintrag fehlerhaft oder fehlt ein Geschäft? - bitte <a href="/info.html#kontakt">melden</a>.
         </div>
 
+        <div id="map-toggle">
+            <button id="map-toggle-btn" class="button is-primary">Karte einblenden</button>
+        </div>
+
         <div class="columns is-multiline">   
             {{range .Shops}}   
             {{template "card.html" .}}

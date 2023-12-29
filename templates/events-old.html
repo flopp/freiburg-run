@@ -11,6 +11,10 @@
             <a href="/">Hier geht's zur Liste der aktuellen Veranstaltungen.</a> 
         </div>
 
+        <div id="map-toggle">
+            <button id="map-toggle-btn" class="button is-primary">Karte einblenden</button>
+        </div>
+
         <div class="columns is-multiline">   
             {{range .EventsOld}}
             {{if .IsSeparator}}
