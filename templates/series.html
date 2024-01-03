@@ -32,11 +32,13 @@
                 </table>
             </div>
         </div>
+    </div>
+</section>
 
-        {{if .SeriesOld}}
-        <div class="notification is-info is-light">
-            Liste aller vergangenen Lauf-Serien.
-        </div>
+{{if .SeriesOld}}
+<section class="section">
+    <div class="container is-max-desktop">
+        <h2 class="title">Vergangene Serien</h1>
 
         <div class="b-table">
             <div class="table-wrapper">
@@ -62,8 +64,8 @@
                 </table>
             </div>
         </div>
-        {{end}}
     </div>
 </section>
+{{end}}
 
 {{template "footer.html" .}}

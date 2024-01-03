@@ -47,7 +47,13 @@
                     {{if .Links}}<tr>
                         <th class="w-2em no-border" title="Infos">🔗</th>
                         <td class="no-border">
-                            {{range .Links}}<a class="tag is-link is-light mr-2" href="{{.Url}}" title="{{$.Name}}: {{.Name}}" target="_blank">{{.Name}}</a>{{end}}
+                            {{range .Links}}
+                            {{if .IsRegistration}}
+                            <a class="tag is-primary is-light mr-2" href="{{.Url}}" title="{{$.Name}}: {{.Name}}" target="_blank">{{.Name}}</a>
+                            {{else}}
+                            <a class="tag is-link is-light mr-2" href="{{.Url}}" title="{{$.Name}}: {{.Name}}" target="_blank">{{.Name}}</a>
+                            {{end}}
+                            {{end}}
                         </td>
                     </tr>{{end}}
                     {{if .Series}}<tr>

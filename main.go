@@ -63,6 +63,10 @@ type NameUrl struct {
 	Url  string
 }
 
+func (n NameUrl) IsRegistration() bool {
+	return n.Name == "Anmeldung"
+}
+
 type Location struct {
 	City      string
 	Country   string
