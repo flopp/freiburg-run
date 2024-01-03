@@ -1286,7 +1286,7 @@ func main() {
 	breadcrumbsEvents := utils.PushBreadcrumb(breadcrumbsBase, utils.Link{Name: "Laufveranstaltungen", Url: "/"})
 
 	defaultImage := "/images/preview.png"
-	if err = utils.GenImage2(filepath.Join(options.outDir, "images/preview.png"), "Laufveranstaltungen", "im Raum Freiburg"); err != nil {
+	if err = utils.GenImage2(filepath.Join(options.outDir, "images/preview.png"), "Laufveranstaltungen", "im Raum Freiburg", "static/background.png"); err != nil {
 		defaultImage = "/images/events2023.jpg"
 		log.Printf("defaultimage: %v", err)
 	}
@@ -1434,7 +1434,7 @@ func main() {
 		slug := event.Slug()
 		eventdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
 		image := event.ImageSlug()
-		if utils.GenImage(filepath.Join(options.outDir, image), event.Name, event.Time, event.Location.NameNoFlag()) == nil {
+		if utils.GenImage(filepath.Join(options.outDir, image), event.Name, event.Time, event.Location.NameNoFlag(), "static/background.png") == nil {
 			eventdata.Image = fmt.Sprintf("/%s", image)
 		} else {
 			eventdata.Image = defaultImage
@@ -1455,7 +1455,7 @@ func main() {
 		slug := event.Slug()
 		eventdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
 		image := event.ImageSlug()
-		if err = utils.GenImage(filepath.Join(options.outDir, image), event.Name, event.Time, event.Location.NameNoFlag()); err != nil {
+		if err = utils.GenImage(filepath.Join(options.outDir, image), event.Name, event.Time, event.Location.NameNoFlag(), "static/background.png"); err != nil {
 			eventdata.Image = defaultImage
 			log.Printf("event '%s': %v", event.Name, err)
 		} else {
@@ -1476,7 +1476,7 @@ func main() {
 		slug := event.Slug()
 		eventdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
 		image := event.ImageSlug()
-		if err = utils.GenImage(filepath.Join(options.outDir, image), event.Name, event.Time, event.Location.NameNoFlag()); err != nil {
+		if err = utils.GenImage(filepath.Join(options.outDir, image), event.Name, event.Time, event.Location.NameNoFlag(), "static/background.png"); err != nil {
 			eventdata.Image = defaultImage
 			log.Printf("event '%s': %v", event.Name, err)
 		} else {
@@ -1497,7 +1497,7 @@ func main() {
 		slug := event.Slug()
 		eventdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
 		image := event.ImageSlug()
-		if err = utils.GenImage2(filepath.Join(options.outDir, image), event.Name, event.Location.NameNoFlag()); err != nil {
+		if err = utils.GenImage2(filepath.Join(options.outDir, image), event.Name, event.Location.NameNoFlag(), "static/background.png"); err != nil {
 			eventdata.Image = defaultImage
 			log.Printf("event '%s': %v", event.Name, err)
 		} else {
@@ -1558,7 +1558,7 @@ func main() {
 		slug := s.Slug()
 		seriedata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
 		image := s.ImageSlug()
-		if utils.GenImage(filepath.Join(options.outDir, image), s.Name, "", "") == nil {
+		if utils.GenImage(filepath.Join(options.outDir, image), s.Name, "", "", "static/background.png") == nil {
 			seriedata.Image = fmt.Sprintf("/%s", image)
 		} else {
 			seriedata.Image = defaultImage

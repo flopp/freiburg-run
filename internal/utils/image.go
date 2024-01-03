@@ -33,7 +33,12 @@ func getFont(size float64) (font.Face, error) {
 	return f, nil
 }
 
-func GenImage(fileName string, title string, sub1 string, sub2 string) error {
+func GenImage(fileName string, title string, sub1 string, sub2 string, backgroundPNG string) error {
+	background, err := gg.LoadPNG(backgroundPNG)
+	if err != nil {
+		return err
+	}
+
 	w := 640
 	h := 480
 	margin := 16
@@ -100,6 +105,8 @@ func GenImage(fileName string, title string, sub1 string, sub2 string) error {
 	// #3e8ed0
 	dc.SetRGB255(0x3e, 0x8e, 0xd0)
 	dc.Clear()
+	dc.DrawImage(background, 0, 0)
+
 	// #3082c5
 	dc.SetRGB255(0x30, 0x82, 0xc5)
 	dc.DrawRectangle(0, d, float64(w), h1+d2)
@@ -111,7 +118,7 @@ func GenImage(fileName string, title string, sub1 string, sub2 string) error {
 	dc.SetFontFace(faceSmall)
 	dc.DrawStringAnchored(sub1, float64(w)/2.0, d+h1+d1+h2/2.0, 0.5, 0.5)
 	dc.DrawStringAnchored(sub2, float64(w)/2.0, d+h1+d1+h2+d2+h3/2.0, 0.5, 0.5)
-	dc.DrawStringAnchored("freiburg.run", float64(w-margin), float64(h-margin), 1.0, 0.0)
+	//dc.DrawStringAnchored("freiburg.run", float64(w-margin), float64(h-margin), 1.0, 0.0)
 
 	err = os.MkdirAll(filepath.Dir(fileName), 0770)
 	if err != nil {
@@ -122,7 +129,12 @@ func GenImage(fileName string, title string, sub1 string, sub2 string) error {
 	return err
 }
 
-func GenImage2(fileName string, title string, sub string) error {
+func GenImage2(fileName string, title string, sub string, backgroundPNG string) error {
+	background, err := gg.LoadPNG(backgroundPNG)
+	if err != nil {
+		return err
+	}
+
 	w := 640
 	h := 480
 	margin := 16
@@ -185,6 +197,8 @@ func GenImage2(fileName string, title string, sub string) error {
 	// #3e8ed0
 	dc.SetRGB255(0x3e, 0x8e, 0xd0)
 	dc.Clear()
+	dc.DrawImage(background, 0, 0)
+
 	// #3082c5
 	dc.SetRGB255(0x30, 0x82, 0xc5)
 	dc.DrawRectangle(0, d, float64(w), h1+d1)
@@ -195,7 +209,7 @@ func GenImage2(fileName string, title string, sub string) error {
 	dc.DrawStringAnchored(title, float64(w)/2.0, d+h1/2.0, 0.5, 0.5)
 	dc.SetFontFace(faceSmall)
 	dc.DrawStringAnchored(sub, float64(w)/2.0, d+h1+d1+h2/2.0, 0.5, 0.5)
-	dc.DrawStringAnchored("freiburg.run", float64(w-margin), float64(h-margin), 1.0, 0.0)
+	//dc.DrawStringAnchored("freiburg.run", float64(w-margin), float64(h-margin), 1.0, 0.0)
 
 	err = os.MkdirAll(filepath.Dir(fileName), 0770)
 	if err != nil {
