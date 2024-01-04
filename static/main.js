@@ -143,6 +143,36 @@ const loadMap = function (id) {
     map.fitBounds(group.getBounds(), {padding: L.point(40, 40)});
 };
 
+const loadParkrunMap = function (id) {
+    var map = L.map(id, {gestureHandling: true}).setView([48.000548, 7.804842], 15);
+
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    var course = L.polyline(parkrunTrack);
+    course.addTo(map);
+
+    let blueIcon = load_marker("");
+    let greyIcon = load_marker("grey");
+
+    let parking = L.marker([48.000993,7.808887], {icon: greyIcon});
+    parking.addTo(map);
+    parking.bindPopup("Parkplatz");
+
+    let tram = L.marker([47.999420,7.810088], {icon: greyIcon});
+    tram.addTo(map);
+    tram.bindPopup("Straßenbahn (Linie 3, Rohrgraben)");
+
+    let cafe = L.marker([47.997826,7.807831], {icon: greyIcon});
+    cafe.addTo(map);
+    cafe.bindPopup("Lio's Café");
+
+    let meetingpoint = L.marker([48.001294,7.806489], {icon: blueIcon});
+    meetingpoint.addTo(map);
+    meetingpoint.bindPopup("Treffpunkt / Zielbereich");
+};
+
 var load_marker = function (color) {
     let url = "/images/marker-icon.png";
     let url2x = "/images/marker-icon-2x.png";
@@ -192,55 +222,14 @@ var main = () => {
         });
     }
 
-    if (document.querySelector("#parkrun-map") !== null) {
-        var map = L.map('parkrun-map', {gestureHandling: true}).setView([48.000548, 7.804842], 15);
-
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
-
-        var course = L.polyline(parkrunTrack);
-        course.addTo(map);
-
-        let blueOptions = {
-            iconAnchor: [12, 41],
-            iconRetinaUrl: "/images/marker-icon-2x.png",
-            iconSize: [25, 41],
-            iconUrl: "/images/marker-icon.png",
-            popupAnchor: [1, -34],
-            shadowSize: [41, 41],
-            shadowUrl: "/images/marker-shadow.png",
-            tooltipAnchor: [16, -28],
-        };
-        let blueIcon = L.icon(blueOptions);
-
-        let greyOptions = {
-            iconAnchor: [12, 41],
-            iconRetinaUrl: "/images/marker-grey-icon-2x.png",
-            iconSize: [25, 41],
-            iconUrl: "/images/marker-grey-icon.png",
-            popupAnchor: [1, -34],
-            shadowSize: [41, 41],
-            shadowUrl: "/images/marker-shadow.png",
-            tooltipAnchor: [16, -28],
-        };
-        let greyIcon = L.icon(greyOptions);
-        
-        let parking = L.marker([48.000993,7.808887], {icon: greyIcon});
-        parking.addTo(map);
-        parking.bindPopup("Parkplatz");
-
-        let tram = L.marker([47.999420,7.810088], {icon: greyIcon});
-        tram.addTo(map);
-        tram.bindPopup("Straßenbahn (Linie 3, Rohrgraben)");
-
-        let cafe = L.marker([47.997826,7.807831], {icon: greyIcon});
-        cafe.addTo(map);
-        cafe.bindPopup("Lio's Café");
-
-        let meetingpoint = L.marker([48.001294,7.806489], {icon: blueIcon});
-        meetingpoint.addTo(map);
-        meetingpoint.bindPopup("Treffpunkt / Zielbereich");
+    const parkrunMapBtn = document.querySelector("#parkrun-map-toggle-btn");
+    if (parkrunMapBtn !== null) {
+        parkrunMapBtn.addEventListener('click', () => {
+            parkrunMapBtn.remove();
+            const mapDiv = document.querySelector("#map-toggle");
+            mapDiv.classList.add("is-active"); 
+            loadParkrunMap("map-toggle");
+        });
     }
 
     let eventMap = document.querySelector("#event-map");
@@ -248,24 +237,12 @@ var main = () => {
         let geo = parseGeo(eventMap.dataset.geo);
         if (geo !== null) {
             var map = L.map('event-map', {gestureHandling: true}).setView(geo, 15);
-        
-            let blueOptions = {
-                iconAnchor: [12, 41],
-                iconRetinaUrl: "/images/marker-icon-2x.png",
-                iconSize: [25, 41],
-                iconUrl: "/images/marker-icon.png",
-                popupAnchor: [1, -34],
-                shadowSize: [41, 41],
-                shadowUrl: "/images/marker-shadow.png",
-                tooltipAnchor: [16, -28],
-            };
-            let blueIcon = L.icon(blueOptions);
 
             L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             }).addTo(map);
-            
-            let marker = L.marker(geo, {icon: blueIcon});
+
+            let marker = L.marker(geo, {icon: load_marker("")});
             marker.addTo(map);
             marker.bindPopup(eventMap.dataset.name);
         }
