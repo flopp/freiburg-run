@@ -35,7 +35,7 @@
         <div class="card-content">
             <div class="content">
                 <table class="table is-narrow">
-                    {{if .Status}}<tr><th class="w-2em no-border" title="Status">⚠️</th><td class="no-border">{{.Status}}</td></tr>{{end}}
+                    {{if .Status}}<tr class="has-text-danger"><th class="w-2em no-border" title="Status">⚠️</th><td class="no-border">{{.Status}}</td></tr>{{end}}
                     {{if .Time}}<tr><th class="w-2em no-border" title="Datum">📅</th><td class="no-border">{{.Time}}{{if .Old}} <span class="has-text-danger">(Vergangenes Event)</span>{{end}}</td></tr>{{end}}
                     <tr>
                         <th class="w-2em no-border" title="Ort">🗺</th>
