@@ -393,6 +393,10 @@ type TemplateData struct {
 	CssFiles      []string
 }
 
+func (d TemplateData) YearTitle() string {
+	return d.Title
+}
+
 type EventTemplateData struct {
 	Event         *Event
 	Title         string
@@ -408,6 +412,24 @@ type EventTemplateData struct {
 	SheetUrl      string
 	JsFiles       []string
 	CssFiles      []string
+}
+
+func (d EventTemplateData) YearTitle() string {
+	if d.Event.Type != "event" {
+		return d.Title
+	}
+
+	year := d.Event.TimeRange.From.Year()
+	if year < 2000 {
+		return d.Title
+	}
+
+	yearS := fmt.Sprintf("%d", year)
+	if strings.Contains(d.Title, yearS) {
+		return d.Title
+	}
+
+	return fmt.Sprintf("%s %s", d.Title, yearS)
 }
 
 type TagTemplateData struct {
@@ -427,6 +449,10 @@ type TagTemplateData struct {
 	CssFiles      []string
 }
 
+func (d TagTemplateData) YearTitle() string {
+	return d.Title
+}
+
 type SerieTemplateData struct {
 	Serie         *Serie
 	Title         string
@@ -444,6 +470,10 @@ type SerieTemplateData struct {
 	CssFiles      []string
 }
 
+func (d SerieTemplateData) YearTitle() string {
+	return d.Title
+}
+
 type SitemapTemplateData struct {
 	Title         string
 	Type          string
@@ -458,6 +488,10 @@ type SitemapTemplateData struct {
 	Categories    []utils.SitemapCategory
 	JsFiles       []string
 	CssFiles      []string
+}
+
+func (d SitemapTemplateData) YearTitle() string {
+	return d.Title
 }
 
 func GetMtimeYMD(filePath string) string {
