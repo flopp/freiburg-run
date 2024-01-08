@@ -1025,6 +1025,8 @@ func collectTags(descriptions map[string]NameDescription, events []*Event, event
 			}
 			tag.Description = desc.Description
 		}
+		tag.Events = addMonthSeparators(tag.Events)
+		tag.EventsOld = addMonthSeparatorsDescending(tag.EventsOld)
 		tagsList = append(tagsList, tag)
 	}
 	sort.Slice(tagsList, func(i, j int) bool { return tagsList[i].Sanitized < tagsList[j].Sanitized })
@@ -1084,6 +1086,8 @@ func collectSeries(series map[string]*Serie, events []*Event, eventsOld []*Event
 		} else {
 			seriesList = append(seriesList, s)
 		}
+		s.Events = addMonthSeparators(s.Events)
+		s.EventsOld = addMonthSeparatorsDescending(s.EventsOld)
 	}
 	sort.Slice(seriesList, func(i, j int) bool { return seriesList[i].Sanitized < seriesList[j].Sanitized })
 	sort.Slice(seriesListOld, func(i, j int) bool { return seriesListOld[i].Sanitized < seriesListOld[j].Sanitized })

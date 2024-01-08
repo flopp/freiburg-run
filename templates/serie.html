@@ -34,7 +34,13 @@
 {{if .Serie.Events}}
         <div class="columns is-multiline">
             {{range .Serie.Events}}
+            {{if .IsSeparator}}
+            <div class="column is-full">
+                <div class="notification is-info is-light">{{.Name}}</div>
+            </div>
+            {{else}}
             {{template "card.html" .}}
+            {{end}}
             {{end}}
         </div>
 {{end}}
@@ -67,7 +73,13 @@
 
         <div class="columns is-multiline">
             {{range .Serie.EventsOld}}
+            {{if .IsSeparator}}
+            <div class="column is-full">
+                <div class="notification is-info is-light">{{.Name}}</div>
+            </div>
+            {{else}}
             {{template "card.html" .}}
+            {{end}}
             {{end}}
         </div>
 {{end}}
