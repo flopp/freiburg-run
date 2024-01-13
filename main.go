@@ -391,6 +391,7 @@ type TemplateData struct {
 	SeriesOld     []*Serie
 	JsFiles       []string
 	CssFiles      []string
+	GoatCounterJs string
 }
 
 func (d TemplateData) YearTitle() string {
@@ -412,6 +413,7 @@ type EventTemplateData struct {
 	SheetUrl      string
 	JsFiles       []string
 	CssFiles      []string
+	GoatCounterJs string
 }
 
 func (d EventTemplateData) YearTitle() string {
@@ -447,6 +449,7 @@ type TagTemplateData struct {
 	SheetUrl      string
 	JsFiles       []string
 	CssFiles      []string
+	GoatCounterJs string
 }
 
 func (d TagTemplateData) YearTitle() string {
@@ -468,6 +471,7 @@ type SerieTemplateData struct {
 	SheetUrl      string
 	JsFiles       []string
 	CssFiles      []string
+	GoatCounterJs string
 }
 
 func (d SerieTemplateData) YearTitle() string {
@@ -488,6 +492,7 @@ type SitemapTemplateData struct {
 	Categories    []utils.SitemapCategory
 	JsFiles       []string
 	CssFiles      []string
+	GoatCounterJs string
 }
 
 func (d SitemapTemplateData) YearTitle() string {
@@ -1308,6 +1313,7 @@ func main() {
 	js_files = append(js_files, utils.MustDownloadHash("https://unpkg.com/leaflet-gesture-handling@1.2.2/dist/leaflet-gesture-handling.min.js", "leaflet-gesture-handling-HASH.js", options.outDir))
 	js_files = append(js_files, utils.MustCopyHash("static/parkrun-track.js", "parkrun-track-HASH.js", options.outDir))
 	js_files = append(js_files, utils.MustCopyHash("static/main.js", "main-HASH.js", options.outDir))
+	goatcounter := utils.MustDownloadHash("https://gc.zgo.at/count.js", "goat-HASH.js", options.outDir)
 
 	css_files := make([]string, 0)
 	css_files = append(css_files, utils.MustDownloadHash("https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css", "bulma-HASH.css", options.outDir))
@@ -1350,6 +1356,7 @@ func main() {
 		seriesListOld,
 		js_files,
 		css_files,
+		goatcounter,
 	}
 
 	utils.ExecuteTemplate("events", filepath.Join(options.outDir, "index.html"), data)
@@ -1461,6 +1468,7 @@ func main() {
 		sheetUrl,
 		js_files,
 		css_files,
+		goatcounter,
 	}
 	for _, event := range events {
 		if event.IsSeparator() {
@@ -1561,6 +1569,7 @@ func main() {
 		sheetUrl,
 		js_files,
 		css_files,
+		goatcounter,
 	}
 	for _, tag := range tags {
 		tagdata.Tag = tag
@@ -1588,6 +1597,7 @@ func main() {
 		sheetUrl,
 		js_files,
 		css_files,
+		goatcounter,
 	}
 	for _, s := range series {
 		seriedata.Serie = s
@@ -1621,6 +1631,7 @@ func main() {
 		sitemap.GenHTML(),
 		js_files,
 		css_files,
+		goatcounter,
 	}
 	utils.ExecuteTemplate("sitemap", filepath.Join(options.outDir, "sitemap.html"), sitemapTemplate)
 
