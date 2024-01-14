@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"flag"
@@ -1163,6 +1164,20 @@ func CreateHtaccess(events, events_old, groups, shops []*Event, outDir string) e
 	return nil
 }
 
+func modifyGoatcounterLinkSelector(dir, file string) string {
+	path := filepath.Join(dir, file)
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return file
+	}
+
+	data = bytes.ReplaceAll(data, []byte(`querySelectorAll("*[data-goatcounter-click]")`), []byte(`querySelectorAll("a[target=_blank]")`))
+
+	path2 := filepath.Join(dir, fmt.Sprintf("mod-%s", file))
+	os.WriteFile(path2, data, 0770)
+	return path2
+}
+
 func main() {
 	now := time.Now()
 	today := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
@@ -1314,6 +1329,7 @@ func main() {
 	js_files = append(js_files, utils.MustCopyHash("static/parkrun-track.js", "parkrun-track-HASH.js", options.outDir))
 	js_files = append(js_files, utils.MustCopyHash("static/main.js", "main-HASH.js", options.outDir))
 	goatcounter := utils.MustDownloadHash("https://gc.zgo.at/count.js", "goat-HASH.js", options.outDir)
+	goatcounter = modifyGoatcounterLinkSelector(options.outDir, goatcounter)
 
 	css_files := make([]string, 0)
 	css_files = append(css_files, utils.MustDownloadHash("https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css", "bulma-HASH.css", options.outDir))
