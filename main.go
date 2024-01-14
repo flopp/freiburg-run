@@ -1173,9 +1173,10 @@ func modifyGoatcounterLinkSelector(dir, file string) string {
 
 	data = bytes.ReplaceAll(data, []byte(`querySelectorAll("*[data-goatcounter-click]")`), []byte(`querySelectorAll("a[target=_blank]")`))
 
-	path2 := filepath.Join(dir, fmt.Sprintf("mod-%s", file))
+	file2 := fmt.Sprintf("mod-%s", file)
+	path2 := filepath.Join(dir, file2)
 	os.WriteFile(path2, data, 0770)
-	return path2
+	return file2
 }
 
 func main() {
