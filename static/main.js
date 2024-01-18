@@ -248,12 +248,12 @@ var main = () => {
         }
     }
 
-    let counter = document.querySelector("#counter");
-    if (counter !== null) {
+    let footer = document.querySelector("#footer-content");
+    if (footer !== null) {
         var t = setInterval(function() {
             if (window.goatcounter && window.goatcounter.visit_count) {
                 clearInterval(t)
-                window.goatcounter.visit_count({append: '#counter'})
+                window.goatcounter.visit_count({append: '#footer-content'})
         }
         }, 100);
     }
