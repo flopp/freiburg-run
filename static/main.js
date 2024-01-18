@@ -247,16 +247,6 @@ var main = () => {
             marker.bindPopup(eventMap.dataset.name);
         }
     }
-
-    let footer = document.querySelector("#footer-content");
-    if (footer !== null) {
-        var t = setInterval(function() {
-            if (window.goatcounter && window.goatcounter.visit_count) {
-                clearInterval(t)
-                window.goatcounter.visit_count({append: '#footer-content'})
-        }
-        }, 100);
-    }
 };
 
 on_load(main);
