@@ -1173,7 +1173,7 @@ func modifyGoatcounterLinkSelector(dir, file string) string {
 
 	data = bytes.ReplaceAll(data, []byte(`querySelectorAll("*[data-goatcounter-click]")`), []byte(`querySelectorAll("a[target=_blank]")`))
 	data = bytes.ReplaceAll(data, []byte(`(elem.dataset.goatcounterClick || elem.name || elem.id || '')`), []byte(`(elem.dataset.goatcounterClick || elem.name || elem.id || elem.href || '')`))
-
+	data = bytes.ReplaceAll(data, []byte(`(elem.dataset.goatcounterReferrer || elem.dataset.goatcounterReferral || '')`), []byte(`(elem.dataset.goatcounterReferrer || elem.dataset.goatcounterReferral || window.location.href || '')`))
 	file2 := fmt.Sprintf("mod-%s", file)
 	path2 := filepath.Join(dir, file2)
 	os.WriteFile(path2, data, 0770)
