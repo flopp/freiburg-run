@@ -228,6 +228,7 @@ a.no-external::after
     justify-content: center;
     align-items: center;
     display: flex;
+    cursor: pointer;
 }
 
 @media screen and (min-width: 1024px) {
