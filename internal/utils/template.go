@@ -8,7 +8,7 @@ import (
 )
 
 func loadTemplate(name string) *template.Template {
-	t, err := template.ParseFiles(fmt.Sprintf("templates/%s.html", name), "templates/header.html", "templates/footer.html", "templates/tail.html", "templates/card.html")
+	t, err := template.ParseFiles(fmt.Sprintf("templates/%s.html", name), "templates/header.html", "templates/footer.html", "templates/tail.html", "templates/card.html", "templates/support-modal.html")
 	Check(err)
 	return t
 }
