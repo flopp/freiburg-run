@@ -59,6 +59,11 @@
     white-space: normal !important;
 }
 
+.force-slim {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+} 
+
 body.has-two-navbars-fixed-top {
     padding-top: 3.25rem;
 }
