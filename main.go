@@ -186,6 +186,16 @@ func (event Event) IsSeparator() bool {
 	return event.Type == ""
 }
 
+func NonSeparators(events []*Event) int {
+	count := 0
+	for _, e := range events {
+		if !e.IsSeparator() {
+			count += 1
+		}
+	}
+	return count
+}
+
 func createSeparatorEvent(label string) *Event {
 	return &Event{
 		"",
@@ -325,19 +335,19 @@ func (tag *Tag) Slug() string {
 }
 
 func (tag *Tag) NumEvents() int {
-	return len(tag.Events)
+	return NonSeparators(tag.Events)
 }
 
 func (tag *Tag) NumOldEvents() int {
-	return len(tag.EventsOld)
+	return NonSeparators(tag.EventsOld)
 }
 
 func (tag *Tag) NumGroups() int {
-	return len(tag.Groups)
+	return NonSeparators(tag.Groups)
 }
 
 func (tag *Tag) NumShops() int {
-	return len(tag.Shops)
+	return NonSeparators(tag.Shops)
 }
 
 type Serie struct {
@@ -356,7 +366,7 @@ func (s Serie) IsOld() bool {
 }
 
 func (s Serie) Num() int {
-	return len(s.Events) + len(s.EventsOld) + len(s.Groups) + len(s.Shops)
+	return NonSeparators(s.Events) + NonSeparators(s.EventsOld) + NonSeparators(s.Groups) + NonSeparators(s.Shops)
 }
 
 func CreateSerie(id string, name string) *Serie {
