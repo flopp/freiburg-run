@@ -1151,6 +1151,8 @@ func CreateHtaccess(events, events_old, groups, shops []*Event, outDir string) e
 	destination.WriteString("Redirect /event/dietenbach-parkrun.html /group/dietenbach-parkrun.html\n")
 	destination.WriteString("Redirect /event/dreilaendergarten-parkrun.html /group/dreilaendergarten-parkrun.html\n")
 	destination.WriteString("Redirect /tag/serie-intersport-denzer-cup-2024.html /serie/intersport-denzer-cup-2024.html\n")
+	destination.WriteString("Redirect /event/2023-4-crosslauf-am-opfinger-see.html /event/2024-4-crosslauf-am-opfinger-see.html\n")
+
 	for _, e := range events {
 		if old := e.SlugOld(); old != "" {
 			destination.WriteString(fmt.Sprintf("Redirect /%s /%s\n", old, e.Slug()))
