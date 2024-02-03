@@ -1317,6 +1317,7 @@ func main() {
 	sitemap.Add("map.html", "Karte", "Laufveranstaltungen")
 	sitemap.Add("series.html", "Alle Lauf-Serien", "Serien")
 	sitemap.Add("info.html", "Informationen", "Allgemein")
+	sitemap.Add("support.html", "Unterstützen", "Allgemein")
 	sitemap.Add("datenschutz.html", "Datenschutz", "Allgemein")
 	sitemap.Add("impressum.html", "Impressum", "Allgemein")
 
@@ -1489,6 +1490,14 @@ func main() {
 	data.Canonical = "https://freiburg.run/info.html"
 	data.Breadcrumbs = breadcrumbsInfo
 	utils.ExecuteTemplate("info", filepath.Join(options.outDir, "info.html"), data)
+
+	data.Nav = "support"
+	data.Title = "freiburg.run unterstützen"
+	data.Type = "Support"
+	data.Description = "Möglichkeiten freiburg.run zu unterstützen"
+	data.Canonical = "https://freiburg.run/support.html"
+	data.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsInfo, utils.Link{Name: "Unterstützung", Url: "/support.html"})
+	utils.ExecuteTemplate("support", filepath.Join(options.outDir, "support.html"), data)
 
 	data.Nav = "404"
 	data.Title = "404 - Seite nicht gefunden :("
