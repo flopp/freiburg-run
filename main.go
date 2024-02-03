@@ -1341,7 +1341,9 @@ func main() {
 	bulma_version := "0.9.4"
 	// renovate: datasource=npm depName=leaflet
 	leaflet_version := "1.9.4"
+	// renovate: datasource=npm depName=leaflet-gesture-handling
 	leaflet_gesture_handling_version := "1.2.2"
+
 	leaflet_legend_version := "v1.0.0"
 
 	bulma_url := fmt.Sprintf("https://unpkg.com/bulma@%s", bulma_version)
