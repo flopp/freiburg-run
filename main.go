@@ -1337,25 +1337,37 @@ func main() {
 	utils.MustCopyHash("static/circle-big.png", "images/circle-big.png", options.outDir)
 	utils.MustCopyHash("static/freiburg-run-flyer.pdf", "freiburg-run-flyer.pdf", options.outDir)
 
+	// renovate: datasource=npm depName=bulma
+	bulma_version := "0.9.4"
+	// renovate: datasource=npm depName=leaflet
+	leaflet_version := "1.9.4"
+	leaflet_gesture_handling_version := "1.2.2"
+	leaflet_legend_version := "v1.0.0"
+
+	bulma_url := fmt.Sprintf("https://unpkg.com/bulma@%s", bulma_version)
+	leaflet_url := fmt.Sprintf("https://unpkg.com/leaflet@%s", leaflet_version)
+	leaflet_gesture_handling_url := fmt.Sprintf("https://unpkg.com/leaflet-gesture-handling@%s", leaflet_gesture_handling_version)
+	leaflet_legend_url := fmt.Sprintf("https://raw.githubusercontent.com/ptma/Leaflet.Legend/%s", leaflet_legend_version)
+
 	js_files := make([]string, 0)
-	js_files = append(js_files, utils.MustDownloadHash("https://unpkg.com/leaflet@1.9.4/dist/leaflet.js", "leaflet-HASH.js", options.outDir))
-	js_files = append(js_files, utils.MustDownloadHash("https://raw.githubusercontent.com/ptma/Leaflet.Legend/master/src/leaflet.legend.js", "leaflet-legend-HASH.js", options.outDir))
-	js_files = append(js_files, utils.MustDownloadHash("https://unpkg.com/leaflet-gesture-handling@1.2.2/dist/leaflet-gesture-handling.min.js", "leaflet-gesture-handling-HASH.js", options.outDir))
+	js_files = append(js_files, utils.MustDownloadHash(fmt.Sprintf("%s/dist/leaflet.js", leaflet_url), "leaflet-HASH.js", options.outDir))
+	js_files = append(js_files, utils.MustDownloadHash(fmt.Sprintf("%s/src/leaflet.legend.js", leaflet_legend_url), "leaflet-legend-HASH.js", options.outDir))
+	js_files = append(js_files, utils.MustDownloadHash(fmt.Sprintf("%s/dist/leaflet-gesture-handling.min.js", leaflet_gesture_handling_url), "leaflet-gesture-handling-HASH.js", options.outDir))
 	js_files = append(js_files, utils.MustCopyHash("static/parkrun-track.js", "parkrun-track-HASH.js", options.outDir))
 	js_files = append(js_files, utils.MustCopyHash("static/main.js", "main-HASH.js", options.outDir))
 	goatcounter := utils.MustDownloadHash("https://gc.zgo.at/count.js", "goat-HASH.js", options.outDir)
 	goatcounter = modifyGoatcounterLinkSelector(options.outDir, goatcounter)
 
 	css_files := make([]string, 0)
-	css_files = append(css_files, utils.MustDownloadHash("https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css", "bulma-HASH.css", options.outDir))
-	css_files = append(css_files, utils.MustDownloadHash("https://unpkg.com/leaflet@1.9.4/dist/leaflet.css", "leaflet-HASH.css", options.outDir))
-	css_files = append(css_files, utils.MustDownloadHash("https://raw.githubusercontent.com/ptma/Leaflet.Legend/master/src/leaflet.legend.css", "leaflet-legend-HASH.css", options.outDir))
-	css_files = append(css_files, utils.MustDownloadHash("https://unpkg.com/leaflet-gesture-handling@1.2.2/dist/leaflet-gesture-handling.min.css", "leaflet-gesture-handling-HASH.css", options.outDir))
+	css_files = append(css_files, utils.MustDownloadHash(fmt.Sprintf("%s/css/bulma.min.css", bulma_url), "bulma-HASH.css", options.outDir))
+	css_files = append(css_files, utils.MustDownloadHash(fmt.Sprintf("%s/dist/leaflet.css", leaflet_url), "leaflet-HASH.css", options.outDir))
+	css_files = append(css_files, utils.MustDownloadHash(fmt.Sprintf("%s/src/leaflet.legend.css", leaflet_legend_url), "leaflet-legend-HASH.css", options.outDir))
+	css_files = append(css_files, utils.MustDownloadHash(fmt.Sprintf("%s/dist/leaflet-gesture-handling.min.css", leaflet_gesture_handling_url), "leaflet-gesture-handling-HASH.css", options.outDir))
 	css_files = append(css_files, utils.MustCopyHash("static/style.css", "style-HASH.css", options.outDir))
 
-	utils.MustDownloadHash("https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png", "images/marker-icon.png", options.outDir)
-	utils.MustDownloadHash("https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png", "images/marker-icon-2x.png", options.outDir)
-	utils.MustDownloadHash("https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png", "images/marker-shadow.png", options.outDir)
+	utils.MustDownloadHash(fmt.Sprintf("%s/dist/images/marker-icon.png", leaflet_url), "images/marker-icon.png", options.outDir)
+	utils.MustDownloadHash(fmt.Sprintf("%s/dist/images/marker-icon-2x.png", leaflet_url), "images/marker-icon-2x.png", options.outDir)
+	utils.MustDownloadHash(fmt.Sprintf("%s/dist/images/marker-shadow.png", leaflet_url), "images/marker-shadow.png", options.outDir)
 
 	breadcrumbsBase := utils.InitBreadcrumbs(utils.Link{Name: "freiburg.run", Url: "/"})
 	breadcrumbsEvents := utils.PushBreadcrumb(breadcrumbsBase, utils.Link{Name: "Laufveranstaltungen", Url: "/"})
