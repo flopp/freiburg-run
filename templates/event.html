@@ -60,7 +60,11 @@
                             <th>Infos</th>
                             <td class="is-w100">
                                 {{range .Event.Links}}
+                                {{if .IsRegistration}}
+                                    <a class="tag is-primary is-light" href="{{.Url}}" title="{{$.Event.Name}}: {{.Name}}" target="_blank">{{.Name}}</a>
+                                {{else}}
                                     <a class="tag is-link is-light" href="{{.Url}}" title="{{$.Event.Name}}: {{.Name}}" target="_blank">{{.Name}}</a>
+                                {{end}}
                                 {{end}}
                             </td>
                         </tr>
