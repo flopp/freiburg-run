@@ -12,6 +12,7 @@ import (
 	"path/filepath"
 	"regexp"
 	"sort"
+	"strconv"
 	"strings"
 	"time"
 	"unicode"
@@ -313,6 +314,7 @@ type ParkrunEvent struct {
 	Special       string
 	Results       string
 	Report        string
+	Author        string
 	Photos        string
 }
 
@@ -729,10 +731,18 @@ func fetchParkrunEvents(config ConfigData, srv *sheets.Service, today time.Time,
 		special := cols.getValue("SPECIAL", row)
 		results := cols.getValue("RESULTS", row)
 		report := cols.getValue("REPORT", row)
+		author := cols.getValue("AUTHOR", row)
 		photos := cols.getValue("PHOTOS", row)
 
 		if temp != "" {
 			temp = fmt.Sprintf("%s°C", temp)
+		}
+
+		if results != "" {
+			// if "results" only contains a number, build full url
+			if _, err := strconv.ParseInt(results, 10, 64); err == nil {
+				results = fmt.Sprintf("https://www.parkrun.com.de/dietenbach/results/%s", results)
+			}
 		}
 
 		currentWeek := false
@@ -752,6 +762,7 @@ func fetchParkrunEvents(config ConfigData, srv *sheets.Service, today time.Time,
 			special,
 			results,
 			report,
+			author,
 			photos,
 		})
 	}
