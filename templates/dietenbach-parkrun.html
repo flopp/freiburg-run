@@ -102,7 +102,7 @@
                                 <a class="no-external" href="{{.Results}}" target="_blank" title="Ergebnisse #{{.Index}}">Ergebnisse</a>
                                 {{end}}
                                 {{if .Report}}
-                                <a class="no-external" href="{{.Report}}" target="_blank" title="Laufbericht #{{.Index}}">Bericht</a>
+                                <a class="no-external" href="{{.Report}}" target="_blank" title="Laufbericht #{{.Index}}">Bericht{{if .Author}} ({{.Author}}){{end}}</a>
                                 {{else if .Results}}
                                 <span disabled class="no-external" title="Laufbericht #{{.Index}} (in Arbeit)">(Bericht)</span>
                                 {{end}}
