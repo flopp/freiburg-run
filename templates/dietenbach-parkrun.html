@@ -44,11 +44,11 @@
                         </span>
                         <span class="is-hidden-tablet">
                             #{{.Index}}<br>
-                            <span class="is-size-7">{{.Date}}</span>
+                            <span class="is-size-7">{{.Date}}</span>{{if .IsCurrentWeek}}<br><span class="is-size-7">(aktuell)</span>{{end}}
                         </span>
                     </td>
                     <td class="is-hidden-mobile">
-                        {{.Date}}
+                        {{.Date}}{{if .IsCurrentWeek}}<br>(aktuell){{end}}
                     </td>
                     <td class="is-hidden-mobile">
                         {{.Runners}}
@@ -75,41 +75,16 @@
                         </span>
                     </td>
                     <td>
-                        <div class="field has-addons is-hidden-mobile">
+                        <div class="is-flex is-flex-direction-column">
                             {{if .Results}}
-                            <p class="control">
-                                <a class="button no-external" href="{{.Results}}" target="_blank" title="Ergebnisse #{{.Index}}"><span class="icon"><i class="medal-icon"></i></span></a>
-                            </p>
+                            <a class="no-external" href="{{.Results}}" target="_blank" title="Ergebnisse #{{.Index}}">Ergebnisse</a>
                             {{end}}
                             {{if .Report}}
-                            <p class="control">
-                                <a class="button no-external" href="{{.Report}}" target="_blank" title="Laufbericht #{{.Index}}"><span class="icon"><i class="report-icon"></i></span></a>
-                            </p>
-                            {{else if .Results}}
-                            <p class="control">
-                                <span disabled class="button no-external" title="Laufbericht #{{.Index}} (in Arbeit)"><span class="icon"><i class="report-icon"></i></span></span>
-                            </p>
+                            <a class="no-external" href="{{.Report}}" target="_blank" title="Laufbericht #{{.Index}}">Bericht{{if .Author}} ({{.Author}}){{end}}</a>
                             {{end}}
                             {{if .Photos}}
-                            <p class="control">
-                                <a class="button no-external" href="{{.Photos}}" target="_blank" title="Fotogalerie #{{.Index}}"><span class="icon"><i class="images-icon"></i></span></a>
-                            </p>
+                            <a class="no-external" href="{{.Photos}}" target="_blank" title="Fotogalerie #{{.Index}}">Fotos</a>
                             {{end}}
-                        </div>
-                        <div class="is-hidden-tablet">
-                            <div class="is-flex is-flex-direction-column">
-                                {{if .Results}}
-                                <a class="no-external" href="{{.Results}}" target="_blank" title="Ergebnisse #{{.Index}}">Ergebnisse</a>
-                                {{end}}
-                                {{if .Report}}
-                                <a class="no-external" href="{{.Report}}" target="_blank" title="Laufbericht #{{.Index}}">Bericht{{if .Author}} ({{.Author}}){{end}}</a>
-                                {{else if .Results}}
-                                <span disabled class="no-external" title="Laufbericht #{{.Index}} (in Arbeit)">(Bericht)</span>
-                                {{end}}
-                                {{if .Photos}}
-                                <a class="no-external" href="{{.Photos}}" target="_blank" title="Fotogalerie #{{.Index}}">Fotos</a>
-                                {{end}}
-                            </div>
                         </div>
                     </td>
                 </tr>
