@@ -1350,7 +1350,7 @@ func main() {
 	utils.MustCopyHash("static/freiburg-run-flyer.pdf", "freiburg-run-flyer.pdf", options.outDir)
 
 	// renovate: datasource=npm depName=bulma
-	bulma_version := "0.9.4"
+	bulma_version := "1.0.0"
 	// renovate: datasource=npm depName=leaflet
 	leaflet_version := "1.9.4"
 	// renovate: datasource=npm depName=leaflet-gesture-handling

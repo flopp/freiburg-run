@@ -4,7 +4,7 @@
     <div class="container is-max-desktop" itemscope itemtype="https://schema.org/ItemList">
         <h1 class="title" itemprop="name">{{.Title}}</h1>
         
-        <div class="notification is-info is-light">
+        <div class="notification is-link is-light">
             Liste von <b>aktuellen und zukünftigen</b> Laufveranstaltungen, Wettkämpfen, Volksläufen im Raum Freiburg (~50km Umkreis), sortiert nach Datum.
             <br />
             Ist ein Eintrag fehlerhaft oder fehlt eine Veranstaltung? - bitte <a href="/info.html#kontakt">melden</a>. 
@@ -21,7 +21,7 @@
             {{range .Events}}
             {{if .IsSeparator}}
             <div class="column is-full">
-                <div class="notification is-info is-light">{{.Name}}</div>
+                <div class="notification is-link is-light">{{.Name}}</div>
             </div>
             {{else}}
             {{template "card.html" .}}

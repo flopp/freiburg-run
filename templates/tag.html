@@ -4,7 +4,7 @@
     <div class="container is-max-desktop" itemscope itemtype="https://schema.org/ItemList">
         <h1 class="title" itemprop="name">{{.Title}}</h1>
 
-        <div class="notification is-info is-light">
+        <div class="notification is-link is-light">
             <p class="block">
                 Liste von Laufveranstaltungen, Lauf-Wettkämpfen, Volksläufen im Raum Freiburg, die in die <b>Kategorie '{{.Tag.Name}}'</b> einsortiert sind.
             </p>
@@ -30,7 +30,7 @@
             {{range .Tag.Events}}
             {{if .IsSeparator}}
             <div class="column is-full">
-                <div class="notification is-info is-light">{{.Name}}</div>
+                <div class="notification is-link is-light">{{.Name}}</div>
             </div>
             {{else}}
             {{template "card.html" .}}
@@ -61,7 +61,7 @@
 
 {{if .Tag.EventsOld}}
         <h2 class="title">Vergangene Laufveranstaltungen</h2>
-        <div class="notification is-info is-light">
+        <div class="notification is-link is-light">
             In umgekehrt chronologischer Reihenfolge.
         </div>
 
@@ -69,7 +69,7 @@
             {{range .Tag.EventsOld}}
             {{if .IsSeparator}}
             <div class="column is-full">
-                <div class="notification is-info is-light">{{.Name}}</div>
+                <div class="notification is-link is-light">{{.Name}}</div>
             </div>
             {{else}}
             {{template "card.html" .}}

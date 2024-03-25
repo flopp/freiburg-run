@@ -19,7 +19,7 @@
             {{range .EventsOld}}
             {{if .IsSeparator}}
             <div class="column is-full">
-                <div class="notification is-info is-light">{{.Name}}</div>
+                <div class="notification is-link is-light">{{.Name}}</div>
             </div>
             {{else}}
             {{template "card.html" .}}
