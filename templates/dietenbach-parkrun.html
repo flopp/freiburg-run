@@ -37,7 +37,7 @@
             </thead>
             <tbody>
                 {{range .Parkrun}}
-                <tr {{if .IsCurrentWeek}}class="parkrun-event is-selected"{{else}}class="parkrun-event"{{end}}>
+                <tr {{if .IsCurrentWeek}}class="parkrun-event is-selected is-link has-text-white"{{else}}class="parkrun-event"{{end}}>
                     <td>
                         <span class="is-hidden-mobile">
                             {{.Index}}
