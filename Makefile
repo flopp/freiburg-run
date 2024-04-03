@@ -19,16 +19,19 @@ upload-test: build
 .repo/.git/config:
 	git clone https://github.com/flopp/freiburg-run.git .repo
 
+.phony: .bin/generate-linux
+.bin/generate-linux:
+	mkdir -p .bin
+	GOOS=linux GOARCH=amd64 go build -o .bin/generate-linux main.go
+
 .phony: sync
-sync: .repo/.git/config
+sync: .repo/.git/config .bin/generate-linux
 	(cd .repo && git pull --quiet)
+	rsync -a scripts/cronjob.sh .bin/generate-linux echeclus.uberspace.de:packages/freiburg.run/
 	rsync -a .repo/ echeclus.uberspace.de:packages/freiburg.run/repo
+	ssh echeclus.uberspace.de chmod +x packages/freiburg.run/cronjob.sh packages/freiburg.run/generate-linux
 
 .phony: run-script
 run-script: sync
 	ssh echeclus.uberspace.de packages/freiburg.run/cronjob.sh
 
-.phony: upload-goaccess
-upload-goaccess:
-	scp scripts/goaccess.sh echeclus.uberspace.de:cron-scripts/freiburg-run.sh
-	ssh echeclus.uberspace.de cron-scripts/freiburg-run.sh
