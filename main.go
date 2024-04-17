@@ -73,6 +73,8 @@ type Location struct {
 	City      string
 	Country   string
 	Geo       string
+	Lat       float64
+	Lon       float64
 	Distance  string
 	Direction string
 }
@@ -155,32 +157,33 @@ func createLocation(locationS, coordinatesS string) Location {
 		direction = utils.ApproxDirection(b)
 	}
 
-	return Location{locationS, country, coordinates, distance, direction}
+	return Location{locationS, country, coordinates, lat, lon, distance, direction}
 }
 
 type Event struct {
-	Type      string
-	Name      string
-	NameOld   string
-	Time      string
-	TimeRange utils.TimeRange
-	Old       bool
-	Status    string
-	Cancelled bool
-	Special   bool
-	Location  Location
-	Details   string
-	Details2  template.HTML
-	Url       string
-	RawTags   []string
-	Tags      []*Tag
-	RawSeries []string
-	Series    []*Serie
-	Links     []NameUrl
-	Added     string
-	New       bool
-	Prev      *Event
-	Next      *Event
+	Type         string
+	Name         string
+	NameOld      string
+	Time         string
+	TimeRange    utils.TimeRange
+	Old          bool
+	Status       string
+	Cancelled    bool
+	Special      bool
+	Location     Location
+	Details      string
+	Details2     template.HTML
+	Url          string
+	RawTags      []string
+	Tags         []*Tag
+	RawSeries    []string
+	Series       []*Serie
+	Links        []NameUrl
+	Added        string
+	New          bool
+	Prev         *Event
+	Next         *Event
+	UpcomingNear []*Event
 }
 
 func (event Event) IsSeparator() bool {
@@ -219,6 +222,7 @@ func createSeparatorEvent(label string) *Event {
 		nil,
 		"",
 		true,
+		nil,
 		nil,
 		nil,
 	}
@@ -713,6 +717,7 @@ func fetchEvents(config ConfigData, srv *sheets.Service, today time.Time, eventT
 			false,
 			nil,
 			nil,
+			nil,
 		})
 	}
 
@@ -897,6 +902,27 @@ func findPrevNextEvents(events []*Event) {
 		if prev != nil {
 			prev.Next = event
 			event.Prev = prev
+		}
+	}
+}
+
+func findUpcomingNearEvents(events []*Event, upcomingEvents []*Event, maxDistanceKM float64, count int) {
+	for _, event := range events {
+		if !event.Location.HasGeo() {
+			continue
+		}
+		event.UpcomingNear = make([]*Event, 0, count)
+		for _, candidate := range upcomingEvents {
+			if candidate == event || candidate.Cancelled || !candidate.Location.HasGeo() {
+				continue
+			}
+			if distanceKM, _ := utils.DistanceBearing(event.Location.Lat, event.Location.Lon, candidate.Location.Lat, candidate.Location.Lon); distanceKM > maxDistanceKM {
+				continue
+			}
+			event.UpcomingNear = append(event.UpcomingNear, candidate)
+			if len(event.UpcomingNear) >= count {
+				break
+			}
 		}
 	}
 }
@@ -1306,6 +1332,8 @@ func main() {
 	findPrevNextEvents(events)
 	events, events_old = splitEvents(events)
 	events = addMonthSeparators(events)
+	findUpcomingNearEvents(events, events, 5.0, 3)
+	findUpcomingNearEvents(events_old, events, 5.0, 3)
 	events_old = reverse(events_old)
 	events_old = addMonthSeparatorsDescending(events_old)
 	tags, tagsList := collectTags(tagDescriptions, events, events_old, groups, shops)

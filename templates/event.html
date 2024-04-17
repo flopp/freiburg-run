@@ -105,6 +105,16 @@
                             </td>
                         </tr>
                         {{end}}
+                        {{if .Event.UpcomingNear}}
+                        <tr>
+                            <th>In der Nähe</th>
+                            <td class="is-w100">
+                                <ul>
+                                    {{range .Event.UpcomingNear}}<li><a href="/{{.Slug}}">{{.Name}} ({{.Time}} @ {{.Location.Name}})</a></li>{{end}}
+                                </ul>
+                            </td>
+                        </tr>
+                        {{end}}
                     </tbody>
                 </table>
             </div>
