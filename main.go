@@ -18,6 +18,7 @@ import (
 	"unicode"
 
 	"github.com/flopp/freiburg-run/internal/utils"
+	"github.com/flopp/go-coordsparser"
 	"google.golang.org/api/option"
 	"google.golang.org/api/sheets/v4"
 )
@@ -144,11 +145,13 @@ func createLocation(locationS, coordinatesS string) Location {
 		locationS = m[1]
 	}
 
-	coordinates := utils.NormalizeGeo(coordinatesS)
-	lat, lon, err := utils.LatLon(coordinates)
+	lat, lon, err := coordsparser.Parse(coordinatesS)
+	coordinates := ""
 	distance := ""
 	direction := ""
 	if err == nil {
+		coordinates = fmt.Sprintf("%.6f,%.6f", lat, lon)
+
 		// Freiburg
 		lat0 := 47.996090
 		lon0 := 7.849400

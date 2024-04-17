@@ -19,8 +19,7 @@ upload-test: build
 .repo/.git/config:
 	git clone https://github.com/flopp/freiburg-run.git .repo
 
-.phony: .bin/generate-linux
-.bin/generate-linux:
+.bin/generate-linux: main.go internal/utils/*.go go.mod
 	mkdir -p .bin
 	GOOS=linux GOARCH=amd64 go build -o .bin/generate-linux main.go
 

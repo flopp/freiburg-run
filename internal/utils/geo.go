@@ -1,54 +1,8 @@
 package utils
 
 import (
-	"fmt"
 	"math"
-	"regexp"
-	"strconv"
 )
-
-var geoRe1 = regexp.MustCompile(`^\s*(\d*\.?\d*)\s*,\s*(\d*\.?\d*)\s*$`)
-var geoRe2 = regexp.MustCompile(`^\s*N\s*(\d*\.?\d*)\s*E\s*(\d*\.?\d*)\s*$`)
-
-func NormalizeGeo(s string) string {
-	m := geoRe1.FindStringSubmatch(s)
-	if m != nil {
-		return fmt.Sprintf("%s,%s", m[1], m[2])
-	}
-	m = geoRe2.FindStringSubmatch(s)
-	if m != nil {
-		return fmt.Sprintf("%s,%s", m[1], m[2])
-	}
-	return ""
-}
-
-func LatLon(s string) (float64, float64, error) {
-	m := geoRe1.FindStringSubmatch(s)
-	if m != nil {
-		lat, err := strconv.ParseFloat(m[1], 64)
-		if err != nil {
-			return 0, 0, err
-		}
-		lon, err := strconv.ParseFloat(m[2], 64)
-		if err != nil {
-			return 0, 0, err
-		}
-		return lat, lon, nil
-	}
-	m = geoRe2.FindStringSubmatch(s)
-	if m != nil {
-		lat, err := strconv.ParseFloat(m[1], 64)
-		if err != nil {
-			return 0, 0, err
-		}
-		lon, err := strconv.ParseFloat(m[2], 64)
-		if err != nil {
-			return 0, 0, err
-		}
-		return lat, lon, nil
-	}
-	return 0, 0, fmt.Errorf("cannot parse coordinates: %s", s)
-}
 
 func DistanceBearing(lat1deg, lon1deg, lat2deg, lon2deg float64) (float64, float64) {
 	const earthRadiusKM float64 = 6371.0
