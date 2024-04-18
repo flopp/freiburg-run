@@ -819,40 +819,7 @@ func fetchSeries(config ConfigData, srv *sheets.Service, table string) map[strin
 }
 
 func createMonthLabel(t time.Time) string {
-	if t.Month() == time.January {
-		return fmt.Sprintf("Januar %d", t.Year())
-	}
-	if t.Month() == time.February {
-		return fmt.Sprintf("Februar %d", t.Year())
-	}
-	if t.Month() == time.March {
-		return fmt.Sprintf("März %d", t.Year())
-	}
-	if t.Month() == time.April {
-		return fmt.Sprintf("April %d", t.Year())
-	}
-	if t.Month() == time.May {
-		return fmt.Sprintf("Mai %d", t.Year())
-	}
-	if t.Month() == time.June {
-		return fmt.Sprintf("Juni %d", t.Year())
-	}
-	if t.Month() == time.July {
-		return fmt.Sprintf("Juli %d", t.Year())
-	}
-	if t.Month() == time.August {
-		return fmt.Sprintf("August %d", t.Year())
-	}
-	if t.Month() == time.September {
-		return fmt.Sprintf("September %d", t.Year())
-	}
-	if t.Month() == time.October {
-		return fmt.Sprintf("Oktober %d", t.Year())
-	}
-	if t.Month() == time.November {
-		return fmt.Sprintf("November %d", t.Year())
-	}
-	return fmt.Sprintf("Dezember %d", t.Year())
+	return fmt.Sprintf("%s %d", utils.MonthStr(t.Month()), t.Year())
 }
 
 func isSimilarName(s1, s2 string) bool {

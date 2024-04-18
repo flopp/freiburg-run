@@ -75,10 +75,39 @@ func WeekdayStr(d time.Weekday) string {
 	case time.Saturday:
 		return "Samstag"
 	case time.Sunday:
-	default:
 		return "Sonntag"
 	}
 	return "Sonntag"
+}
+
+func MonthStr(m time.Month) string {
+	switch m {
+	case time.January:
+		return "Januar"
+	case time.February:
+		return "Februar"
+	case time.March:
+		return "März"
+	case time.April:
+		return "April"
+	case time.May:
+		return "Mai"
+	case time.June:
+		return "Juni"
+	case time.July:
+		return "Juli"
+	case time.August:
+		return "August"
+	case time.September:
+		return "September"
+	case time.October:
+		return "Oktober"
+	case time.November:
+		return "November"
+	case time.December:
+		return "Dezember"
+	}
+	return "Dezember"
 }
 
 func InsertWeekdays(s string) (string, error) {
