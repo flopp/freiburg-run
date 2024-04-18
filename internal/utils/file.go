@@ -48,18 +48,12 @@ func MustCopy(sourceFileName, targetFileName string) {
 	Check(err)
 }
 
-func CopyHash(src, dst, dstDir string) (string, error) {
-	hashPath := filepath.Join(dstDir, dst)
-	path, err := filehash.Copy(src, hashPath, "HASH")
-	if err != nil {
-		return "", err
-	}
-
-	return filepath.Rel(dstDir, path)
+func CopyHash(src, dst string) (string, error) {
+	return filehash.Copy(src, dst, "HASH")
 }
 
-func MustCopyHash(src, dst, dstDir string) string {
-	res, err := CopyHash(src, dst, dstDir)
+func MustCopyHash(src, dst string) string {
+	res, err := CopyHash(src, dst)
 	if err != nil {
 		panic(err)
 	}

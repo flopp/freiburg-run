@@ -1184,20 +1184,51 @@ func CreateHtaccess(events, events_old, groups, shops []*Event, outDir string) e
 	return nil
 }
 
-func modifyGoatcounterLinkSelector(dir, file string) string {
-	path := filepath.Join(dir, file)
+func modifyGoatcounterLinkSelector(path string) string {
 	data, err := os.ReadFile(path)
 	if err != nil {
-		return file
+		return path
 	}
 
 	data = bytes.ReplaceAll(data, []byte(`querySelectorAll("*[data-goatcounter-click]")`), []byte(`querySelectorAll("a[target=_blank]")`))
 	data = bytes.ReplaceAll(data, []byte(`(elem.dataset.goatcounterClick || elem.name || elem.id || '')`), []byte(`(elem.dataset.goatcounterClick || elem.name || elem.id || elem.href || '')`))
 	data = bytes.ReplaceAll(data, []byte(`(elem.dataset.goatcounterReferrer || elem.dataset.goatcounterReferral || '')`), []byte(`(elem.dataset.goatcounterReferrer || elem.dataset.goatcounterReferral || window.location.href || '')`))
-	file2 := fmt.Sprintf("mod-%s", file)
-	path2 := filepath.Join(dir, file2)
-	os.WriteFile(path2, data, 0770)
-	return file2
+	os.WriteFile(path, data, 0770)
+	return path
+}
+
+type FileSet struct {
+	paths []string
+}
+
+func CreateFileSet() FileSet {
+	return FileSet{make([]string, 0)}
+}
+
+func (fs *FileSet) Add(path string) {
+	fs.paths = append(fs.paths, path)
+}
+
+func (fs FileSet) Rel(basePath string) []string {
+	relPaths := make([]string, 0, len(fs.paths))
+	for _, path := range fs.paths {
+		relPath, err := filepath.Rel(basePath, path)
+		utils.Check(err)
+		relPaths = append(relPaths, relPath)
+	}
+	return relPaths
+}
+
+func MustRel(basepath, path string) string {
+	rel, err := filepath.Rel(basepath, path)
+	utils.Check(err)
+	return rel
+}
+
+type Path string
+
+func (p Path) Join(s string) string {
+	return filepath.Join(string(p), s)
 }
 
 func main() {
@@ -1207,6 +1238,7 @@ func main() {
 	timestampFull := now.Format("2006-01-02 15:04:05")
 	sheetUrl := ""
 	options := parseCommandLine()
+	out := Path(options.outDir)
 
 	var events []*Event
 	var events_old []*Event
@@ -1330,22 +1362,22 @@ func main() {
 	sitemap.Add("datenschutz.html", "Datenschutz", "Allgemein")
 	sitemap.Add("impressum.html", "Impressum", "Allgemein")
 
-	utils.MustCopy("static/robots.txt", filepath.Join(options.outDir, "robots.txt"))
-	utils.MustCopy("static/favicon.png", filepath.Join(options.outDir, "favicon.png"))
-	utils.MustCopy("static/favicon.ico", filepath.Join(options.outDir, "favicon.ico"))
-	utils.MustCopy("static/apple-touch-icon.png", filepath.Join(options.outDir, "apple-touch-icon.png"))
-	utils.MustCopy("static/freiburg-run.svg", filepath.Join(options.outDir, "images/freiburg-run.svg"))
-	utils.MustCopy("static/events2023.jpg", filepath.Join(options.outDir, "images/events2023.jpg"))
-	utils.MustCopy("static/parkrun.png", filepath.Join(options.outDir, "images/parkrun.png"))
-	utils.MustCopy("static/marker-grey-icon.png", filepath.Join(options.outDir, "images/marker-grey-icon.png"))
-	utils.MustCopy("static/marker-grey-icon-2x.png", filepath.Join(options.outDir, "images/marker-grey-icon-2x.png"))
-	utils.MustCopy("static/marker-green-icon.png", filepath.Join(options.outDir, "images/marker-green-icon.png"))
-	utils.MustCopy("static/marker-green-icon-2x.png", filepath.Join(options.outDir, "images/marker-green-icon-2x.png"))
-	utils.MustCopy("static/marker-red-icon.png", filepath.Join(options.outDir, "images/marker-red-icon.png"))
-	utils.MustCopy("static/marker-red-icon-2x.png", filepath.Join(options.outDir, "images/marker-red-icon-2x.png"))
-	utils.MustCopy("static/circle-small.png", filepath.Join(options.outDir, "images/circle-small.png"))
-	utils.MustCopy("static/circle-big.png", filepath.Join(options.outDir, "images/circle-big.png"))
-	utils.MustCopy("static/freiburg-run-flyer.pdf", filepath.Join(options.outDir, "freiburg-run-flyer.pdf"))
+	utils.MustCopy("static/robots.txt", out.Join("robots.txt"))
+	utils.MustCopy("static/favicon.png", out.Join("favicon.png"))
+	utils.MustCopy("static/favicon.ico", out.Join("favicon.ico"))
+	utils.MustCopy("static/apple-touch-icon.png", out.Join("apple-touch-icon.png"))
+	utils.MustCopy("static/freiburg-run.svg", out.Join("images/freiburg-run.svg"))
+	utils.MustCopy("static/events2023.jpg", out.Join("images/events2023.jpg"))
+	utils.MustCopy("static/parkrun.png", out.Join("images/parkrun.png"))
+	utils.MustCopy("static/marker-grey-icon.png", out.Join("images/marker-grey-icon.png"))
+	utils.MustCopy("static/marker-grey-icon-2x.png", out.Join("images/marker-grey-icon-2x.png"))
+	utils.MustCopy("static/marker-green-icon.png", out.Join("images/marker-green-icon.png"))
+	utils.MustCopy("static/marker-green-icon-2x.png", out.Join("images/marker-green-icon-2x.png"))
+	utils.MustCopy("static/marker-red-icon.png", out.Join("images/marker-red-icon.png"))
+	utils.MustCopy("static/marker-red-icon-2x.png", out.Join("images/marker-red-icon-2x.png"))
+	utils.MustCopy("static/circle-small.png", out.Join("images/circle-small.png"))
+	utils.MustCopy("static/circle-big.png", out.Join("images/circle-big.png"))
+	utils.MustCopy("static/freiburg-run-flyer.pdf", out.Join("freiburg-run-flyer.pdf"))
 
 	// renovate: datasource=npm depName=bulma
 	bulma_version := "1.0.0"
@@ -1361,31 +1393,31 @@ func main() {
 	leaflet_gesture_handling_url := fmt.Sprintf("https://unpkg.com/leaflet-gesture-handling@%s", leaflet_gesture_handling_version)
 	leaflet_legend_url := fmt.Sprintf("https://raw.githubusercontent.com/ptma/Leaflet.Legend/%s", leaflet_legend_version)
 
-	js_files := make([]string, 0)
-	js_files = append(js_files, utils.MustDownloadHash(fmt.Sprintf("%s/dist/leaflet.js", leaflet_url), "leaflet-HASH.js", options.outDir))
-	js_files = append(js_files, utils.MustDownloadHash(fmt.Sprintf("%s/src/leaflet.legend.js", leaflet_legend_url), "leaflet-legend-HASH.js", options.outDir))
-	js_files = append(js_files, utils.MustDownloadHash(fmt.Sprintf("%s/dist/leaflet-gesture-handling.min.js", leaflet_gesture_handling_url), "leaflet-gesture-handling-HASH.js", options.outDir))
-	js_files = append(js_files, utils.MustCopyHash("static/parkrun-track.js", "parkrun-track-HASH.js", options.outDir))
-	js_files = append(js_files, utils.MustCopyHash("static/main.js", "main-HASH.js", options.outDir))
-	goatcounter := utils.MustDownloadHash("https://gc.zgo.at/count.js", "goat-HASH.js", options.outDir)
-	goatcounter = modifyGoatcounterLinkSelector(options.outDir, goatcounter)
+	js_files := CreateFileSet()
+	css_files := CreateFileSet()
+	js_files.Add(utils.MustDownloadHash(fmt.Sprintf("%s/dist/leaflet.js", leaflet_url), out.Join("leaflet-HASH.js")))
+	js_files.Add(utils.MustDownloadHash(fmt.Sprintf("%s/src/leaflet.legend.js", leaflet_legend_url), out.Join("leaflet-legend-HASH.js")))
+	js_files.Add(utils.MustDownloadHash(fmt.Sprintf("%s/dist/leaflet-gesture-handling.min.js", leaflet_gesture_handling_url), out.Join("leaflet-gesture-handling-HASH.js")))
+	js_files.Add(utils.MustCopyHash("static/parkrun-track.js", out.Join("parkrun-track-HASH.js")))
+	js_files.Add(utils.MustCopyHash("static/main.js", out.Join("main-HASH.js")))
+	goatcounter := utils.MustDownloadHash("https://gc.zgo.at/count.js", out.Join("goat-HASH.js"))
+	goatcounter = modifyGoatcounterLinkSelector(goatcounter)
 
-	css_files := make([]string, 0)
-	css_files = append(css_files, utils.MustDownloadHash(fmt.Sprintf("%s/css/bulma.min.css", bulma_url), "bulma-HASH.css", options.outDir))
-	css_files = append(css_files, utils.MustDownloadHash(fmt.Sprintf("%s/dist/leaflet.css", leaflet_url), "leaflet-HASH.css", options.outDir))
-	css_files = append(css_files, utils.MustDownloadHash(fmt.Sprintf("%s/src/leaflet.legend.css", leaflet_legend_url), "leaflet-legend-HASH.css", options.outDir))
-	css_files = append(css_files, utils.MustDownloadHash(fmt.Sprintf("%s/dist/leaflet-gesture-handling.min.css", leaflet_gesture_handling_url), "leaflet-gesture-handling-HASH.css", options.outDir))
-	css_files = append(css_files, utils.MustCopyHash("static/style.css", "style-HASH.css", options.outDir))
+	css_files.Add(utils.MustDownloadHash(fmt.Sprintf("%s/css/bulma.min.css", bulma_url), out.Join("bulma-HASH.css")))
+	css_files.Add(utils.MustDownloadHash(fmt.Sprintf("%s/dist/leaflet.css", leaflet_url), out.Join("leaflet-HASH.css")))
+	css_files.Add(utils.MustDownloadHash(fmt.Sprintf("%s/src/leaflet.legend.css", leaflet_legend_url), out.Join("leaflet-legend-HASH.css")))
+	css_files.Add(utils.MustDownloadHash(fmt.Sprintf("%s/dist/leaflet-gesture-handling.min.css", leaflet_gesture_handling_url), out.Join("leaflet-gesture-handling-HASH.css")))
+	css_files.Add(utils.MustCopyHash("static/style.css", out.Join("style-HASH.css")))
 
-	utils.MustDownloadHash(fmt.Sprintf("%s/dist/images/marker-icon.png", leaflet_url), "images/marker-icon.png", options.outDir)
-	utils.MustDownloadHash(fmt.Sprintf("%s/dist/images/marker-icon-2x.png", leaflet_url), "images/marker-icon-2x.png", options.outDir)
-	utils.MustDownloadHash(fmt.Sprintf("%s/dist/images/marker-shadow.png", leaflet_url), "images/marker-shadow.png", options.outDir)
+	utils.MustDownload(fmt.Sprintf("%s/dist/images/marker-icon.png", leaflet_url), out.Join("images/marker-icon.png"))
+	utils.MustDownload(fmt.Sprintf("%s/dist/images/marker-icon-2x.png", leaflet_url), out.Join("images/marker-icon-2x.png"))
+	utils.MustDownload(fmt.Sprintf("%s/dist/images/marker-shadow.png", leaflet_url), out.Join("images/marker-shadow.png"))
 
 	breadcrumbsBase := utils.InitBreadcrumbs(utils.Link{Name: "freiburg.run", Url: "/"})
 	breadcrumbsEvents := utils.PushBreadcrumb(breadcrumbsBase, utils.Link{Name: "Laufveranstaltungen", Url: "/"})
 
 	defaultImage := "/images/preview.png"
-	if err = utils.GenImage(filepath.Join(options.outDir, "images/preview.png"), "Laufveranstaltungen", "im Raum Freiburg", "", "static/background.png"); err != nil {
+	if err = utils.GenImage(out.Join("images/preview.png"), "Laufveranstaltungen", "im Raum Freiburg", "", "static/background.png"); err != nil {
 		defaultImage = "/images/events2023.jpg"
 		log.Printf("defaultimage: %v", err)
 	}
@@ -1409,19 +1441,19 @@ func main() {
 		tagsList,
 		seriesList,
 		seriesListOld,
-		js_files,
-		css_files,
-		goatcounter,
+		js_files.Rel(options.outDir),
+		css_files.Rel(options.outDir),
+		MustRel(options.outDir, goatcounter),
 	}
 
-	utils.ExecuteTemplate("events", filepath.Join(options.outDir, "index.html"), data)
+	utils.ExecuteTemplate("events", out.Join("index.html"), data)
 
 	breadcrumbsEventsOld := utils.PushBreadcrumb(breadcrumbsEvents, utils.Link{Name: "Archiv", Url: "/events-old.html"})
 	data.Title = "Vergangene Laufveranstaltungen im Raum Freiburg "
 	data.Description = "Liste von vergangenen Laufveranstaltungen, Lauf-Wettkämpfen, Volksläufen im Raum Freiburg "
 	data.Canonical = "https://freiburg.run/events-old.html"
 	data.Breadcrumbs = breadcrumbsEventsOld
-	utils.ExecuteTemplate("events-old", filepath.Join(options.outDir, "events-old.html"), data)
+	utils.ExecuteTemplate("events-old", out.Join("events-old.html"), data)
 
 	breadcrumbsEventsTags := utils.PushBreadcrumb(breadcrumbsEvents, utils.Link{Name: "Kategorien", Url: "/tags.html"})
 	data.Nav = "tags"
@@ -1429,7 +1461,7 @@ func main() {
 	data.Description = "Liste aller Kategorien von Laufveranstaltungen, Lauf-Wettkämpfen, Volksläufen im Raum Freiburg "
 	data.Canonical = "https://freiburg.run/tags.html"
 	data.Breadcrumbs = breadcrumbsEventsTags
-	utils.ExecuteTemplate("tags", filepath.Join(options.outDir, "tags.html"), data)
+	utils.ExecuteTemplate("tags", out.Join("tags.html"), data)
 
 	breadcrumbsGroups := utils.PushBreadcrumb(breadcrumbsBase, utils.Link{Name: "Lauftreffs", Url: "/lauftreffs.html"})
 	data.Nav = "groups"
@@ -1438,7 +1470,7 @@ func main() {
 	data.Description = "Liste von Lauftreffs, Laufgruppen, Lauf-Trainingsgruppen im Raum Freiburg "
 	data.Canonical = "https://freiburg.run/lauftreffs.html"
 	data.Breadcrumbs = breadcrumbsGroups
-	utils.ExecuteTemplate("groups", filepath.Join(options.outDir, "lauftreffs.html"), data)
+	utils.ExecuteTemplate("groups", out.Join("lauftreffs.html"), data)
 
 	breadcrumbsShops := utils.PushBreadcrumb(breadcrumbsBase, utils.Link{Name: "Lauf-Shops", Url: "/shops.html"})
 	data.Nav = "shops"
@@ -1447,7 +1479,7 @@ func main() {
 	data.Description = "Liste von Lauf-Shops und Einzelhandelsgeschäften mit Laufschuh-Auswahl im Raum Freiburg "
 	data.Canonical = "https://freiburg.run/shops.html"
 	data.Breadcrumbs = breadcrumbsShops
-	utils.ExecuteTemplate("shops", filepath.Join(options.outDir, "shops.html"), data)
+	utils.ExecuteTemplate("shops", out.Join("shops.html"), data)
 
 	data.Nav = "parkrun"
 	data.Title = "Dietenbach parkrun"
@@ -1456,7 +1488,7 @@ func main() {
 	data.Description = "Vollständige Liste aller Ergebnisse, Laufberichte und Fotogalerien des 'Dietenbach parkrun' im Freiburger Dietenbachpark."
 	data.Canonical = "https://freiburg.run/dietenbach-parkrun.html"
 	data.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsBase, utils.Link{Name: "Dietenbach parkrun", Url: "/dietenbach-parkrun.html"})
-	utils.ExecuteTemplate("dietenbach-parkrun", filepath.Join(options.outDir, "dietenbach-parkrun.html"), data)
+	utils.ExecuteTemplate("dietenbach-parkrun", out.Join("dietenbach-parkrun.html"), data)
 
 	breadcrumbsEventsSeries := utils.PushBreadcrumb(breadcrumbsEvents, utils.Link{Name: "Serien", Url: "/series.html"})
 	data.Nav = "series"
@@ -1464,7 +1496,7 @@ func main() {
 	data.Description = "Liste aller Serien von Laufveranstaltungen, Lauf-Wettkämpfen, Volksläufen im Raum Freiburg "
 	data.Canonical = "https://freiburg.run/series.html"
 	data.Breadcrumbs = breadcrumbsEventsSeries
-	utils.ExecuteTemplate("series", filepath.Join(options.outDir, "series.html"), data)
+	utils.ExecuteTemplate("series", out.Join("series.html"), data)
 
 	data.Nav = "map"
 	data.Title = "Karte aller Laufveranstaltungen"
@@ -1473,7 +1505,7 @@ func main() {
 	data.Description = "Karte"
 	data.Canonical = "https://freiburg.run/map.html"
 	data.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsBase, utils.Link{Name: "Karte", Url: "/map.html"})
-	utils.ExecuteTemplate("map", filepath.Join(options.outDir, "map.html"), data)
+	utils.ExecuteTemplate("map", out.Join("map.html"), data)
 
 	breadcrumbsInfo := utils.PushBreadcrumb(breadcrumbsBase, utils.Link{Name: "Info", Url: "/info.html"})
 	data.Nav = "datenschutz"
@@ -1482,7 +1514,7 @@ func main() {
 	data.Description = "Datenschutzerklärung von freiburg.run"
 	data.Canonical = "https://freiburg.run/datenschutz.html"
 	data.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsInfo, utils.Link{Name: "Datenschutz", Url: "/datenschutz.html"})
-	utils.ExecuteTemplate("datenschutz", filepath.Join(options.outDir, "datenschutz.html"), data)
+	utils.ExecuteTemplate("datenschutz", out.Join("datenschutz.html"), data)
 
 	data.Nav = "impressum"
 	data.Title = "Impressum"
@@ -1490,7 +1522,7 @@ func main() {
 	data.Description = "Impressum von freiburg.run"
 	data.Canonical = "https://freiburg.run/impressum.html"
 	data.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsInfo, utils.Link{Name: "Impressum", Url: "/impressum.html"})
-	utils.ExecuteTemplate("impressum", filepath.Join(options.outDir, "impressum.html"), data)
+	utils.ExecuteTemplate("impressum", out.Join("impressum.html"), data)
 
 	data.Nav = "info"
 	data.Title = "Info"
@@ -1498,7 +1530,7 @@ func main() {
 	data.Description = "Kontaktmöglichkeiten, allgemeine & technische Informationen über freiburg.run"
 	data.Canonical = "https://freiburg.run/info.html"
 	data.Breadcrumbs = breadcrumbsInfo
-	utils.ExecuteTemplate("info", filepath.Join(options.outDir, "info.html"), data)
+	utils.ExecuteTemplate("info", out.Join("info.html"), data)
 
 	data.Nav = "support"
 	data.Title = "freiburg.run unterstützen"
@@ -1506,7 +1538,7 @@ func main() {
 	data.Description = "Möglichkeiten freiburg.run zu unterstützen"
 	data.Canonical = "https://freiburg.run/support.html"
 	data.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsInfo, utils.Link{Name: "Unterstützung", Url: "/support.html"})
-	utils.ExecuteTemplate("support", filepath.Join(options.outDir, "support.html"), data)
+	utils.ExecuteTemplate("support", out.Join("support.html"), data)
 
 	data.Nav = "404"
 	data.Title = "404 - Seite nicht gefunden :("
@@ -1514,7 +1546,7 @@ func main() {
 	data.Description = "Fehlerseite von freiburg.run"
 	data.Canonical = "https://freiburg.run/404.html"
 	data.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsBase, utils.Link{Name: "Fehlerseite", Url: "/404.html"})
-	utils.ExecuteTemplate("404", filepath.Join(options.outDir, "404.html"), data)
+	utils.ExecuteTemplate("404", out.Join("404.html"), data)
 
 	eventdata := EventTemplateData{
 		nil,
@@ -1529,9 +1561,9 @@ func main() {
 		timestamp,
 		timestampFull,
 		sheetUrl,
-		js_files,
-		css_files,
-		goatcounter,
+		js_files.Rel(options.outDir),
+		css_files.Rel(options.outDir),
+		MustRel(options.outDir, goatcounter),
 	}
 	for _, event := range events {
 		if event.IsSeparator() {
@@ -1543,13 +1575,13 @@ func main() {
 		slug := event.Slug()
 		eventdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
 		image := event.ImageSlug()
-		if utils.GenImage(filepath.Join(options.outDir, image), event.Name, event.Time, event.Location.NameNoFlag(), "static/background.png") == nil {
+		if utils.GenImage(out.Join(image), event.Name, event.Time, event.Location.NameNoFlag(), "static/background.png") == nil {
 			eventdata.Image = fmt.Sprintf("/%s", image)
 		} else {
 			eventdata.Image = defaultImage
 		}
 		eventdata.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsEvents, utils.Link{Name: event.Name, Url: fmt.Sprintf("/%s", slug)})
-		utils.ExecuteTemplate("event", filepath.Join(options.outDir, slug), eventdata)
+		utils.ExecuteTemplate("event", out.Join(slug), eventdata)
 		sitemap.Add(slug, event.Name, "Laufveranstaltungen")
 	}
 
@@ -1564,14 +1596,14 @@ func main() {
 		slug := event.Slug()
 		eventdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
 		image := event.ImageSlug()
-		if err = utils.GenImage(filepath.Join(options.outDir, image), event.Name, event.Time, event.Location.NameNoFlag(), "static/background.png"); err != nil {
+		if err = utils.GenImage(out.Join(image), event.Name, event.Time, event.Location.NameNoFlag(), "static/background.png"); err != nil {
 			eventdata.Image = defaultImage
 			log.Printf("event '%s': %v", event.Name, err)
 		} else {
 			eventdata.Image = image
 		}
 		eventdata.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsEventsOld, utils.Link{Name: event.Name, Url: fmt.Sprintf("/%s", slug)})
-		utils.ExecuteTemplate("event", filepath.Join(options.outDir, slug), eventdata)
+		utils.ExecuteTemplate("event", out.Join(slug), eventdata)
 		sitemap.Add(slug, event.Name, "Vergangene Laufveranstaltungen")
 	}
 
@@ -1585,14 +1617,14 @@ func main() {
 		slug := event.Slug()
 		eventdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
 		image := event.ImageSlug()
-		if err = utils.GenImage(filepath.Join(options.outDir, image), event.Name, event.Time, event.Location.NameNoFlag(), "static/background.png"); err != nil {
+		if err = utils.GenImage(out.Join(image), event.Name, event.Time, event.Location.NameNoFlag(), "static/background.png"); err != nil {
 			eventdata.Image = defaultImage
 			log.Printf("event '%s': %v", event.Name, err)
 		} else {
 			eventdata.Image = image
 		}
 		eventdata.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsGroups, utils.Link{Name: event.Name, Url: fmt.Sprintf("/%s", slug)})
-		utils.ExecuteTemplate("event", filepath.Join(options.outDir, slug), eventdata)
+		utils.ExecuteTemplate("event", out.Join(slug), eventdata)
 		sitemap.Add(slug, event.Name, "Lauftreffs")
 	}
 
@@ -1606,14 +1638,14 @@ func main() {
 		slug := event.Slug()
 		eventdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
 		image := event.ImageSlug()
-		if err = utils.GenImage(filepath.Join(options.outDir, image), event.Name, event.Location.NameNoFlag(), "", "static/background.png"); err != nil {
+		if err = utils.GenImage(out.Join(image), event.Name, event.Location.NameNoFlag(), "", "static/background.png"); err != nil {
 			eventdata.Image = defaultImage
 			log.Printf("event '%s': %v", event.Name, err)
 		} else {
 			eventdata.Image = image
 		}
 		eventdata.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsShops, utils.Link{Name: event.Name, Url: fmt.Sprintf("/%s", slug)})
-		utils.ExecuteTemplate("event", filepath.Join(options.outDir, slug), eventdata)
+		utils.ExecuteTemplate("event", out.Join(slug), eventdata)
 		sitemap.Add(slug, event.Name, "Lauf-Shops")
 	}
 
@@ -1630,9 +1662,9 @@ func main() {
 		timestamp,
 		timestampFull,
 		sheetUrl,
-		js_files,
-		css_files,
-		goatcounter,
+		js_files.Rel(options.outDir),
+		css_files.Rel(options.outDir),
+		MustRel(options.outDir, goatcounter),
 	}
 	for _, tag := range tags {
 		tagdata.Tag = tag
@@ -1641,7 +1673,7 @@ func main() {
 		slug := tag.Slug()
 		tagdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
 		tagdata.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsEventsTags, utils.Link{Name: tag.Name, Url: fmt.Sprintf("/%s", slug)})
-		utils.ExecuteTemplate("tag", filepath.Join(options.outDir, slug), tagdata)
+		utils.ExecuteTemplate("tag", out.Join(slug), tagdata)
 		sitemap.Add(slug, tag.Name, "Kategorien")
 	}
 
@@ -1658,9 +1690,9 @@ func main() {
 		timestamp,
 		timestampFull,
 		sheetUrl,
-		js_files,
-		css_files,
-		goatcounter,
+		js_files.Rel(options.outDir),
+		css_files.Rel(options.outDir),
+		MustRel(options.outDir, goatcounter),
 	}
 	for _, s := range series {
 		seriedata.Serie = s
@@ -1669,17 +1701,17 @@ func main() {
 		slug := s.Slug()
 		seriedata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
 		image := s.ImageSlug()
-		if utils.GenImage(filepath.Join(options.outDir, image), s.Name, "", "", "static/background.png") == nil {
+		if utils.GenImage(out.Join(image), s.Name, "", "", "static/background.png") == nil {
 			seriedata.Image = fmt.Sprintf("/%s", image)
 		} else {
 			seriedata.Image = defaultImage
 		}
 		seriedata.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsEventsSeries, utils.Link{Name: s.Name, Url: fmt.Sprintf("/%s", slug)})
-		utils.ExecuteTemplate("serie", filepath.Join(options.outDir, slug), seriedata)
+		utils.ExecuteTemplate("serie", out.Join(slug), seriedata)
 		sitemap.Add(slug, s.Name, "Serien")
 	}
 
-	sitemap.Gen(filepath.Join(options.outDir, "sitemap.xml"), options.hashFile, options.outDir)
+	sitemap.Gen(out.Join("sitemap.xml"), options.hashFile, options.outDir)
 	sitemapTemplate := SitemapTemplateData{
 		"Sitemap von freiburg.run",
 		"",
@@ -1692,11 +1724,11 @@ func main() {
 		timestampFull,
 		sheetUrl,
 		sitemap.GenHTML(),
-		js_files,
-		css_files,
-		goatcounter,
+		js_files.Rel(options.outDir),
+		css_files.Rel(options.outDir),
+		MustRel(options.outDir, goatcounter),
 	}
-	utils.ExecuteTemplate("sitemap", filepath.Join(options.outDir, "sitemap.html"), sitemapTemplate)
+	utils.ExecuteTemplate("sitemap", out.Join("sitemap.html"), sitemapTemplate)
 
 	err = CreateHtaccess(events, events_old, groups, shops, options.outDir)
 	utils.Check(err)

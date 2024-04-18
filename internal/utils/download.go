@@ -37,7 +37,12 @@ func Download(url string, dst string) error {
 	return nil
 }
 
-func DownloadHash(url string, dst, dstDir string) (string, error) {
+func MustDownload(url string, dst string) {
+	err := Download(url, dst)
+	Check(err)
+}
+
+func DownloadHash(url string, dst string) (string, error) {
 	if strings.Contains(dst, "HASH") {
 		tmpfile, err := os.CreateTemp("", "")
 		if err != nil {
@@ -50,23 +55,14 @@ func DownloadHash(url string, dst, dstDir string) (string, error) {
 			return "", err
 		}
 
-		return CopyHash(tmpfile.Name(), dst, dstDir)
+		return CopyHash(tmpfile.Name(), dst)
 	} else {
-		dst2 := filepath.Join(dstDir, dst)
-
-		err := Download(url, dst2)
-		if err != nil {
-			return "", err
-		}
-
-		return dst, nil
+		return dst, Download(url, dst)
 	}
 }
 
-func MustDownloadHash(url string, dst, dstDir string) string {
-	res, err := DownloadHash(url, dst, dstDir)
-	if err != nil {
-		panic(err)
-	}
+func MustDownloadHash(url string, dst string) string {
+	res, err := DownloadHash(url, dst)
+	Check(err)
 	return res
 }
