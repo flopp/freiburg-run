@@ -68,7 +68,7 @@ func SortAndUniquify(a []string) []string {
 	}
 
 	tags := make([]string, 0, len(m))
-	for tag, _ := range m {
+	for tag := range m {
 		tags = append(tags, tag)
 	}
 	sort.Slice(tags, func(i, j int) bool { return tags[i] < tags[j] })
