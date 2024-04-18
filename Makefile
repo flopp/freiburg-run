@@ -1,6 +1,10 @@
 all:
 	@echo "make upload -> build and upload to freiburg.run"
 
+.bin/generate-linux: main.go internal/utils/*.go go.mod
+	mkdir -p .bin
+	GOOS=linux GOARCH=amd64 go build -o .bin/generate-linux main.go
+
 .phony: build
 build:
 	rm -rf .out
@@ -19,10 +23,6 @@ upload-test: build
 .repo/.git/config:
 	git clone https://github.com/flopp/freiburg-run.git .repo
 
-.bin/generate-linux: main.go internal/utils/*.go go.mod
-	mkdir -p .bin
-	GOOS=linux GOARCH=amd64 go build -o .bin/generate-linux main.go
-
 .phony: sync
 sync: .repo/.git/config .bin/generate-linux
 	(cd .repo && git pull --quiet)
@@ -34,3 +34,6 @@ sync: .repo/.git/config .bin/generate-linux
 run-script: sync
 	ssh echeclus.uberspace.de packages/freiburg.run/cronjob.sh
 
+.phony: lint
+lint:
+	go vet ./...

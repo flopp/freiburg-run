@@ -4,13 +4,29 @@ import (
 	"math"
 )
 
+func deg2rad(d float64) float64 {
+	return d * math.Pi / 180.0
+}
+
+func rad2deg(r float64) float64 {
+	return r * 180.0 / math.Pi
+}
+
+func normalizeAngle(deg float64) float64 {
+	deg = math.Mod(deg, 360.0)
+	if deg < 0 {
+		deg += 360.0
+	}
+	return deg
+}
+
 func DistanceBearing(lat1deg, lon1deg, lat2deg, lon2deg float64) (float64, float64) {
 	const earthRadiusKM float64 = 6371.0
 
-	lat1 := lat1deg * math.Pi / 180.0
-	lon1 := lon1deg * math.Pi / 180.0
-	lat2 := lat2deg * math.Pi / 180.0
-	lon2 := lon2deg * math.Pi / 180.0
+	lat1 := deg2rad(lat1deg)
+	lon1 := deg2rad(lon1deg)
+	lat2 := deg2rad(lat2deg)
+	lon2 := deg2rad(lon2deg)
 
 	dlat := lat2 - lat1
 	dlon := lon2 - lon1
@@ -22,14 +38,8 @@ func DistanceBearing(lat1deg, lon1deg, lat2deg, lon2deg float64) (float64, float
 	x := math.Cos(lat1)*math.Sin(lat2) -
 		math.Sin(lat1)*math.Cos(lat2)*math.Cos(dlon)
 	t := math.Atan2(y, x)
-	bearing := t * 180.0 / math.Pi
-	for bearing < 0 {
-		bearing = bearing + 360.0
-	}
-	for bearing > 360.0 {
-		bearing = bearing - 360.0
-	}
 
+	bearing := normalizeAngle(rad2deg(t))
 	return distance, bearing
 }
 
