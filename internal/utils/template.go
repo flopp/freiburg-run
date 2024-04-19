@@ -32,7 +32,8 @@ func ExecuteTemplate(templateName string, fileName string, data any) {
 
 	// minify buffer to output file
 	m := minify.New()
-	m.AddFunc("text/html", html.Minify)
+	m.AddFunc("text/css", html.Minify)
+	m.Add("text/html", &html.Minifier{KeepQuotes: true})
 	err = m.Minify("text/html", out, &buffer)
 	Check(err)
 }
