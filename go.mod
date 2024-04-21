@@ -4,7 +4,7 @@ go 1.22.2
 
 require (
 	github.com/flopp/go-coordsparser v0.0.0-20240403152942-4891dc40d0a7
-	github.com/flopp/go-filehash v0.0.0-20240418153951-23dead45dc1d
+	github.com/flopp/go-filehash v0.0.0-20240421152807-21955404dbc6
 	github.com/fogleman/gg v1.3.0
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
 	github.com/tdewolff/minify/v2 v2.20.19
