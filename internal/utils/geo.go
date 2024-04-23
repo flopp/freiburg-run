@@ -2,6 +2,8 @@ package utils
 
 import (
 	"math"
+
+	"github.com/flopp/go-compass"
 )
 
 func deg2rad(d float64) float64 {
@@ -44,31 +46,23 @@ func DistanceBearing(lat1deg, lon1deg, lat2deg, lon2deg float64) (float64, float
 }
 
 func ApproxDirection(deg float64) string {
-	d := 22.5
-
-	if deg <= d {
+	switch compass.GetDirection(deg, compass.Resolution8) {
+	case compass.N:
 		return "nördl."
-	}
-	if deg <= 3*d {
+	case compass.NE:
 		return "nordöstl."
-	}
-	if deg <= 5*d {
+	case compass.E:
 		return "östl."
-	}
-	if deg <= 7*d {
+	case compass.SE:
 		return "südostl."
-	}
-	if deg <= 9*d {
+	case compass.S:
 		return "südl."
-	}
-	if deg <= 11*d {
+	case compass.SW:
 		return "südwestl."
-	}
-	if deg <= 13*d {
+	case compass.W:
 		return "westl."
-	}
-	if deg <= 15*d {
+	case compass.NW:
 		return "nordwestl."
 	}
-	return ""
+	return "???"
 }
