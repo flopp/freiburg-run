@@ -10,7 +10,7 @@ require (
 	github.com/tdewolff/minify/v2 v2.20.19
 	golang.org/x/image v0.15.0
 	golang.org/x/text v0.14.0
-	google.golang.org/api v0.175.0
+	google.golang.org/api v0.176.0
 )
 
 require (
