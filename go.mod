@@ -3,6 +3,7 @@ module github.com/flopp/freiburg-run
 go 1.22.2
 
 require (
+	github.com/flopp/go-compass v0.0.0-20240423141217-ff8c1d48c1db
 	github.com/flopp/go-coordsparser v0.0.0-20240403152942-4891dc40d0a7
 	github.com/flopp/go-filehash v0.0.0-20240421152807-21955404dbc6
 	github.com/fogleman/gg v1.3.0
@@ -10,16 +11,15 @@ require (
 	github.com/tdewolff/minify/v2 v2.20.19
 	golang.org/x/image v0.15.0
 	golang.org/x/text v0.14.0
-	google.golang.org/api v0.176.0
+	google.golang.org/api v0.176.1
 )
 
 require (
-	cloud.google.com/go/auth v0.2.2 // indirect
-	cloud.google.com/go/auth/oauth2adapt v0.2.1 // indirect
+	cloud.google.com/go/auth v0.3.0 // indirect
+	cloud.google.com/go/auth/oauth2adapt v0.2.2 // indirect
 	cloud.google.com/go/compute v1.25.1 // indirect
 	cloud.google.com/go/compute/metadata v0.3.0 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
-	github.com/flopp/go-compass v0.0.0-20240423141217-ff8c1d48c1db // indirect
 	github.com/go-logr/logr v1.4.1 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
