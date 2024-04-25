@@ -3,7 +3,7 @@ module github.com/flopp/freiburg-run
 go 1.22.2
 
 require (
-	github.com/flopp/go-compass v0.0.0-20240423141217-ff8c1d48c1db
+	github.com/flopp/go-compass v0.0.0-20240423142146-efc33f5dee1e
 	github.com/flopp/go-coordsparser v0.0.0-20240403152942-4891dc40d0a7
 	github.com/flopp/go-filehash v0.0.0-20240421152807-21955404dbc6
 	github.com/fogleman/gg v1.3.0
