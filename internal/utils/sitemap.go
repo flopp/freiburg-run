@@ -184,8 +184,6 @@ func (sitemap Sitemap) Gen(fileName string, hashFileName string, outDir string) 
 		if ok {
 			if currentHash == oldHash.hash {
 				timeStamp = oldHash.date
-			} else {
-				log.Printf("changed hash for: %s", fileName)
 			}
 		} else {
 			log.Printf("initial hash for: %s", fileName)
