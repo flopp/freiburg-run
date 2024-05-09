@@ -1458,14 +1458,14 @@ func main() {
 	breadcrumbsEventsTags := utils.PushBreadcrumb(breadcrumbsEvents, utils.Link{Name: "Kategorien", Url: "/tags.html"})
 	data.Nav = "tags"
 	data.Title = "Kategorien"
-	data.Description = "Liste aller Kategorien von Laufveranstaltungen, Lauf-Wettkämpfen, Volksläufen im Raum Freiburg "
+	data.Description = "Liste aller Kategorien von Laufveranstaltungen, Lauf-Wettkämpfen, Volksläufen im Raum Freiburg"
 	data.Canonical = "https://freiburg.run/tags.html"
 	data.Breadcrumbs = breadcrumbsEventsTags
 	utils.ExecuteTemplate("tags", out.Join("tags.html"), data)
 
 	breadcrumbsGroups := utils.PushBreadcrumb(breadcrumbsBase, utils.Link{Name: "Lauftreffs", Url: "/lauftreffs.html"})
 	data.Nav = "groups"
-	data.Title = "Lauftreffs im Raum Freiburg "
+	data.Title = "Lauftreffs im Raum Freiburg"
 	data.Type = "Lauftreff"
 	data.Description = "Liste von Lauftreffs, Laufgruppen, Lauf-Trainingsgruppen im Raum Freiburg "
 	data.Canonical = "https://freiburg.run/lauftreffs.html"
@@ -1474,7 +1474,7 @@ func main() {
 
 	breadcrumbsShops := utils.PushBreadcrumb(breadcrumbsBase, utils.Link{Name: "Lauf-Shops", Url: "/shops.html"})
 	data.Nav = "shops"
-	data.Title = "Lauf-Shops im Raum Freiburg "
+	data.Title = "Lauf-Shops im Raum Freiburg"
 	data.Type = "Lauf-Shop"
 	data.Description = "Liste von Lauf-Shops und Einzelhandelsgeschäften mit Laufschuh-Auswahl im Raum Freiburg "
 	data.Canonical = "https://freiburg.run/shops.html"
@@ -1596,11 +1596,11 @@ func main() {
 		slug := event.Slug()
 		eventdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
 		image := event.ImageSlug()
-		if err = utils.GenImage(out.Join(image), event.Name, event.Time, event.Location.NameNoFlag(), "static/background.png"); err != nil {
+		if err = utils.GenImage(out.Join(image), event.Name, event.Time, event.Location.NameNoFlag(), "static/background.png"); err == nil {
+			eventdata.Image = fmt.Sprintf("/%s", image)
+		} else {
 			eventdata.Image = defaultImage
 			log.Printf("event '%s': %v", event.Name, err)
-		} else {
-			eventdata.Image = image
 		}
 		eventdata.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsEventsOld, utils.Link{Name: event.Name, Url: fmt.Sprintf("/%s", slug)})
 		utils.ExecuteTemplate("event", out.Join(slug), eventdata)
@@ -1617,11 +1617,11 @@ func main() {
 		slug := event.Slug()
 		eventdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
 		image := event.ImageSlug()
-		if err = utils.GenImage(out.Join(image), event.Name, event.Time, event.Location.NameNoFlag(), "static/background.png"); err != nil {
+		if err = utils.GenImage(out.Join(image), event.Name, event.Time, event.Location.NameNoFlag(), "static/background.png"); err == nil {
+			eventdata.Image = fmt.Sprintf("/%s", image)
+		} else {
 			eventdata.Image = defaultImage
 			log.Printf("event '%s': %v", event.Name, err)
-		} else {
-			eventdata.Image = image
 		}
 		eventdata.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsGroups, utils.Link{Name: event.Name, Url: fmt.Sprintf("/%s", slug)})
 		utils.ExecuteTemplate("event", out.Join(slug), eventdata)
@@ -1638,11 +1638,11 @@ func main() {
 		slug := event.Slug()
 		eventdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
 		image := event.ImageSlug()
-		if err = utils.GenImage(out.Join(image), event.Name, event.Location.NameNoFlag(), "", "static/background.png"); err != nil {
+		if err = utils.GenImage(out.Join(image), event.Name, event.Location.NameNoFlag(), "", "static/background.png"); err == nil {
+			eventdata.Image = fmt.Sprintf("/%s", image)
+		} else {
 			eventdata.Image = defaultImage
 			log.Printf("event '%s': %v", event.Name, err)
-		} else {
-			eventdata.Image = image
 		}
 		eventdata.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsShops, utils.Link{Name: event.Name, Url: fmt.Sprintf("/%s", slug)})
 		utils.ExecuteTemplate("event", out.Join(slug), eventdata)

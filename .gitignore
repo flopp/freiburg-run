@@ -6,5 +6,6 @@
 .DS_Store
 config.json
 *.csv
+backup
 scripts
 logs
