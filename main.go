@@ -189,6 +189,40 @@ type Event struct {
 	UpcomingNear []*Event
 }
 
+func (event Event) GenerateDescription() string {
+	min := 110
+	max := 160
+
+	var description string
+
+	switch event.Type {
+	case "event":
+		description = fmt.Sprintf("Informationen zur Laufveranstaltung '%s' in '%s' am %s", event.Name, event.Location.NameNoFlag(), event.Time)
+	case "group":
+		description = fmt.Sprintf("Informationen zur Laufgruppe/Lauftreff '%s' in '%s' am %s", event.Name, event.Location.NameNoFlag(), event.Time)
+	case "shop":
+		description = fmt.Sprintf("Informationen zum Laufshop '%s' in '%s'", event.Name, event.Location.NameNoFlag())
+	}
+
+	if len(description) >= min {
+		return description
+	}
+
+	for i, tag := range event.Tags {
+		if len(description) >= max {
+			break
+		}
+		if i == 0 {
+			description += "; "
+		} else {
+			description += ", "
+		}
+		description += tag.Name
+	}
+
+	return description
+}
+
 func (event Event) IsSeparator() bool {
 	return event.Type == ""
 }
@@ -1571,7 +1605,7 @@ func main() {
 		}
 		eventdata.Event = event
 		eventdata.Title = event.Name
-		eventdata.Description = fmt.Sprintf("Informationen zur Laufveranstaltung '%s' in '%s' am %s", event.Name, event.Location.NameNoFlag(), event.Time)
+		eventdata.Description = event.GenerateDescription()
 		slug := event.Slug()
 		eventdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
 		image := event.ImageSlug()
@@ -1592,7 +1626,7 @@ func main() {
 		}
 		eventdata.Event = event
 		eventdata.Title = event.Name
-		eventdata.Description = fmt.Sprintf("Informationen zu Laufveranstaltung '%s' in '%s' am %s", event.Name, event.Location.NameNoFlag(), event.Time)
+		eventdata.Description = event.GenerateDescription()
 		slug := event.Slug()
 		eventdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
 		image := event.ImageSlug()
@@ -1613,7 +1647,7 @@ func main() {
 	for _, event := range groups {
 		eventdata.Event = event
 		eventdata.Title = event.Name
-		eventdata.Description = fmt.Sprintf("Informationen zum Lauftreff '%s' in '%s' am %s", event.Name, event.Location.NameNoFlag(), event.Time)
+		eventdata.Description = event.GenerateDescription()
 		slug := event.Slug()
 		eventdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
 		image := event.ImageSlug()
@@ -1634,7 +1668,7 @@ func main() {
 	for _, event := range shops {
 		eventdata.Event = event
 		eventdata.Title = event.Name
-		eventdata.Description = fmt.Sprintf("Informationen zum Lauf-Shop '%s' in %s", event.Name, event.Location.NameNoFlag())
+		eventdata.Description = event.GenerateDescription()
 		slug := event.Slug()
 		eventdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
 		image := event.ImageSlug()
