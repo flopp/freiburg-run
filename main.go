@@ -1414,7 +1414,7 @@ func main() {
 	utils.MustCopy("static/freiburg-run-flyer.pdf", out.Join("freiburg-run-flyer.pdf"))
 
 	// renovate: datasource=npm depName=bulma
-	bulma_version := "1.0.0"
+	bulma_version := "1.0.1"
 	// renovate: datasource=npm depName=leaflet
 	leaflet_version := "1.9.4"
 	// renovate: datasource=npm depName=leaflet-gesture-handling
