@@ -73,6 +73,10 @@ body.has-two-navbars-fixed-top {
     }
 }
 
+a {
+    overflow-wrap: anywhere;
+}
+
 a[href^="http"]::after,
 a[href^="https://"]::after
 {
