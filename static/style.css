@@ -228,7 +228,7 @@ a.no-external::after
 #fab-wrapper {
     position: fixed;
     bottom: 51px;
-    z-index: 10;
+    z-index: 1000;
     right: 64px;
 }
 
