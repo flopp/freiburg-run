@@ -172,6 +172,7 @@ type Event struct {
 	Old          bool
 	Status       string
 	Cancelled    bool
+	Obsolete     bool
 	Special      bool
 	Location     Location
 	Details      string
@@ -246,6 +247,7 @@ func createSeparatorEvent(label string) *Event {
 		utils.TimeRange{},
 		false,
 		"",
+		false,
 		false,
 		false,
 		Location{},
@@ -673,7 +675,8 @@ func fetchEvents(config ConfigData, srv *sheets.Service, today time.Time, eventT
 		statusS := cols.getValue("STATUS", row)
 		special := statusS == "spezial"
 		cancelled := statusS == "abgesagt"
-		if special || cancelled {
+		obsolete := statusS == "obsolete"
+		if special || cancelled || obsolete {
 			statusS = ""
 		}
 		urlS := cols.getValue("URL", row)
@@ -740,6 +743,7 @@ func fetchEvents(config ConfigData, srv *sheets.Service, today time.Time, eventT
 			isOld,
 			statusS,
 			cancelled,
+			obsolete,
 			special,
 			location,
 			description1,
@@ -943,6 +947,20 @@ func splitEvents(events []*Event) ([]*Event, []*Event) {
 		}
 	}
 	return futureEvents, pastEvents
+}
+
+func splitObsolete(events []*Event) ([]*Event, []*Event) {
+	currentEvents := make([]*Event, 0)
+	obsoleteEvents := make([]*Event, 0)
+
+	for _, event := range events {
+		if event.Obsolete {
+			obsoleteEvents = append(obsoleteEvents, event)
+		} else {
+			currentEvents = append(currentEvents, event)
+		}
+	}
+	return currentEvents, obsoleteEvents
 }
 
 func addMonthSeparators(events []*Event) []*Event {
@@ -1172,7 +1190,7 @@ func updateAddedDates(events []*Event, added *utils.Added, eventType string, tim
 	}
 }
 
-func CreateHtaccess(events, events_old, groups, shops []*Event, outDir string) error {
+func CreateHtaccess(events, events_old, groups, shops, events_obsolete, groups_obsolete, shops_obsolete []*Event, outDir string) error {
 	if err := utils.MakeDir(outDir); err != nil {
 		return err
 	}
@@ -1213,6 +1231,16 @@ func CreateHtaccess(events, events_old, groups, shops []*Event, outDir string) e
 		if old := e.SlugOld(); old != "" {
 			destination.WriteString(fmt.Sprintf("Redirect /%s /%s\n", old, e.Slug()))
 		}
+	}
+
+	for _, e := range events_obsolete {
+		destination.WriteString(fmt.Sprintf("Redirect /%s /\n", e.Slug()))
+	}
+	for _, e := range groups_obsolete {
+		destination.WriteString(fmt.Sprintf("Redirect /%s /lauftreffs.html\n", e.Slug()))
+	}
+	for _, e := range shops_obsolete {
+		destination.WriteString(fmt.Sprintf("Redirect /%s /shops.html\n", e.Slug()))
 	}
 
 	return nil
@@ -1276,8 +1304,11 @@ func main() {
 
 	var events []*Event
 	var events_old []*Event
+	var events_obsolete []*Event
 	var groups []*Event
+	var groups_obsolete []*Event
 	var shops []*Event
+	var shops_obsolete []*Event
 	var parkrun []*ParkrunEvent
 
 	config_data, err := os.ReadFile(options.configFile)
@@ -1363,6 +1394,10 @@ func main() {
 			log.Printf("failed to write added file: '%s' - %v", options.addedFile, err)
 		}
 	}
+
+	events, events_obsolete = splitObsolete(events)
+	groups, groups_obsolete = splitObsolete(groups)
+	shops, shops_obsolete = splitObsolete(shops)
 
 	validateDateOrder(events)
 	findPrevNextEvents(events)
@@ -1764,6 +1799,6 @@ func main() {
 	}
 	utils.ExecuteTemplate("sitemap", out.Join("sitemap.html"), sitemapTemplate)
 
-	err = CreateHtaccess(events, events_old, groups, shops, options.outDir)
+	err = CreateHtaccess(events, events_old, groups, shops, events_obsolete, groups_obsolete, shops_obsolete, options.outDir)
 	utils.Check(err)
 }
