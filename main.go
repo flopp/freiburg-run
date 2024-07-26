@@ -1345,7 +1345,7 @@ func main() {
 			tagsSheet = sheet
 		} else if sheet == "Series" {
 			seriesSheet = sheet
-		} else if strings.HasPrefix(sheet, "Notes") {
+		} else if strings.Contains(sheet, "ignore") {
 			// ignore
 		} else {
 			log.Printf("irgnoring unknown sheet: '%s'", sheet)
