@@ -1348,7 +1348,7 @@ func main() {
 		} else if strings.Contains(sheet, "ignore") {
 			// ignore
 		} else {
-			log.Printf("irgnoring unknown sheet: '%s'", sheet)
+			log.Printf("ignoring unknown sheet: '%s'", sheet)
 		}
 	}
 	if len(eventSheets) < 2 {
