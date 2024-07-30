@@ -1,4 +1,10 @@
 User-agent: *
 Allow: /
 
+User-agent: Twitterbot
+Allow: /
+
+User-agent: facebookexternalhit
+Allow: /
+
 Sitemap: https://freiburg.run/sitemap.xml
