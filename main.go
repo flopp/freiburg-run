@@ -67,7 +67,7 @@ type NameUrl struct {
 }
 
 func (n NameUrl) IsRegistration() bool {
-	return n.Name == "Anmeldung"
+	return strings.Contains(n.Name, "Anmeldung")
 }
 
 type Location struct {
@@ -182,7 +182,7 @@ type Event struct {
 	Tags         []*Tag
 	RawSeries    []string
 	Series       []*Serie
-	Links        []NameUrl
+	Links        []*NameUrl
 	Added        string
 	New          bool
 	Prev         *Event
@@ -399,7 +399,7 @@ type Serie struct {
 	Sanitized   string
 	Name        string
 	Description template.HTML
-	Links       []NameUrl
+	Links       []*NameUrl
 	Events      []*Event
 	EventsOld   []*Event
 	Groups      []*Event
@@ -415,7 +415,7 @@ func (s Serie) Num() int {
 }
 
 func CreateSerie(id string, name string) *Serie {
-	return &Serie{id, name, "", make([]NameUrl, 0), make([]*Event, 0), make([]*Event, 0), make([]*Event, 0), make([]*Event, 0)}
+	return &Serie{id, name, "", make([]*NameUrl, 0), make([]*Event, 0), make([]*Event, 0), make([]*Event, 0), make([]*Event, 0)}
 }
 
 func (serie *Serie) Slug() string {
@@ -569,11 +569,11 @@ type ConfigData struct {
 	SheetId string `json:"sheet_id"`
 }
 
-func parseLinks(ss []string, registration string) []NameUrl {
-	links := make([]NameUrl, 0)
+func parseLinks(ss []string, registration string) []*NameUrl {
+	links := make([]*NameUrl, 0, len(ss))
 	hasRegistration := registration != ""
 	if hasRegistration {
-		links = append(links, NameUrl{"Anmeldung", registration})
+		links = append(links, &NameUrl{"Anmeldung", registration})
 	}
 	for _, s := range ss {
 		if s == "" {
@@ -584,7 +584,7 @@ func parseLinks(ss []string, registration string) []NameUrl {
 			panic(fmt.Errorf("bad link: <%s>", s))
 		}
 		if !hasRegistration || a[0] != "Anmeldung" {
-			links = append(links, NameUrl{a[0], a[1]})
+			links = append(links, &NameUrl{a[0], a[1]})
 		}
 	}
 	return links
@@ -1030,6 +1030,18 @@ func addMonthSeparatorsDescending(events []*Event) []*Event {
 	return result
 }
 
+func changeRegistrationLinks(events []*Event) {
+	for _, event := range events {
+		for _, link := range event.Links {
+			fmt.Printf("%s: %s - %s\n", event.Name, link.Name, link.Url)
+			if link.IsRegistration() && strings.Contains(link.Url, "raceresult") {
+				link.Name = "Ergebnisse / Anmeldung"
+				fmt.Printf("=> %s\n", link.Name)
+			}
+		}
+	}
+}
+
 func reverse(s []*Event) []*Event {
 	a := make([]*Event, len(s))
 	copy(a, s)
@@ -1407,6 +1419,7 @@ func main() {
 	findUpcomingNearEvents(events_old, events, 5.0, 3)
 	events_old = reverse(events_old)
 	events_old = addMonthSeparatorsDescending(events_old)
+	changeRegistrationLinks(events_old)
 	tags, tagsList := collectTags(tagDescriptions, events, events_old, groups, shops)
 	series, seriesList, seriesListOld := collectSeries(series, events, events_old, groups, shops)
 
