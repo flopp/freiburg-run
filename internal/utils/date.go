@@ -34,30 +34,63 @@ func ParseDate(s string) (time.Time, error) {
 }
 
 type TimeRange struct {
-	From time.Time
-	To   time.Time
+	Original  string
+	Formatted string
+	From      time.Time
+	To        time.Time
+}
+
+func (tr TimeRange) IsZero() bool {
+	return tr.From.IsZero()
+}
+
+func (tr TimeRange) Year() int {
+	if tr.IsZero() {
+		return 0
+	}
+	return tr.From.Year()
+}
+
+func (tr TimeRange) Before(t time.Time) bool {
+	if tr.From.IsZero() {
+		return false
+	}
+	return tr.To.Before(t)
 }
 
 var dateRe = regexp.MustCompile(`\b(\d\d\.\d\d\.\d\d\d\d)\b`)
 
-func ParseTimeRange(s string) (TimeRange, error) {
+func CreateTimeRange(original string) (TimeRange, error) {
+	replacements := make(map[string]string)
 	var from, to time.Time
-	for _, mm := range dateRe.FindAllStringSubmatch(s, -1) {
+
+	for _, mm := range dateRe.FindAllStringSubmatch(original, -1) {
 		d, err := ParseDate(mm[1])
 		if err != nil {
-			return TimeRange{}, fmt.Errorf("cannot parse date '%s' from '%s'", mm[1], s)
+			return TimeRange{original, original, from, to}, fmt.Errorf("cannot parse date '%s' from '%s'", mm[1], original)
 		}
+
+		replacements[mm[1]] = fmt.Sprintf("%s, %s", WeekdayStr(d.Weekday()), mm[1])
+
 		if from.IsZero() {
 			from = d
+			to = d
 		} else {
-			if d.Before(to) {
-				return TimeRange{}, fmt.Errorf("invalid time range '%s' (wrongly ordered components)", s)
+			if d.Before(from) {
+				from = d
+			} else if d.After(to) {
+				to = d
 			}
 		}
-		to = d
 	}
 
-	return TimeRange{from, to}, nil
+	// insert weekdays
+	formatted := original
+	for key, value := range replacements {
+		formatted = strings.ReplaceAll(formatted, key, value)
+	}
+
+	return TimeRange{original, formatted, from, to}, nil
 }
 
 func WeekdayStr(d time.Weekday) string {
@@ -108,23 +141,4 @@ func MonthStr(m time.Month) string {
 		return "Dezember"
 	}
 	return "Dezember"
-}
-
-func InsertWeekdays(s string) (string, error) {
-	replacements := make(map[string]string)
-
-	for _, mm := range dateRe.FindAllStringSubmatch(s, -1) {
-		d, err := ParseDate(mm[1])
-		if err != nil {
-			return s, fmt.Errorf("cannot parse date '%s' from '%s'", mm[1], s)
-		}
-		replacements[mm[1]] = fmt.Sprintf("%s, %s", WeekdayStr(d.Weekday()), mm[1])
-	}
-
-	// insert weekdays
-	for s1, s2 := range replacements {
-		s = strings.ReplaceAll(s, s1, s2)
-	}
-
-	return s, nil
 }

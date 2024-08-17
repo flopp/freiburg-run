@@ -167,8 +167,7 @@ type Event struct {
 	Type         string
 	Name         string
 	NameOld      string
-	Time         string
-	TimeRange    utils.TimeRange
+	Time         utils.TimeRange
 	Old          bool
 	Status       string
 	Cancelled    bool
@@ -243,7 +242,6 @@ func createSeparatorEvent(label string) *Event {
 		"",
 		label,
 		"",
-		"",
 		utils.TimeRange{},
 		false,
 		"",
@@ -278,13 +276,11 @@ func IsNew(s string, now time.Time) bool {
 	return false
 }
 
-var yearRe = regexp.MustCompile(`\b(\d\d\d\d)\b`)
-
 func (event *Event) slug(ext string) string {
 	t := event.Type
 
-	if m := yearRe.FindStringSubmatch(event.Time); m != nil {
-		return fmt.Sprintf("%s/%s-%s.%s", t, m[1], utils.SanitizeName(event.Name), ext)
+	if !event.Time.IsZero() {
+		return fmt.Sprintf("%s/%d-%s.%s", t, event.Time.Year(), utils.SanitizeName(event.Name), ext)
 	}
 	return fmt.Sprintf("%s/%s.%s", t, utils.SanitizeName(event.Name), ext)
 }
@@ -299,8 +295,8 @@ func (event *Event) SlugOld() string {
 		t = "event"
 	}
 
-	if m := yearRe.FindStringSubmatch(event.Time); m != nil {
-		return fmt.Sprintf("%s/%s-%s.html", t, m[1], utils.SanitizeName(event.NameOld))
+	if !event.Time.IsZero() {
+		return fmt.Sprintf("%s/%d-%s.html", t, event.Time.Year(), utils.SanitizeName(event.NameOld))
 	}
 	return fmt.Sprintf("%s/%s.html", t, utils.SanitizeName(event.NameOld))
 }
@@ -477,12 +473,11 @@ func (d EventTemplateData) YearTitle() string {
 		return d.Title
 	}
 
-	year := d.Event.TimeRange.From.Year()
-	if year < 2000 {
+	if d.Event.Time.IsZero() {
 		return d.Title
 	}
 
-	yearS := fmt.Sprintf("%d", year)
+	yearS := fmt.Sprintf("%d", d.Event.Time.Year())
 	if strings.Contains(d.Title, yearS) {
 		return d.Title
 	}
@@ -720,17 +715,14 @@ func fetchEvents(config ConfigData, srv *sheets.Service, today time.Time, eventT
 		}
 		location := createLocation(locationS, coordinatesS)
 		tags = append(tags, location.Tags()...)
-		timeRange, err := utils.ParseTimeRange(dateS)
+		timeRange, err := utils.CreateTimeRange(dateS)
 		if err != nil {
 			log.Printf("event '%s': %v", name, err)
 		}
-		date, err := utils.InsertWeekdays(dateS)
-		if err != nil {
-			log.Printf("event '%s': %v", name, err)
-		}
-		isOld := (!timeRange.From.IsZero()) && timeRange.To.Before(today)
-		if !timeRange.From.IsZero() {
-			tags = append(tags, fmt.Sprintf("%d", timeRange.From.Year()))
+		isOld := timeRange.Before(today)
+		year := timeRange.Year()
+		if year > 0 {
+			tags = append(tags, fmt.Sprintf("%d", year))
 		}
 		links := parseLinks(linksS, registration)
 
@@ -738,7 +730,6 @@ func fetchEvents(config ConfigData, srv *sheets.Service, today time.Time, eventT
 			eventType,
 			name,
 			nameOld,
-			date,
 			timeRange,
 			isOld,
 			statusS,
@@ -877,20 +868,20 @@ func isSimilarName(s1, s2 string) bool {
 }
 
 func validateDateOrder(events []*Event) {
-	var lastDate time.Time
+	var lastDate utils.TimeRange
 	for _, event := range events {
 		if !lastDate.IsZero() {
-			if event.TimeRange.From.IsZero() {
-				log.Printf("event '%s' has no date but occurs after dated event", event.Name)
+			if event.Time.From.IsZero() {
+				log.Printf("event '%s' has no date", event.Name)
 				return
 			}
-			if event.TimeRange.From.Before(lastDate) {
-				log.Printf("event '%s' has date '%s' before date of previous event '%s'", event.Name, event.Time, lastDate.Format("2006-01-02"))
+			if event.Time.From.Before(lastDate.From) {
+				log.Printf("event '%s' has date '%s' before date of previous event '%s'", event.Name, event.Time.Formatted, lastDate.Formatted)
 				return
 			}
 		}
 
-		lastDate = event.TimeRange.From
+		lastDate = event.Time
 	}
 }
 
@@ -967,12 +958,9 @@ func addMonthSeparators(events []*Event) []*Event {
 	result := make([]*Event, 0, len(events))
 	var last time.Time
 
-	for i, event := range events {
-		d := event.TimeRange.From
-		if event.TimeRange.From.IsZero() {
-			if i == 0 {
-				result = append(result, createSeparatorEvent("Wöchentlich"))
-			}
+	for _, event := range events {
+		d := event.Time.From
+		if event.Time.From.IsZero() {
 			// no label
 		} else if last.IsZero() {
 			// initial label
@@ -1003,8 +991,8 @@ func addMonthSeparatorsDescending(events []*Event) []*Event {
 	var last time.Time
 
 	for _, event := range events {
-		d := event.TimeRange.From
-		if event.TimeRange.From.IsZero() {
+		d := event.Time.From
+		if event.Time.From.IsZero() {
 			// no label
 		} else if last.IsZero() {
 			// initial label
@@ -1655,7 +1643,7 @@ func main() {
 		slug := event.Slug()
 		eventdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
 		image := event.ImageSlug()
-		if utils.GenImage(out.Join(image), event.Name, event.Time, event.Location.NameNoFlag(), "static/background.png") == nil {
+		if utils.GenImage(out.Join(image), event.Name, event.Time.Formatted, event.Location.NameNoFlag(), "static/background.png") == nil {
 			eventdata.Image = fmt.Sprintf("/%s", image)
 		} else {
 			eventdata.Image = defaultImage
@@ -1676,7 +1664,7 @@ func main() {
 		slug := event.Slug()
 		eventdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
 		image := event.ImageSlug()
-		if err = utils.GenImage(out.Join(image), event.Name, event.Time, event.Location.NameNoFlag(), "static/background.png"); err == nil {
+		if err = utils.GenImage(out.Join(image), event.Name, event.Time.Formatted, event.Location.NameNoFlag(), "static/background.png"); err == nil {
 			eventdata.Image = fmt.Sprintf("/%s", image)
 		} else {
 			eventdata.Image = defaultImage
@@ -1697,7 +1685,7 @@ func main() {
 		slug := event.Slug()
 		eventdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
 		image := event.ImageSlug()
-		if err = utils.GenImage(out.Join(image), event.Name, event.Time, event.Location.NameNoFlag(), "static/background.png"); err == nil {
+		if err = utils.GenImage(out.Join(image), event.Name, event.Time.Formatted, event.Location.NameNoFlag(), "static/background.png"); err == nil {
 			eventdata.Image = fmt.Sprintf("/%s", image)
 		} else {
 			eventdata.Image = defaultImage

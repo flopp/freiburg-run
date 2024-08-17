@@ -1,5 +1,5 @@
 {{if .Location.HasGeo}}
-<div class="column is-half event" data-type="{{.NiceType}}" data-name="{{.Name}}" data-time="{{.Time}}" data-geo="{{.Location.Geo}}" data-location="{{.Location.Name}}" data-slug="{{.Slug}}">
+<div class="column is-half event" data-type="{{.NiceType}}" data-name="{{.Name}}" data-time="{{.Time.Formatted}}" data-geo="{{.Location.Geo}}" data-location="{{.Location.Name}}" data-slug="{{.Slug}}">
 {{else}}
 <div class="column is-half">
 {{end}}
@@ -36,7 +36,7 @@
             <div class="content">
                 <table class="table is-narrow">
                     {{if .Status}}<tr class="has-text-danger"><th class="w-2em no-border" title="Status">⚠️</th><td class="no-border">{{.Status}}</td></tr>{{end}}
-                    {{if .Time}}<tr><th class="w-2em no-border" title="Datum">📅</th><td class="no-border">{{.Time}}{{if .Old}} <span class="has-text-danger">(Vergangenes Event)</span>{{end}}</td></tr>{{end}}
+                    {{if .Time.Formatted}}<tr><th class="w-2em no-border" title="Datum">📅</th><td class="no-border">{{.Time.Formatted}}{{if .Old}} <span class="has-text-danger">(Vergangenes Event)</span>{{end}}</td></tr>{{end}}
                     <tr>
                         <th class="w-2em no-border" title="Ort">🗺</th>
                         <td class="no-border">

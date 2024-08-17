@@ -27,10 +27,10 @@
                                 <a href="{{.Event.Url}}" target="_blank">{{.Event.Url}}</a>
                             </td>
                         </tr>
-                        {{if .Event.Time}}
+                        {{if .Event.Time.Formatted}}
                         <tr>
                             <th>Datum</th>
-                            <td class="is-w100">{{.Event.Time}}{{if .Event.Old}} <span class="has-text-danger">(Vergangenes Event)</span>{{end}}</td>
+                            <td class="is-w100">{{.Event.Time.Formatted}}{{if .Event.Old}} <span class="has-text-danger">(Vergangenes Event)</span>{{end}}</td>
                         </tr>
                         {{end}}
                         <tr>
@@ -93,7 +93,7 @@
                         <tr>
                             <th>Voriger</th>
                             <td class="is-w100">
-                                <a href="/{{.Event.Prev.Slug}}">{{.Event.Prev.Name}} ({{.Event.Prev.Time}})</a>
+                                <a href="/{{.Event.Prev.Slug}}">{{.Event.Prev.Name}} ({{.Event.Prev.Time.Formatted}})</a>
                             </td>
                         </tr>
                         {{end}}
@@ -101,7 +101,7 @@
                         <tr>
                             <th>Nächster</th>
                             <td class="is-w100">
-                                <a href="/{{.Event.Next.Slug}}">{{.Event.Next.Name}} ({{.Event.Next.Time}})</a>
+                                <a href="/{{.Event.Next.Slug}}">{{.Event.Next.Name}} ({{.Event.Next.Time.Formatted}})</a>
                             </td>
                         </tr>
                         {{end}}
@@ -110,7 +110,7 @@
                             <th>In der Nähe (5km)</th>
                             <td class="is-w100">
                                 <ul>
-                                    {{range .Event.UpcomingNear}}<li><a href="/{{.Slug}}">{{.Name}} ({{.Time}} @ {{.Location.Name}})</a></li>{{end}}
+                                    {{range .Event.UpcomingNear}}<li><a href="/{{.Slug}}">{{.Name}} ({{.Time.Formatted}} @ {{.Location.Name}})</a></li>{{end}}
                                 </ul>
                             </td>
                         </tr>
