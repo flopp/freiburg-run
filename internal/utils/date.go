@@ -30,7 +30,11 @@ func ParseDate(s string) (time.Time, error) {
 		return d, nil
 	}
 
-	return time.ParseInLocation("02.01.2006", s, loc)
+	d, err = time.ParseInLocation("02.01.2006", s, loc)
+	if err == nil {
+		return d, nil
+	}
+	return d, fmt.Errorf("Cannot parse date '%s' using formats '2006-01-02' or '02.01.2006'", s)
 }
 
 type TimeRange struct {

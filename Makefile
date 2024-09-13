@@ -37,3 +37,10 @@ run-script: sync
 .phony: lint
 lint:
 	go vet ./...
+
+.phony: test
+test:
+	go test ./...
+
+.phony: full-test
+full-test: lint test .bin/generate-linux
