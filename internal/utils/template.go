@@ -37,3 +37,20 @@ func ExecuteTemplate(templateName string, fileName string, data any) {
 	err = m.Minify("text/html", out, &buffer)
 	Check(err)
 }
+
+func ExecuteTemplateNoMinify(templateName string, fileName string, data any) {
+	// render to buffer
+	var buffer bytes.Buffer
+	err := loadTemplate(templateName).Execute(&buffer, data)
+	Check(err)
+
+	// create output folder + file
+	outDir := filepath.Dir(fileName)
+	MustMakeDir(outDir)
+	out, err := os.Create(fileName)
+	Check(err)
+	defer out.Close()
+
+	_, err = out.Write(buffer.Bytes())
+	Check(err)
+}
