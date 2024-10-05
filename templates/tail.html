@@ -2,6 +2,18 @@
 {{range .JsFiles}}
 <script src="/{{.}}"></script>
 {{end}}
-<script data-goatcounter="https://freiburg-run.goatcounter.com/count" async src="/{{.GoatCounterJs}}"></script>
-</body>
+    <script>
+        (function(f, a, t, h, o, m){
+            a[h]=a[h]||function(){
+                (a[h].q=a[h].q||[]).push(arguments)
+            };
+            o=f.createElement('script'),
+            m=f.getElementsByTagName('script')[0];
+            o.async=1; o.src=t; o.id='fathom-script';
+            m.parentNode.insertBefore(o,m)
+        })(document, window, '//s.freiburg.run/tracker.js', 'fathom');
+        fathom('set', 'siteId', 'IPQCD');
+        fathom('trackPageview');
+    </script>
+   </body>
 </html>
