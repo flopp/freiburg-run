@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"flag"
@@ -443,7 +442,7 @@ type TemplateData struct {
 	SeriesOld     []*Serie
 	JsFiles       []string
 	CssFiles      []string
-	GoatCounterJs string
+	FathomJs      string
 }
 
 func (d TemplateData) YearTitle() string {
@@ -465,7 +464,7 @@ type EventTemplateData struct {
 	SheetUrl      string
 	JsFiles       []string
 	CssFiles      []string
-	GoatCounterJs string
+	FathomJs      string
 }
 
 func (d EventTemplateData) YearTitle() string {
@@ -500,7 +499,7 @@ type TagTemplateData struct {
 	SheetUrl      string
 	JsFiles       []string
 	CssFiles      []string
-	GoatCounterJs string
+	FathomJs      string
 }
 
 func (d TagTemplateData) YearTitle() string {
@@ -522,7 +521,7 @@ type SerieTemplateData struct {
 	SheetUrl      string
 	JsFiles       []string
 	CssFiles      []string
-	GoatCounterJs string
+	FathomJs      string
 }
 
 func (d SerieTemplateData) YearTitle() string {
@@ -543,7 +542,7 @@ type SitemapTemplateData struct {
 	Categories    []utils.SitemapCategory
 	JsFiles       []string
 	CssFiles      []string
-	GoatCounterJs string
+	FathomJs      string
 }
 
 func (d SitemapTemplateData) YearTitle() string {
@@ -1244,6 +1243,7 @@ func CreateHtaccess(events, events_old, groups, shops, events_obsolete, groups_o
 	return nil
 }
 
+/*
 func modifyGoatcounterLinkSelector(path string) string {
 	data, err := os.ReadFile(path)
 	if err != nil {
@@ -1256,6 +1256,7 @@ func modifyGoatcounterLinkSelector(path string) string {
 	os.WriteFile(path, data, 0770)
 	return path
 }
+*/
 
 type FileSet struct {
 	paths []string
@@ -1468,8 +1469,8 @@ func main() {
 	js_files.Add(utils.MustDownloadHash(fmt.Sprintf("%s/dist/leaflet-gesture-handling.min.js", leaflet_gesture_handling_url), out.Join("leaflet-gesture-handling-HASH.js")))
 	js_files.Add(utils.MustCopyHash("static/parkrun-track.js", out.Join("parkrun-track-HASH.js")))
 	js_files.Add(utils.MustCopyHash("static/main.js", out.Join("main-HASH.js")))
-	goatcounter := utils.MustDownloadHash("https://gc.zgo.at/count.js", out.Join("goat-HASH.js"))
-	goatcounter = modifyGoatcounterLinkSelector(goatcounter)
+	fathom := utils.MustDownloadHash("https://s.freiburg.run/s.js", out.Join("s-HASH.js"))
+	//goatcounter = modifyGoatcounterLinkSelector(goatcounter)
 
 	css_files.Add(utils.MustDownloadHash(fmt.Sprintf("%s/css/bulma.min.css", bulma_url), out.Join("bulma-HASH.css")))
 	css_files.Add(utils.MustDownloadHash(fmt.Sprintf("%s/dist/leaflet.css", leaflet_url), out.Join("leaflet-HASH.css")))
@@ -1511,7 +1512,7 @@ func main() {
 		seriesListOld,
 		js_files.Rel(options.outDir),
 		css_files.Rel(options.outDir),
-		MustRel(options.outDir, goatcounter),
+		MustRel(options.outDir, fathom),
 	}
 
 	utils.ExecuteTemplate("events", out.Join("index.html"), data)
@@ -1632,7 +1633,7 @@ func main() {
 		sheetUrl,
 		js_files.Rel(options.outDir),
 		css_files.Rel(options.outDir),
-		MustRel(options.outDir, goatcounter),
+		MustRel(options.outDir, fathom),
 	}
 	for _, event := range events {
 		if event.IsSeparator() {
@@ -1733,7 +1734,7 @@ func main() {
 		sheetUrl,
 		js_files.Rel(options.outDir),
 		css_files.Rel(options.outDir),
-		MustRel(options.outDir, goatcounter),
+		MustRel(options.outDir, fathom),
 	}
 	for _, tag := range tags {
 		tagdata.Tag = tag
@@ -1761,7 +1762,7 @@ func main() {
 		sheetUrl,
 		js_files.Rel(options.outDir),
 		css_files.Rel(options.outDir),
-		MustRel(options.outDir, goatcounter),
+		MustRel(options.outDir, fathom),
 	}
 	for _, s := range series {
 		seriedata.Serie = s
@@ -1795,7 +1796,7 @@ func main() {
 		sitemap.GenHTML(),
 		js_files.Rel(options.outDir),
 		css_files.Rel(options.outDir),
-		MustRel(options.outDir, goatcounter),
+		MustRel(options.outDir, fathom),
 	}
 	utils.ExecuteTemplate("sitemap", out.Join("sitemap.html"), sitemapTemplate)
 
