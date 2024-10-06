@@ -1469,7 +1469,7 @@ func main() {
 	js_files.Add(utils.MustDownloadHash(fmt.Sprintf("%s/dist/leaflet-gesture-handling.min.js", leaflet_gesture_handling_url), out.Join("leaflet-gesture-handling-HASH.js")))
 	js_files.Add(utils.MustCopyHash("static/parkrun-track.js", out.Join("parkrun-track-HASH.js")))
 	js_files.Add(utils.MustCopyHash("static/main.js", out.Join("main-HASH.js")))
-	fathom := utils.MustDownloadHash("https://s.freiburg.run/tracker.js", out.Join("s-HASH.js"))
+	fathom := utils.MustDownloadHash("https://s.flopp.net/tracker.js", out.Join("s-HASH.js"))
 	//goatcounter = modifyGoatcounterLinkSelector(goatcounter)
 
 	css_files.Add(utils.MustDownloadHash(fmt.Sprintf("%s/css/bulma.min.css", bulma_url), out.Join("bulma-HASH.css")))
