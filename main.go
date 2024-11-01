@@ -194,13 +194,27 @@ func (event Event) GenerateDescription() string {
 
 	var description string
 
+	location := ""
+	if event.Location.NameNoFlag() != "" {
+		location = fmt.Sprintf(" in '%s'", event.Location.NameNoFlag())
+	}
+
+	time := ""
+	if event.Time.Original != "" {
+		if event.Time.Original == "Verschiedene Termine" {
+			time = ", verschiedene Termine"
+		} else {
+			time = fmt.Sprintf(" am %s", event.Time.Original)
+		}
+	}
+
 	switch event.Type {
 	case "event":
-		description = fmt.Sprintf("Informationen zur Laufveranstaltung '%s' in '%s' am %s", event.Name, event.Location.NameNoFlag(), event.Time)
+		description = fmt.Sprintf("Informationen zur Laufveranstaltung '%s'%s%s", event.Name, location, time)
 	case "group":
-		description = fmt.Sprintf("Informationen zur Laufgruppe/Lauftreff '%s' in '%s' am %s", event.Name, event.Location.NameNoFlag(), event.Time)
+		description = fmt.Sprintf("Informationen zur Laufgruppe / zum Lauftreff '%s'%s%s", event.Name, location, time)
 	case "shop":
-		description = fmt.Sprintf("Informationen zum Laufshop '%s' in '%s'", event.Name, event.Location.NameNoFlag())
+		description = fmt.Sprintf("Informationen zum Laufshop '%s'%s", event.Name, location)
 	}
 
 	if len(description) >= min {
