@@ -1,5 +1,7 @@
 all:
-	@echo "make upload -> build and upload to freiburg.run"
+	@echo "make sync       -> build and upload to freiburg.runt"
+	@echo "make run-script -> sync & run remote script"
+	
 
 .bin/generate-linux: main.go internal/utils/*.go go.mod
 	mkdir -p .bin
@@ -9,11 +11,6 @@ all:
 build:
 	rm -rf .out
 	go run main.go -config config.json -out .out -hashfile .hashes -addedfile .added
-
-.phony: upload
-upload: build
-	scp -r .out/* .out/.htaccess echeclus.uberspace.de:/var/www/virtual/floppnet/freiburg.run/
-	scp -r .out/* .out/.htaccess echeclus.uberspace.de:/var/www/virtual/floppnet/fraig.de/
 
 .phony: upload-test
 upload-test: build

@@ -463,6 +463,16 @@ func (d TemplateData) YearTitle() string {
 	return d.Title
 }
 
+func (d TemplateData) CountEvents() int {
+	count := 0
+	for _, event := range d.Events {
+		if !event.IsSeparator() {
+			count += 1
+		}
+	}
+	return count
+}
+
 type EventTemplateData struct {
 	Event         *Event
 	Title         string
