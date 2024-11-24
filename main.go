@@ -1460,6 +1460,7 @@ func main() {
 	utils.MustCopy("static/favicon.ico", out.Join("favicon.ico"))
 	utils.MustCopy("static/apple-touch-icon.png", out.Join("apple-touch-icon.png"))
 	utils.MustCopy("static/freiburg-run.svg", out.Join("images/freiburg-run.svg"))
+	utils.MustCopy("static/freiburg-run-new.svg", out.Join("images/freiburg-run-new.svg"))
 	utils.MustCopy("static/events2023.jpg", out.Join("images/events2023.jpg"))
 	utils.MustCopy("static/parkrun.png", out.Join("images/parkrun.png"))
 	utils.MustCopy("static/marker-grey-icon.png", out.Join("images/marker-grey-icon.png"))

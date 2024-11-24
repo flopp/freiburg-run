@@ -39,11 +39,6 @@
     top: 3.25rem;
     bottom: 0;
 }
-@media screen and (max-width: 1023px) {
-#big-map {
-    top: 6.5rem;
-}
-}
 
 .navbar.z-top {
     z-index: 9999;
@@ -63,15 +58,6 @@
     padding-left: 0.5rem !important;
     padding-right: 0.5rem !important;
 } 
-
-body.has-two-navbars-fixed-top {
-    padding-top: 3.25rem;
-}
-@media screen and (max-width: 1023px) {
-    body.has-two-navbars-fixed-top {
-        padding-top: 6.5rem;
-    }
-}
 
 a {
     overflow-wrap: anywhere;
