@@ -36,7 +36,7 @@
             {{range .Serie.Events}}
             {{if .IsSeparator}}
             <div class="column is-full">
-                <div class="notification is-link is-light">{{.Name}}</div>
+                <div class="notification is-link is-light pt-2 pb-2 pl-4">{{.Name}}</div>
             </div>
             {{else}}
             {{template "card.html" .}}
@@ -75,7 +75,7 @@
             {{range .Serie.EventsOld}}
             {{if .IsSeparator}}
             <div class="column is-full">
-                <div class="notification is-link is-light">{{.Name}}</div>
+                <div class="notification is-link is-light pt-2 pb-2 pl-4">{{.Name}}</div>
             </div>
             {{else}}
             {{template "card.html" .}}
