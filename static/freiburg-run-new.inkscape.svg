@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="100mm"
+   height="100mm"
+   viewBox="0 0 100 100"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4 (e7c3feb1, 2024-10-09)"
+   sodipodi:docname="freiburg-run-new.inkscape.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="true"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showguides="true"
+     guidecolor="#ff0000"
+     guideopacity="0.78823529"
+     inkscape:zoom="1.7277292"
+     inkscape:cx="55.85366"
+     inkscape:cy="-28.650323"
+     inkscape:window-width="1440"
+     inkscape:window-height="762"
+     inkscape:window-x="0"
+     inkscape:window-y="25"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="layer1">
+    <sodipodi:guide
+       position="8,50"
+       orientation="1,0"
+       id="guide4"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="50,92"
+       orientation="0,-1"
+       id="guide5"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="50,8"
+       orientation="0,-1"
+       id="guide6"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="92,50"
+       orientation="1,0"
+       id="guide7"
+       inkscape:locked="false" />
+  </sodipodi:namedview>
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Ebene 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       id="rect4"
+       style="fill:#ffffff;fill-opacity:1;stroke-width:15.6464"
+       d="M 0 0 L 0 100.0001 L 100.0001 100.0001 L 100.0001 0 L 0 0 z M 3.9997559 3.9997559 L 95.999825 3.9997559 L 95.999825 95.999825 L 3.9997559 95.999825 L 3.9997559 3.9997559 z " />
+    <text
+       xml:space="preserve"
+       style="font-weight:bold;font-size:29.1px;line-height:1.05;font-family:Sans;-inkscape-font-specification:'Sans, Bold';text-align:start;letter-spacing:5.60917px;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#ffffff;stroke-width:9.80001;fill-opacity:1"
+       x="6.1399999"
+       y="29.299999"
+       id="text1"><tspan
+         sodipodi:role="line"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:29.1px;line-height:1.05;font-family:'PT Mono';-inkscape-font-specification:'PT Mono Bold';writing-mode:lr-tb;fill:#ffffff;fill-opacity:1;stroke-width:9.8"
+         x="6.1399999"
+         y="29.299999"
+         id="tspan3">FREI</tspan><tspan
+         sodipodi:role="line"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:29.1px;line-height:1.05;font-family:'PT Mono';-inkscape-font-specification:'PT Mono Bold';writing-mode:lr-tb;fill:#ffffff;fill-opacity:1;stroke-width:9.8"
+         x="6.1399999"
+         y="60.35931"
+         id="tspan4">BURG</tspan><tspan
+         sodipodi:role="line"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:29.1px;line-height:1.05;font-family:'PT Mono';-inkscape-font-specification:'PT Mono Bold';writing-mode:lr-tb;fill:#ffffff;fill-opacity:1;stroke-width:9.8"
+         x="6.1399999"
+         y="91.418625"
+         id="tspan2">.RUN</tspan></text>
+  </g>
+</svg>
