@@ -4,13 +4,19 @@
     <div class="container is-max-desktop" itemscope itemtype="https://schema.org/ItemList">
         <h1 class="title" itemprop="name">{{.Title}}</h1>
         
-        <div class="notification is-link is-light">
-            Liste von {{.CountEvents}} <b>aktuellen und zukünftigen</b> Laufveranstaltungen, Wettkämpfen, Volksläufen im Raum Freiburg (~50km Umkreis), sortiert nach Datum.
-            <br />
-            Ist ein Eintrag fehlerhaft oder fehlt eine Veranstaltung? - bitte <a href="/info.html#kontakt">melden</a>. 
-            <br />
-            <br />
-            <a href="/events-old.html">Hier geht's zur Liste der vergangenen Veranstaltungen.</a>
+        
+        <div class="notification is-link is-light is-flex">
+            <figure class="image is-128x128 pr-1">
+                <img src="freiburg-run-new.svg" alt="freiburg.run Logo">
+            </figure>
+            <div>
+                Liste von {{.CountEvents}} <b>aktuellen und zukünftigen</b> Laufveranstaltungen, Wettkämpfen, Volksläufen im Raum Freiburg (~50km Umkreis), sortiert nach Datum.
+                <br />
+                Ist ein Eintrag fehlerhaft oder fehlt eine Veranstaltung? - bitte <a href="/info.html#kontakt">melden</a>. 
+                <br />
+                <br />
+                <a href="/events-old.html">Hier geht's zur Liste der vergangenen Veranstaltungen.</a>
+            </div>
         </div>
 
         <div id="map-toggle">
