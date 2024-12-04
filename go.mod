@@ -10,7 +10,7 @@ require (
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
 	github.com/tdewolff/minify/v2 v2.21.2
 	golang.org/x/image v0.22.0
-	golang.org/x/text v0.20.0
+	golang.org/x/text v0.21.0
 	google.golang.org/api v0.209.0
 )
 
