@@ -691,9 +691,6 @@ func fetchEvents(config ConfigData, srv *sheets.Service, today time.Time, eventT
 		dateS := cols.getValue("DATE", row)
 		nameS := cols.getValue("NAME", row)
 		statusS := cols.getValue("STATUS", row)
-		if statusS == "temp" {
-			continue
-		}
 		special := statusS == "spezial"
 		cancelled := statusS == "abgesagt"
 		obsolete := statusS == "obsolete"
@@ -701,6 +698,10 @@ func fetchEvents(config ConfigData, srv *sheets.Service, today time.Time, eventT
 			statusS = ""
 		}
 		urlS := cols.getValue("URL", row)
+		if statusS == "temp" {
+			log.Printf("table '%s', line '%d': skipping row with temp status", table, line)
+			continue
+		}
 		if eventType == "event" {
 			if dateS == "" {
 				log.Printf("table '%s', line '%d': skipping row with empty date", table, line)
