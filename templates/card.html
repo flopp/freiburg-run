@@ -49,7 +49,7 @@
                         <td class="no-border">
                             {{range .Links}}
                             {{if .IsRegistration}}
-                            <a class="tag is-primary is-light mr-2" href="{{.Url}}" title="{{$.Name}}: {{.Name}}" target="_blank">{{.Name}}</a>
+                            <a class="tag is-primary mr-2" href="{{.Url}}" title="{{$.Name}}: {{.Name}}" target="_blank">{{.Name}}</a>
                             {{else}}
                             <a class="tag is-link is-light mr-2" href="{{.Url}}" title="{{$.Name}}: {{.Name}}" target="_blank">{{.Name}}</a>
                             {{end}}
