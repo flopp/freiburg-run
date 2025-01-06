@@ -920,7 +920,7 @@ func findPrevNextEvents(events []*Event) {
 				break
 			}
 
-			if isSimilarName(event2.Name, event.Name) && event2.Location.Geo == event.Location.Geo {
+			if isSimilarName(event2.Name, event.Name) /*&& event2.Location.Geo == event.Location.Geo*/ {
 				prev = event2
 			}
 		}
