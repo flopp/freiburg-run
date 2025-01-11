@@ -364,6 +364,7 @@ type ParkrunEvent struct {
 	Runners       string
 	Temp          string
 	Special       string
+	Cafe          string
 	Results       string
 	Report        string
 	Author        string
@@ -793,6 +794,7 @@ func fetchParkrunEvents(config ConfigData, srv *sheets.Service, today time.Time,
 		runners := cols.getValue("RUNNERS", row)
 		temp := cols.getValue("TEMP", row)
 		special := cols.getValue("SPECIAL", row)
+		cafe := cols.getValue("CAFE", row)
 		results := cols.getValue("RESULTS", row)
 		report := cols.getValue("REPORT", row)
 		author := cols.getValue("AUTHOR", row)
@@ -824,6 +826,7 @@ func fetchParkrunEvents(config ConfigData, srv *sheets.Service, today time.Time,
 			runners,
 			temp,
 			special,
+			cafe,
 			results,
 			report,
 			author,

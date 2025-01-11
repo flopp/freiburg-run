@@ -31,6 +31,7 @@
                     <th class="is-hidden-mobile">Datum</th>
                     <th class="is-hidden-mobile">Teilnehmer</th>
                     <th class="is-hidden-mobile">Temp</th>
+                    <th class="is-hidden-mobile">Café</th>
                     <th>Spezial</th>
                     <th>Links</th>
                 </tr>
@@ -56,6 +57,9 @@
                     <td class="is-hidden-mobile">
                         {{.Temp}}
                     </td>
+                    <td class="is-hidden-mobile">
+                        {{.Cafe}}
+                    </td>
                     <td data-label="Spezial">
                         <span class="is-hidden-mobile">
                             {{.Special}}
@@ -71,6 +75,9 @@
                             {{end}}
                             {{if .Temp}}
                             <span class="is-size-7">Temperatur: {{.Temp}}</span>
+                            {{end}}
+                            {{if .Cafe}}
+                            <span class="is-size-7">Café: {{.Cafe}}</span>
                             {{end}}
                         </span>
                     </td>
