@@ -692,10 +692,13 @@ func fetchEvents(config ConfigData, srv *sheets.Service, today time.Time, eventT
 		dateS := cols.getValue("DATE", row)
 		nameS := cols.getValue("NAME", row)
 		statusS := cols.getValue("STATUS", row)
+		cancelled := strings.HasPrefix(statusS, "abgesagt")
+		if cancelled && statusS == "abgesagt" {
+			statusS = ""
+		}
 		special := statusS == "spezial"
-		cancelled := statusS == "abgesagt"
 		obsolete := statusS == "obsolete"
-		if special || cancelled || obsolete {
+		if special || obsolete {
 			statusS = ""
 		}
 		urlS := cols.getValue("URL", row)
