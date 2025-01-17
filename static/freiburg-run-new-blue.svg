@@ -2,13 +2,36 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="100mm"
-   height="100mm"
-   viewBox="0 0 100 100"
+   width="128mm"
+   height="128mm"
+   viewBox="0 0 128 128"
    version="1.1"
    id="svg1"
+   sodipodi:docname="freiburg-run-new-blue.svg"
+   inkscape:version="1.4 (e7c3feb1, 2024-10-09)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="1.2964583"
+     inkscape:cx="176.63506"
+     inkscape:cy="90.245862"
+     inkscape:window-width="1440"
+     inkscape:window-height="709"
+     inkscape:window-x="0"
+     inkscape:window-y="25"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg1" />
   <defs
      id="defs1" />
   <rect
@@ -16,14 +39,15 @@
      id="rect1"
      width="128"
      height="128"
-     x="-14"
-     y="-14" />
+     x="0"
+     y="0" />
   <g
-     id="layer1">
+     id="layer1"
+     transform="translate(14,14)">
     <path
        id="rect4"
        style="fill:#ffffff;fill-opacity:1;stroke-width:15.6464"
-       d="M 0 0 L 0 100.0001 L 100.0001 100.0001 L 100.0001 0 L 0 0 z M 3.9997559 3.9997559 L 95.999825 3.9997559 L 95.999825 95.999825 L 3.9997559 95.999825 L 3.9997559 3.9997559 z " />
+       d="M 0,0 V 100.0001 H 100.0001 V 0 Z M 3.9997559,3.9997559 H 95.999825 V 95.999825 H 3.9997559 Z" />
     <g
        id="text1"
        style="font-weight:bold;font-size:29.1px;line-height:1.05;font-family:Sans;-inkscape-font-specification:'Sans, Bold';letter-spacing:5.60917px;fill:#ffffff;stroke-width:9.80001"
