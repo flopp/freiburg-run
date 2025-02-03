@@ -215,7 +215,7 @@ var filter = (s) => {
                 el.classList.add("is-hidden");
             }
         });
-        info.innerHTML = `${shown} ${shown!=1 ? "Einträge" : "Eintrag"} angezeigt, ${hidden} ${hidden!=1 ? "Einträge" : "Eintrag"} Einträge versteckt`;
+        info.innerHTML = `${shown} ${shown!=1 ? "Einträge" : "Eintrag"} angezeigt, ${hidden} ${hidden!=1 ? "Einträge" : "Eintrag"} versteckt`;
         info.classList.remove("is-hidden");
     }
 };
