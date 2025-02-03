@@ -193,6 +193,33 @@ var load_marker = function (color) {
     return L.icon(options);
 }
 
+var filter = (s) => {
+    let shown = 0;
+    let hidden = 0;
+    let info = document.querySelector("#filter-info");
+    if (s == "") {
+        document.querySelectorAll(".event").forEach(el => {
+            shown++;
+            el.classList.remove("is-hidden");
+        });
+        info.classList.add("is-hidden");
+    } else {
+        let needle = s.toLowerCase().trim();
+        document.querySelectorAll(".event").forEach(el => {
+            let name = el.dataset.name.toLowerCase();
+            if (name.includes(needle)) {
+                shown++;
+                el.classList.remove("is-hidden");
+            } else {
+                hidden++;
+                el.classList.add("is-hidden");
+            }
+        });
+        info.innerHTML = `${shown} ${shown!=1 ? "Einträge" : "Eintrag"} angezeigt, ${hidden} ${hidden!=1 ? "Einträge" : "Eintrag"} Einträge versteckt`;
+        info.classList.remove("is-hidden");
+    }
+};
+
 var main = () => {
     document.querySelectorAll('.navbar-burger').forEach(el => {
         el.addEventListener('click', () => {
@@ -201,6 +228,17 @@ var main = () => {
             document.getElementById(target).classList.toggle('is-active'); 
         });
     });
+    
+    var filterInput = document.querySelector("#filter-input");
+    if (filterInput !== null) {
+        filterInput.addEventListener('input', (e) => {
+            filter(e.target.value);
+        });
+        document.querySelector("#filter-button-cancel").addEventListener('click', (e) => {
+            filterInput.value = "";
+            filter("");
+        });
+    }
 
     var bigMapId = "";
     if (document.querySelector("#big-map") !== null) {

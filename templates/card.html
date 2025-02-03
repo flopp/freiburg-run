@@ -1,8 +1,4 @@
-{{if .Location.HasGeo}}
 <div class="column is-half event" data-type="{{.NiceType}}" data-name="{{.Name}}" data-time="{{.Time.Formatted}}" data-geo="{{.Location.Geo}}" data-location="{{.Location.Name}}" data-slug="{{.Slug}}">
-{{else}}
-<div class="column is-half">
-{{end}}
     {{if .Special}}
     <div class="card pulsating-border" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
     {{else}}
