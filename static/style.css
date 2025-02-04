@@ -1,6 +1,6 @@
-:root {
-    --bulma-navbar-z: 1100;
-    --bulma-navbar-fixed-z: 1100;
+.navbar {
+    --bulma-navbar-z: 1100 !important;
+    --bulma-navbar-fixed-z: 1100 !important;
 }
   
 #map {
