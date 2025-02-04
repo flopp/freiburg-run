@@ -1,3 +1,8 @@
+:root {
+    --bulma-navbar-z: 1100;
+    --bulma-navbar-fixed-z: 1100;
+}
+  
 #map {
     height: 400px;
     margin-bottom: 1.5rem;
