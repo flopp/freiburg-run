@@ -202,6 +202,9 @@ var filter = (s) => {
             shown++;
             el.classList.remove("is-hidden");
         });
+        document.querySelectorAll(".event-separator").forEach(el => {
+            el.classList.remove("is-hidden");
+        });
         info.classList.add("is-hidden");
     } else {
         let needle = s.toLowerCase().trim();
@@ -214,6 +217,9 @@ var filter = (s) => {
                 hidden++;
                 el.classList.add("is-hidden");
             }
+        });
+        document.querySelectorAll(".event-separator").forEach(el => {
+            el.classList.add("is-hidden");
         });
         info.innerHTML = `${shown} ${shown!=1 ? "Einträge" : "Eintrag"} angezeigt, ${hidden} ${hidden!=1 ? "Einträge" : "Eintrag"} versteckt`;
         info.classList.remove("is-hidden");
