@@ -2,36 +2,11 @@
     --bulma-navbar-z: 1100 !important;
     --bulma-navbar-fixed-z: 1100 !important;
 }
-  
-#map {
-    height: 400px;
-    margin-bottom: 1.5rem;
-    margin-right: 2em;
-}
 
-#parkrun-map {
-    height: 300px;
-}
-
-#event-map {
-    height: 400px;
-    width: 100%;
+#map-container {
     margin-bottom: 1.5rem;
-    margin-right: 2em;
 }
-
-#serie-map {
-    height: 400px;
-    width: 100%;
-    margin-bottom: 1.5rem;
-    margin-right: 2em;
-}
-
-#map-toggle {
-    margin-bottom: 1.5rem;
-    margin-right: 2em;
-}
-#the-map  {
+#event-map, #small-map  {
     height: 400px;
     width: 100%;
 }

@@ -262,27 +262,22 @@ var main = () => {
         mapShowBtn.addEventListener('click', () => {
             mapShowBtn.classList.add("is-hidden");
             mapHideBtn.classList.remove("is-hidden");
+            const container = document.querySelector("#map-container");
             const mapDiv = document.createElement("div");
-            mapDiv.id = "the-map";
-            document.querySelector("#map-toggle").appendChild(mapDiv);
-            loadMap("the-map");
+            mapDiv.id = "small-map";
+            container.appendChild(mapDiv);
+            if (container.dataset.type === "parkrun") {
+                loadParkrunMap("small-map");
+            } else {
+                loadMap("small-map");
+            }
         });
         mapHideBtn.addEventListener('click', () => {
             mapShowBtn.classList.remove("is-hidden");
             mapHideBtn.classList.add("is-hidden");
-            document.querySelector("#the-map").remove();
+            document.querySelector("#small-map").remove();
         });
 
-    }
-
-    const parkrunMapBtn = document.querySelector("#parkrun-map-toggle-btn");
-    if (parkrunMapBtn !== null) {
-        parkrunMapBtn.addEventListener('click', () => {
-            parkrunMapBtn.remove();
-            const mapDiv = document.querySelector("#map-toggle");
-            mapDiv.classList.add("is-active"); 
-            loadParkrunMap("map-toggle");
-        });
     }
 
     let eventMap = document.querySelector("#event-map");
