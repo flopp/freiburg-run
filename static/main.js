@@ -256,14 +256,23 @@ var main = () => {
         loadMap(bigMapId);
     }
 
-    const mapBtn = document.querySelector("#map-toggle-btn");
-    if (mapBtn !== null) {
-        mapBtn.addEventListener('click', () => {
-            mapBtn.remove();
-            const mapDiv = document.querySelector("#map-toggle");
-            mapDiv.classList.add("is-active"); 
-            loadMap("map-toggle");
+    const mapShowBtn = document.querySelector("#map-show-btn");
+    const mapHideBtn = document.querySelector("#map-hide-btn");
+    if (mapShowBtn !== null && mapHideBtn !== null) {
+        mapShowBtn.addEventListener('click', () => {
+            mapShowBtn.classList.add("is-hidden");
+            mapHideBtn.classList.remove("is-hidden");
+            const mapDiv = document.createElement("div");
+            mapDiv.id = "the-map";
+            document.querySelector("#map-toggle").appendChild(mapDiv);
+            loadMap("the-map");
         });
+        mapHideBtn.addEventListener('click', () => {
+            mapShowBtn.classList.remove("is-hidden");
+            mapHideBtn.classList.add("is-hidden");
+            document.querySelector("#the-map").remove();
+        });
+
     }
 
     const parkrunMapBtn = document.querySelector("#parkrun-map-toggle-btn");

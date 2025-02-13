@@ -31,7 +31,7 @@
     margin-bottom: 1.5rem;
     margin-right: 2em;
 }
-#map-toggle.is-active {
+#the-map  {
     height: 400px;
     width: 100%;
 }
