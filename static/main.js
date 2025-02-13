@@ -164,10 +164,6 @@ const loadParkrunMap = function (id) {
     tram.addTo(map);
     tram.bindPopup("Straßenbahn (Linie 3, Rohrgraben)");
 
-    let cafe = L.marker([47.997826,7.807831], {icon: greyIcon});
-    cafe.addTo(map);
-    cafe.bindPopup("Lio's Café");
-
     let meetingpoint = L.marker([48.001294,7.806489], {icon: blueIcon});
     meetingpoint.addTo(map);
     meetingpoint.bindPopup("Treffpunkt / Zielbereich");
