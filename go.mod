@@ -2,7 +2,7 @@ module github.com/flopp/freiburg-run
 
 go 1.22.7
 
-toolchain go1.23.6
+toolchain go1.24.0
 
 require (
 	github.com/flopp/go-compass v0.0.0-20240423142146-efc33f5dee1e
