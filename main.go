@@ -1466,6 +1466,8 @@ func main() {
 	sitemap.Add("impressum.html", "Impressum", "Allgemein")
 
 	utils.MustCopy("static/robots.txt", out.Join("robots.txt"))
+	// ahrefs validation
+	utils.MustCopy("static/5vkf9hdnfkay895vyx33zdvesnyaphgv.txt", out.Join("5vkf9hdnfkay895vyx33zdvesnyaphgv.txt"))
 	utils.MustCopy("static/favicon.png", out.Join("favicon.png"))
 	utils.MustCopy("static/favicon.ico", out.Join("favicon.ico"))
 	utils.MustCopy("static/apple-touch-icon.png", out.Join("apple-touch-icon.png"))
