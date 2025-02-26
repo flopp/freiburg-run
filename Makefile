@@ -3,7 +3,7 @@ all:
 	@echo "make run-script -> sync & run remote script"
 	
 
-.bin/generate-linux: main.go internal/utils/*.go go.mod
+.bin/generate-linux: main.go internal/events/*.go internal/utils/*.go go.mod
 	mkdir -p .bin
 	GOOS=linux GOARCH=amd64 go build -o .bin/generate-linux main.go
 
