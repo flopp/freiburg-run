@@ -576,6 +576,7 @@ func main() {
 		"",
 		"events",
 		"",
+		"",
 		defaultImage,
 		breadcrumbsEvents,
 		"/",
