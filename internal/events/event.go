@@ -180,6 +180,10 @@ func (event *Event) ImageSlug() string {
 	return event.slug("png")
 }
 
+func (event *Event) CalendarSlug() string {
+	return event.slug("ics")
+}
+
 func (event *Event) LinkTitle() string {
 	if event.Type == "event" {
 		if strings.HasPrefix(event.Url, "mailto:") {

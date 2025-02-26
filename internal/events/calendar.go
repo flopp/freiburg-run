@@ -18,16 +18,20 @@ const (
 	componentPropertyDtEnd   = ical.ComponentProperty(propertyDtEnd)
 )
 
-func CreateCalendar(data Data, now time.Time, path string) error {
-	_ = data
+func CreateEventCalendar(event *Event, now time.Time, calendarUrl string, path string) error {
+	eventsList := make([]*Event, 1)
+	eventsList[0] = event
+	return CreateCalendar(eventsList, now, calendarUrl, path)
+}
 
+func CreateCalendar(eventsList []*Event, now time.Time, calendarUrl string, path string) error {
 	cal := ical.NewCalendar()
 	cal.SetProductId("Laufevents - freiburg.run")
 	cal.SetMethod(ical.MethodPublish)
 	cal.SetDescription("Liste aller Laufevents im Raum Freiburg (50km Umkreis)")
-	cal.SetUrl("https://freiburg.run/events.ics")
+	cal.SetUrl(calendarUrl)
 
-	for _, e := range data.Events {
+	for _, e := range eventsList {
 		if e.IsSeparator() {
 			continue
 		}

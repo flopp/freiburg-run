@@ -32,7 +32,7 @@
             <div class="content">
                 <table class="table is-narrow is-fullwidth">
                     {{if .Status}}<tr class="has-background-warning-light"><th class="w-2em no-border" title="Status">⚠️</th><td class="no-border">{{.Status}}</td></tr>{{end}}
-                    {{if .Time.Formatted}}<tr><th class="w-2em no-border" title="Datum">📅</th><td class="no-border">{{.Time.Formatted}}{{if .Old}} <span class="has-text-danger">(Vergangenes Event)</span>{{end}}</td></tr>{{end}}
+                    {{if .Time.Formatted}}<tr><th class="w-2em no-border" title="Datum">📅</th><td class="no-border">{{.Time.Formatted}}{{if .Old}} <span class="has-text-danger">(Vergangenes Event)</span>{{end}}{{if .Calendar}} <a class="tag is-primary mr-2" href="{{.Calendar}}" title="Zum Kalender hinzufügen: {{.Name}}" target="_blank">Kalender</a>{{end}}</td></tr>{{end}}
                     <tr>
                         <th class="w-2em no-border" title="Ort">🗺</th>
                         <td class="no-border">

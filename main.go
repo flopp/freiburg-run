@@ -100,6 +100,7 @@ type EventTemplateData struct {
 	Description   string
 	Nav           string
 	Canonical     string
+	Calendar      string
 	Image         string
 	Breadcrumbs   []utils.Breadcrumb
 	Main          string
@@ -594,6 +595,14 @@ func main() {
 		eventdata.Description = event.GenerateDescription()
 		slug := event.Slug()
 		eventdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
+
+		calendar := event.CalendarSlug()
+		if err := events.CreateEventCalendar(event, now, fmt.Sprintf("https://freiburg.run/%s", calendar), out.Join(calendar)); err != nil {
+			log.Printf("failed to create event calendar: %w", err)
+		} else {
+			eventdata.Calendar = fmt.Sprintf("/%s", calendar)
+		}
+
 		image := event.ImageSlug()
 		if utils.GenImage(out.Join(image), event.Name, event.Time.Formatted, event.Location.NameNoFlag(), "static/background.png") == nil {
 			eventdata.Image = fmt.Sprintf("/%s", image)
