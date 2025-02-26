@@ -30,7 +30,7 @@
                         {{if .Event.Time.Formatted}}
                         <tr>
                             <th>Datum</th>
-                            <td class="is-w100">{{.Event.Time.Formatted}}{{if .Event.Old}} <span class="has-text-danger">(Vergangenes Event)</span>{{end}}</td>
+                            <td class="is-w100">{{.Event.Time.Formatted}}{{if .Event.Old}} <span class="has-text-danger">(Vergangenes Event)</span>{{end}}{{if .Calendar}} <a class="tag is-primary mr-2" href="{{.Event.Calendar}}" title="Zum Kalender hinzufügen: {{.Event.Name}}" target="_blank">Kalender</a>{{end}}</td>
                         </tr>
                         {{end}}
                         <tr>

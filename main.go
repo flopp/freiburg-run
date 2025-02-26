@@ -100,7 +100,6 @@ type EventTemplateData struct {
 	Description   string
 	Nav           string
 	Canonical     string
-	Calendar      string
 	Image         string
 	Breadcrumbs   []utils.Breadcrumb
 	Main          string
@@ -576,7 +575,6 @@ func main() {
 		"",
 		"events",
 		"",
-		"",
 		defaultImage,
 		breadcrumbsEvents,
 		"/",
@@ -601,7 +599,7 @@ func main() {
 		if err := events.CreateEventCalendar(event, now, fmt.Sprintf("https://freiburg.run/%s", calendar), out.Join(calendar)); err != nil {
 			log.Printf("failed to create event calendar: %w", err)
 		} else {
-			eventdata.Calendar = fmt.Sprintf("/%s", calendar)
+			event.Calendar = fmt.Sprintf("/%s", calendar)
 		}
 
 		image := event.ImageSlug()
@@ -779,6 +777,6 @@ func main() {
 	err = CreateHtaccess(eventsData, options.outDir)
 	utils.Check(err)
 
-	err = events.CreateCalendar(eventsData, now, out.Join("events.ics"))
+	err = events.CreateCalendar(eventsData.Events, now, "https://freiburg.run/events.ics", out.Join("events.ics"))
 	utils.Check(err)
 }

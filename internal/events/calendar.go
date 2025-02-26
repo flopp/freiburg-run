@@ -3,6 +3,7 @@ package events
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"time"
 
 	ical "github.com/arran4/golang-ical"
@@ -57,6 +58,9 @@ func CreateCalendar(eventsList []*Event, now time.Time, calendarUrl string, path
 	}
 
 	serialized := cal.Serialize()
+	if err := os.MkdirAll(filepath.Dir(path), 0770); err != nil {
+		return fmt.Errorf("serializing calender to %s: %w", path, err)
+	}
 	if err := os.WriteFile(path, []byte(serialized), 0o777); err != nil {
 		return fmt.Errorf("serializing calender to %s: %w", path, err)
 	}

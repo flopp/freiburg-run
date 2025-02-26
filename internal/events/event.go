@@ -31,6 +31,7 @@ type Event struct {
 	RawSeries    []string
 	Series       []*Serie
 	Links        []*utils.NameUrl
+	Calendar     string
 	Added        string
 	New          bool
 	Prev         *Event
@@ -139,6 +140,7 @@ func createSeparatorEvent(t time.Time) *Event {
 		nil,
 		nil,
 		nil,
+		"",
 		"",
 		true,
 		nil,
