@@ -3,6 +3,7 @@ package events
 import (
 	"fmt"
 	"os"
+	"time"
 
 	ical "github.com/arran4/golang-ical"
 )
@@ -17,7 +18,7 @@ const (
 	componentPropertyDtEnd   = ical.ComponentProperty(propertyDtEnd)
 )
 
-func CreateCalendar(data Data, path string) error {
+func CreateCalendar(data Data, now time.Time, path string) error {
 	_ = data
 
 	cal := ical.NewCalendar()
@@ -31,18 +32,16 @@ func CreateCalendar(data Data, path string) error {
 			continue
 		}
 
-		id, err := e.GetUUID()
-		if err != nil {
-			return fmt.Errorf("creating calendar entry for '%s': %w", e.Name, err)
-		}
+		url := fmt.Sprintf("https://freiburg.run/%s", e.Slug())
 
-		calEvent := cal.AddEvent(id.String())
+		calEvent := cal.AddEvent(url)
+		calEvent.SetDtStampTime(now)
+		calEvent.SetSummary(e.Name)
 		calEvent.SetLocation(e.Location.NameNoFlag())
+		calEvent.SetDescription(e.Details)
 		calEvent.SetProperty(componentPropertyDtStart, e.Time.From.UTC().Format(dateFormatUtc))
 		calEvent.SetProperty(componentPropertyDtEnd, e.Time.To.UTC().Format(dateFormatUtc))
-		calEvent.SetSummary(e.Name)
-		calEvent.SetURL(fmt.Sprintf("https://freiburg.run/%s", e.Slug()))
-		calEvent.SetDescription(e.Details)
+		calEvent.SetURL(url)
 	}
 
 	serialized := cal.Serialize()
