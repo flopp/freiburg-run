@@ -38,7 +38,7 @@
                 </tr>
             </thead>
             <tbody>
-                {{range .Parkrun}}
+                {{range .Data.ParkrunEvents}}
                 <tr {{if .IsCurrentWeek}}class="parkrun-event is-selected is-link has-text-white"{{else}}class="parkrun-event"{{end}}>
                     <td>
                         <span class="is-hidden-mobile">

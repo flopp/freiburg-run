@@ -8,7 +8,7 @@ Hier sind die Fotoalben, Ergebnislisten und Laufberichte aller Events des Dieten
             <th class="Results-table-th">Links</th>
         </tr>
     </thead>
-    <tbody>{{range .Parkrun}}
+    <tbody>{{range .Data.ParkrunEvents}}
         <tr>
             <td class="Results-table-td">{{.Date}}</td>
             <td class="Results-table-td">{{if .Index}}#{{.Index}}{{end}}{{if .Special}}{{if .Index}} - {{end}}{{.Special}}{{end}}</td>

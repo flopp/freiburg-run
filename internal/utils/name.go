@@ -74,3 +74,27 @@ func SortAndUniquify(a []string) []string {
 	sort.Slice(tags, func(i, j int) bool { return tags[i] < tags[j] })
 	return tags
 }
+
+func IsSimilarName(s1, s2 string) bool {
+	var builder1 strings.Builder
+	for _, r := range s1 {
+		if unicode.IsLetter(r) {
+			builder1.WriteRune(unicode.ToLower(r))
+		}
+	}
+	var builder2 strings.Builder
+	for _, r := range s2 {
+		if unicode.IsLetter(r) {
+			builder2.WriteRune(unicode.ToLower(r))
+		}
+	}
+	return builder1.String() == builder2.String()
+}
+
+func SplitDetails(s string) (string, string) {
+	i := strings.Index(s, "|")
+	if i > -1 {
+		return s[:i], s[i+1:]
+	}
+	return s, ""
+}

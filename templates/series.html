@@ -18,7 +18,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {{range .Series}}
+                        {{range .Data.Series}}
                         <tr>
                             <td>
                                 <a href="/{{.Slug}}">{{.Name}}</a>
@@ -35,7 +35,7 @@
     </div>
 </section>
 
-{{if .SeriesOld}}
+{{if .Data.SeriesOld}}
 <section class="section">
     <div class="container is-max-desktop">
         <h2 class="title">Vergangene Serien</h1>
@@ -50,7 +50,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {{range .SeriesOld}}
+                        {{range .Data.SeriesOld}}
                         <tr>
                             <td>
                                 <a href="/{{.Slug}}">{{.Name}}</a>

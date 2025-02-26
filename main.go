@@ -1,25 +1,16 @@
 package main
 
 import (
-	"context"
-	"encoding/json"
 	"flag"
 	"fmt"
-	"html/template"
 	"log"
 	"os"
 	"path/filepath"
-	"regexp"
-	"sort"
-	"strconv"
 	"strings"
 	"time"
-	"unicode"
 
+	"github.com/flopp/freiburg-run/internal/events"
 	"github.com/flopp/freiburg-run/internal/utils"
-	"github.com/flopp/go-coordsparser"
-	"google.golang.org/api/option"
-	"google.golang.org/api/sheets/v4"
 )
 
 const (
@@ -60,224 +51,6 @@ func parseCommandLine() CommandLineOptions {
 	}
 }
 
-type NameUrl struct {
-	Name string
-	Url  string
-}
-
-func (n NameUrl) IsRegistration() bool {
-	return strings.Contains(n.Name, "Anmeldung")
-}
-
-type Location struct {
-	City      string
-	Country   string
-	Geo       string
-	Lat       float64
-	Lon       float64
-	Distance  string
-	Direction string
-}
-
-func (loc Location) Name() string {
-	if loc.City == "" {
-		return ""
-	}
-	if loc.Country == "Frankreich" {
-		return fmt.Sprintf(`%s, FR 🇫🇷`, loc.City)
-	}
-	if loc.Country == "Schweiz" {
-		return fmt.Sprintf(`%s, CH 🇨🇭`, loc.City)
-	}
-	return loc.City
-}
-
-func (loc Location) NameNoFlag() string {
-	if loc.City == "" {
-		return ""
-	}
-	if loc.Country == "Frankreich" {
-		return fmt.Sprintf(`%s, FR`, loc.City)
-	}
-	if loc.Country == "Schweiz" {
-		return fmt.Sprintf(`%s, CH`, loc.City)
-	}
-	return loc.City
-}
-
-func (loc Location) HasGeo() bool {
-	return loc.Geo != ""
-}
-
-func (loc Location) Dir() string {
-	return fmt.Sprintf(`%s %s von Freiburg`, loc.Distance, loc.Direction)
-}
-
-func (loc Location) DirLong() string {
-	return fmt.Sprintf(`%s %s von Freiburg Zentrum`, loc.Distance, loc.Direction)
-}
-
-func (loc Location) GoogleMaps() string {
-	return fmt.Sprintf(`https://www.google.com/maps/place/%s`, loc.Geo)
-}
-
-func (loc Location) Tags() []string {
-	tags := make([]string, 0)
-	if loc.Country != "" {
-		tags = append(tags, utils.SanitizeName(loc.Country))
-	}
-	// tags = append(tags, utils.SplitAndSanitize(loc.City)...)
-
-	return tags
-}
-
-var reFr = regexp.MustCompile(`\s*^(.*)\s*,\s*FR\s*🇫🇷\s*$`)
-var reCh = regexp.MustCompile(`\s*^(.*)\s*,\s*CH\s*🇨🇭\s*$`)
-
-func createLocation(locationS, coordinatesS string) Location {
-	country := ""
-	if m := reFr.FindStringSubmatch(locationS); m != nil {
-		country = "Frankreich"
-		locationS = m[1]
-	} else if m := reCh.FindStringSubmatch(locationS); m != nil {
-		country = "Schweiz"
-		locationS = m[1]
-	}
-
-	lat, lon, err := coordsparser.Parse(coordinatesS)
-	coordinates := ""
-	distance := ""
-	direction := ""
-	if err == nil {
-		coordinates = fmt.Sprintf("%.6f,%.6f", lat, lon)
-
-		// Freiburg
-		lat0 := 47.996090
-		lon0 := 7.849400
-		d, b := utils.DistanceBearing(lat0, lon0, lat, lon)
-		distance = fmt.Sprintf("%.1fkm", d)
-		direction = utils.ApproxDirection(b)
-	}
-
-	return Location{locationS, country, coordinates, lat, lon, distance, direction}
-}
-
-type Event struct {
-	Type         string
-	Name         string
-	NameOld      string
-	Time         utils.TimeRange
-	Old          bool
-	Status       string
-	Cancelled    bool
-	Obsolete     bool
-	Special      bool
-	Location     Location
-	Details      string
-	Details2     template.HTML
-	Url          string
-	RawTags      []string
-	Tags         []*Tag
-	RawSeries    []string
-	Series       []*Serie
-	Links        []*NameUrl
-	Added        string
-	New          bool
-	Prev         *Event
-	Next         *Event
-	UpcomingNear []*Event
-}
-
-func (event Event) GenerateDescription() string {
-	min := 110
-	max := 160
-
-	var description string
-
-	location := ""
-	if event.Location.NameNoFlag() != "" {
-		location = fmt.Sprintf(" in '%s'", event.Location.NameNoFlag())
-	}
-
-	time := ""
-	if event.Time.Original != "" {
-		if event.Time.Original == "Verschiedene Termine" {
-			time = ", verschiedene Termine"
-		} else {
-			time = fmt.Sprintf(" am %s", event.Time.Original)
-		}
-	}
-
-	switch event.Type {
-	case "event":
-		description = fmt.Sprintf("Informationen zur Laufveranstaltung '%s'%s%s", event.Name, location, time)
-	case "group":
-		description = fmt.Sprintf("Informationen zur Laufgruppe / zum Lauftreff '%s'%s%s", event.Name, location, time)
-	case "shop":
-		description = fmt.Sprintf("Informationen zum Laufshop '%s'%s", event.Name, location)
-	}
-
-	if len(description) >= min {
-		return description
-	}
-
-	for i, tag := range event.Tags {
-		if len(description) >= max {
-			break
-		}
-		if i == 0 {
-			description += "; "
-		} else {
-			description += ", "
-		}
-		description += tag.Name
-	}
-
-	return description
-}
-
-func (event Event) IsSeparator() bool {
-	return event.Type == ""
-}
-
-func NonSeparators(events []*Event) int {
-	count := 0
-	for _, e := range events {
-		if !e.IsSeparator() {
-			count += 1
-		}
-	}
-	return count
-}
-
-func createSeparatorEvent(label string) *Event {
-	return &Event{
-		"",
-		label,
-		"",
-		utils.TimeRange{},
-		false,
-		"",
-		false,
-		false,
-		false,
-		Location{},
-		"",
-		"",
-		"",
-		nil,
-		nil,
-		nil,
-		nil,
-		nil,
-		"",
-		true,
-		nil,
-		nil,
-		nil,
-	}
-}
-
 func IsNew(s string, now time.Time) bool {
 	days := 14
 
@@ -287,153 +60,6 @@ func IsNew(s string, now time.Time) bool {
 	}
 
 	return false
-}
-
-func (event *Event) slug(ext string) string {
-	t := event.Type
-
-	if !event.Time.IsZero() {
-		return fmt.Sprintf("%s/%d-%s.%s", t, event.Time.Year(), utils.SanitizeName(event.Name), ext)
-	}
-	return fmt.Sprintf("%s/%s.%s", t, utils.SanitizeName(event.Name), ext)
-}
-
-func (event *Event) SlugOld() string {
-	if event.NameOld == "" {
-		return ""
-	}
-
-	t := event.Type
-	if strings.Contains(event.NameOld, "parkrun") {
-		t = "event"
-	}
-
-	if !event.Time.IsZero() {
-		return fmt.Sprintf("%s/%d-%s.html", t, event.Time.Year(), utils.SanitizeName(event.NameOld))
-	}
-	return fmt.Sprintf("%s/%s.html", t, utils.SanitizeName(event.NameOld))
-}
-
-func (event *Event) Slug() string {
-	return event.slug("html")
-}
-
-func (event *Event) ImageSlug() string {
-	return event.slug("png")
-}
-
-func (event *Event) LinkTitle() string {
-	if event.Type == "event" {
-		if strings.HasPrefix(event.Url, "mailto:") {
-			return "Mail an Veranstalter"
-		}
-		return "Zur Veranstaltung"
-	}
-	if event.Type == "group" {
-		if strings.HasPrefix(event.Url, "mailto:") {
-			return "Mail an Organisator"
-		}
-		return "Zum Lauftreff"
-	}
-	if event.Type == "shop" {
-		return "Zum Lauf-Shop"
-	}
-	return "Zur Veranstaltung"
-}
-
-func (event *Event) NiceType() string {
-	if event.Old {
-		return "vergangene Veranstaltung"
-	}
-	if event.Type == "event" {
-		return "Veranstaltung"
-	}
-	if event.Type == "group" {
-		return "Lauftreff"
-	}
-	if event.Type == "shop" {
-		return "Lauf-Shop"
-	}
-	return "Veranstaltung"
-}
-
-type ParkrunEvent struct {
-	IsCurrentWeek bool
-	Index         string
-	Date          string
-	Runners       string
-	Temp          string
-	Special       string
-	Cafe          string
-	Results       string
-	Report        string
-	Author        string
-	Photos        string
-}
-
-type Tag struct {
-	Sanitized   string
-	Name        string
-	Description string
-	Events      []*Event
-	EventsOld   []*Event
-	Groups      []*Event
-	Shops       []*Event
-}
-
-func CreateTag(name string) *Tag {
-	return &Tag{name, name, "", make([]*Event, 0), make([]*Event, 0), make([]*Event, 0), make([]*Event, 0)}
-}
-
-func (tag *Tag) Slug() string {
-	return fmt.Sprintf("tag/%s.html", tag.Sanitized)
-}
-
-func (tag *Tag) NumEvents() int {
-	return NonSeparators(tag.Events)
-}
-
-func (tag *Tag) NumOldEvents() int {
-	return NonSeparators(tag.EventsOld)
-}
-
-func (tag *Tag) NumGroups() int {
-	return NonSeparators(tag.Groups)
-}
-
-func (tag *Tag) NumShops() int {
-	return NonSeparators(tag.Shops)
-}
-
-type Serie struct {
-	Sanitized   string
-	Name        string
-	Description template.HTML
-	Links       []*NameUrl
-	Events      []*Event
-	EventsOld   []*Event
-	Groups      []*Event
-	Shops       []*Event
-}
-
-func (s Serie) IsOld() bool {
-	return len(s.Events) == 0 && len(s.Groups) == 0 && len(s.Shops) == 0
-}
-
-func (s Serie) Num() int {
-	return NonSeparators(s.Events) + NonSeparators(s.EventsOld) + NonSeparators(s.Groups) + NonSeparators(s.Shops)
-}
-
-func CreateSerie(id string, name string) *Serie {
-	return &Serie{id, name, "", make([]*NameUrl, 0), make([]*Event, 0), make([]*Event, 0), make([]*Event, 0), make([]*Event, 0)}
-}
-
-func (serie *Serie) Slug() string {
-	return fmt.Sprintf("serie/%s.html", serie.Sanitized)
-}
-
-func (serie *Serie) ImageSlug() string {
-	return fmt.Sprintf("serie/%s.png", serie.Sanitized)
 }
 
 type TemplateData struct {
@@ -447,14 +73,7 @@ type TemplateData struct {
 	Timestamp     string
 	TimestampFull string
 	SheetUrl      string
-	Events        []*Event
-	EventsOld     []*Event
-	Groups        []*Event
-	Shops         []*Event
-	Parkrun       []*ParkrunEvent
-	Tags          []*Tag
-	Series        []*Serie
-	SeriesOld     []*Serie
+	Data          *events.Data
 	JsFiles       []string
 	CssFiles      []string
 	FathomJs      string
@@ -466,7 +85,7 @@ func (d TemplateData) YearTitle() string {
 
 func (d TemplateData) CountEvents() int {
 	count := 0
-	for _, event := range d.Events {
+	for _, event := range d.Data.Events {
 		if !event.IsSeparator() {
 			count += 1
 		}
@@ -475,7 +94,7 @@ func (d TemplateData) CountEvents() int {
 }
 
 type EventTemplateData struct {
-	Event         *Event
+	Event         *events.Event
 	Title         string
 	Type          string
 	Description   string
@@ -510,7 +129,7 @@ func (d EventTemplateData) YearTitle() string {
 }
 
 type TagTemplateData struct {
-	Tag           *Tag
+	Tag           *events.Tag
 	Title         string
 	Type          string
 	Description   string
@@ -532,7 +151,7 @@ func (d TagTemplateData) YearTitle() string {
 }
 
 type SerieTemplateData struct {
-	Serie         *Serie
+	Serie         *events.Serie
 	Title         string
 	Type          string
 	Description   string
@@ -588,620 +207,7 @@ type ConfigData struct {
 	SheetId string `json:"sheet_id"`
 }
 
-func parseLinks(ss []string, registration string) []*NameUrl {
-	links := make([]*NameUrl, 0, len(ss))
-	hasRegistration := registration != ""
-	if hasRegistration {
-		links = append(links, &NameUrl{"Anmeldung", registration})
-	}
-	for _, s := range ss {
-		if s == "" {
-			continue
-		}
-		a := strings.Split(s, "|")
-		if len(a) != 2 {
-			panic(fmt.Errorf("bad link: <%s>", s))
-		}
-		if !hasRegistration || a[0] != "Anmeldung" {
-			links = append(links, &NameUrl{a[0], a[1]})
-		}
-	}
-	return links
-}
-
-func SplitDetails(s string) (string, string) {
-	i := strings.Index(s, "|")
-	if i > -1 {
-		return s[:i], s[i+1:]
-	}
-	return s, ""
-}
-
-func getAllSheets(config ConfigData, srv *sheets.Service) ([]string, error) {
-	response, err := srv.Spreadsheets.Get(config.SheetId).Fields("sheets(properties(sheetId,title))").Do()
-	if err != nil {
-		return nil, err
-	}
-	if response.HTTPStatusCode != 200 {
-		return nil, fmt.Errorf("http status %v when trying to get sheets", response.HTTPStatusCode)
-	}
-	sheets := make([]string, 0)
-	for _, v := range response.Sheets {
-		prop := v.Properties
-		sheets = append(sheets, prop.Title)
-	}
-	return sheets, nil
-}
-
-type Columns struct {
-	index map[string]int
-}
-
-func initColumns(row []interface{}) (Columns, error) {
-	index := make(map[string]int)
-	for col, value := range row {
-		s := fmt.Sprintf("%v", value)
-		if existingCol, found := index[s]; found {
-			return Columns{}, fmt.Errorf("duplicate title '%s' in columns %d and %d", s, existingCol, col)
-		}
-		index[s] = col
-	}
-	return Columns{index}, nil
-}
-
-func (cols *Columns) getValue(title string, row []interface{}) string {
-	col, found := cols.index[title]
-	if !found {
-		panic(fmt.Errorf("requested column not found: %s", title))
-	}
-
-	if col >= len(row) {
-		return ""
-	}
-	return fmt.Sprintf("%v", row[col])
-}
-
-func fetchTable(config ConfigData, srv *sheets.Service, table string) (Columns, [][]interface{}, error) {
-	resp, err := srv.Spreadsheets.Values.Get(config.SheetId, fmt.Sprintf("%s!A1:Z", table)).Do()
-	if err != nil {
-		return Columns{}, nil, fmt.Errorf("cannot fetch table '%s': %v", table, err)
-	}
-	if len(resp.Values) == 0 {
-		return Columns{}, nil, fmt.Errorf("got 0 rows when fetching table '%s'", table)
-	}
-	cols := Columns{}
-	rows := make([][]interface{}, 0, len(resp.Values)-1)
-	for line, row := range resp.Values {
-		if line == 0 {
-			cols, err = initColumns(row)
-			if err != nil {
-				return Columns{}, nil, fmt.Errorf("failed to parse rows when fetching table '%s': %v", table, err)
-			}
-			continue
-		}
-		rows = append(rows, row)
-	}
-	return cols, rows, nil
-}
-
-func fetchEvents(config ConfigData, srv *sheets.Service, today time.Time, eventType string, table string) []*Event {
-	cols, rows, err := fetchTable(config, srv, table)
-	utils.Check(err)
-	events := make([]*Event, 0)
-	for line, row := range rows {
-		dateS := cols.getValue("DATE", row)
-		nameS := cols.getValue("NAME", row)
-		statusS := cols.getValue("STATUS", row)
-		cancelled := strings.HasPrefix(statusS, "abgesagt")
-		if cancelled && statusS == "abgesagt" {
-			statusS = ""
-		}
-		special := statusS == "spezial"
-		obsolete := statusS == "obsolete"
-		if special || obsolete {
-			statusS = ""
-		}
-		urlS := cols.getValue("URL", row)
-		if statusS == "temp" {
-			log.Printf("table '%s', line '%d': skipping row with temp status", table, line)
-			continue
-		}
-		if eventType == "event" {
-			if dateS == "" {
-				log.Printf("table '%s', line '%d': skipping row with empty date", table, line)
-				continue
-			}
-		}
-		if nameS == "" {
-			log.Printf("table '%s', line '%d': skipping row with empty name", table, line)
-			continue
-		}
-		if urlS == "" {
-			log.Printf("table '%s', line '%d': skipping row with empty url", table, line)
-			continue
-		}
-
-		descriptionS := cols.getValue("DESCRIPTION", row)
-		locationS := cols.getValue("LOCATION", row)
-		coordinatesS := cols.getValue("COORDINATES", row)
-		registration := cols.getValue("REGISTRATION", row)
-		tagsS := cols.getValue("TAGS", row)
-		linksS := make([]string, 4)
-		linksS[0] = cols.getValue("LINK1", row)
-		linksS[1] = cols.getValue("LINK2", row)
-		linksS[2] = cols.getValue("LINK3", row)
-		linksS[3] = cols.getValue("LINK4", row)
-
-		name, nameOld := SplitDetails(nameS)
-		url := urlS
-		description1, description2 := SplitDetails(descriptionS)
-		tags := make([]string, 0)
-		series := make([]string, 0)
-		for _, t := range utils.Split(tagsS) {
-			if strings.HasPrefix(t, "serie") {
-				series = append(series, t[6:])
-			} else {
-				tags = append(tags, utils.SanitizeName(t))
-			}
-		}
-		location := createLocation(locationS, coordinatesS)
-		tags = append(tags, location.Tags()...)
-		timeRange, err := utils.CreateTimeRange(dateS)
-		if err != nil {
-			log.Printf("event '%s': %v", name, err)
-		}
-		isOld := timeRange.Before(today)
-		year := timeRange.Year()
-		if year > 0 {
-			tags = append(tags, fmt.Sprintf("%d", year))
-		}
-		links := parseLinks(linksS, registration)
-
-		events = append(events, &Event{
-			eventType,
-			name,
-			nameOld,
-			timeRange,
-			isOld,
-			statusS,
-			cancelled,
-			obsolete,
-			special,
-			location,
-			description1,
-			template.HTML(description2),
-			url,
-			utils.SortAndUniquify(tags),
-			nil,
-			series,
-			nil,
-			links,
-			"",
-			false,
-			nil,
-			nil,
-			nil,
-		})
-	}
-
-	return events
-}
-
-func fetchParkrunEvents(config ConfigData, srv *sheets.Service, today time.Time, table string) []*ParkrunEvent {
-	cols, rows, err := fetchTable(config, srv, table)
-	utils.Check(err)
-	events := make([]*ParkrunEvent, 0)
-	for _, row := range rows {
-		index := cols.getValue("INDEX", row)
-		date := cols.getValue("DATE", row)
-		runners := cols.getValue("RUNNERS", row)
-		temp := cols.getValue("TEMP", row)
-		special := cols.getValue("SPECIAL", row)
-		cafe := cols.getValue("CAFE", row)
-		results := cols.getValue("RESULTS", row)
-		report := cols.getValue("REPORT", row)
-		author := cols.getValue("AUTHOR", row)
-		photos := cols.getValue("PHOTOS", row)
-
-		if temp != "" {
-			temp = fmt.Sprintf("%s°C", temp)
-		}
-
-		if results != "" {
-			// if "results" only contains a number, build full url
-			if _, err := strconv.ParseInt(results, 10, 64); err == nil {
-				results = fmt.Sprintf("https://www.parkrun.com.de/dietenbach/results/%s", results)
-			}
-		}
-
-		currentWeek := false
-		d, err := utils.ParseDate(date)
-		if err == nil {
-			today_y, today_m, today_d := today.Date()
-			d_y, d_m, d_d := d.Date()
-			currentWeek = (today_y == d_y && today_m == d_m && today_d == d_d) || (today.After(d) && today.Before(d.AddDate(0, 0, 7)))
-		}
-
-		events = append(events, &ParkrunEvent{
-			currentWeek,
-			index,
-			date,
-			runners,
-			temp,
-			special,
-			cafe,
-			results,
-			report,
-			author,
-			photos,
-		})
-	}
-
-	return events
-}
-
-func fetchTagDescriptions(config ConfigData, srv *sheets.Service, table string) map[string]NameDescription {
-	cols, rows, err := fetchTable(config, srv, table)
-	utils.Check(err)
-	descriptions := make(map[string]NameDescription)
-	for _, row := range rows {
-		tagS := cols.getValue("TAG", row)
-		nameS := cols.getValue("NAME", row)
-		descriptionS := cols.getValue("DESCRIPTION", row)
-
-		tag := utils.SanitizeName(tagS)
-		if tag != "" && (nameS != "" || descriptionS != "") {
-			descriptions[tag] = NameDescription{nameS, descriptionS}
-		}
-	}
-
-	return descriptions
-}
-
-func fetchSeries(config ConfigData, srv *sheets.Service, table string) map[string]*Serie {
-	cols, rows, err := fetchTable(config, srv, table)
-	utils.Check(err)
-	series := make(map[string]*Serie)
-	for _, row := range rows {
-		nameS := cols.getValue("NAME", row)
-		descriptionS := cols.getValue("DESCRIPTION", row)
-		linksS := make([]string, 4)
-		linksS[0] = cols.getValue("LINK1", row)
-		linksS[1] = cols.getValue("LINK2", row)
-		linksS[2] = cols.getValue("LINK3", row)
-		linksS[3] = cols.getValue("LINK4", row)
-
-		id := utils.SanitizeName(nameS)
-		if id != "" {
-			series[id] = &Serie{id, nameS, template.HTML(descriptionS), parseLinks(linksS, ""), make([]*Event, 0), make([]*Event, 0), make([]*Event, 0), make([]*Event, 0)}
-		}
-	}
-
-	return series
-}
-
-func createMonthLabel(t time.Time) string {
-	return fmt.Sprintf("%s %d", utils.MonthStr(t.Month()), t.Year())
-}
-
-func isSimilarName(s1, s2 string) bool {
-	var builder1 strings.Builder
-	for _, r := range s1 {
-		if unicode.IsLetter(r) {
-			builder1.WriteRune(unicode.ToLower(r))
-		}
-	}
-	var builder2 strings.Builder
-	for _, r := range s2 {
-		if unicode.IsLetter(r) {
-			builder2.WriteRune(unicode.ToLower(r))
-		}
-	}
-	return builder1.String() == builder2.String()
-}
-
-func validateDateOrder(events []*Event) {
-	var lastDate utils.TimeRange
-	for _, event := range events {
-		if !lastDate.IsZero() {
-			if event.Time.From.IsZero() {
-				log.Printf("event '%s' has no date", event.Name)
-				return
-			}
-			if event.Time.From.Before(lastDate.From) {
-				log.Printf("event '%s' has date '%s' before date of previous event '%s'", event.Name, event.Time.Formatted, lastDate.Formatted)
-				return
-			}
-		}
-
-		lastDate = event.Time
-	}
-}
-
-func findPrevNextEvents(events []*Event) {
-	for _, event := range events {
-		var prev *Event = nil
-		for _, event2 := range events {
-			if event2 == event {
-				break
-			}
-
-			if isSimilarName(event2.Name, event.Name) /*&& event2.Location.Geo == event.Location.Geo*/ {
-				prev = event2
-			}
-		}
-
-		if prev != nil {
-			prev.Next = event
-			event.Prev = prev
-		}
-	}
-}
-
-func findUpcomingNearEvents(events []*Event, upcomingEvents []*Event, maxDistanceKM float64, count int) {
-	for _, event := range events {
-		if !event.Location.HasGeo() {
-			continue
-		}
-		event.UpcomingNear = make([]*Event, 0, count)
-		for _, candidate := range upcomingEvents {
-			if candidate == event || candidate.Cancelled || !candidate.Location.HasGeo() {
-				continue
-			}
-			if distanceKM, _ := utils.DistanceBearing(event.Location.Lat, event.Location.Lon, candidate.Location.Lat, candidate.Location.Lon); distanceKM > maxDistanceKM {
-				continue
-			}
-			event.UpcomingNear = append(event.UpcomingNear, candidate)
-			if len(event.UpcomingNear) >= count {
-				break
-			}
-		}
-	}
-}
-
-func splitEvents(events []*Event) ([]*Event, []*Event) {
-	futureEvents := make([]*Event, 0)
-	pastEvents := make([]*Event, 0)
-
-	for _, event := range events {
-		if event.Old {
-			pastEvents = append(pastEvents, event)
-		} else {
-			futureEvents = append(futureEvents, event)
-		}
-	}
-	return futureEvents, pastEvents
-}
-
-func splitObsolete(events []*Event) ([]*Event, []*Event) {
-	currentEvents := make([]*Event, 0)
-	obsoleteEvents := make([]*Event, 0)
-
-	for _, event := range events {
-		if event.Obsolete {
-			obsoleteEvents = append(obsoleteEvents, event)
-		} else {
-			currentEvents = append(currentEvents, event)
-		}
-	}
-	return currentEvents, obsoleteEvents
-}
-
-func addMonthSeparators(events []*Event) []*Event {
-	result := make([]*Event, 0, len(events))
-	var last time.Time
-
-	for _, event := range events {
-		d := event.Time.From
-		if event.Time.From.IsZero() {
-			// no label
-		} else if last.IsZero() {
-			// initial label
-			last = d
-			result = append(result, createSeparatorEvent(createMonthLabel(last)))
-		} else if d.After(last) {
-			if last.Year() == d.Year() && last.Month() == d.Month() {
-				// no new month label
-			} else {
-				for last.Year() != d.Year() || last.Month() != d.Month() {
-					if last.Month() == time.December {
-						last = time.Date(last.Year()+1, time.January, 1, 0, 0, 0, 0, last.Location())
-					} else {
-						last = time.Date(last.Year(), last.Month()+1, 1, 0, 0, 0, 0, last.Location())
-					}
-					result = append(result, createSeparatorEvent(createMonthLabel(last)))
-				}
-			}
-		}
-
-		result = append(result, event)
-	}
-	return result
-}
-
-func addMonthSeparatorsDescending(events []*Event) []*Event {
-	result := make([]*Event, 0, len(events))
-	var last time.Time
-
-	for _, event := range events {
-		d := event.Time.From
-		if event.Time.From.IsZero() {
-			// no label
-		} else if last.IsZero() {
-			// initial label
-			last = d
-			result = append(result, createSeparatorEvent(createMonthLabel(last)))
-		} else if d.Before(last) {
-			if last.Year() == d.Year() && last.Month() == d.Month() {
-				// no new month label
-			} else {
-				for last.Year() != d.Year() || last.Month() != d.Month() {
-					if last.Month() == time.January {
-						last = time.Date(last.Year()-1, time.December, 1, 0, 0, 0, 0, last.Location())
-					} else {
-						last = time.Date(last.Year(), last.Month()-1, 1, 0, 0, 0, 0, last.Location())
-					}
-					result = append(result, createSeparatorEvent(createMonthLabel(last)))
-				}
-			}
-		}
-
-		result = append(result, event)
-	}
-	return result
-}
-
-func changeRegistrationLinks(events []*Event) {
-	for _, event := range events {
-		for _, link := range event.Links {
-			if link.IsRegistration() && strings.Contains(link.Url, "raceresult") {
-				link.Name = "Ergebnisse / Anmeldung"
-			}
-		}
-	}
-}
-
-func reverse(s []*Event) []*Event {
-	a := make([]*Event, len(s))
-	copy(a, s)
-
-	for i := len(a)/2 - 1; i >= 0; i-- {
-		opp := len(a) - 1 - i
-		a[i], a[opp] = a[opp], a[i]
-	}
-
-	return a
-}
-
-func getTag(tags map[string]*Tag, name string) *Tag {
-	if tag, found := tags[name]; found {
-		return tag
-	}
-	tag := CreateTag(name)
-	tags[name] = tag
-	return tag
-}
-
-type NameDescription struct {
-	Name        string
-	Description string
-}
-
-func collectTags(descriptions map[string]NameDescription, events []*Event, eventsOld []*Event, groups []*Event, shops []*Event) (map[string]*Tag, []*Tag) {
-	tags := make(map[string]*Tag)
-	for _, e := range events {
-		e.Tags = make([]*Tag, 0, len(e.RawTags))
-		for _, t := range e.RawTags {
-			tag := getTag(tags, t)
-			e.Tags = append(e.Tags, tag)
-			tag.Events = append(tag.Events, e)
-		}
-	}
-	for _, e := range eventsOld {
-		e.Tags = make([]*Tag, 0, len(e.RawTags))
-		for _, t := range e.RawTags {
-			tag := getTag(tags, t)
-			e.Tags = append(e.Tags, tag)
-			tag.EventsOld = append(tag.EventsOld, e)
-		}
-	}
-	for _, e := range groups {
-		e.Tags = make([]*Tag, 0, len(e.RawTags))
-		for _, t := range e.RawTags {
-			tag := getTag(tags, t)
-			e.Tags = append(e.Tags, tag)
-			tag.Groups = append(tag.Groups, e)
-		}
-	}
-	for _, e := range shops {
-		e.Tags = make([]*Tag, 0, len(e.RawTags))
-		for _, t := range e.RawTags {
-			tag := getTag(tags, t)
-			e.Tags = append(e.Tags, tag)
-			tag.Shops = append(tag.Shops, e)
-		}
-	}
-
-	tagsList := make([]*Tag, 0, len(tags))
-	for _, tag := range tags {
-		desc, found := descriptions[tag.Sanitized]
-		if found {
-			if desc.Name != "" {
-				tag.Name = desc.Name
-			}
-			tag.Description = desc.Description
-		}
-		tag.Events = addMonthSeparators(tag.Events)
-		tag.EventsOld = addMonthSeparatorsDescending(tag.EventsOld)
-		tagsList = append(tagsList, tag)
-	}
-	sort.Slice(tagsList, func(i, j int) bool { return tagsList[i].Sanitized < tagsList[j].Sanitized })
-
-	return tags, tagsList
-}
-
-func getSerie(series map[string]*Serie, name string) *Serie {
-	id := utils.SanitizeName(name)
-	if s, found := series[id]; found {
-		return s
-	}
-	serie := CreateSerie(id, name)
-	series[id] = serie
-	return serie
-}
-
-func collectSeries(series map[string]*Serie, events []*Event, eventsOld []*Event, groups []*Event, shops []*Event) (map[string]*Serie, []*Serie, []*Serie) {
-	for _, e := range events {
-		e.Series = make([]*Serie, 0)
-		for _, t := range e.RawSeries {
-			serie := getSerie(series, t)
-			e.Series = append(e.Series, serie)
-			serie.Events = append(serie.Events, e)
-		}
-	}
-	for _, e := range eventsOld {
-		e.Series = make([]*Serie, 0)
-		for _, t := range e.RawSeries {
-			serie := getSerie(series, t)
-			e.Series = append(e.Series, serie)
-			serie.EventsOld = append(serie.EventsOld, e)
-		}
-	}
-	for _, e := range groups {
-		e.Series = make([]*Serie, 0)
-		for _, t := range e.RawSeries {
-			serie := getSerie(series, t)
-			e.Series = append(e.Series, serie)
-			serie.Groups = append(serie.Groups, e)
-		}
-	}
-	for _, e := range shops {
-		e.Series = make([]*Serie, 0)
-		for _, t := range e.RawSeries {
-			serie := getSerie(series, t)
-			e.Series = append(e.Series, serie)
-			serie.Shops = append(serie.Shops, e)
-		}
-	}
-
-	seriesList := make([]*Serie, 0, len(series))
-	seriesListOld := make([]*Serie, 0, len(series))
-	for _, s := range series {
-		if s.IsOld() {
-			seriesListOld = append(seriesListOld, s)
-		} else {
-			seriesList = append(seriesList, s)
-		}
-		s.Events = addMonthSeparators(s.Events)
-		s.EventsOld = addMonthSeparatorsDescending(s.EventsOld)
-	}
-	sort.Slice(seriesList, func(i, j int) bool { return seriesList[i].Sanitized < seriesList[j].Sanitized })
-	sort.Slice(seriesListOld, func(i, j int) bool { return seriesListOld[i].Sanitized < seriesListOld[j].Sanitized })
-
-	return series, seriesList, seriesListOld
-}
-
-func updateAddedDates(events []*Event, added *utils.Added, eventType string, timestamp string, now time.Time) {
+func updateAddedDates(events []*events.Event, added *utils.Added, eventType string, timestamp string, now time.Time) {
 	for _, event := range events {
 		fromFile, err := added.GetAdded(eventType, event.Slug())
 		if err == nil {
@@ -1221,7 +227,7 @@ func updateAddedDates(events []*Event, added *utils.Added, eventType string, tim
 	}
 }
 
-func CreateHtaccess(events, events_old, groups, shops, events_obsolete, groups_obsolete, shops_obsolete []*Event, outDir string) error {
+func CreateHtaccess(data events.Data, outDir string) error {
 	if err := utils.MakeDir(outDir); err != nil {
 		return err
 	}
@@ -1243,34 +249,34 @@ func CreateHtaccess(events, events_old, groups, shops, events_obsolete, groups_o
 	destination.WriteString("Redirect /tag/serie-intersport-denzer-cup-2024.html /serie/intersport-denzer-cup-2024.html\n")
 	destination.WriteString("Redirect /event/2023-4-crosslauf-am-opfinger-see.html /event/2024-4-crosslauf-am-opfinger-see.html\n")
 
-	for _, e := range events {
+	for _, e := range data.Events {
 		if old := e.SlugOld(); old != "" {
 			destination.WriteString(fmt.Sprintf("Redirect /%s /%s\n", old, e.Slug()))
 		}
 	}
-	for _, e := range events_old {
+	for _, e := range data.EventsOld {
 		if old := e.SlugOld(); old != "" {
 			destination.WriteString(fmt.Sprintf("Redirect /%s /%s\n", old, e.Slug()))
 		}
 	}
-	for _, e := range groups {
+	for _, e := range data.Groups {
 		if old := e.SlugOld(); old != "" {
 			destination.WriteString(fmt.Sprintf("Redirect /%s /%s\n", old, e.Slug()))
 		}
 	}
-	for _, e := range shops {
+	for _, e := range data.Shops {
 		if old := e.SlugOld(); old != "" {
 			destination.WriteString(fmt.Sprintf("Redirect /%s /%s\n", old, e.Slug()))
 		}
 	}
 
-	for _, e := range events_obsolete {
+	for _, e := range data.EventsObsolete {
 		destination.WriteString(fmt.Sprintf("Redirect /%s /\n", e.Slug()))
 	}
-	for _, e := range groups_obsolete {
+	for _, e := range data.GroupsObsolete {
 		destination.WriteString(fmt.Sprintf("Redirect /%s /lauftreffs.html\n", e.Slug()))
 	}
-	for _, e := range shops_obsolete {
+	for _, e := range data.ShopsObsolete {
 		destination.WriteString(fmt.Sprintf("Redirect /%s /shops.html\n", e.Slug()))
 	}
 
@@ -1331,87 +337,15 @@ func main() {
 	today := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
 	timestamp := now.Format("2006-01-02")
 	timestampFull := now.Format("2006-01-02 15:04:05")
-	sheetUrl := ""
 	options := parseCommandLine()
 	out := Path(options.outDir)
 
-	var events []*Event
-	var events_old []*Event
-	var events_obsolete []*Event
-	var groups []*Event
-	var groups_obsolete []*Event
-	var shops []*Event
-	var shops_obsolete []*Event
-	var parkrun []*ParkrunEvent
-
-	config_data, err := os.ReadFile(options.configFile)
+	config_data, err := events.LoadSheetsConfig(options.configFile)
 	utils.Check(err)
-	var config ConfigData
-	if err := json.Unmarshal(config_data, &config); err != nil {
-		panic(err)
-	}
+	sheetUrl := fmt.Sprintf("https://docs.google.com/spreadsheets/d/%s", config_data.SheetId)
 
-	sheetUrl = fmt.Sprintf("https://docs.google.com/spreadsheets/d/%s", config.SheetId)
-
-	ctx := context.Background()
-	srv, err := sheets.NewService(ctx, option.WithAPIKey(config.ApiKey))
+	eventsData, err := events.FetchData(config_data, today)
 	utils.Check(err)
-
-	sheets, err := getAllSheets(config, srv)
-	utils.Check(err)
-	eventSheets := make([]string, 0)
-	groupsSheet := ""
-	shopsSheet := ""
-	parkrunSheet := ""
-	tagsSheet := ""
-	seriesSheet := ""
-	for _, sheet := range sheets {
-		if strings.HasPrefix(sheet, "Events") {
-			eventSheets = append(eventSheets, sheet)
-		} else if sheet == "Groups" {
-			groupsSheet = sheet
-		} else if sheet == "Shops" {
-			shopsSheet = sheet
-		} else if sheet == "Parkrun" {
-			parkrunSheet = sheet
-		} else if sheet == "Tags" {
-			tagsSheet = sheet
-		} else if sheet == "Series" {
-			seriesSheet = sheet
-		} else if strings.Contains(sheet, "ignore") {
-			// ignore
-		} else {
-			log.Printf("ignoring unknown sheet: '%s'", sheet)
-		}
-	}
-	if len(eventSheets) < 2 {
-		panic("unable to find enough 'Events' sheets")
-	}
-	if groupsSheet == "" {
-		panic("unable to find 'Groups' sheet")
-	}
-	if shopsSheet == "" {
-		panic("unable to find 'Shops' sheet")
-	}
-	if parkrunSheet == "" {
-		panic("unable to find 'Parkrun' sheet")
-	}
-	if tagsSheet == "" {
-		panic("unable to find 'Tags' sheet")
-	}
-	if seriesSheet == "" {
-		panic("unable to find 'Series' sheet")
-	}
-
-	events = make([]*Event, 0)
-	for _, sheet := range eventSheets {
-		events = append(events, fetchEvents(config, srv, today, "event", sheet)...)
-	}
-	groups = fetchEvents(config, srv, today, "group", groupsSheet)
-	shops = fetchEvents(config, srv, today, "shop", shopsSheet)
-	parkrun = fetchParkrunEvents(config, srv, today, parkrunSheet)
-	tagDescriptions := fetchTagDescriptions(config, srv, tagsSheet)
-	series := fetchSeries(config, srv, seriesSheet)
 
 	if options.addedFile != "" {
 		added, err := utils.ReadAdded(options.addedFile)
@@ -1419,30 +353,15 @@ func main() {
 			log.Printf("failed to parse added file: '%s' - %v", options.addedFile, err)
 		}
 
-		updateAddedDates(events, added, "event", timestamp, now)
-		updateAddedDates(groups, added, "group", timestamp, now)
-		updateAddedDates(shops, added, "shop", timestamp, now)
+		updateAddedDates(eventsData.Events, added, "event", timestamp, now)
+		updateAddedDates(eventsData.EventsOld, added, "event", timestamp, now)
+		updateAddedDates(eventsData.Groups, added, "group", timestamp, now)
+		updateAddedDates(eventsData.Shops, added, "shop", timestamp, now)
 
 		if err = added.Write(options.addedFile); err != nil {
 			log.Printf("failed to write added file: '%s' - %v", options.addedFile, err)
 		}
 	}
-
-	events, events_obsolete = splitObsolete(events)
-	groups, groups_obsolete = splitObsolete(groups)
-	shops, shops_obsolete = splitObsolete(shops)
-
-	validateDateOrder(events)
-	findPrevNextEvents(events)
-	events, events_old = splitEvents(events)
-	events = addMonthSeparators(events)
-	findUpcomingNearEvents(events, events, 5.0, 3)
-	findUpcomingNearEvents(events_old, events, 5.0, 3)
-	events_old = reverse(events_old)
-	events_old = addMonthSeparatorsDescending(events_old)
-	changeRegistrationLinks(events_old)
-	tags, tagsList := collectTags(tagDescriptions, events, events_old, groups, shops)
-	series, seriesList, seriesListOld := collectSeries(series, events, events_old, groups, shops)
 
 	sitemap := utils.CreateSitemap("https://freiburg.run")
 	sitemap.AddCategory("Allgemein")
@@ -1540,14 +459,7 @@ func main() {
 		timestamp,
 		timestampFull,
 		sheetUrl,
-		events,
-		events_old,
-		groups,
-		shops,
-		parkrun,
-		tagsList,
-		seriesList,
-		seriesListOld,
+		&eventsData,
 		js_files.Rel(options.outDir),
 		css_files.Rel(options.outDir),
 		MustRel(options.outDir, fathom),
@@ -1673,7 +585,7 @@ func main() {
 		css_files.Rel(options.outDir),
 		MustRel(options.outDir, fathom),
 	}
-	for _, event := range events {
+	for _, event := range eventsData.Events {
 		if event.IsSeparator() {
 			continue
 		}
@@ -1694,7 +606,7 @@ func main() {
 	}
 
 	eventdata.Main = "/events-old.html"
-	for _, event := range events_old {
+	for _, event := range eventsData.EventsOld {
 		if event.IsSeparator() {
 			continue
 		}
@@ -1718,7 +630,7 @@ func main() {
 	eventdata.Type = "Lauftreff"
 	eventdata.Nav = "groups"
 	eventdata.Main = "/lauftreffs.html"
-	for _, event := range groups {
+	for _, event := range eventsData.Groups {
 		eventdata.Event = event
 		eventdata.Title = event.Name
 		eventdata.Description = event.GenerateDescription()
@@ -1739,7 +651,7 @@ func main() {
 	eventdata.Type = "Lauf-Shop"
 	eventdata.Nav = "shops"
 	eventdata.Main = "/shops.html"
-	for _, event := range shops {
+	for _, event := range eventsData.Shops {
 		eventdata.Event = event
 		eventdata.Title = event.Name
 		eventdata.Description = event.GenerateDescription()
@@ -1774,7 +686,7 @@ func main() {
 		css_files.Rel(options.outDir),
 		MustRel(options.outDir, fathom),
 	}
-	for _, tag := range tags {
+	for _, tag := range eventsData.Tags {
 		tagdata.Tag = tag
 		tagdata.Title = fmt.Sprintf("Laufveranstaltungen der Kategorie '%s'", tag.Name)
 		tagdata.Description = fmt.Sprintf("Liste an Laufveranstaltungen im Raum Freiburg, die mit der Kategorie '%s' getaggt sind", tag.Name)
@@ -1802,7 +714,23 @@ func main() {
 		css_files.Rel(options.outDir),
 		MustRel(options.outDir, fathom),
 	}
-	for _, s := range series {
+	for _, s := range eventsData.Series {
+		seriedata.Serie = s
+		seriedata.Title = s.Name
+		seriedata.Description = fmt.Sprintf("Lauf-Serie '%s'", s.Name)
+		slug := s.Slug()
+		seriedata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
+		image := s.ImageSlug()
+		if utils.GenImage(out.Join(image), s.Name, "", "", "static/background.png") == nil {
+			seriedata.Image = fmt.Sprintf("/%s", image)
+		} else {
+			seriedata.Image = defaultImage
+		}
+		seriedata.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsEventsSeries, utils.Link{Name: s.Name, Url: fmt.Sprintf("/%s", slug)})
+		utils.ExecuteTemplate("serie", out.Join(slug), seriedata)
+		sitemap.Add(slug, s.Name, "Serien")
+	}
+	for _, s := range eventsData.SeriesOld {
 		seriedata.Serie = s
 		seriedata.Title = s.Name
 		seriedata.Description = fmt.Sprintf("Lauf-Serie '%s'", s.Name)
@@ -1838,6 +766,9 @@ func main() {
 	}
 	utils.ExecuteTemplate("sitemap", out.Join("sitemap.html"), sitemapTemplate)
 
-	err = CreateHtaccess(events, events_old, groups, shops, events_obsolete, groups_obsolete, shops_obsolete, options.outDir)
+	err = CreateHtaccess(eventsData, options.outDir)
 	utils.Check(err)
+
+	//err = utils.CreateCalendar( /*events.events,*/ out.Join("events.ical"))
+	//utils.Check(err)
 }
