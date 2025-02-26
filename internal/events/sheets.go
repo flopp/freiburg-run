@@ -137,16 +137,27 @@ func initColumns(row []interface{}) (Columns, error) {
 	return Columns{index}, nil
 }
 
+func (cols Columns) getIndex(title string) int {
+	col, found := cols.index[title]
+	if !found {
+		return -1
+	}
+	return col
+}
+
+func getIndexValue(index int, row []interface{}) string {
+	if index >= len(row) {
+		return ""
+	}
+	return fmt.Sprintf("%v", row[index])
+}
+
 func (cols *Columns) getValue(title string, row []interface{}) string {
 	col, found := cols.index[title]
 	if !found {
 		panic(fmt.Errorf("requested column not found: %s", title))
 	}
-
-	if col >= len(row) {
-		return ""
-	}
-	return fmt.Sprintf("%v", row[col])
+	return getIndexValue(col, row)
 }
 
 func fetchTable(config SheetsConfigData, srv *sheets.Service, table string) (Columns, [][]interface{}, error) {
@@ -170,6 +181,23 @@ func fetchTable(config SheetsConfigData, srv *sheets.Service, table string) (Col
 		rows = append(rows, row)
 	}
 	return cols, rows, nil
+}
+
+func getLinks(cols Columns, row []interface{}) []string {
+	links := make([]string, 0)
+
+	for i := 1; true; i += 1 {
+		index := cols.getIndex(fmt.Sprintf("LINK%d", i))
+		if index < 0 {
+			break
+		}
+		link := getIndexValue(index, row)
+		if link != "" {
+			links = append(links, link)
+		}
+	}
+
+	return links
 }
 
 func fetchEvents(config SheetsConfigData, srv *sheets.Service, today time.Time, eventType string, table string) []*Event {
@@ -214,11 +242,7 @@ func fetchEvents(config SheetsConfigData, srv *sheets.Service, today time.Time, 
 		coordinatesS := cols.getValue("COORDINATES", row)
 		registration := cols.getValue("REGISTRATION", row)
 		tagsS := cols.getValue("TAGS", row)
-		linksS := make([]string, 4)
-		linksS[0] = cols.getValue("LINK1", row)
-		linksS[1] = cols.getValue("LINK2", row)
-		linksS[2] = cols.getValue("LINK3", row)
-		linksS[3] = cols.getValue("LINK4", row)
+		linksS := getLinks(cols, row)
 
 		name, nameOld := utils.SplitDetails(nameS)
 		url := urlS
@@ -356,11 +380,7 @@ func fetchSeries(config SheetsConfigData, srv *sheets.Service, table string) []*
 	for _, row := range rows {
 		nameS := cols.getValue("NAME", row)
 		descriptionS := cols.getValue("DESCRIPTION", row)
-		linksS := make([]string, 4)
-		linksS[0] = cols.getValue("LINK1", row)
-		linksS[1] = cols.getValue("LINK2", row)
-		linksS[2] = cols.getValue("LINK3", row)
-		linksS[3] = cols.getValue("LINK4", row)
+		linksS := getLinks(cols, row)
 
 		id := utils.SanitizeName(nameS)
 		series = append(series, &Serie{id, nameS, template.HTML(descriptionS), parseLinks(linksS, ""), make([]*Event, 0), make([]*Event, 0), make([]*Event, 0), make([]*Event, 0)})

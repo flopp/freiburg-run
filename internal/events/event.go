@@ -1,6 +1,7 @@
 package events
 
 import (
+	"crypto/sha256"
 	"fmt"
 	"html/template"
 	"log"
@@ -8,6 +9,7 @@ import (
 	"time"
 
 	"github.com/flopp/freiburg-run/internal/utils"
+	"github.com/google/uuid"
 )
 
 type Event struct {
@@ -34,6 +36,23 @@ type Event struct {
 	Prev         *Event
 	Next         *Event
 	UpcomingNear []*Event
+}
+
+func (event Event) GetUUID() (uuid.UUID, error) {
+	if event.IsSeparator() {
+		return uuid.UUID{}, fmt.Errorf("cannot create UUID for separator")
+	}
+
+	hash := sha256.New()
+	slug := event.Slug()
+	hash.Write([]byte(slug))
+	hashId := hash.Sum(nil)
+	uid, err := uuid.FromBytes(hashId[:16])
+	if err != nil {
+		return uuid.UUID{}, fmt.Errorf("create UUID: %w", err)
+	}
+
+	return uid, nil
 }
 
 func (event Event) GenerateDescription() string {

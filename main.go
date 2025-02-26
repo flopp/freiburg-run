@@ -769,6 +769,6 @@ func main() {
 	err = CreateHtaccess(eventsData, options.outDir)
 	utils.Check(err)
 
-	//err = utils.CreateCalendar( /*events.events,*/ out.Join("events.ical"))
-	//utils.Check(err)
+	err = events.CreateCalendar(eventsData, out.Join("events.ics"))
+	utils.Check(err)
 }
