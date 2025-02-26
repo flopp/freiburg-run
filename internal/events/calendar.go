@@ -45,7 +45,10 @@ func CreateCalendar(data Data, now time.Time, path string) error {
 		calEvent.SetLocation(e.Location.NameNoFlag())
 		calEvent.SetDescription(e.Details)
 		calEvent.SetProperty(componentPropertyDtStart, e.Time.From.Format(dateFormatUtc))
-		calEvent.SetProperty(componentPropertyDtEnd, e.Time.To.Format(dateFormatUtc))
+		// end + 1 day; Outlook seems to like it this way
+		endPlusOneDay := e.Time.To.AddDate(0, 0, 1)
+		calEvent.SetProperty(componentPropertyDtEnd, endPlusOneDay.Format(dateFormatUtc))
+
 		calEvent.SetURL(url)
 	}
 
