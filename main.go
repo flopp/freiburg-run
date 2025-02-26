@@ -363,6 +363,16 @@ func main() {
 		}
 	}
 
+	// create ics files for current events
+	for _, event := range eventsData.Events {
+		calendar := event.CalendarSlug()
+		if err := events.CreateEventCalendar(event, now, fmt.Sprintf("https://freiburg.run/%s", calendar), out.Join(calendar)); err != nil {
+			log.Printf("failed to create event calendar: %w", err)
+		} else {
+			event.Calendar = fmt.Sprintf("/%s", calendar)
+		}
+	}
+
 	sitemap := utils.CreateSitemap("https://freiburg.run")
 	sitemap.AddCategory("Allgemein")
 	sitemap.AddCategory("Laufveranstaltungen")
@@ -594,13 +604,6 @@ func main() {
 		eventdata.Description = event.GenerateDescription()
 		slug := event.Slug()
 		eventdata.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
-
-		calendar := event.CalendarSlug()
-		if err := events.CreateEventCalendar(event, now, fmt.Sprintf("https://freiburg.run/%s", calendar), out.Join(calendar)); err != nil {
-			log.Printf("failed to create event calendar: %w", err)
-		} else {
-			event.Calendar = fmt.Sprintf("/%s", calendar)
-		}
 
 		image := event.ImageSlug()
 		if utils.GenImage(out.Join(image), event.Name, event.Time.Formatted, event.Location.NameNoFlag(), "static/background.png") == nil {
