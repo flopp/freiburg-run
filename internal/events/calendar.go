@@ -32,15 +32,20 @@ func CreateCalendar(data Data, now time.Time, path string) error {
 			continue
 		}
 
+		uid, err := e.GetUUID()
+		if err != nil {
+			return fmt.Errorf("create UUID for '%s': %w", e.Name, err)
+		}
+
 		url := fmt.Sprintf("https://freiburg.run/%s", e.Slug())
 
-		calEvent := cal.AddEvent(url)
+		calEvent := cal.AddEvent(uid.String())
 		calEvent.SetDtStampTime(now)
 		calEvent.SetSummary(e.Name)
 		calEvent.SetLocation(e.Location.NameNoFlag())
 		calEvent.SetDescription(e.Details)
-		calEvent.SetProperty(componentPropertyDtStart, e.Time.From.UTC().Format(dateFormatUtc))
-		calEvent.SetProperty(componentPropertyDtEnd, e.Time.To.UTC().Format(dateFormatUtc))
+		calEvent.SetProperty(componentPropertyDtStart, e.Time.From.Format(dateFormatUtc))
+		calEvent.SetProperty(componentPropertyDtEnd, e.Time.To.Format(dateFormatUtc))
 		calEvent.SetURL(url)
 	}
 
