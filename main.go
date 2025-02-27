@@ -363,11 +363,25 @@ func main() {
 		}
 	}
 
-	// create ics files for current events
+	// create ics files for events
 	for _, event := range eventsData.Events {
+		if event.IsSeparator() {
+			continue
+		}
 		calendar := event.CalendarSlug()
 		if err := events.CreateEventCalendar(event, now, fmt.Sprintf("https://freiburg.run/%s", calendar), out.Join(calendar)); err != nil {
-			log.Printf("failed to create event calendar: %w", err)
+			log.Printf("failed to create event calendar: %v", err)
+		} else {
+			event.Calendar = fmt.Sprintf("/%s", calendar)
+		}
+	}
+	for _, event := range eventsData.EventsOld {
+		if event.IsSeparator() {
+			continue
+		}
+		calendar := event.CalendarSlug()
+		if err := events.CreateEventCalendar(event, now, fmt.Sprintf("https://freiburg.run/%s", calendar), out.Join(calendar)); err != nil {
+			log.Printf("failed to create event calendar: %v", err)
 		} else {
 			event.Calendar = fmt.Sprintf("/%s", calendar)
 		}
