@@ -13,30 +13,31 @@ import (
 )
 
 type Event struct {
-	Type         string
-	Name         string
-	NameOld      string
-	Time         utils.TimeRange
-	Old          bool
-	Status       string
-	Cancelled    bool
-	Obsolete     bool
-	Special      bool
-	Location     Location
-	Details      string
-	Details2     template.HTML
-	Url          string
-	RawTags      []string
-	Tags         []*Tag
-	RawSeries    []string
-	Series       []*Serie
-	Links        []*utils.NameUrl
-	Calendar     string
-	Added        string
-	New          bool
-	Prev         *Event
-	Next         *Event
-	UpcomingNear []*Event
+	Type           string
+	Name           string
+	NameOld        string
+	Time           utils.TimeRange
+	Old            bool
+	Status         string
+	Cancelled      bool
+	Obsolete       bool
+	Special        bool
+	Location       Location
+	Details        string
+	Details2       template.HTML
+	Url            string
+	RawTags        []string
+	Tags           []*Tag
+	RawSeries      []string
+	Series         []*Serie
+	Links          []*utils.NameUrl
+	Calendar       string
+	CalendarGoogle string
+	Added          string
+	New            bool
+	Prev           *Event
+	Next           *Event
+	UpcomingNear   []*Event
 }
 
 func (event Event) GetUUID() (uuid.UUID, error) {
@@ -140,6 +141,7 @@ func createSeparatorEvent(t time.Time) *Event {
 		nil,
 		nil,
 		nil,
+		"",
 		"",
 		"",
 		true,

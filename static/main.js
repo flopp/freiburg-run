@@ -223,14 +223,7 @@ var filter = (s) => {
 };
 
 var main = () => {
-    document.querySelectorAll('.navbar-burger').forEach(el => {
-        el.addEventListener('click', () => {
-            const target = el.dataset.target;
-            el.classList.toggle('is-active');
-            document.getElementById(target).classList.toggle('is-active'); 
-        });
-    });
-    
+    // FILTER
     var filterInput = document.querySelector("#filter-input");
     if (filterInput !== null) {
         filterInput.addEventListener('input', (e) => {
@@ -242,6 +235,51 @@ var main = () => {
         });
     }
 
+    // CALENDARS
+    document.querySelectorAll(".event").forEach(elEvent => {
+        const dropdown = elEvent.querySelector(".calendar-button");
+        if (!dropdown) {
+            return;
+        }
+
+        dropdown.classList.add("dropdown");
+
+        const dropdownTrigger = document.createElement("div");
+        dropdownTrigger.classList.add("dropdown-trigger");
+        const dropdownTriggerButton = document.createElement("button");
+        dropdownTriggerButton.classList.add("button", "is-primary", "is-small");
+        dropdownTriggerButton.innerHTML = "Zum Kalender hinzufügen";
+        dropdownTrigger.appendChild(dropdownTriggerButton);
+        dropdown.appendChild(dropdownTrigger);
+        const dropdownMenu = document.createElement("div");
+        dropdownMenu.classList.add("dropdown-menu");
+        const dropdownContent = document.createElement("div");
+        dropdownContent.classList.add("dropdown-content");
+        const hint = document.createElement("p");
+        hint.classList.add("dropdown-item", "is-italic");
+        hint.innerHTML = "Da genaue Start- & End-Zeiten unbekannt sind, werden Events als Ganztages-Einträge angelegt.";
+        dropdownContent.appendChild(hint);
+        const div1 = document.createElement("hr");
+        div1.classList.add("dropdown-divider");
+        dropdownContent.appendChild(div1);
+        const googlecal = document.createElement("a");
+        googlecal.classList.add("dropdown-item");
+        googlecal.setAttribute("href", elEvent.dataset.googlecal);
+        googlecal.innerHTML = "Google Calendar";
+        dropdownContent.appendChild(googlecal);
+        const div2 = document.createElement("hr");
+        div2.classList.add("dropdown-divider");
+        dropdownContent.appendChild(div2)
+        const ics = document.createElement("a");
+        ics.classList.add("dropdown-item");
+        ics.setAttribute("href", elEvent.dataset.ics);
+        ics.innerHTML = "Apple Calendar & andere (.ics)";
+        dropdownContent.appendChild(ics);
+        dropdownMenu.appendChild(dropdownContent);
+        dropdown.appendChild(dropdownMenu);
+    });
+
+    // MAPS
     var bigMapId = "";
     if (document.querySelector("#big-map") !== null) {
         bigMapId = "big-map";
@@ -292,15 +330,22 @@ var main = () => {
         }
     }
 
-    // Functions to open and close a modal
+    // NAVBAR
+    document.querySelectorAll('.navbar-burger').forEach(el => {
+        el.addEventListener('click', () => {
+            const target = el.dataset.target;
+            el.classList.toggle('is-active');
+            document.getElementById(target).classList.toggle('is-active'); 
+        });
+    });
+    
+    // MODALS
     function openModal($el) {
         $el.classList.add('is-active');
     }
-
     function closeModal($el) {
         $el.classList.remove('is-active');
     }
-
     function closeAllModals() {
         (document.querySelectorAll('.modal') || []).forEach(($modal) => {
             closeModal($modal);
@@ -340,6 +385,34 @@ var main = () => {
             closeAllModals();
         }
     });
+
+    // DROPDOWNS
+    const $clickableDropdowns = document.querySelectorAll(
+        ".dropdown:not(.is-hoverable)",
+    );
+
+    if ($clickableDropdowns.length > 0) {
+        $clickableDropdowns.forEach(($dropdown) => {
+            const $button = $dropdown.querySelector("button");
+            if (!$button) {
+                return;
+            }
+            $button.addEventListener("click", (event) => {
+                event.stopPropagation();
+                $dropdown.classList.toggle("is-active");
+            });
+        });
+
+        document.addEventListener("click", () => {
+            closeDropdowns();
+        });
+    }
+
+    function closeDropdowns() {
+        $clickableDropdowns.forEach(($el) => {
+            $el.classList.remove("is-active");
+        });
+    }
 };
 
 on_load(main);

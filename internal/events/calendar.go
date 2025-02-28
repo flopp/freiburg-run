@@ -2,6 +2,7 @@ package events
 
 import (
 	"fmt"
+	"net/url"
 	"os"
 	"path/filepath"
 	"time"
@@ -42,7 +43,7 @@ func CreateCalendar(eventsList []*Event, now time.Time, calendarUrl string, path
 			return fmt.Errorf("create UUID for '%s': %w", e.Name, err)
 		}
 
-		url := fmt.Sprintf("https://freiburg.run/%s", e.Slug())
+		infoUrl := fmt.Sprintf("https://freiburg.run/%s", e.Slug())
 
 		calEvent := cal.AddEvent(uid.String())
 		calEvent.SetDtStampTime(now)
@@ -53,8 +54,16 @@ func CreateCalendar(eventsList []*Event, now time.Time, calendarUrl string, path
 		// end + 1 day; Outlook seems to like it this way
 		endPlusOneDay := e.Time.To.AddDate(0, 0, 1)
 		calEvent.SetProperty(componentPropertyDtEnd, endPlusOneDay.Format(dateFormatUtc))
+		calEvent.SetURL(infoUrl)
 
-		calEvent.SetURL(url)
+		// Google Calendar link
+		e.CalendarGoogle = fmt.Sprintf("https://calendar.google.com/calendar/u/0/r/eventedit?text=%s&dates=%s/%s&details=%s&location=%s",
+			url.QueryEscape(e.Name),
+			e.Time.From.Format(dateFormatUtc),
+			e.Time.To.AddDate(0, 0, 1),
+			url.QueryEscape(fmt.Sprintf(`%s<br>Infos: <a href="%s">freiburg.run</a>`, e.Details, infoUrl)),
+			url.QueryEscape(e.Location.NameNoFlag()),
+		)
 	}
 
 	serialized := cal.Serialize()
