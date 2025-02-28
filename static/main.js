@@ -242,7 +242,7 @@ var main = () => {
         const dropdownTrigger = document.createElement("div");
         dropdownTrigger.classList.add("dropdown-trigger");
         const dropdownTriggerButton = document.createElement("button");
-        dropdownTriggerButton.classList.add("button", "is-primary", "is-small", "py-1");
+        dropdownTriggerButton.classList.add("button", "is-primary", "is-small", "py-1", "ml-1");
         dropdownTriggerButton.innerHTML = "Zum Kalender hinzufügen";
         dropdownTrigger.appendChild(dropdownTriggerButton);
         dropdown.appendChild(dropdownTrigger);
