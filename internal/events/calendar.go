@@ -60,7 +60,7 @@ func CreateCalendar(eventsList []*Event, now time.Time, calendarUrl string, path
 		e.CalendarGoogle = fmt.Sprintf("https://calendar.google.com/calendar/u/0/r/eventedit?text=%s&dates=%s/%s&details=%s&location=%s",
 			url.QueryEscape(e.Name),
 			e.Time.From.Format(dateFormatUtc),
-			e.Time.To.AddDate(0, 0, 1),
+			endPlusOneDay.Format(dateFormatUtc),
 			url.QueryEscape(fmt.Sprintf(`%s<br>Infos: <a href="%s">freiburg.run</a>`, e.Details, infoUrl)),
 			url.QueryEscape(e.Location.NameNoFlag()),
 		)

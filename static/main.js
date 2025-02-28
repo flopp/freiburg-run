@@ -236,18 +236,13 @@ var main = () => {
     }
 
     // CALENDARS
-    document.querySelectorAll(".event").forEach(elEvent => {
-        const dropdown = elEvent.querySelector(".calendar-button");
-        if (!dropdown) {
-            return;
-        }
-
+    document.querySelectorAll(".calendar-button").forEach(dropdown => {
         dropdown.classList.add("dropdown");
 
         const dropdownTrigger = document.createElement("div");
         dropdownTrigger.classList.add("dropdown-trigger");
         const dropdownTriggerButton = document.createElement("button");
-        dropdownTriggerButton.classList.add("button", "is-primary", "is-small");
+        dropdownTriggerButton.classList.add("button", "is-primary", "is-small", "py-1");
         dropdownTriggerButton.innerHTML = "Zum Kalender hinzufügen";
         dropdownTrigger.appendChild(dropdownTriggerButton);
         dropdown.appendChild(dropdownTrigger);
@@ -264,7 +259,8 @@ var main = () => {
         dropdownContent.appendChild(div1);
         const googlecal = document.createElement("a");
         googlecal.classList.add("dropdown-item");
-        googlecal.setAttribute("href", elEvent.dataset.googlecal);
+        googlecal.setAttribute("href", dropdown.dataset.googlecal);
+        googlecal.setAttribute("target", "_blank");
         googlecal.innerHTML = "Google Calendar";
         dropdownContent.appendChild(googlecal);
         const div2 = document.createElement("hr");
@@ -272,7 +268,7 @@ var main = () => {
         dropdownContent.appendChild(div2)
         const ics = document.createElement("a");
         ics.classList.add("dropdown-item");
-        ics.setAttribute("href", elEvent.dataset.ics);
+        ics.setAttribute("href", dropdown.dataset.ics);
         ics.innerHTML = "Apple Calendar & andere (.ics)";
         dropdownContent.appendChild(ics);
         dropdownMenu.appendChild(dropdownContent);
