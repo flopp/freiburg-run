@@ -409,6 +409,12 @@ var main = () => {
             $el.classList.remove("is-active");
         });
     }
+
+    // UMAMI OUTBOUND LINKS
+    document.querySelectorAll("a[target=_blank]").forEach((e) => {
+        a.setAttribute('data-umami-event', 'outbound-link-click');
+        a.setAttribute('data-umami-event-url', e.href);
+    });
 };
 
 on_load(main);
