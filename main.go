@@ -62,6 +62,11 @@ func IsNew(s string, now time.Time) bool {
 	return false
 }
 
+type UmamiData struct {
+	Url string
+	Id  string
+}
+
 type TemplateData struct {
 	Title         string
 	Type          string
@@ -77,6 +82,7 @@ type TemplateData struct {
 	JsFiles       []string
 	CssFiles      []string
 	FathomJs      string
+	Umami         UmamiData
 }
 
 func (d TemplateData) YearTitle() string {
@@ -109,6 +115,7 @@ type EventTemplateData struct {
 	JsFiles       []string
 	CssFiles      []string
 	FathomJs      string
+	Umami         UmamiData
 }
 
 func (d EventTemplateData) YearTitle() string {
@@ -144,6 +151,7 @@ type TagTemplateData struct {
 	JsFiles       []string
 	CssFiles      []string
 	FathomJs      string
+	Umami         UmamiData
 }
 
 func (d TagTemplateData) YearTitle() string {
@@ -166,6 +174,7 @@ type SerieTemplateData struct {
 	JsFiles       []string
 	CssFiles      []string
 	FathomJs      string
+	Umami         UmamiData
 }
 
 func (d SerieTemplateData) YearTitle() string {
@@ -187,6 +196,7 @@ type SitemapTemplateData struct {
 	JsFiles       []string
 	CssFiles      []string
 	FathomJs      string
+	Umami         UmamiData
 }
 
 func (d SitemapTemplateData) YearTitle() string {
@@ -451,6 +461,7 @@ func main() {
 	js_files.Add(utils.MustCopyHash("static/parkrun-track.js", out.Join("parkrun-track-HASH.js")))
 	js_files.Add(utils.MustCopyHash("static/main.js", out.Join("main-HASH.js")))
 	fathom := utils.MustDownloadHash("https://s.flopp.net/tracker.js", out.Join("s-HASH.js"))
+	umamiScript := utils.MustDownloadHash("https://cloud.umami.is/script.js", out.Join("umami-HASH.js"))
 	//goatcounter = modifyGoatcounterLinkSelector(goatcounter)
 
 	css_files.Add(utils.MustDownloadHash(fmt.Sprintf("%s/css/bulma.min.css", bulma_url), out.Join("bulma-HASH.css")))
@@ -472,6 +483,8 @@ func main() {
 		log.Printf("defaultimage: %v", err)
 	}
 
+	umami := UmamiData{MustRel(options.outDir, umamiScript), "6609164f-5e79-4041-b1ed-f37da10a84d2"}
+
 	data := TemplateData{
 		"Laufveranstaltungen im Raum Freiburg",
 		"Veranstaltung",
@@ -487,6 +500,7 @@ func main() {
 		js_files.Rel(options.outDir),
 		css_files.Rel(options.outDir),
 		MustRel(options.outDir, fathom),
+		umami,
 	}
 
 	utils.ExecuteTemplate("events", out.Join("index.html"), data)
@@ -608,6 +622,7 @@ func main() {
 		js_files.Rel(options.outDir),
 		css_files.Rel(options.outDir),
 		MustRel(options.outDir, fathom),
+		umami,
 	}
 	for _, event := range eventsData.Events {
 		if event.IsSeparator() {
@@ -710,6 +725,7 @@ func main() {
 		js_files.Rel(options.outDir),
 		css_files.Rel(options.outDir),
 		MustRel(options.outDir, fathom),
+		umami,
 	}
 	for _, tag := range eventsData.Tags {
 		tagdata.Tag = tag
@@ -738,6 +754,7 @@ func main() {
 		js_files.Rel(options.outDir),
 		css_files.Rel(options.outDir),
 		MustRel(options.outDir, fathom),
+		umami,
 	}
 	for _, s := range eventsData.Series {
 		seriedata.Serie = s
@@ -788,6 +805,7 @@ func main() {
 		js_files.Rel(options.outDir),
 		css_files.Rel(options.outDir),
 		MustRel(options.outDir, fathom),
+		umami,
 	}
 	utils.ExecuteTemplate("sitemap", out.Join("sitemap.html"), sitemapTemplate)
 
