@@ -268,7 +268,8 @@ var main = () => {
         dropdownContent.appendChild(div2)
         const ics = document.createElement("a");
         ics.classList.add("dropdown-item");
-        ics.setAttribute("href", dropdown.dataset.ics);
+        ics.setAttribute("href", dropdown.dataset.calendar);
+        ics.setAttribute("target", "_blank");
         ics.innerHTML = "Apple Calendar & andere (.ics)";
         dropdownContent.appendChild(ics);
         dropdownMenu.appendChild(dropdownContent);
