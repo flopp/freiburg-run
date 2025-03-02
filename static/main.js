@@ -411,9 +411,9 @@ var main = () => {
     }
 
     // UMAMI OUTBOUND LINKS
-    document.querySelectorAll("a[target=_blank]").forEach((e) => {
+    document.querySelectorAll("a[target=_blank]").forEach((a) => {
         a.setAttribute('data-umami-event', 'outbound-link-click');
-        a.setAttribute('data-umami-event-url', e.href);
+        a.setAttribute('data-umami-event-url', a.href);
     });
 };
 
