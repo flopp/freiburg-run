@@ -260,6 +260,7 @@ var main = () => {
         const googlecal = document.createElement("a");
         googlecal.classList.add("dropdown-item");
         googlecal.setAttribute("href", dropdown.dataset.googlecal);
+        googlecal.setAttribute("data-umami-event", "calendar-click");
         googlecal.setAttribute("target", "_blank");
         googlecal.innerHTML = "Google Calendar";
         dropdownContent.appendChild(googlecal);
@@ -269,8 +270,9 @@ var main = () => {
         const ics = document.createElement("a");
         ics.classList.add("dropdown-item");
         ics.setAttribute("href", dropdown.dataset.calendar);
+        ics.setAttribute("data-umami-event", "calendar-click");
         ics.setAttribute("target", "_blank");
-        ics.innerHTML = "Apple Calendar & andere (.ics)";
+        ics.innerHTML = "Outlook, Apple Calendar & andere (.ics)";
         dropdownContent.appendChild(ics);
         dropdownMenu.appendChild(dropdownContent);
         dropdown.appendChild(dropdownMenu);
@@ -413,7 +415,9 @@ var main = () => {
 
     // UMAMI
     document.querySelectorAll("a[target=_blank]").forEach((a) => {
-        a.setAttribute('data-umami-event', 'outbound-link-click');
+        if (a.getAttribute("data-umami-event") === null) {
+            a.setAttribute('data-umami-event', 'outbound-link-click');
+        }
         a.setAttribute('data-umami-event-url', a.href);
     });
     if (location.hash === '#disable-umami') {
