@@ -5,14 +5,16 @@ go 1.23.0
 toolchain go1.24.0
 
 require (
+	github.com/arran4/golang-ical v0.3.2
 	github.com/flopp/go-compass v0.0.0-20240423142146-efc33f5dee1e
 	github.com/flopp/go-coordsparser v0.0.0-20240403152942-4891dc40d0a7
 	github.com/flopp/go-filehash v0.0.0-20240421152807-21955404dbc6
 	github.com/fogleman/gg v1.3.0
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
+	github.com/google/uuid v1.6.0
 	github.com/tdewolff/minify/v2 v2.21.3
 	golang.org/x/image v0.24.0
-	golang.org/x/text v0.22.0
+	golang.org/x/text v0.23.0
 	google.golang.org/api v0.223.0
 )
 
@@ -21,14 +23,12 @@ require (
 	cloud.google.com/go/auth/oauth2adapt v0.2.7 // indirect
 	cloud.google.com/go/compute v1.25.1 // indirect
 	cloud.google.com/go/compute/metadata v0.6.0 // indirect
-	github.com/arran4/golang-ical v0.3.2 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/go-logr/logr v1.4.2 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
 	github.com/google/s2a-go v0.1.9 // indirect
-	github.com/google/uuid v1.6.0 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.3.4 // indirect
 	github.com/googleapis/gax-go/v2 v2.14.1 // indirect
 	github.com/tdewolff/parse/v2 v2.7.19 // indirect
