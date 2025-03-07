@@ -419,6 +419,8 @@ func main() {
 	sitemap.Add("impressum.html", "Impressum", "Allgemein")
 
 	utils.MustCopy("static/robots.txt", out.Join("robots.txt"))
+	utils.MustCopy("static/manifest.json", out.Join("manifest.json"))
+
 	// ahrefs validation
 	utils.MustCopy("static/5vkf9hdnfkay895vyx33zdvesnyaphgv.txt", out.Join("5vkf9hdnfkay895vyx33zdvesnyaphgv.txt"))
 	utils.MustCopy("static/favicon.png", out.Join("favicon.png"))
