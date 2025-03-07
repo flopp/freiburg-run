@@ -15,5 +15,6 @@
     ],
     "theme_color": "#3e8ed0",
     "background_color": "#3e8ed0",
+    "start_url": "https://freiburg.run",
     "display": "standalone"
 }
