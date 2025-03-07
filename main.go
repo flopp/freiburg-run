@@ -426,6 +426,8 @@ func main() {
 	utils.MustCopy("static/favicon.png", out.Join("favicon.png"))
 	utils.MustCopy("static/favicon.ico", out.Join("favicon.ico"))
 	utils.MustCopy("static/apple-touch-icon.png", out.Join("apple-touch-icon.png"))
+	utils.MustCopy("static/android-chrome-192x192.png", out.Join("android-chrome-192x192.png"))
+	utils.MustCopy("static/android-chrome-512x512.png", out.Join("android-chrome-512x512.png"))
 	utils.MustCopy("static/freiburg-run.svg", out.Join("images/freiburg-run.svg"))
 	utils.MustCopy("static/freiburg-run-new.svg", out.Join("images/freiburg-run-new.svg"))
 	utils.MustCopy("static/freiburg-run-new-blue.svg", out.Join("images/freiburg-run-new-blue.svg"))
