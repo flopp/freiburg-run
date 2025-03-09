@@ -250,7 +250,10 @@ var filter = (s, hiddenTags) => {
             // shown
             shown++;
             el.classList.remove("is-hidden");
-            lastSet = null;
+            if (lastSep !== null) {
+                lastSep.classList.remove("is-hidden");
+            }
+            lastSep = null;
         }
     });
 
