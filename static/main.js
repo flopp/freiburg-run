@@ -198,14 +198,21 @@ var filter = (s, hiddenTags) => {
     let lastSep = null;
     document.querySelectorAll(".event").forEach(el => {
         var sep = el.previousSibling;
-        if (sep !== null && sep.classList.contains("event-separator")) {
+        if (sep !== null) {
+            if (sep.classList.contains("event-separator")) {
+                if (lastSep !== null) {
+                    lastSep.classList.add("is-hidden");
+                }
+                lastSep = sep;
+            } else if (lastSep !== null) {
+                lastSep.classList.remove("is-hidden");
+                lastSep = null;
+            }
+        } else {       
             if (lastSep !== null) {
                 lastSep.classList.add("is-hidden");
+                lastSep = null;
             }
-            lastSep = sep;
-        } else if (lastSep !== null) {
-            lastSep.classList.remove("is-hidden");
-            lastSep = null;
         }
 
         if (hiddenTags.size != 0) {
