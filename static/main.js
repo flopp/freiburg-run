@@ -321,8 +321,21 @@ var main = () => {
     var tagTable = document.querySelector("#tag-table");
     if (tagTable !== null) {
         tagTable.querySelectorAll("[data-tag]").forEach(el => {
-            const tag = el.dataset.tag;
-            el.checked = !hiddenTags.has(tag);
+            if (storage !== null) {
+                const tag = el.dataset.tag;
+                el.checked = hiddenTags.has(tag);
+                el.addEventListener('change', (event) => {
+                    if (event.currentTarget.checked) {
+                        hiddenTags.add(tag);
+                    } else {
+                        hiddenTags.delete(tag);
+                    }
+                    var tags = Array.from(hiddenTags).join(",");
+                    storage.setItem("hiddenTags", tags);
+                });
+            } else {
+                el.disabled = true;
+            }
         });
     }
 
