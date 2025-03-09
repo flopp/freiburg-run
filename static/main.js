@@ -247,11 +247,11 @@ var filter = (s, hiddenTags) => {
     if (hidden != 0 || hiddenTag != 0) {
         var hiddenStr = ""
         if (hidden != 0) {
-            hiddenStr = `, ${hidden} ${hidden!=1 ? "Einträge" : "Eintrag"} versteckt`;
+            hiddenStr = `, ${hidden} ${hidden!=1 ? "Einträge" : "Eintrag"} über Filter versteckt`;
         }
         var hiddenTagStr = ""
         if (hiddenTag != 0) {
-            hiddenTagStr = `, ${hiddenTag} ${hiddenTag!=1 ? "Einträge" : "Eintrag"} über Kategorien versteckt`;
+            hiddenTagStr = `, ${hiddenTag} ${hiddenTag!=1 ? "Einträge" : "Eintrag"} über <a href="/tags.html">Kategorien</a> versteckt`;
         }
         info.innerHTML = `${shown} ${shown!=1 ? "Einträge" : "Eintrag"} angezeigt${hiddenStr}${hiddenTagStr}`;
         info.classList.remove("is-hidden");
@@ -304,7 +304,7 @@ function getLocalStorage() {
 }
 
 var main = () => {
-    // LOCAL STORAGE
+    // TAG FILTER, LOCAL STORAGE
     var storage = getLocalStorage();
     var hiddenTags = new Set();
     if (storage !== null) {
@@ -317,6 +317,13 @@ var main = () => {
                 }
             });
         }
+    }
+    var tagTable = document.querySelector("#tag-table");
+    if (tagTable !== null) {
+        tagTable.querySelectorAll("[data-tag]").forEach(el => {
+            const tag = el.dataset.tag;
+            el.checked = !hiddenTags.has(tag);
+        });
     }
 
     // FILTER

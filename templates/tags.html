@@ -10,10 +10,11 @@
 
         <div class="b-table">
             <div class="table-wrapper">
-                <table class="table is-fullwidth is-narrow">
+                <table class="table is-fullwidth is-narrow" id="tag-table">
                     <thead>
                         <tr>
                             <th>Kategorie</th>
+                            <th>versteckt</th>
                             <th># aktuelle</th>
                             <th># vergangene</th>
                             <th># Lauftreffs</th>
@@ -25,6 +26,9 @@
                         <tr>
                             <td>
                                 <a href="/{{.Slug}}">{{.Name}}</a>
+                            </td>
+                            <td>
+                                <input type="checkbox" data-tag="{{.Sanitized}}">
                             </td>
                             <td>
                                 {{.NumEvents}}
