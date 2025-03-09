@@ -233,6 +233,11 @@ var filter = (s, hiddenTags) => {
                 hidden++;
                 el.classList.add("is-hidden");
             }
+        } else {
+            if (name.includes(needle)) {
+                shown++;
+                el.classList.remove("is-hidden");
+            }
         }
     });
     if (lastSep !== null) {
@@ -305,7 +310,12 @@ var main = () => {
     if (storage !== null) {
         let tags = storage.getItem("hiddenTags");
         if (tags !== null) {
-            hiddenTags = new Set(tags.split(","));
+            tags.split(",").forEach(tag => {
+                tag = tag.trim();
+                if (tag !== "") {
+                    hiddenTags.add(tag);
+                }
+            });
         }
     }
 
@@ -319,6 +329,7 @@ var main = () => {
             filterInput.value = "";
             filter("", hiddenTags);
         });
+        filter("", hiddenTags);
     }
 
     // CALENDARS
