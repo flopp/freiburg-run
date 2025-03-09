@@ -197,13 +197,9 @@ var filter = (s, hiddenTags) => {
     let needle = s.toLowerCase().trim();
 
     let items = new Array();
-    document.querySelectorAll(".event").forEach(el => {
+    document.querySelectorAll(".event, .event-separator").forEach(el => {
         var sep = el.previousSibling;
-        if (sep !== null) {
-            if (sep.classList.contains("event-separator")) {
-                items.push(sep);
-            }
-        } else {
+        if (sep === null) {
             items.push(null);
         }
         items.push(el);
