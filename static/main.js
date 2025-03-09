@@ -195,58 +195,65 @@ var filter = (s, hiddenTags) => {
     let hiddenTag = 0;
     let info = document.querySelector("#filter-info");
     let needle = s.toLowerCase().trim();
-    let lastSep = null;
+
+    let items = new Array();
     document.querySelectorAll(".event").forEach(el => {
         var sep = el.previousSibling;
         if (sep !== null) {
             if (sep.classList.contains("event-separator")) {
-                if (lastSep !== null) {
-                    lastSep.classList.add("is-hidden");
-                }
-                lastSep = sep;
-            } else if (lastSep !== null) {
-                lastSep.classList.remove("is-hidden");
-                lastSep = null;
-            }
-        } else {       
-            if (lastSep !== null) {
-                lastSep.classList.add("is-hidden");
-                lastSep = null;
-            }
-        }
-
-        if (hiddenTags.size != 0) {
-            var found = false;
-            el.querySelectorAll("[data-tag]").forEach(tagEl => {
-                if (tagEl.dataset.tag !== undefined) {
-                    if (hiddenTags.has(tagEl.dataset.tag)) {
-                        found = true;
-                        return;
-                    }
-                }
-            });
-            if (found) {
-                hiddenTag++;
-                el.classList.add("is-hidden");
-                return;
-            }
-        }
-        if (needle != "") {
-            let name = el.dataset.name.toLowerCase();
-            if (name.includes(needle)) {
-                shown++;
-                el.classList.remove("is-hidden");
-            } else {
-                hidden++;
-                el.classList.add("is-hidden");
+                items.push(sep);
             }
         } else {
-            if (name.includes(needle)) {
-                shown++;
-                el.classList.remove("is-hidden");
+            items.push(null);
+        }
+        items.push(el);
+    });
+
+    lastSep = null;
+    items.forEach(el => {
+        if (el === null) {
+            lastSep = null;
+        } else if (el.classList.contains("event-separator")) {
+            if (lastSep !== null) {
+                lastSep.classList.add("is-hidden");
             }
+            lastSep = el;
+        } else {
+            // hide by tag
+            if (hiddenTags.size != 0) {
+                var found = false;
+                el.querySelectorAll("[data-tag]").forEach(tagEl => {
+                    if (tagEl.dataset.tag !== undefined) {
+                        if (hiddenTags.has(tagEl.dataset.tag)) {
+                            found = true;
+                            return;
+                        }
+                    }
+                });
+                if (found) {
+                    hiddenTag++;
+                    el.classList.add("is-hidden");
+                    return;
+                }
+            }
+
+            // hide by search
+            if (needle != "") {
+                let name = el.dataset.name.toLowerCase();
+                if (!name.includes(needle)) {
+                    hidden++;
+                    el.classList.add("is-hidden");
+                    return;
+                }
+            }
+            
+            // shown
+            shown++;
+            el.classList.remove("is-hidden");
+            lastSet = null;
         }
     });
+
     if (lastSep !== null) {
         lastSep.classList.add("is-hidden");
     }
@@ -265,36 +272,6 @@ var filter = (s, hiddenTags) => {
     } else {
         info.classList.add("is-hidden");
     }
-
-    /*
-    if (s == "") {
-        document.querySelectorAll(".event").forEach(el => {
-            shown++;
-            el.classList.remove("is-hidden");
-        });
-        document.querySelectorAll(".event-separator").forEach(el => {
-            el.classList.remove("is-hidden");
-        });
-        info.classList.add("is-hidden");
-    } else {
-        let needle = s.toLowerCase().trim();
-        document.querySelectorAll(".event").forEach(el => {
-            let name = el.dataset.name.toLowerCase();
-            if (name.includes(needle)) {
-                shown++;
-                el.classList.remove("is-hidden");
-            } else {
-                hidden++;
-                el.classList.add("is-hidden");
-            }
-        });
-        document.querySelectorAll(".event-separator").forEach(el => {
-            el.classList.add("is-hidden");
-        });
-        info.innerHTML = `${shown} ${shown!=1 ? "Einträge" : "Eintrag"} angezeigt, ${hidden} ${hidden!=1 ? "Einträge" : "Eintrag"} versteckt`;
-        info.classList.remove("is-hidden");
-    }
-    */
 };
 
 function getLocalStorage() {
