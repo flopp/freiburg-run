@@ -189,10 +189,72 @@ var load_marker = function (color) {
     return L.icon(options);
 }
 
-var filter = (s) => {
+var filter = (s, hiddenTags) => {
     let shown = 0;
     let hidden = 0;
+    let hiddenTag = 0;
     let info = document.querySelector("#filter-info");
+    let needle = s.toLowerCase().trim();
+    let lastSep = null;
+    document.querySelectorAll(".event").forEach(el => {
+        var sep = el.previousSibling;
+        if (sep !== null && sep.classList.contains("event-separator")) {
+            if (lastSep !== null) {
+                lastSep.classList.add("is-hidden");
+            }
+            lastSep = sep;
+        } else if (lastSep !== null) {
+            lastSep.classList.remove("is-hidden");
+            lastSep = null;
+        }
+
+        if (hiddenTags.size != 0) {
+            var found = false;
+            el.querySelectorAll("[data-tag]").forEach(tagEl => {
+                if (tagEl.dataset.tag !== undefined) {
+                    if (hiddenTags.has(tagEl.dataset.tag)) {
+                        found = true;
+                        return;
+                    }
+                }
+            });
+            if (found) {
+                hiddenTag++;
+                el.classList.add("is-hidden");
+                return;
+            }
+        }
+        if (needle != "") {
+            let name = el.dataset.name.toLowerCase();
+            if (name.includes(needle)) {
+                shown++;
+                el.classList.remove("is-hidden");
+            } else {
+                hidden++;
+                el.classList.add("is-hidden");
+            }
+        }
+    });
+    if (lastSep !== null) {
+        lastSep.classList.add("is-hidden");
+    }
+
+    if (hidden != 0 || hiddenTag != 0) {
+        var hiddenStr = ""
+        if (hidden != 0) {
+            hiddenStr = `, ${hidden} ${hidden!=1 ? "Einträge" : "Eintrag"} versteckt`;
+        }
+        var hiddenTagStr = ""
+        if (hiddenTag != 0) {
+            hiddenTagStr = `, ${hiddenTag} ${hiddenTag!=1 ? "Einträge" : "Eintrag"} über Kategorien versteckt`;
+        }
+        info.innerHTML = `${shown} ${shown!=1 ? "Einträge" : "Eintrag"} angezeigt${hiddenStr}${hiddenTagStr}`;
+        info.classList.remove("is-hidden");
+    } else {
+        info.classList.add("is-hidden");
+    }
+
+    /*
     if (s == "") {
         document.querySelectorAll(".event").forEach(el => {
             shown++;
@@ -220,18 +282,42 @@ var filter = (s) => {
         info.innerHTML = `${shown} ${shown!=1 ? "Einträge" : "Eintrag"} angezeigt, ${hidden} ${hidden!=1 ? "Einträge" : "Eintrag"} versteckt`;
         info.classList.remove("is-hidden");
     }
+    */
 };
 
+function getLocalStorage() {
+    let storage;
+    try {
+      storage = window["localStorage"];
+      const x = "__storage_test__";
+      storage.setItem(x, x);
+      storage.removeItem(x);
+      return storage;
+    } catch (e) {
+        return null;
+    }
+}
+
 var main = () => {
+    // LOCAL STORAGE
+    var storage = getLocalStorage();
+    var hiddenTags = new Set();
+    if (storage !== null) {
+        let tags = storage.getItem("hiddenTags");
+        if (tags !== null) {
+            hiddenTags = new Set(tags.split(","));
+        }
+    }
+
     // FILTER
     var filterInput = document.querySelector("#filter-input");
     if (filterInput !== null) {
         filterInput.addEventListener('input', (e) => {
-            filter(e.target.value);
+            filter(e.target.value, hiddenTags);
         });
         document.querySelector("#filter-button-cancel").addEventListener('click', (e) => {
             filterInput.value = "";
-            filter("");
+            filter("", hiddenTags);
         });
     }
 
