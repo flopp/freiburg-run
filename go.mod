@@ -15,7 +15,7 @@ require (
 	github.com/tdewolff/minify/v2 v2.21.3
 	golang.org/x/image v0.25.0
 	golang.org/x/text v0.23.0
-	google.golang.org/api v0.225.0
+	google.golang.org/api v0.226.0
 )
 
 require (
