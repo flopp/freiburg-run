@@ -87,6 +87,8 @@ github.com/flopp/go-compass v0.0.0-20240423141217-ff8c1d48c1db h1:te8py/4Af5iseu
 github.com/flopp/go-compass v0.0.0-20240423141217-ff8c1d48c1db/go.mod h1:d3E6OZtf+YiRp/AcjOvyCqvcDRrCqtZfzyMFzg34oSU=
 github.com/flopp/go-compass v0.0.0-20240423142146-efc33f5dee1e h1:n5Y4TqGiuc7vRglxOrUzvA5C1ZAZ42X9+R9dI6s2jxM=
 github.com/flopp/go-compass v0.0.0-20240423142146-efc33f5dee1e/go.mod h1:d3E6OZtf+YiRp/AcjOvyCqvcDRrCqtZfzyMFzg34oSU=
+github.com/flopp/go-compass v0.0.0-20250313113037-3252802e46f4 h1:3eTmfWVagAMPeJ30pmza0YxDuZjEDwH+o7nthJ2Tq+U=
+github.com/flopp/go-compass v0.0.0-20250313113037-3252802e46f4/go.mod h1:d3E6OZtf+YiRp/AcjOvyCqvcDRrCqtZfzyMFzg34oSU=
 github.com/flopp/go-coordsparser v0.0.0-20240403152942-4891dc40d0a7 h1:ZYEbOgGPFGLZwkLxRjV9zxZAIR1lExrNfFnObG/peek=
 github.com/flopp/go-coordsparser v0.0.0-20240403152942-4891dc40d0a7/go.mod h1:7y/2PxXfR1mGtIQFNtFE1daHIka2e8J480Bsm+MiCpk=
 github.com/flopp/go-coordsparser v0.0.0-20250311184423-61a7ff62d17c h1:HNRXT/BVRhDaHuFjFQ81mHd+DAmkRJXIELEL05LCDpk=
