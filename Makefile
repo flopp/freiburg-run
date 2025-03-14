@@ -1,7 +1,12 @@
 all:
-	@echo "make sync       -> build and upload to freiburg.runt"
+	@echo "make backup     -> download data to backup folder"
+	@echo "make sync       -> build and upload to freiburg.run"
 	@echo "make run-script -> sync & run remote script"
-	
+
+.phony: backup
+backup:
+	@mkdir -p backup-data
+	@go run cmd/backup/main.go -config config.json -output backup-data/$(shell date +%Y-%m-%d).ods
 
 .bin/generate-linux: main.go internal/events/*.go internal/utils/*.go go.mod
 	mkdir -p .bin
