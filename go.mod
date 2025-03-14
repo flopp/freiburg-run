@@ -8,7 +8,7 @@ require (
 	github.com/arran4/golang-ical v0.3.2
 	github.com/flopp/go-compass v0.0.0-20250313113037-3252802e46f4
 	github.com/flopp/go-coordsparser v0.0.0-20250311184423-61a7ff62d17c
-	github.com/flopp/go-filehash v0.0.0-20240421152807-21955404dbc6
+	github.com/flopp/go-filehash v0.0.0-20250313113005-e3e8650a2258
 	github.com/fogleman/gg v1.3.0
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
 	github.com/google/uuid v1.6.0
