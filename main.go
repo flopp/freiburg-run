@@ -342,6 +342,20 @@ func (p Path) Join(s string) string {
 	return filepath.Join(string(p), s)
 }
 
+func retry[T any](attempts int, sleep time.Duration, f func() (T, error)) (result T, err error) {
+	for attempt := range attempts {
+		if attempt > 0 {
+			time.Sleep(sleep)
+			sleep *= 2
+		}
+		result, err = f()
+		if err == nil {
+			return result, nil
+		}
+	}
+	return result, fmt.Errorf("after %d attempts, last error: %s", attempts, err)
+}
+
 func main() {
 	now := time.Now()
 	today := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
@@ -351,11 +365,21 @@ func main() {
 	out := Path(options.outDir)
 
 	config_data, err := events.LoadSheetsConfig(options.configFile)
-	utils.Check(err)
+	if err != nil {
+		log.Fatalf("failed to load config file: %v", err)
+		return
+	}
+
 	sheetUrl := fmt.Sprintf("https://docs.google.com/spreadsheets/d/%s", config_data.SheetId)
 
-	eventsData, err := events.FetchData(config_data, today)
-	utils.Check(err)
+	// try 3 times to fetch data with increasing timeouts (sometimes the google api is not available)
+	eventsData, err := retry(3, 8*time.Second, func() (events.Data, error) {
+		return events.FetchData(config_data, today)
+	})
+	if err != nil {
+		log.Fatalf("failed to fetch data: %v", err)
+		return
+	}
 
 	if options.addedFile != "" {
 		added, err := utils.ReadAdded(options.addedFile)

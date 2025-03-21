@@ -51,9 +51,9 @@ func FetchData(config SheetsConfigData, today time.Time) (Data, error) {
 	return data, nil
 }
 
-func collectEventTags(tags map[string]*Tag, event *Event) {
+func collectEventTags(tags map[string]*Tag, event *Event) error {
 	if event.Tags != nil {
-		panic("expecting event.Tags=nil")
+		return fmt.Errorf("expecting event.Tags=nil for '%s'", event.Name)
 	}
 
 	event.Tags = make([]*Tag, 0, len(event.RawTags))
@@ -71,9 +71,10 @@ func collectEventTags(tags map[string]*Tag, event *Event) {
 		} else if event.Type == "shop" {
 			tag.Shops = append(tag.Shops, event)
 		} else {
-			panic(fmt.Errorf("unexpected event.Type: %s", event.Type))
+			return fmt.Errorf("unexpected event.Type for '%s': %s", event.Name, event.Type)
 		}
 	}
+	return nil
 }
 
 func (data *Data) collectTags() {
@@ -105,9 +106,9 @@ func (data *Data) collectTags() {
 	data.Tags = tagsList
 }
 
-func collectEventSeries(seriesMap map[string]*Serie, event *Event) {
+func collectEventSeries(seriesMap map[string]*Serie, event *Event) error {
 	if event.Series != nil {
-		panic("expecting event.Series=nil")
+		return fmt.Errorf("expecting event.Series=nil for '%s'", event.Name)
 	}
 
 	event.Series = make([]*Serie, 0, len(event.RawSeries))
@@ -125,28 +126,37 @@ func collectEventSeries(seriesMap map[string]*Serie, event *Event) {
 		} else if event.Type == "shop" {
 			serie.Shops = append(serie.Shops, event)
 		} else {
-			panic(fmt.Errorf("unexpected event.Type: %s", event.Type))
+			return fmt.Errorf("unexpected event.Type for '%s': %s", event.Name, event.Type)
 		}
 	}
+	return nil
 }
 
-func (data *Data) collectSeries() {
+func (data *Data) collectSeries() error {
 	seriesMap := make(map[string]*Serie)
 	for _, series := range data.Series {
 		seriesMap[series.Sanitized] = series
 	}
 
 	for _, e := range data.Events {
-		collectEventSeries(seriesMap, e)
+		if err := collectEventSeries(seriesMap, e); err != nil {
+			return fmt.Errorf("collectEventSeries for events: %w", err)
+		}
 	}
 	for _, e := range data.EventsOld {
-		collectEventSeries(seriesMap, e)
+		if err := collectEventSeries(seriesMap, e); err != nil {
+			return fmt.Errorf("collectEventSeries for eventsOld: %w", err)
+		}
 	}
 	for _, e := range data.Groups {
-		collectEventSeries(seriesMap, e)
+		if err := collectEventSeries(seriesMap, e); err != nil {
+			return fmt.Errorf("collectEventSeries for groups: %w", err)
+		}
 	}
 	for _, e := range data.Shops {
-		collectEventSeries(seriesMap, e)
+		if err := collectEventSeries(seriesMap, e); err != nil {
+			return fmt.Errorf("collectEventSeries for shops: %w", err)
+		}
 	}
 
 	seriesList := make([]*Serie, 0, len(data.Series))
@@ -165,4 +175,6 @@ func (data *Data) collectSeries() {
 
 	data.Series = seriesList
 	data.SeriesOld = seriesListOld
+
+	return nil
 }
