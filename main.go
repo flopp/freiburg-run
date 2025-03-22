@@ -86,9 +86,9 @@ type TemplateData struct {
 
 func (t TemplateData) Image() string {
 	if t.Nav == "parkrun" {
-		return "/images/parkrun.png"
+		return "https://freiburg.run/images/parkrun.png"
 	}
-	return "/images/512.png"
+	return "https://freiburg.run/images/512.png"
 }
 
 type GenericTemplateData struct {
