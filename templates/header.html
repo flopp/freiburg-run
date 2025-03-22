@@ -4,13 +4,13 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
         <title>{{.YearTitle}}</title>
-        <meta name="description" content="{{.Description}}" />
+        <meta name="description" content="{{.Base.Description}}" />
         <link rel="icon" type="image/png" href="/favicon.png" />
-        <link rel="canonical" href="{{.Canonical}}" />
+        <link rel="canonical" href="{{.Base.Canonical}}" />
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#4455F6">
 
-        {{if eq .Nav "parkrun"}}
+        {{if eq .Base.Nav "parkrun"}}
         <link rel="me" href="https://freiburg.social/@dietenbachparkrun" />
         {{else}}
         <link rel="me" href="https://freiburg.social/@flopp" />
@@ -18,25 +18,25 @@
 
         <!-- Open Graph / Facebook -->
         <meta property="og:type" content="website">
-        <meta property="og:url" content="{{.Canonical}}">
+        <meta property="og:url" content="{{.Base.Canonical}}">
         <meta property="og:title" content="{{.YearTitle}} - freiburg.run">
-        <meta property="og:description" content="{{.Description}}">
-        <meta property="og:image" content="{{.Image}}">
+        <meta property="og:description" content="{{.Base.Description}}">
+        <meta property="og:image" content="{{.Base.Image}}">
 
         <!-- Twitter -->
         <meta property="twitter:card" content="summary_large_image">
-        <meta property="twitter:url" content="{{.Canonical}}">
+        <meta property="twitter:url" content="{{.Base.Canonical}}">
         <meta property="twitter:title" content="{{.YearTitle}} - freiburg.run">
-        <meta property="twitter:description" content="{{.Description}}">
-        <meta property="twitter:image" content="{{.Image}}">
+        <meta property="twitter:description" content="{{.Base.Description}}">
+        <meta property="twitter:image" content="{{.Base.Image}}">
 
-        {{range .CssFiles}}
+        {{range .Base.CssFiles}}
         <link rel="stylesheet" href="/{{.}}"/>
         {{end}}
 
-        <script defer src="/{{.Umami.Url}}" data-website-id="{{.Umami.Id}}"></script>
+        <script defer src="/{{.Base.Umami.Url}}" data-website-id="{{.Base.Umami.Id}}"></script>
     </head>
-    <body data-itemtype="{{.Type}}" class="has-navbar-fixed-top">
+    <body data-itemtype="{{.Base.Type}}" class="has-navbar-fixed-top">
 <nav class="navbar is-fixed-top is-link">
     <div class="navbar-brand">
         <a class="navbar-item" style="padding-left:1px; padding-top: 1px; padding-bottom: 1px;" href="/">
@@ -57,20 +57,20 @@
     <div id="navbarMain" class="navbar-menu">
         <div class="navbar-start">
             <div class="navbar-item has-dropdown is-hoverable">
-                <a class="navbar-link {{if eq .Nav "events"}}is-active{{end}}" href="/">
+                <a class="navbar-link {{if eq .Base.Nav "events"}}is-active{{end}}" href="/">
                     Veranstaltungen
                 </a>
                 <div class="navbar-dropdown is-boxed">
-                    <a class="navbar-item {{if eq .Nav "tags"}}is-active{{end}}" href="/tags.html" title="Kategorien">
+                    <a class="navbar-item {{if eq .Base.Nav "tags"}}is-active{{end}}" href="/tags.html" title="Kategorien">
                         Kategorien
                     </a>
-                    <a class="navbar-item {{if eq .Nav "series"}}is-active{{end}}" href="/series.html">
+                    <a class="navbar-item {{if eq .Base.Nav "series"}}is-active{{end}}" href="/series.html">
                         Laufserien
                     </a>
-                    <a class="navbar-item {{if eq .Nav "events-old"}}is-active{{end}}" href="/events-old.html">
+                    <a class="navbar-item {{if eq .Base.Nav "events-old"}}is-active{{end}}" href="/events-old.html">
                         Archiv
                     </a>
-                    <a class="navbar-item {{if eq .Nav "map"}}is-active{{end}}" href="/map.html">
+                    <a class="navbar-item {{if eq .Base.Nav "map"}}is-active{{end}}" href="/map.html">
                         Karte
                     </a>
                     <hr class="navbar-divider">
@@ -80,30 +80,30 @@
                 </div>
             </div>
 
-            <a class="navbar-item {{if eq .Nav "groups"}}is-active{{end}}" href="/lauftreffs.html">
+            <a class="navbar-item {{if eq .Base.Nav "groups"}}is-active{{end}}" href="/lauftreffs.html">
                 Lauftreffs
             </a>
 
-            <a class="navbar-item {{if eq .Nav "shops"}}is-active{{end}}" href="/shops.html">
+            <a class="navbar-item {{if eq .Base.Nav "shops"}}is-active{{end}}" href="/shops.html">
                 Shops
             </a>
 
-            <a class="navbar-item {{if eq .Nav "parkrun"}}is-active{{end}}" href="/dietenbach-parkrun.html">
+            <a class="navbar-item {{if eq .Base.Nav "parkrun"}}is-active{{end}}" href="/dietenbach-parkrun.html">
                 Dietenbach parkrun
             </a>
 
             <div class="navbar-item has-dropdown is-hoverable">
-                <a class="navbar-link {{if eq .Nav "info"}}is-active{{end}}" href="/info.html">
+                <a class="navbar-link {{if eq .Base.Nav "info"}}is-active{{end}}" href="/info.html">
                     Infos
                 </a>
                 <div class="navbar-dropdown is-boxed">
-                    <a class="navbar-item {{if eq .Nav "support"}}is-active{{end}}" href="/support.html">
+                    <a class="navbar-item {{if eq .Base.Nav "support"}}is-active{{end}}" href="/support.html">
                         Unterstützen
                     </a>
-                    <a class="navbar-item {{if eq .Nav "support"}}is-active{{end}}" href="/impressum.html">
+                    <a class="navbar-item {{if eq .Base.Nav "support"}}is-active{{end}}" href="/impressum.html">
                         Impressum
                     </a>
-                    <a class="navbar-item {{if eq .Nav "support"}}is-active{{end}}" href="/datenschutz.html">
+                    <a class="navbar-item {{if eq .Base.Nav "support"}}is-active{{end}}" href="/datenschutz.html">
                         Datenschutz
                     </a>
                 </div>
@@ -112,12 +112,12 @@
     </div>
 </nav>
 
-        {{if ne .Nav "map"}}{{if .Breadcrumbs}}
+        {{if ne .Base.Nav "map"}}{{if .Base.Breadcrumbs}}
         <section class="section pt-2 pb-0">
             <div class="container is-max-desktop">
                 <nav class="breadcrumb">
                     <ul itemscope itemtype="https://schema.org/BreadcrumbList">
-                        {{range .Breadcrumbs}}
+                        {{range .Base.Breadcrumbs}}
                         <li {{if .IsLast}}class="is-active"{{end}} itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
                             <a href="{{.Link.Url}}" itemprop="item">
                                 <span itemprop="name">{{.Link.Name}}</span>

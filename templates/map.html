@@ -2,25 +2,25 @@
 <div id="big-map"></div>
 
 <div class="is-hidden">
-    {{range .Data.Events}}
+    {{range .Base.Data.Events}}
     {{if .Location.HasGeo}}
     <div class="event" data-type="{{.NiceType}}" data-name="{{.Name}}" data-time="{{.Time.Formatted}}" data-geo="{{.Location.Geo}}" data-location="{{.Location.Name}}" data-slug="{{.Slug}}"></div>
     {{end}}
     {{end}}
 
-    {{range .Data.EventsOld}}
+    {{range .Base.Data.EventsOld}}
     {{if .Location.HasGeo}}
     <div class="event" data-type="{{.NiceType}}" data-name="{{.Name}}" data-time="{{.Time.Formatted}}" data-geo="{{.Location.Geo}}" data-location="{{.Location.Name}}" data-slug="{{.Slug}}"></div>
     {{end}}
     {{end}}
 
-    {{range .Data.Groups}}
+    {{range .Base.Data.Groups}}
     {{if .Location.HasGeo}}
     <div class="event" data-type="{{.NiceType}}" data-name="{{.Name}}" data-time="{{.Time.Formatted}}" data-geo="{{.Location.Geo}}" data-location="{{.Location.Name}}" data-slug="{{.Slug}}"></div>
     {{end}}
     {{end}}
 
-    {{range .Data.Shops}}
+    {{range .Base.Data.Shops}}
     {{if .Location.HasGeo}}
     <div class="event" data-type="{{.NiceType}}" data-name="{{.Name}}" data-time="{{.Time.Formatted}}" data-geo="{{.Location.Geo}}" data-location="{{.Location.Name}}" data-slug="{{.Slug}}"></div>
     {{end}}

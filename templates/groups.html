@@ -2,7 +2,7 @@
 
 <section class="section">
     <div class="container is-max-desktop" itemscope itemtype="https://schema.org/ItemList">
-        <h1 class="title" itemprop="name">{{.Title}}</h1>
+        <h1 class="title" itemprop="name">{{.Base.Title}}</h1>
 
         <div class="notification is-link is-light">
             Liste von Lauftreffs, Laufgruppen, Trainingsgruppen, Social Runs im Raum Freiburg (~50km Umkreis).
@@ -15,7 +15,7 @@
         {{template "controls.html" .}}
 
         <div class="columns is-multiline">   
-            {{range .Data.Groups}}
+            {{range .Base.Data.Groups}}
             {{template "card.html" .}}
             {{end}}
         </div>
