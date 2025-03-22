@@ -458,14 +458,6 @@ var main = () => {
 
         $trigger.addEventListener('click', () => {
             openModal($target);
-            if (window.goatcounter && window.goatcounter.count) {
-                window.goatcounter.count({
-                    path:  $trigger.dataset.target,
-                    title: $trigger.dataset.target,
-                    referrer: window.location.href || '',
-                    event: true,
-                });
-            }
         });
     });
 
