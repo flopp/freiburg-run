@@ -226,7 +226,7 @@ func (sitemap Sitemap) GenHTML() []SitemapCategory {
 	for _, c := range sitemap.Categories {
 		links := make([]Link, 0)
 		for _, e := range byCategory[c] {
-			links = append(links, Link{e.Name, fmt.Sprintf("%s/%s", sitemap.BaseUrl, e.Slug)})
+			links = append(links, CreateLink(e.Name, fmt.Sprintf("%s/%s", sitemap.BaseUrl, e.Slug)))
 		}
 		categories = append(categories, SitemapCategory{c, links})
 	}

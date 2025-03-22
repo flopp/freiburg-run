@@ -11,7 +11,7 @@ type Serie struct {
 	Sanitized   string
 	Name        string
 	Description template.HTML
-	Links       []utils.NameUrl
+	Links       []utils.Link
 	Events      []*Event
 	EventsOld   []*Event
 	Groups      []*Event
@@ -27,7 +27,7 @@ func (s Serie) Num() int {
 }
 
 func CreateSerie(id string, name string) *Serie {
-	return &Serie{id, name, "", make([]utils.NameUrl, 0), make([]*Event, 0), make([]*Event, 0), make([]*Event, 0), make([]*Event, 0)}
+	return &Serie{id, name, "", make([]utils.Link, 0), make([]*Event, 0), make([]*Event, 0), make([]*Event, 0), make([]*Event, 0)}
 }
 
 func (serie *Serie) Slug() string {

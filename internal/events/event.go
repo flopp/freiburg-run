@@ -30,7 +30,7 @@ type Event struct {
 	Tags           []*Tag
 	RawSeries      []string
 	Series         []*Serie
-	Links          []utils.NameUrl
+	Links          []utils.Link
 	Calendar       string
 	CalendarGoogle string
 	Added          string

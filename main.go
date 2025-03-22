@@ -452,8 +452,8 @@ func main() {
 	utils.MustDownload(fmt.Sprintf("%s/dist/images/marker-icon-2x.png", leaflet_url), out.Join("images/marker-icon-2x.png"))
 	utils.MustDownload(fmt.Sprintf("%s/dist/images/marker-shadow.png", leaflet_url), out.Join("images/marker-shadow.png"))
 
-	breadcrumbsBase := utils.InitBreadcrumbs(utils.Link{Name: "freiburg.run", Url: "/"})
-	breadcrumbsEvents := utils.PushBreadcrumb(breadcrumbsBase, utils.Link{Name: "Laufveranstaltungen", Url: "/"})
+	breadcrumbsBase := utils.InitBreadcrumbs(utils.CreateLink("freiburg.run", "/"))
+	breadcrumbsEvents := utils.PushBreadcrumb(breadcrumbsBase, utils.CreateLink("Laufveranstaltungen", "/"))
 
 	defaultImage := "/images/preview.png"
 	if err = utils.GenImage(out.Join("images/preview.png"), "Laufveranstaltungen", "im Raum Freiburg", "", "static/background.png"); err != nil {
@@ -486,14 +486,14 @@ func main() {
 
 	utils.ExecuteTemplate("events", out.Join("index.html"), data)
 
-	breadcrumbsEventsOld := utils.PushBreadcrumb(breadcrumbsEvents, utils.Link{Name: "Archiv", Url: "/events-old.html"})
+	breadcrumbsEventsOld := utils.PushBreadcrumb(breadcrumbsEvents, utils.CreateLink("Archiv", "/events-old.html"))
 	data.Base.Title = "Vergangene Laufveranstaltungen im Raum Freiburg "
 	data.Base.Description = "Liste von vergangenen Laufveranstaltungen, Lauf-Wettkämpfen, Volksläufen im Raum Freiburg "
 	data.Base.Canonical = "https://freiburg.run/events-old.html"
 	data.Base.Breadcrumbs = breadcrumbsEventsOld
 	utils.ExecuteTemplate("events-old", out.Join("events-old.html"), data)
 
-	breadcrumbsEventsTags := utils.PushBreadcrumb(breadcrumbsEvents, utils.Link{Name: "Kategorien", Url: "/tags.html"})
+	breadcrumbsEventsTags := utils.PushBreadcrumb(breadcrumbsEvents, utils.CreateLink("Kategorien", "/tags.html"))
 	data.Base.Nav = "tags"
 	data.Base.Title = "Kategorien"
 	data.Base.Description = "Liste aller Kategorien von Laufveranstaltungen, Lauf-Wettkämpfen, Volksläufen im Raum Freiburg"
@@ -501,7 +501,7 @@ func main() {
 	data.Base.Breadcrumbs = breadcrumbsEventsTags
 	utils.ExecuteTemplate("tags", out.Join("tags.html"), data)
 
-	breadcrumbsGroups := utils.PushBreadcrumb(breadcrumbsBase, utils.Link{Name: "Lauftreffs", Url: "/lauftreffs.html"})
+	breadcrumbsGroups := utils.PushBreadcrumb(breadcrumbsBase, utils.CreateLink("Lauftreffs", "/lauftreffs.html"))
 	data.Base.Nav = "groups"
 	data.Base.Title = "Lauftreffs im Raum Freiburg"
 	data.Base.Type = "Lauftreff"
@@ -510,7 +510,7 @@ func main() {
 	data.Base.Breadcrumbs = breadcrumbsGroups
 	utils.ExecuteTemplate("groups", out.Join("lauftreffs.html"), data)
 
-	breadcrumbsShops := utils.PushBreadcrumb(breadcrumbsBase, utils.Link{Name: "Lauf-Shops", Url: "/shops.html"})
+	breadcrumbsShops := utils.PushBreadcrumb(breadcrumbsBase, utils.CreateLink("Lauf-Shops", "/shops.html"))
 	data.Base.Nav = "shops"
 	data.Base.Title = "Lauf-Shops im Raum Freiburg"
 	data.Base.Type = "Lauf-Shop"
@@ -525,11 +525,11 @@ func main() {
 	data.Base.Image = "/images/parkrun.png"
 	data.Base.Description = "Vollständige Liste aller Ergebnisse, Laufberichte und Fotogalerien des 'Dietenbach parkrun' im Freiburger Dietenbachpark."
 	data.Base.Canonical = "https://freiburg.run/dietenbach-parkrun.html"
-	data.Base.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsBase, utils.Link{Name: "Dietenbach parkrun", Url: "/dietenbach-parkrun.html"})
+	data.Base.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsBase, utils.CreateLink("Dietenbach parkrun", "/dietenbach-parkrun.html"))
 	utils.ExecuteTemplate("dietenbach-parkrun", out.Join("dietenbach-parkrun.html"), data)
 	utils.ExecuteTemplateNoMinify("dietenbach-parkrun-wordpress", out.Join("dietenbach-parkrun-wordpress.html"), data)
 
-	breadcrumbsEventsSeries := utils.PushBreadcrumb(breadcrumbsEvents, utils.Link{Name: "Serien", Url: "/series.html"})
+	breadcrumbsEventsSeries := utils.PushBreadcrumb(breadcrumbsEvents, utils.CreateLink("Serien", "/series.html"))
 	data.Base.Nav = "series"
 	data.Base.Title = "Serien"
 	data.Base.Description = "Liste aller Serien von Laufveranstaltungen, Lauf-Wettkämpfen, Volksläufen im Raum Freiburg "
@@ -543,16 +543,16 @@ func main() {
 	data.Base.Image = defaultImage
 	data.Base.Description = "Karte"
 	data.Base.Canonical = "https://freiburg.run/map.html"
-	data.Base.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsBase, utils.Link{Name: "Karte", Url: "/map.html"})
+	data.Base.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsBase, utils.CreateLink("Karte", "/map.html"))
 	utils.ExecuteTemplate("map", out.Join("map.html"), data)
 
-	breadcrumbsInfo := utils.PushBreadcrumb(breadcrumbsBase, utils.Link{Name: "Info", Url: "/info.html"})
+	breadcrumbsInfo := utils.PushBreadcrumb(breadcrumbsBase, utils.CreateLink("Info", "/info.html"))
 	data.Base.Nav = "datenschutz"
 	data.Base.Title = "Datenschutz"
 	data.Base.Type = "Datenschutz"
 	data.Base.Description = "Datenschutzerklärung von freiburg.run"
 	data.Base.Canonical = "https://freiburg.run/datenschutz.html"
-	data.Base.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsInfo, utils.Link{Name: "Datenschutz", Url: "/datenschutz.html"})
+	data.Base.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsInfo, utils.CreateLink("Datenschutz", "/datenschutz.html"))
 	utils.ExecuteTemplate("datenschutz", out.Join("datenschutz.html"), data)
 
 	data.Base.Nav = "impressum"
@@ -560,7 +560,7 @@ func main() {
 	data.Base.Type = "Impressum"
 	data.Base.Description = "Impressum von freiburg.run"
 	data.Base.Canonical = "https://freiburg.run/impressum.html"
-	data.Base.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsInfo, utils.Link{Name: "Impressum", Url: "/impressum.html"})
+	data.Base.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsInfo, utils.CreateLink("Impressum", "/impressum.html"))
 	utils.ExecuteTemplate("impressum", out.Join("impressum.html"), data)
 
 	data.Base.Nav = "info"
@@ -576,7 +576,7 @@ func main() {
 	data.Base.Type = "Support"
 	data.Base.Description = "Möglichkeiten freiburg.run zu unterstützen"
 	data.Base.Canonical = "https://freiburg.run/support.html"
-	data.Base.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsInfo, utils.Link{Name: "Unterstützung", Url: "/support.html"})
+	data.Base.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsInfo, utils.CreateLink("Unterstützung", "/support.html"))
 	utils.ExecuteTemplate("support", out.Join("support.html"), data)
 
 	data.Base.Nav = "404"
@@ -584,7 +584,7 @@ func main() {
 	data.Base.Type = ""
 	data.Base.Description = "Fehlerseite von freiburg.run"
 	data.Base.Canonical = "https://freiburg.run/404.html"
-	data.Base.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsBase, utils.Link{Name: "Fehlerseite", Url: "/404.html"})
+	data.Base.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsBase, utils.CreateLink("Fehlerseite", "/404.html"))
 	utils.ExecuteTemplate("404", out.Join("404.html"), data)
 
 	eventdata := EventTemplateData{
@@ -624,7 +624,7 @@ func main() {
 		} else {
 			eventdata.Base.Image = defaultImage
 		}
-		eventdata.Base.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsEvents, utils.Link{Name: event.Name, Url: fmt.Sprintf("/%s", slug)})
+		eventdata.Base.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsEvents, utils.CreateLink(event.Name, fmt.Sprintf("/%s", slug)))
 		utils.ExecuteTemplate("event", out.Join(slug), eventdata)
 		sitemap.Add(slug, event.Name, "Laufveranstaltungen")
 	}
@@ -646,7 +646,7 @@ func main() {
 			eventdata.Base.Image = defaultImage
 			log.Printf("event '%s': %v", event.Name, err)
 		}
-		eventdata.Base.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsEventsOld, utils.Link{Name: event.Name, Url: fmt.Sprintf("/%s", slug)})
+		eventdata.Base.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsEventsOld, utils.CreateLink(event.Name, fmt.Sprintf("/%s", slug)))
 		utils.ExecuteTemplate("event", out.Join(slug), eventdata)
 		sitemap.Add(slug, event.Name, "Vergangene Laufveranstaltungen")
 	}
@@ -667,7 +667,7 @@ func main() {
 			eventdata.Base.Image = defaultImage
 			log.Printf("event '%s': %v", event.Name, err)
 		}
-		eventdata.Base.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsGroups, utils.Link{Name: event.Name, Url: fmt.Sprintf("/%s", slug)})
+		eventdata.Base.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsGroups, utils.CreateLink(event.Name, fmt.Sprintf("/%s", slug)))
 		utils.ExecuteTemplate("event", out.Join(slug), eventdata)
 		sitemap.Add(slug, event.Name, "Lauftreffs")
 	}
@@ -688,7 +688,7 @@ func main() {
 			eventdata.Base.Image = defaultImage
 			log.Printf("event '%s': %v", event.Name, err)
 		}
-		eventdata.Base.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsShops, utils.Link{Name: event.Name, Url: fmt.Sprintf("/%s", slug)})
+		eventdata.Base.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsShops, utils.CreateLink(event.Name, fmt.Sprintf("/%s", slug)))
 		utils.ExecuteTemplate("event", out.Join(slug), eventdata)
 		sitemap.Add(slug, event.Name, "Lauf-Shops")
 	}
@@ -720,7 +720,7 @@ func main() {
 		tagdata.Base.Description = fmt.Sprintf("Liste an Laufveranstaltungen im Raum Freiburg, die mit der Kategorie '%s' getaggt sind", tag.Name)
 		slug := tag.Slug()
 		tagdata.Base.Canonical = fmt.Sprintf("https://freiburg.run/%s", slug)
-		tagdata.Base.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsEventsTags, utils.Link{Name: tag.Name, Url: fmt.Sprintf("/%s", slug)})
+		tagdata.Base.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsEventsTags, utils.CreateLink(tag.Name, fmt.Sprintf("/%s", slug)))
 		utils.ExecuteTemplate("tag", out.Join(slug), tagdata)
 		sitemap.Add(slug, tag.Name, "Kategorien")
 	}
@@ -758,7 +758,7 @@ func main() {
 		} else {
 			seriedata.Base.Image = defaultImage
 		}
-		seriedata.Base.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsEventsSeries, utils.Link{Name: s.Name, Url: fmt.Sprintf("/%s", slug)})
+		seriedata.Base.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsEventsSeries, utils.CreateLink(s.Name, fmt.Sprintf("/%s", slug)))
 		utils.ExecuteTemplate("serie", out.Join(slug), seriedata)
 		sitemap.Add(slug, s.Name, "Serien")
 	}
@@ -774,7 +774,7 @@ func main() {
 		} else {
 			seriedata.Base.Image = defaultImage
 		}
-		seriedata.Base.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsEventsSeries, utils.Link{Name: s.Name, Url: fmt.Sprintf("/%s", slug)})
+		seriedata.Base.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsEventsSeries, utils.CreateLink(s.Name, fmt.Sprintf("/%s", slug)))
 		utils.ExecuteTemplate("serie", out.Join(slug), seriedata)
 		sitemap.Add(slug, s.Name, "Serien")
 	}
@@ -789,7 +789,7 @@ func main() {
 			"",
 			"https://freiburg.run/sitemap.html",
 			defaultImage,
-			utils.PushBreadcrumb(breadcrumbsBase, utils.Link{Name: "Sitemap", Url: "/sitemap.html"}),
+			utils.PushBreadcrumb(breadcrumbsBase, utils.CreateLink("Sitemap", "/sitemap.html")),
 			"/",
 			timestamp,
 			timestampFull,

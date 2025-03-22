@@ -529,11 +529,11 @@ func fetchSeries(config SheetsConfigData, srv *sheets.Service, table string) ([]
 	return series, nil
 }
 
-func parseLinks(ss []string, registration string) ([]utils.NameUrl, error) {
-	links := make([]utils.NameUrl, 0, len(ss))
+func parseLinks(ss []string, registration string) ([]utils.Link, error) {
+	links := make([]utils.Link, 0, len(ss))
 	hasRegistration := registration != ""
 	if hasRegistration {
-		links = append(links, utils.CreateNameUrl("Anmeldung", registration))
+		links = append(links, utils.CreateLink("Anmeldung", registration))
 	}
 	for _, s := range ss {
 		if s == "" {
@@ -544,7 +544,7 @@ func parseLinks(ss []string, registration string) ([]utils.NameUrl, error) {
 			return nil, fmt.Errorf("bad link: <%s>", s)
 		}
 		if !hasRegistration || a[0] != "Anmeldung" {
-			links = append(links, utils.CreateNameUrl(a[0], a[1]))
+			links = append(links, utils.CreateLink(a[0], a[1]))
 		}
 	}
 	return links, nil

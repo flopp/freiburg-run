@@ -7,12 +7,23 @@ type Link struct {
 	Url  string
 }
 
+func CreateLink(name string, url string) Link {
+	return Link{
+		Name: name,
+		Url:  url,
+	}
+}
+
 func (link Link) IsExternal() bool {
 	return strings.HasPrefix(link.Url, "http:") || strings.HasPrefix(link.Url, "https:")
 }
 
 func (link Link) IsEmail() bool {
 	return strings.HasPrefix(link.Url, "mailto:")
+}
+
+func (link Link) IsRegistration() bool {
+	return strings.Contains(link.Name, "Anmeldung")
 }
 
 type Breadcrumb struct {
