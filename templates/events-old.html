@@ -15,13 +15,7 @@
 
         <div class="columns is-multiline">   
             {{range .Base.Data.EventsOld}}
-            {{if .IsSeparator}}
-            <div class="column is-full event-separator">
-                <div class="notification is-link is-light pt-2 pb-2 pl-4">{{.Name}}</div>
-            </div>
-            {{else}}
             {{template "card.html" .}}
-            {{end}}
             {{end}}
         </div>
     </div>

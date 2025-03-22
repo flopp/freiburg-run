@@ -1,3 +1,8 @@
+{{if .IsSeparator}}
+<div class="column is-full event-separator">
+    <div class="notification is-link is-light pt-2 pb-2 pl-4">{{.Name}}</div>
+</div>
+{{else}}
 <div class="column is-half event" data-type="{{.NiceType}}" data-name="{{.Name}}" data-time="{{.Time.Formatted}}" data-geo="{{.Location.Geo}}" data-location="{{.Location.Name}}" data-slug="{{.Slug}}" data-ics="{{.Calendar}}" data-googlecal="{{.CalendarGoogle}}">
     {{if .Special}}
     <div class="card pulsating-border" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
@@ -76,3 +81,4 @@
         </footer>
     </div>
 </div>
+{{end}}

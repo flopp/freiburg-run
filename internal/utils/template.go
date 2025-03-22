@@ -11,16 +11,38 @@ import (
 	"github.com/tdewolff/minify/v2/html"
 )
 
-func loadTemplate(name string) *template.Template {
-	t, err := template.ParseFiles(fmt.Sprintf("templates/%s.html", name), "templates/header.html", "templates/footer.html", "templates/tail.html", "templates/card.html", "templates/controls.html", "templates/support-modal.html")
-	Check(err)
-	return t
+var templates = make(map[string]*template.Template)
+
+func loadTemplate(name string) (*template.Template, error) {
+	if t, ok := templates[name]; ok {
+		return t, nil
+	}
+
+	// collect all *.html files in templates/parts folder
+	parts, err := filepath.Glob("templates/parts/*.html")
+	if err != nil {
+		return nil, err
+	}
+
+	files := make([]string, 0, 1+len(parts))
+	files = append(files, fmt.Sprintf("templates/%s.html", name))
+	files = append(files, parts...)
+	t, err := template.ParseFiles(files...)
+	if err != nil {
+		return nil, err
+	}
+
+	templates[name] = t
+	return t, nil
 }
 
 func ExecuteTemplate(templateName string, fileName string, data any) {
+	templ, err := loadTemplate(templateName)
+	Check(err)
+
 	// render to buffer
 	var buffer bytes.Buffer
-	err := loadTemplate(templateName).Execute(&buffer, data)
+	err = templ.Execute(&buffer, data)
 	Check(err)
 
 	// create output folder + file
@@ -39,9 +61,12 @@ func ExecuteTemplate(templateName string, fileName string, data any) {
 }
 
 func ExecuteTemplateNoMinify(templateName string, fileName string, data any) {
+	templ, err := loadTemplate(templateName)
+	Check(err)
+
 	// render to buffer
 	var buffer bytes.Buffer
-	err := loadTemplate(templateName).Execute(&buffer, data)
+	err = templ.Execute(&buffer, data)
 	Check(err)
 
 	// create output folder + file
