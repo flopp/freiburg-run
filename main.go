@@ -206,7 +206,7 @@ func CreateHtaccess(data events.Data, outDir string) error {
 	defer destination.Close()
 
 	destination.WriteString("ErrorDocument 404 /404.html\n")
-	destination.WriteString("Content-Security-Policy: frame-ancestors 'self' https://2oc.de;\n")
+	//destination.WriteString("Content-Security-Policy: frame-ancestors 'self' https://2oc.de;\n")
 	destination.WriteString("Redirect /parkrun /dietenbach-parkrun.html\n")
 	destination.WriteString("Redirect /groups.html /lauftreffs.html\n")
 	destination.WriteString("Redirect /event/2024-32-teninger-allmendlauf.html?back=event /event/2024-32-teninger-allmendlauf.html\n")
