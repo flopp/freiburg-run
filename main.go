@@ -672,6 +672,18 @@ func main() {
 		sitemap.Add(slug, tag.Name, "Kategorien")
 	}
 
+	// special rendering of the "traillauf" tag
+	for _, tag := range eventsData.Tags {
+		if tag.Sanitized == "traillauf" {
+			tagdata.Tag = tag
+			tagdata.Base.Title = "Aktuelle Trail-Veranstaltungen"
+			tagdata.Base.Description = "Aktuelle Trail-Veranstaltungen im Raum Freiburg"
+			slug := "trailrun-frame.html"
+			tagdata.Base.Canonical = fmt.Sprintf("%s/%s", baseUrl, slug)
+			utils.ExecuteTemplate("trailrun-frame", out.Join(slug), tagdata)
+		}
+	}
+
 	seriedata := SerieTemplateData{
 		nil,
 		TemplateData{
