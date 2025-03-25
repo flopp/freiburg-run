@@ -18,13 +18,18 @@
 
         <h2 class="subtitle">Bereitgestellt von <a target="_blank" href="https://freiburg.run">freiburg.run</a></h2>
 
-{{if .Tag.Events}}
-        <div class="columns is-multiline">
-            {{range .Tag.Events}}
-            {{template "card.html" .}}
-            {{end}}
-        </div>
+<table>
+{{range .Tag.Events}}
+{{if .IsSeparator}}{{else}}
+<tr><td>
+    <a class="has-text-weight-bold" href="https://freiburg.run/{{.Slug}}" target="_blank">{{.Name}}</a><br>
+    {{if .Cancelled}}<span style="color: red;">{{.Status}}</span><br>{{end}}
+    {{.Time.Formatted}}<br>
+    {{.Location.Name}}
+</td></tr>
 {{end}}
+{{end}}
+</table>
 
 {{range .Base.JsFiles}}
 <script src="/{{.}}"></script>
