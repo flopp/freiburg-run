@@ -7,10 +7,6 @@
         <meta name="description" content="{{.Base.Description}}" />
         <link rel="icon" type="image/png" href="/favicon.png" />
         <link rel="canonical" href="{{.Base.Canonical}}" />
-        <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#4455F6">
-
-        <link rel="me" href="https://freiburg.social/@flopp" />
 
         {{range .Base.CssFiles}}
         <link rel="stylesheet" href="/{{.}}"/>
@@ -18,12 +14,9 @@
 
         <script defer src="/{{.Base.Umami.Url}}" data-website-id="{{.Base.Umami.Id}}"></script>
     </head>
-    <body data-itemtype="{{.Base.Type}}" class="has-navbar-fixed-top">
+    <body>
 
-<section class="section">
-    <div class="container is-max-desktop">
-        <h1 class="title">Aktuelle Trail-Veranstaltungen</h1>
-        <h2 class="subtitle">Bereitgestellt von freiburg.run</h2>
+        <h2 class="subtitle">Bereitgestellt von <a target="_blank" href="https://freiburg.run">freiburg.run</a></h2>
 
 {{if .Tag.Events}}
         <div class="columns is-multiline">
@@ -32,8 +25,6 @@
             {{end}}
         </div>
 {{end}}
-    </div>
-</section>
 
 {{range .Base.JsFiles}}
 <script src="/{{.}}"></script>
