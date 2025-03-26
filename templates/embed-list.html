@@ -3,22 +3,19 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-        <title>{{.YearTitle}}</title>
-        <meta name="description" content="{{.Base.Description}}" />
         <link rel="icon" type="image/png" href="/favicon.png" />
-        <link rel="canonical" href="{{.Base.Canonical}}" />
+        <link rel="canonical" href="{{.Canonical}}" />
 
-        {{range .Base.CssFiles}}
+        {{range .CssFiles}}
         <link rel="stylesheet" href="/{{.}}"/>
         {{end}}
 
-        <script defer src="/{{.Base.Umami.Url}}" data-website-id="{{.Base.Umami.Id}}"></script>
+        <script defer src="/{{.Umami.Url}}" data-website-id="{{.Umami.Id}}"></script>
     </head>
     <body>
 
 <table class="table">
-{{range .Tag.Events}}
-{{if .IsSeparator}}{{else}}
+{{range .Events}}
 <tr><td>
     <a class="has-text-weight-bold" href="https://freiburg.run/{{.Slug}}" target="_blank">{{.Name}}</a><br>
     {{if .Cancelled}}<span style="color: red;">{{.Status}}</span><br>{{end}}
@@ -26,10 +23,9 @@
     {{.Location.Name}}
 </td></tr>
 {{end}}
-{{end}}
 </table>
 
-{{range .Base.JsFiles}}
+{{range .JsFiles}}
 <script src="/{{.}}"></script>
 {{end}}
    </body>

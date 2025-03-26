@@ -154,6 +154,11 @@ type SitemapTemplateData struct {
 	Base       TemplateData
 }
 
+type EmbedListTemplateData struct {
+	TemplateData
+	Events []*events.Event
+}
+
 func (d SitemapTemplateData) YearTitle() string {
 	return d.Base.Title
 }
@@ -675,12 +680,43 @@ func main() {
 	// special rendering of the "traillauf" tag
 	for _, tag := range eventsData.Tags {
 		if tag.Sanitized == "traillauf" {
-			tagdata.Tag = tag
-			tagdata.Base.Title = "Aktuelle Trail-Veranstaltungen"
-			tagdata.Base.Description = "Aktuelle Trail-Veranstaltungen im Raum Freiburg"
-			slug := "embed/trailrun.html"
-			tagdata.Base.Canonical = fmt.Sprintf("%s/%s", baseUrl, slug)
-			utils.ExecuteTemplate("trailrun-frame", out.Join(slug), tagdata)
+			slug_de := "embed/trailrun-de.html"
+			listdata_de := EmbedListTemplateData{
+				tagdata.Base,
+				make([]*events.Event, 0),
+			}
+			listdata_de.Canonical = fmt.Sprintf("%s/%s", baseUrl, slug_de)
+
+			slug_fr := "embed/trailrun-fr.html"
+			listdata_fr := EmbedListTemplateData{
+				tagdata.Base,
+				make([]*events.Event, 0),
+			}
+			listdata_fr.Canonical = fmt.Sprintf("%s/%s", baseUrl, slug_fr)
+
+			slug_ch := "embed/trailrun-ch.html"
+			listdata_ch := EmbedListTemplateData{
+				tagdata.Base,
+				make([]*events.Event, 0),
+			}
+			listdata_ch.Canonical = fmt.Sprintf("%s/%s", baseUrl, slug_ch)
+
+			for _, event := range tag.Events {
+				if event.IsSeparator() {
+					continue
+				}
+				if event.Location.Country == "" {
+					listdata_de.Events = append(listdata_de.Events, event)
+				} else if event.Location.Country == "Frankreich" {
+					listdata_fr.Events = append(listdata_fr.Events, event)
+				} else if event.Location.Country == "Schweiz" {
+					listdata_ch.Events = append(listdata_ch.Events, event)
+				}
+			}
+
+			utils.ExecuteTemplate("embed-list", out.Join(slug_de), listdata_de)
+			utils.ExecuteTemplate("embed-list", out.Join(slug_fr), listdata_fr)
+			utils.ExecuteTemplate("embed-list", out.Join(slug_ch), listdata_ch)
 		}
 	}
 
