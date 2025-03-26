@@ -15,6 +15,7 @@
     <body>
 
 <table class="table">
+{{if .Events}}
 {{range .Events}}
 <tr><td>
     <a class="has-text-weight-bold" href="https://freiburg.run/{{.Slug}}" target="_blank">{{.Name}}</a><br>
@@ -23,6 +24,13 @@
     {{.Location.Name}}
 </td></tr>
 {{end}}
+{{else}}
+<tr><td>Keine passenden Versantaltungen gefunden</td></tr>
+{{end}}
+<tr><td class="has-text-italic">
+Bereitgestellt durch <a href="https://freiburg.run" target="_blank">freiburg.run</a><br>
+Letzte Aktualisierung: <span class="timestamp">{{.TimestampFull}}</span>
+</td></tr>
 </table>
 
 {{range .JsFiles}}
