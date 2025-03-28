@@ -2,7 +2,7 @@
 
 <section class="section">
     <div class="container is-max-desktop">
-        <h1 class="title">{{.Base.Title}}</h1>
+        <h1 class="title">{{.Title}}</h1>
         
         <div class="notification is-link is-light">
             Liste aller Lauf-Serien auf freiburg.run.
@@ -18,7 +18,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {{range .Base.Data.Series}}
+                        {{range .Data.Series}}
                         <tr>
                             <td>
                                 <a href="/{{.Slug}}">{{.Name}}</a>
@@ -35,7 +35,7 @@
     </div>
 </section>
 
-{{if .Base.Data.SeriesOld}}
+{{if .Data.SeriesOld}}
 <section class="section">
     <div class="container is-max-desktop">
         <h2 class="title">Vergangene Serien</h1>
@@ -50,7 +50,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {{range .Base.Data.SeriesOld}}
+                        {{range .Data.SeriesOld}}
                         <tr>
                             <td>
                                 <a href="/{{.Slug}}">{{.Name}}</a>

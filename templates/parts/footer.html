@@ -3,8 +3,8 @@
         <p id="footer-content">
             <strong>freiburg.run</strong> von <a href="https://florian-pigorsch.de/" target="_blank">Florian Pigorsch</a>. <a href="/info.html">Info/Kontakt</a> - <a href="/support.html">Unterstützen</a> - <a href="/impressum.html">Impressum</a> - <a href="/datenschutz.html">Datenschutz</a> - <a href="/sitemap.html">Sitemap</a>
             <br />
-            {{if .Base.SheetUrl}}Datenquelle: <a href="{{.Base.SheetUrl}}" target="_blank">Google Sheets</a>.{{end}}
-            Letzte Aktualisierung: <span class="timestamp">{{.Base.TimestampFull}}</span>
+            {{if .SheetUrl}}Datenquelle: <a href="{{.SheetUrl}}" target="_blank">Google Sheets</a>.{{end}}
+            Letzte Aktualisierung: <span class="timestamp">{{.TimestampFull}}</span>
         </p>
     </div>
 </footer>

@@ -2,7 +2,7 @@
 
 <section class="section">
     <div class="container is-max-desktop" itemscope itemtype="https://schema.org/ItemList">
-        <h1 class="title" itemprop="name">{{.Base.Title}}</h1>
+        <h1 class="title" itemprop="name">{{.Title}}</h1>
         
         
         <div class="notification is-link is-light is-flex">
@@ -20,7 +20,7 @@
         {{template "controls.html" .}}
 
         <div class="columns is-multiline">
-            {{range .Base.Data.Events}}
+            {{range .Data.Events}}
             {{template "card.html" .}}
             {{end}}
         </div>
