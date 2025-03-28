@@ -602,11 +602,12 @@ func main() {
 			continue
 		}
 		eventdata.Event = event
-		eventdata.Title = event.Name
+		//eventdata.Title = event.Name
 		eventdata.Description = event.GenerateDescription()
 		slug := event.Slug()
-		eventdata.Canonical = fmt.Sprintf("%s/%s", baseUrl, slug)
-		eventdata.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsEvents, utils.CreateLink(event.Name, fmt.Sprintf("/%s", slug)))
+		//eventdata.Canonical = fmt.Sprintf("%s/%s", baseUrl, slug)
+		//eventdata.Breadcrumbs = utils.PushBreadcrumb(breadcrumbsEvents, utils.CreateLink(event.Name, fmt.Sprintf("/%s", slug)))
+		eventdata.SetNameLink(event.Name, fmt.Sprintf("%s/%s", baseUrl, slug), breadcrumbsEvents)
 		utils.ExecuteTemplate("event", out.Join(slug), eventdata)
 		sitemap.Add(slug, event.Name, "Laufveranstaltungen")
 	}
