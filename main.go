@@ -603,7 +603,7 @@ func main() {
 		eventdata.Event = event
 		eventdata.Description = event.GenerateDescription()
 		slug := event.Slug()
-		eventdata.SetNameLink(event.Name, fmt.Sprintf("%s/%s", baseUrl, slug), breadcrumbsEvents, baseUrl)
+		eventdata.SetNameLink(event.Name, slug, breadcrumbsEvents, baseUrl)
 		utils.ExecuteTemplate("event", out.Join(slug), eventdata)
 		sitemap.Add(slug, event.Name, "Laufveranstaltungen")
 	}
@@ -616,7 +616,7 @@ func main() {
 		eventdata.Event = event
 		eventdata.Description = event.GenerateDescription()
 		slug := event.Slug()
-		eventdata.SetNameLink(event.Name, fmt.Sprintf("%s/%s", baseUrl, slug), breadcrumbsEventsOld, baseUrl)
+		eventdata.SetNameLink(event.Name, slug, breadcrumbsEventsOld, baseUrl)
 		utils.ExecuteTemplate("event", out.Join(slug), eventdata)
 		sitemap.Add(slug, event.Name, "Vergangene Laufveranstaltungen")
 	}
@@ -628,7 +628,7 @@ func main() {
 		eventdata.Event = event
 		eventdata.Description = event.GenerateDescription()
 		slug := event.Slug()
-		eventdata.SetNameLink(event.Name, fmt.Sprintf("%s/%s", baseUrl, slug), breadcrumbsGroups, baseUrl)
+		eventdata.SetNameLink(event.Name, slug, breadcrumbsGroups, baseUrl)
 		utils.ExecuteTemplate("event", out.Join(slug), eventdata)
 		sitemap.Add(slug, event.Name, "Lauftreffs")
 	}
@@ -640,7 +640,7 @@ func main() {
 		eventdata.Event = event
 		eventdata.Description = event.GenerateDescription()
 		slug := event.Slug()
-		eventdata.SetNameLink(event.Name, fmt.Sprintf("%s/%s", baseUrl, slug), breadcrumbsShops, baseUrl)
+		eventdata.SetNameLink(event.Name, slug, breadcrumbsShops, baseUrl)
 		utils.ExecuteTemplate("event", out.Join(slug), eventdata)
 		sitemap.Add(slug, event.Name, "Lauf-Shops")
 	}
@@ -662,7 +662,7 @@ func main() {
 		tagdata.Tag = tag
 		tagdata.Description = fmt.Sprintf("Liste an Laufveranstaltungen im Raum Freiburg, die mit der Kategorie '%s' getaggt sind", tag.Name)
 		slug := tag.Slug()
-		tagdata.SetNameLink(tag.Name, fmt.Sprintf("%s/%s", baseUrl, slug), breadcrumbsEventsTags, baseUrl)
+		tagdata.SetNameLink(tag.Name, slug, breadcrumbsEventsTags, baseUrl)
 		tagdata.Title = fmt.Sprintf("Laufveranstaltungen der Kategorie '%s'", tag.Name)
 		utils.ExecuteTemplate("tag", out.Join(slug), tagdata)
 		sitemap.Add(slug, tag.Name, "Kategorien")
@@ -728,7 +728,7 @@ func main() {
 		seriedata.Serie = s
 		seriedata.Description = fmt.Sprintf("Lauf-Serie '%s'", s.Name)
 		slug := s.Slug()
-		seriedata.SetNameLink(s.Name, fmt.Sprintf("%s/%s", baseUrl, slug), breadcrumbsEventsSeries, baseUrl)
+		seriedata.SetNameLink(s.Name, slug, breadcrumbsEventsSeries, baseUrl)
 		utils.ExecuteTemplate("serie", out.Join(slug), seriedata)
 		sitemap.Add(slug, s.Name, "Serien")
 	}
@@ -736,7 +736,7 @@ func main() {
 		seriedata.Serie = s
 		seriedata.Description = fmt.Sprintf("Lauf-Serie '%s'", s.Name)
 		slug := s.Slug()
-		seriedata.SetNameLink(s.Name, fmt.Sprintf("%s/%s", baseUrl, slug), breadcrumbsEventsSeries, baseUrl)
+		seriedata.SetNameLink(s.Name, slug, breadcrumbsEventsSeries, baseUrl)
 		utils.ExecuteTemplate("serie", out.Join(slug), seriedata)
 		sitemap.Add(slug, s.Name, "Serien")
 	}
