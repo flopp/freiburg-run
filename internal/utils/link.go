@@ -32,13 +32,15 @@ type Breadcrumb struct {
 	Position int
 }
 
-func InitBreadcrumbs(link Link) []Breadcrumb {
+type Breadcrumbs []Breadcrumb
+
+func InitBreadcrumbs(link Link) Breadcrumbs {
 	res := make([]Breadcrumb, 0, 1)
 	res = append(res, Breadcrumb{link, true, 1})
 	return res
 }
 
-func PushBreadcrumb(breadcrumbs []Breadcrumb, link Link) []Breadcrumb {
+func (breadcrumbs Breadcrumbs) Push(link Link) Breadcrumbs {
 	res := make([]Breadcrumb, 0, len(breadcrumbs)+1)
 	for _, b := range breadcrumbs {
 		res = append(res, Breadcrumb{b.Link, false, b.Position})

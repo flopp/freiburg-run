@@ -4,9 +4,19 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"time"
 
 	"github.com/flopp/go-filehash"
 )
+
+func GetMtime(filePath string) (time.Time, error) {
+	stat, err := os.Stat(filePath)
+	if err != nil {
+		return time.Time{}, err
+	}
+
+	return stat.ModTime(), nil
+}
 
 func MakeDir(dir string) error {
 	if err := os.MkdirAll(dir, 0770); err != nil {
