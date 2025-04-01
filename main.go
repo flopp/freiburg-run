@@ -274,7 +274,6 @@ func (p Path) Join(s string) string {
 func downloadHash(url string, targetBase Path, targetFile string) string {
 	target := targetBase.Join(targetFile)
 	res := utils.MustDownloadHash(url, target)
-	fmt.Printf("download %s to %s (base %s), res %s\n", url, target, string(targetBase), res)
 	return MustRel(string(targetBase), res)
 }
 
@@ -481,7 +480,7 @@ func main() {
 	breadcrumbsBase := utils.InitBreadcrumbs(utils.CreateLink("freiburg.run", "/"))
 	breadcrumbsEvents := breadcrumbsBase.Push(utils.CreateLink("Laufveranstaltungen", "/"))
 
-	umami := UmamiData{MustRel(options.outDir, umamiScript), "6609164f-5e79-4041-b1ed-f37da10a84d2"}
+	umami := UmamiData{umamiScript, "6609164f-5e79-4041-b1ed-f37da10a84d2"}
 
 	commondata := CommonData{
 		timestamp,
