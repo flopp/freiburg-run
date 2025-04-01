@@ -23,12 +23,12 @@ type SitemapEntry struct {
 }
 
 type Sitemap struct {
-	BaseUrl    string
+	BaseUrl    Url
 	Categories []string
 	Entries    []*SitemapEntry
 }
 
-func CreateSitemap(baseUrl string) *Sitemap {
+func CreateSitemap(baseUrl Url) *Sitemap {
 	return &Sitemap{baseUrl, make([]string, 0), make([]*SitemapEntry, 0)}
 }
 
@@ -190,7 +190,7 @@ func (sitemap Sitemap) Gen(fileName string, hashFileName string, outDir string) 
 		}
 		mNew[fileName] = &FileHashDate{fileName, currentHash, timeStamp}
 
-		genSitemapEntry(f, fmt.Sprintf("%s/%s", sitemap.BaseUrl, e), timeStamp)
+		genSitemapEntry(f, sitemap.BaseUrl.Join(e), timeStamp)
 	}
 
 	f.WriteString(`</urlset>`)
@@ -226,7 +226,7 @@ func (sitemap Sitemap) GenHTML() []SitemapCategory {
 	for _, c := range sitemap.Categories {
 		links := make([]Link, 0)
 		for _, e := range byCategory[c] {
-			links = append(links, CreateLink(e.Name, fmt.Sprintf("%s/%s", sitemap.BaseUrl, e.Slug)))
+			links = append(links, CreateLink(e.Name, sitemap.BaseUrl.Join(e.Slug)))
 		}
 		categories = append(categories, SitemapCategory{c, links})
 	}

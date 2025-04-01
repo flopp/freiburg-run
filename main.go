@@ -88,10 +88,10 @@ type TemplateData struct {
 	Main        string
 }
 
-func (t *TemplateData) SetNameLink(name, link string, baseBreakcrumbs utils.Breadcrumbs, baseUrl string) {
+func (t *TemplateData) SetNameLink(name, link string, baseBreakcrumbs utils.Breadcrumbs, baseUrl utils.Url) {
 	t.Title = name
-	t.Canonical = fmt.Sprintf("%s/%s", baseUrl, link)
-	t.Breadcrumbs = baseBreakcrumbs.Push(utils.CreateLink(name, fmt.Sprintf("/%s", link)))
+	t.Canonical = baseUrl.Join(link)
+	t.Breadcrumbs = baseBreakcrumbs.Push(utils.CreateLink(name, "/"+link))
 }
 
 func (t TemplateData) Image() string {
@@ -300,7 +300,7 @@ type CountryData struct {
 	events []*events.Event
 }
 
-func renderEmbedList(baseUrl string, out Path, data TemplateData, tag *events.Tag) {
+func renderEmbedList(baseUrl utils.Url, out Path, data TemplateData, tag *events.Tag) {
 	countryData := map[string]*CountryData{
 		"":           &CountryData{"embed/trailrun-de.html", make([]*events.Event, 0)}, // Default (Germany)
 		"Frankreich": &CountryData{"embed/trailrun-fr.html", make([]*events.Event, 0)},
@@ -325,13 +325,13 @@ func renderEmbedList(baseUrl string, out Path, data TemplateData, tag *events.Ta
 			TemplateData: data,
 			Events:       d.events,
 		}
-		t.Canonical = fmt.Sprintf("%s/%s", baseUrl, d.slug)
+		t.Canonical = baseUrl.Join(d.slug)
 		utils.ExecuteTemplate("embed-list", out.Join(d.slug), t)
 	}
 }
 
 func main() {
-	baseUrl := "https://freiburg.run"
+	baseUrl := utils.Url("https://freiburg.run")
 	now := time.Now()
 	today := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
 	timestamp := now.Format("2006-01-02")
@@ -497,7 +497,7 @@ func main() {
 		"Veranstaltung",
 		"Liste von aktuellen und zukünftigen Laufveranstaltungen, Lauf-Wettkämpfen, Volksläufen im Raum Freiburg",
 		"events",
-		baseUrl,
+		string(baseUrl),
 		breadcrumbsEvents,
 		"/",
 	}
@@ -505,39 +505,39 @@ func main() {
 	utils.ExecuteTemplate("events", out.Join("index.html"), data)
 
 	slug := "events-old.html"
-	breadcrumbsEventsOld := breadcrumbsEvents.Push(utils.CreateLink("Archiv", "/"+slug))
 	data.Title = "Vergangene Laufveranstaltungen im Raum Freiburg "
 	data.Description = "Liste von vergangenen Laufveranstaltungen, Lauf-Wettkämpfen, Volksläufen im Raum Freiburg "
-	data.Canonical = fmt.Sprintf("%s/%s", baseUrl, slug)
+	data.Canonical = baseUrl.Join(slug)
+	breadcrumbsEventsOld := breadcrumbsEvents.Push(utils.CreateLink("Archiv", "/"+slug))
 	data.Breadcrumbs = breadcrumbsEventsOld
 	utils.ExecuteTemplate("events-old", out.Join(slug), data)
 
 	slug = "tags.html"
-	breadcrumbsEventsTags := breadcrumbsEvents.Push(utils.CreateLink("Kategorien", "/"+slug))
 	data.Nav = "tags"
 	data.Title = "Kategorien"
 	data.Description = "Liste aller Kategorien von Laufveranstaltungen, Lauf-Wettkämpfen, Volksläufen im Raum Freiburg"
-	data.Canonical = fmt.Sprintf("%s/%s", baseUrl, slug)
+	data.Canonical = baseUrl.Join(slug)
+	breadcrumbsEventsTags := breadcrumbsEvents.Push(utils.CreateLink(data.Title, "/"+slug))
 	data.Breadcrumbs = breadcrumbsEventsTags
 	utils.ExecuteTemplate("tags", out.Join(slug), data)
 
 	slug = "lauftreffs.html"
-	breadcrumbsGroups := breadcrumbsBase.Push(utils.CreateLink("Lauftreffs", "/"+slug))
 	data.Nav = "groups"
 	data.Title = "Lauftreffs im Raum Freiburg"
 	data.Type = "Lauftreff"
 	data.Description = "Liste von Lauftreffs, Laufgruppen, Lauf-Trainingsgruppen im Raum Freiburg"
-	data.Canonical = fmt.Sprintf("%s/%s", baseUrl, slug)
+	data.Canonical = baseUrl.Join(slug)
+	breadcrumbsGroups := breadcrumbsBase.Push(utils.CreateLink("Lauftreffs", "/"+slug))
 	data.Breadcrumbs = breadcrumbsGroups
 	utils.ExecuteTemplate("groups", out.Join(slug), data)
 
 	slug = "shops.html"
-	breadcrumbsShops := breadcrumbsBase.Push(utils.CreateLink("Lauf-Shops", "/"+slug))
 	data.Nav = "shops"
 	data.Title = "Lauf-Shops im Raum Freiburg"
 	data.Type = "Lauf-Shop"
 	data.Description = "Liste von Lauf-Shops und Einzelhandelsgeschäften mit Laufschuh-Auswahl im Raum Freiburg"
-	data.Canonical = fmt.Sprintf("%s/%s", baseUrl, slug)
+	data.Canonical = baseUrl.Join(slug)
+	breadcrumbsShops := breadcrumbsBase.Push(utils.CreateLink("Lauf-Shops", "/"+slug))
 	data.Breadcrumbs = breadcrumbsShops
 	utils.ExecuteTemplate("shops", out.Join(slug), data)
 
@@ -550,11 +550,11 @@ func main() {
 	utils.ExecuteTemplateNoMinify("dietenbach-parkrun-wordpress", out.Join("dietenbach-parkrun-wordpress.html"), data)
 
 	slug = "series.html"
-	breadcrumbsEventsSeries := breadcrumbsEvents.Push(utils.CreateLink("Serien", "/"+slug))
 	data.Nav = "series"
 	data.Title = "Serien"
 	data.Description = "Liste aller Serien von Laufveranstaltungen, Lauf-Wettkämpfen, Volksläufen im Raum Freiburg "
-	data.Canonical = fmt.Sprintf("%s/%s", baseUrl, slug)
+	data.Canonical = baseUrl.Join(slug)
+	breadcrumbsEventsSeries := breadcrumbsEvents.Push(utils.CreateLink(data.Title, "/"+slug))
 	data.Breadcrumbs = breadcrumbsEventsSeries
 	utils.ExecuteTemplate("series", out.Join(slug), data)
 
@@ -563,17 +563,17 @@ func main() {
 	data.Title = "Karte aller Laufveranstaltungen"
 	data.Type = "Karte"
 	data.Description = "Karte"
-	data.Canonical = fmt.Sprintf("%s/%s", baseUrl, slug)
-	data.Breadcrumbs = breadcrumbsBase.Push(utils.CreateLink("Karte", "/"+slug))
+	data.Canonical = baseUrl.Join(slug)
+	data.Breadcrumbs = breadcrumbsBase.Push(utils.CreateLink(data.Title, "/"+slug))
 	utils.ExecuteTemplate("map", out.Join(slug), data)
 
 	slug = "info.html"
-	breadcrumbsInfo := breadcrumbsBase.Push(utils.CreateLink("Info", "/"+slug))
 	data.Nav = "info"
 	data.Title = "Info"
 	data.Type = "Info"
 	data.Description = "Kontaktmöglichkeiten, allgemeine & technische Informationen über freiburg.run"
-	data.Canonical = fmt.Sprintf("%s/%s", baseUrl, slug)
+	data.Canonical = baseUrl.Join(slug)
+	breadcrumbsInfo := breadcrumbsBase.Push(utils.CreateLink(data.Title, "/"+slug))
 	data.Breadcrumbs = breadcrumbsInfo
 	utils.ExecuteTemplate("info", out.Join(slug), data)
 
@@ -582,8 +582,8 @@ func main() {
 	data.Title = "Datenschutz"
 	data.Type = "Datenschutz"
 	data.Description = "Datenschutzerklärung von freiburg.run"
-	data.Canonical = fmt.Sprintf("%s/%s", baseUrl, slug)
-	data.Breadcrumbs = breadcrumbsInfo.Push(utils.CreateLink("Datenschutz", "/"+slug))
+	data.Canonical = baseUrl.Join(slug)
+	data.Breadcrumbs = breadcrumbsInfo.Push(utils.CreateLink(data.Title, "/"+slug))
 	utils.ExecuteTemplate("datenschutz", out.Join(slug), data)
 
 	slug = "impressum.html"
@@ -591,8 +591,8 @@ func main() {
 	data.Title = "Impressum"
 	data.Type = "Impressum"
 	data.Description = "Impressum von freiburg.run"
-	data.Canonical = fmt.Sprintf("%s/%s", baseUrl, slug)
-	data.Breadcrumbs = breadcrumbsInfo.Push(utils.CreateLink("Impressum", "/"+slug))
+	data.Canonical = baseUrl.Join(slug)
+	data.Breadcrumbs = breadcrumbsInfo.Push(utils.CreateLink(data.Title, "/"+slug))
 	utils.ExecuteTemplate("impressum", out.Join(slug), data)
 
 	slug = "support.html"
@@ -600,8 +600,8 @@ func main() {
 	data.Title = "freiburg.run unterstützen"
 	data.Type = "Support"
 	data.Description = "Möglichkeiten freiburg.run zu unterstützen"
-	data.Canonical = fmt.Sprintf("%s/%s", baseUrl, slug)
-	data.Breadcrumbs = breadcrumbsInfo.Push(utils.CreateLink("Unterstützung", "/"+slug))
+	data.Canonical = baseUrl.Join(slug)
+	data.Breadcrumbs = breadcrumbsInfo.Push(utils.CreateLink(data.Title, "/"+slug))
 	utils.ExecuteTemplate("support", out.Join(slug), data)
 
 	slug = "404.html"
@@ -609,8 +609,8 @@ func main() {
 	data.Title = "404 - Seite nicht gefunden :("
 	data.Type = ""
 	data.Description = "Fehlerseite von freiburg.run"
-	data.Canonical = fmt.Sprintf("%s/%s", baseUrl, slug)
-	data.Breadcrumbs = breadcrumbsBase.Push(utils.CreateLink("Fehlerseite", "/"+slug))
+	data.Canonical = baseUrl.Join(slug)
+	data.Breadcrumbs = breadcrumbsBase.Push(utils.CreateLink(data.Title, "/"+slug))
 	utils.ExecuteTemplate("404", out.Join(slug), data)
 
 	eventdata := EventTemplateData{

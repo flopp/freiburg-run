@@ -8,6 +8,7 @@ import (
 	"time"
 
 	ical "github.com/arran4/golang-ical"
+	"github.com/flopp/freiburg-run/internal/utils"
 )
 
 const (
@@ -20,13 +21,13 @@ const (
 	componentPropertyDtEnd   = ical.ComponentProperty(propertyDtEnd)
 )
 
-func CreateEventCalendar(event *Event, now time.Time, baseUrl string, calendarUrl string, path string) error {
+func CreateEventCalendar(event *Event, now time.Time, baseUrl utils.Url, calendarUrl string, path string) error {
 	eventsList := make([]*Event, 1)
 	eventsList[0] = event
 	return CreateCalendar(eventsList, now, baseUrl, calendarUrl, path)
 }
 
-func CreateCalendar(eventsList []*Event, now time.Time, baseUrl string, calendarUrl string, path string) error {
+func CreateCalendar(eventsList []*Event, now time.Time, baseUrl utils.Url, calendarUrl string, path string) error {
 	cal := ical.NewCalendar()
 	cal.SetProductId("Laufevents - freiburg.run")
 	cal.SetMethod(ical.MethodPublish)
@@ -43,7 +44,7 @@ func CreateCalendar(eventsList []*Event, now time.Time, baseUrl string, calendar
 			return fmt.Errorf("create UUID for '%s': %w", e.Name, err)
 		}
 
-		infoUrl := fmt.Sprintf("%s/%s", baseUrl, e.Slug())
+		infoUrl := baseUrl.Join(e.Slug())
 
 		calEvent := cal.AddEvent(uid.String())
 		calEvent.SetDtStampTime(now)
