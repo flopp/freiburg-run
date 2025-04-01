@@ -272,7 +272,9 @@ func (p Path) Join(s string) string {
 }
 
 func downloadHash(url string, targetBase Path, targetFile string) string {
-	res := utils.MustDownloadHash(url, targetBase.Join(targetFile))
+	target := targetBase.Join(targetFile)
+	res := utils.MustDownloadHash(url, target)
+	fmt.Printf("download %s to %s (base %s), res %s\n", url, target, string(targetBase), res)
 	return MustRel(string(targetBase), res)
 }
 
