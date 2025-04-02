@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/flopp/freiburg-run/internal/events"
+	"github.com/flopp/freiburg-run/internal/resources"
 	"github.com/flopp/freiburg-run/internal/utils"
 )
 
@@ -418,79 +419,24 @@ func main() {
 	sitemap.Add("datenschutz.html", "Datenschutz", "Allgemein")
 	sitemap.Add("impressum.html", "Impressum", "Allgemein")
 
-	utils.MustCopy("static/robots.txt", out.Join("robots.txt"))
-	utils.MustCopy("static/manifest.json", out.Join("manifest.json"))
-
-	// ahrefs validation
-	utils.MustCopy("static/5vkf9hdnfkay895vyx33zdvesnyaphgv.txt", out.Join("5vkf9hdnfkay895vyx33zdvesnyaphgv.txt"))
-	utils.MustCopy("static/512.png", out.Join("favicon.png"))
-	utils.MustCopy("static/favicon.ico", out.Join("favicon.ico"))
-	utils.MustCopy("static/180.png", out.Join("apple-touch-icon.png"))
-	utils.MustCopy("static/192.png", out.Join("android-chrome-192x192.png"))
-	utils.MustCopy("static/512.png", out.Join("android-chrome-512x512.png"))
-	utils.MustCopy("static/freiburg-run.svg", out.Join("images/freiburg-run.svg"))
-	utils.MustCopy("static/freiburg-run-new.svg", out.Join("images/freiburg-run-new.svg"))
-	utils.MustCopy("static/freiburg-run-new-blue.svg", out.Join("images/freiburg-run-new-blue.svg"))
-	utils.MustCopy("static/512.png", out.Join("images/512.png"))
-	utils.MustCopy("static/parkrun.png", out.Join("images/parkrun.png"))
-	utils.MustCopy("static/marker-grey-icon.png", out.Join("images/marker-grey-icon.png"))
-	utils.MustCopy("static/marker-grey-icon-2x.png", out.Join("images/marker-grey-icon-2x.png"))
-	utils.MustCopy("static/marker-green-icon.png", out.Join("images/marker-green-icon.png"))
-	utils.MustCopy("static/marker-green-icon-2x.png", out.Join("images/marker-green-icon-2x.png"))
-	utils.MustCopy("static/marker-red-icon.png", out.Join("images/marker-red-icon.png"))
-	utils.MustCopy("static/marker-red-icon-2x.png", out.Join("images/marker-red-icon-2x.png"))
-	utils.MustCopy("static/circle-small.png", out.Join("images/circle-small.png"))
-	utils.MustCopy("static/circle-big.png", out.Join("images/circle-big.png"))
-	utils.MustCopy("static/freiburg-run-flyer.pdf", out.Join("freiburg-run-flyer.pdf"))
-
-	// renovate: datasource=npm depName=bulma
-	bulma_version := "1.0.3"
-	// renovate: datasource=npm depName=leaflet
-	leaflet_version := "1.9.4"
-	// renovate: datasource=npm depName=leaflet-gesture-handling
-	leaflet_gesture_handling_version := "1.2.2"
-
-	leaflet_legend_version := "v1.0.0"
-
-	bulma_url := utils.Url(fmt.Sprintf("https://unpkg.com/bulma@%s", bulma_version))
-	//leaflet_url := utils.Url(fmt.Sprintf("https://unpkg.com/leaflet@%s", leaflet_version))
-	leaflet_url := utils.Url(fmt.Sprintf("https://cdnjs.cloudflare.com/ajax/libs/leaflet/%s", leaflet_version))
-	leaflet_gesture_handling_url := utils.Url(fmt.Sprintf("https://unpkg.com/leaflet-gesture-handling@%s", leaflet_gesture_handling_version))
-	leaflet_legend_url := utils.Url(fmt.Sprintf("https://raw.githubusercontent.com/ptma/Leaflet.Legend/%s", leaflet_legend_version))
-
-	js_files := make([]string, 0)
-	js_files = append(js_files, downloadHash(leaflet_url.Join("dist/leaflet.js"), out, "leaflet-HASH.js"))
-	js_files = append(js_files, downloadHash(leaflet_legend_url.Join("src/leaflet.legend.js"), out, "leaflet-legend-HASH.js"))
-	js_files = append(js_files, downloadHash(leaflet_gesture_handling_url.Join("dist/leaflet-gesture-handling.min.js"), out, "leaflet-gesture-handling-HASH.js"))
-	js_files = append(js_files, copyHash("static/parkrun-track.js", out, "parkrun-track-HASH.js"))
-	js_files = append(js_files, copyHash("static/main.js", out, "main-HASH.js"))
-
-	umamiScript := downloadHash("https://cloud.umami.is/script.js", out, "umami-HASH.js")
-
-	css_files := make([]string, 0)
-	css_files = append(css_files, downloadHash(bulma_url.Join("css/bulma.min.css"), out, "bulma-HASH.css"))
-	css_files = append(css_files, downloadHash(leaflet_url.Join("dist/leaflet.css"), out, "leaflet-HASH.css"))
-	css_files = append(css_files, downloadHash(leaflet_legend_url.Join("src/leaflet.legend.css"), out, "leaflet-legend-HASH.css"))
-	css_files = append(css_files, downloadHash(leaflet_gesture_handling_url.Join("dist/leaflet-gesture-handling.min.css"), out, "leaflet-gesture-handling-HASH.css"))
-	css_files = append(css_files, copyHash("static/style.css", out, "style-HASH.css"))
-
-	utils.MustDownload(leaflet_url.Join("dist/images/marker-icon.png"), out.Join("images/marker-icon.png"))
-	utils.MustDownload(leaflet_url.Join("dist/images/marker-icon-2x.png"), out.Join("images/marker-icon-2x.png"))
-	utils.MustDownload(leaflet_url.Join("dist/images/marker-shadow.png"), out.Join("images/marker-shadow.png"))
+	resourceManager := resources.NewResourceManager(string(out))
+	resourceManager.CopyExternalAssets()
+	resourceManager.CopyStaticAssets()
 
 	breadcrumbsBase := utils.InitBreadcrumbs(utils.CreateLink("freiburg.run", "/"))
 	breadcrumbsEvents := breadcrumbsBase.Push(utils.CreateLink("Laufveranstaltungen", "/"))
-
-	umami := UmamiData{umamiScript, "6609164f-5e79-4041-b1ed-f37da10a84d2"}
 
 	commondata := CommonData{
 		timestamp,
 		timestampFull,
 		sheetUrl,
 		&eventsData,
-		js_files,
-		css_files,
-		umami,
+		resourceManager.JsFiles,
+		resourceManager.CssFiles,
+		UmamiData{
+			resourceManager.UmamiScript,
+			"6609164f-5e79-4041-b1ed-f37da10a84d2",
+		},
 	}
 
 	data := TemplateData{
