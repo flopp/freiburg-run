@@ -57,7 +57,7 @@ func (r *ResourceManager) CopyExternalAssets() {
 	leafletLegendUrl := utils.Url(fmt.Sprintf("https://raw.githubusercontent.com/ptma/Leaflet.Legend/%s", leafletLegendVersion))
 
 	// JS files
-	r.JsFiles = append(r.JsFiles, r.DownloadHash(leafletUrl.Join("dist/leaflet.js"), "leaflet-HASH.js"))
+	r.JsFiles = append(r.JsFiles, r.DownloadHash(leafletUrl.Join("leaflet.min.js"), "leaflet-HASH.js"))
 	r.JsFiles = append(r.JsFiles, r.DownloadHash(leafletLegendUrl.Join("src/leaflet.legend.js"), "leaflet-legend-HASH.js"))
 	r.JsFiles = append(r.JsFiles, r.DownloadHash(leafletGestureHandlingUrl.Join("dist/leaflet-gesture-handling.min.js"), "leaflet-gesture-handling-HASH.js"))
 	r.JsFiles = append(r.JsFiles, r.CopyHash("static/parkrun-track.js", "parkrun-track-HASH.js"))
@@ -67,15 +67,15 @@ func (r *ResourceManager) CopyExternalAssets() {
 
 	// CSS files
 	r.CssFiles = append(r.CssFiles, r.DownloadHash(bulmaUrl.Join("css/bulma.min.css"), "bulma-HASH.css"))
-	r.CssFiles = append(r.CssFiles, r.DownloadHash(leafletUrl.Join("dist/leaflet.css"), "leaflet-HASH.css"))
+	r.CssFiles = append(r.CssFiles, r.DownloadHash(leafletUrl.Join("leaflet.min.css"), "leaflet-HASH.css"))
 	r.CssFiles = append(r.CssFiles, r.DownloadHash(leafletLegendUrl.Join("src/leaflet.legend.css"), "leaflet-legend-HASH.css"))
 	r.CssFiles = append(r.CssFiles, r.DownloadHash(leafletGestureHandlingUrl.Join("dist/leaflet-gesture-handling.min.css"), "leaflet-gesture-handling-HASH.css"))
 	r.CssFiles = append(r.CssFiles, r.CopyHash("static/style.css", "style-HASH.css"))
 
 	// Images
-	utils.MustDownload(leafletUrl.Join("dist/images/marker-icon.png"), filepath.Join(r.Out, "images/marker-icon.png"))
-	utils.MustDownload(leafletUrl.Join("dist/images/marker-icon-2x.png"), filepath.Join(r.Out, "images/marker-icon-2x.png"))
-	utils.MustDownload(leafletUrl.Join("dist/images/marker-shadow.png"), filepath.Join(r.Out, "images/marker-shadow.png"))
+	utils.MustDownload(leafletUrl.Join("images/marker-icon.png"), filepath.Join(r.Out, "images/marker-icon.png"))
+	utils.MustDownload(leafletUrl.Join("images/marker-icon-2x.png"), filepath.Join(r.Out, "images/marker-icon-2x.png"))
+	utils.MustDownload(leafletUrl.Join("images/marker-shadow.png"), filepath.Join(r.Out, "images/marker-shadow.png"))
 }
 
 func (r *ResourceManager) CopyStaticAssets() {
