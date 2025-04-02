@@ -40,18 +40,8 @@ func (sitemap *Sitemap) Add(slug string, name string, category string) {
 	sitemap.Entries = append(sitemap.Entries, &SitemapEntry{slug, name, category})
 }
 
-func nl(f *os.File) {
-	f.WriteString("\n")
-}
 func genSitemapEntry(f *os.File, url string, timeStamp string) {
-	f.WriteString(`    <url>`)
-	nl(f)
-	f.WriteString(fmt.Sprintf(`        <loc>%s</loc>`, url))
-	nl(f)
-	f.WriteString(fmt.Sprintf(`        <lastmod>%s</lastmod>`, timeStamp))
-	nl(f)
-	f.WriteString(`    </url>`)
-	nl(f)
+	f.WriteString(fmt.Sprintf("<url><loc>%s</loc><lastmod>%s</lastmod></url>\n", url, timeStamp))
 }
 
 func AddSitemapEntry(entries []string, slug string) []string {
@@ -136,12 +126,11 @@ func determineHash(fileName string) (string, error) {
 }
 
 func getMtimeYMD(filePath string) string {
-	stat, err := os.Stat(filePath)
-	if err != nil {
+	if t, err := GetMtime(filePath); err != nil {
 		return ""
+	} else {
+		return t.Format("2006-01-02")
 	}
-
-	return stat.ModTime().Format("2006-01-02")
 }
 
 func (sitemap Sitemap) Gen(fileName string, hashFileName string, outDir string) error {
@@ -158,10 +147,8 @@ func (sitemap Sitemap) Gen(fileName string, hashFileName string, outDir string) 
 	m := readHashFile(hashFileName)
 	mNew := make(map[string]*FileHashDate)
 
-	f.WriteString(`<?xml version="1.0" encoding="UTF-8"?>`)
-	nl(f)
-	f.WriteString(`<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`)
-	nl(f)
+	f.WriteString("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
+	f.WriteString("<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n")
 
 	for _, entry := range sitemap.Entries {
 		e := entry.Slug
@@ -193,7 +180,7 @@ func (sitemap Sitemap) Gen(fileName string, hashFileName string, outDir string) 
 		genSitemapEntry(f, sitemap.BaseUrl.Join(e), timeStamp)
 	}
 
-	f.WriteString(`</urlset>`)
+	f.WriteString("</urlset>")
 
 	writeHashFile(hashFileName, mNew)
 

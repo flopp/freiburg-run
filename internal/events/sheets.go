@@ -304,12 +304,12 @@ func fetchEvents(config SheetsConfigData, srv *sheets.Service, today time.Time, 
 		tagsS := cols.getValue(colTags, row)
 		linksS := getLinks(cols, row)
 
-		name, nameOld := utils.SplitDetails(nameS)
+		name, nameOld := utils.SplitPair(nameS)
 		url := urlS
-		description1, description2 := utils.SplitDetails(descriptionS)
+		description1, description2 := utils.SplitPair(descriptionS)
 		tags := make([]string, 0)
 		series := make([]string, 0)
-		for _, t := range utils.Split(tagsS) {
+		for _, t := range utils.SplitList(tagsS) {
 			if strings.HasPrefix(t, "serie") {
 				series = append(series, t[6:])
 			} else {
@@ -335,7 +335,9 @@ func fetchEvents(config SheetsConfigData, srv *sheets.Service, today time.Time, 
 		eventsList = append(eventsList, &Event{
 			eventType,
 			name,
+			utils.SanitizeName(name),
 			nameOld,
+			utils.SanitizeName(nameOld),
 			timeRange,
 			isOld,
 			statusS,

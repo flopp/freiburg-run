@@ -10,69 +10,97 @@ import (
 	"golang.org/x/text/unicode/norm"
 )
 
+// specialCharReplacer is used to replace special characters in names.
+var specialCharReplacer = strings.NewReplacer(
+	"ä", "ae",
+	"ö", "oe",
+	"ü", "ue",
+	"ß", "ss",
+	" ", "-",
+	".", "-",
+	"'", "-",
+	"\"", "-",
+	"(", "-",
+	")", "-",
+)
+
 func SanitizeName(s string) string {
+	// lowercase
 	sanitized := strings.ToLower(s)
-	sanitized = strings.ReplaceAll(sanitized, "ä", "ae")
-	sanitized = strings.ReplaceAll(sanitized, "ö", "oe")
-	sanitized = strings.ReplaceAll(sanitized, "ü", "ue")
-	sanitized = strings.ReplaceAll(sanitized, "ß", "ss")
-	sanitized = strings.ReplaceAll(sanitized, " ", "-")
-	sanitized = strings.ReplaceAll(sanitized, ".", "-")
-	sanitized = strings.ReplaceAll(sanitized, "'", "-")
-	sanitized = strings.ReplaceAll(sanitized, "\"", "-")
-	sanitized = strings.ReplaceAll(sanitized, "(", "-")
-	sanitized = strings.ReplaceAll(sanitized, ")", "-")
+
+	// replace special characters
+	sanitized = specialCharReplacer.Replace(sanitized)
+
+	// remove all other special characters
 	result, _, err := transform.String(transform.Chain(norm.NFD, runes.Remove(runes.In(unicode.Mn))), sanitized)
 	if err != nil {
 		result = sanitized
 	}
-	s = ""
-	lastSp := true
+
+	// remove all non-alphanumeric characters & replace with '-'; avoid leading, trailing and consecutive '-'
+	var builder strings.Builder
+	builder.Grow(len(result)) // Pre-allocate capacity
+	needSep := false
 	for _, char := range result {
-		if char >= 'a' && char <= 'z' {
-			s += string(char)
-			lastSp = false
-		} else if char >= '0' && char <= '9' {
-			s += string(char)
-			lastSp = false
-		} else {
-			if !lastSp {
-				s += "-"
-				lastSp = true
+		if ('a' <= char && char <= 'z') || ('0' <= char && char <= '9') {
+			if needSep && builder.Len() > 0 {
+				builder.WriteByte('-')
 			}
+			needSep = false
+			builder.WriteByte(byte(char))
+		} else {
+			needSep = true
 		}
 	}
 
-	if lastSp && len(s) > 0 {
-		return s[:len(s)-1]
-	}
-
-	return s
+	return builder.String()
 }
 
-func Split(s string) []string {
+// SplitList splits a string by commas and trims whitespace from each part (ignoring empty parts).
+func SplitList(s string) []string {
+	if s == "" {
+		return nil
+	}
+
 	res := make([]string, 0)
-	for _, ss := range strings.Split(s, ",") {
-		ss = strings.TrimSpace(ss)
-		if len(ss) > 0 {
-			res = append(res, ss)
+	start := 0
+	for i := 0; i <= len(s); i++ {
+		if i == len(s) || s[i] == ',' {
+			// Extract substring and trim whitespace
+			part := strings.TrimSpace(s[start:i])
+			if len(part) != 0 {
+				res = append(res, part)
+			}
+			start = i + 1
 		}
 	}
+
 	return res
 }
 
-func SortAndUniquify(a []string) []string {
-	m := make(map[string]bool)
-	for _, s := range a {
-		m[s] = true
+func SplitPair(s string) (string, string) {
+	i := strings.Index(s, "|")
+	if i > -1 {
+		return s[:i], s[i+1:]
+	}
+	return s, ""
+}
+
+// SortAndUniquify sorts a slice of strings and removes duplicates.
+func SortAndUniquify(items []string) []string {
+	uniqueMap := make(map[string]struct{}, len(items))
+	for _, item := range items {
+		uniqueMap[item] = struct{}{} // Empty struct uses 0 bytes
 	}
 
-	tags := make([]string, 0, len(m))
-	for tag := range m {
-		tags = append(tags, tag)
+	uniqueItems := make([]string, 0, len(uniqueMap))
+	for item := range uniqueMap {
+		uniqueItems = append(uniqueItems, item)
 	}
-	sort.Slice(tags, func(i, j int) bool { return tags[i] < tags[j] })
-	return tags
+
+	sort.Strings(uniqueItems)
+
+	return uniqueItems
 }
 
 func IsSimilarName(s1, s2 string) bool {
@@ -89,12 +117,4 @@ func IsSimilarName(s1, s2 string) bool {
 		}
 	}
 	return builder1.String() == builder2.String()
-}
-
-func SplitDetails(s string) (string, string) {
-	i := strings.Index(s, "|")
-	if i > -1 {
-		return s[:i], s[i+1:]
-	}
-	return s, ""
 }

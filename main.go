@@ -453,7 +453,8 @@ func main() {
 	leaflet_legend_version := "v1.0.0"
 
 	bulma_url := utils.Url(fmt.Sprintf("https://unpkg.com/bulma@%s", bulma_version))
-	leaflet_url := utils.Url(fmt.Sprintf("https://unpkg.com/leaflet@%s", leaflet_version))
+	//leaflet_url := utils.Url(fmt.Sprintf("https://unpkg.com/leaflet@%s", leaflet_version))
+	leaflet_url := utils.Url(fmt.Sprintf("https://cdnjs.cloudflare.com/ajax/libs/leaflet/%s", leaflet_version))
 	leaflet_gesture_handling_url := utils.Url(fmt.Sprintf("https://unpkg.com/leaflet-gesture-handling@%s", leaflet_gesture_handling_version))
 	leaflet_legend_url := utils.Url(fmt.Sprintf("https://raw.githubusercontent.com/ptma/Leaflet.Legend/%s", leaflet_legend_version))
 
