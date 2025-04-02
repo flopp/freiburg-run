@@ -2,6 +2,7 @@ package utils
 
 import (
 	"crypto/tls"
+	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -28,6 +29,11 @@ func Download(url string, dst string) error {
 		return err
 	}
 	defer resp.Body.Close()
+
+	// check for HTTP errors
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("non-ok http status: %v", resp.Status)
+	}
 
 	_, err = io.Copy(out, resp.Body)
 	if err != nil {
