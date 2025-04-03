@@ -29,7 +29,6 @@ type CommonData struct {
 type TemplateData struct {
 	CommonData
 	Title       string
-	Type        string
 	Description string
 	Nav         string
 	Canonical   string
@@ -249,28 +248,30 @@ func NewGenerator(
 
 func (g Generator) Generate(eventsData events.Data) error {
 	// create ics files for events
-	for _, event := range eventsData.Events {
-		if event.IsSeparator() {
-			continue
+	// Helper function to create calendar files for a slice of events
+	createCalendarsForEvents := func(eventList []*events.Event) error {
+		for _, event := range eventList {
+			if event.IsSeparator() {
+				continue
+			}
+			calendar := event.CalendarSlug()
+			if err := events.CreateEventCalendar(event, g.now, g.baseUrl, g.baseUrl.Join(calendar), g.out.Join(calendar)); err != nil {
+				return fmt.Errorf("create event calendar: %v", err)
+			}
+			event.Calendar = "/" + calendar
 		}
-		calendar := event.CalendarSlug()
-		if err := events.CreateEventCalendar(event, g.now, g.baseUrl, g.baseUrl.Join(calendar), g.out.Join(calendar)); err != nil {
-			return fmt.Errorf("create event calendar: %v", err)
-		} else {
-			event.Calendar = fmt.Sprintf("/%s", calendar)
-		}
+		return nil
 	}
-	for _, event := range eventsData.EventsOld {
-		if event.IsSeparator() {
-			continue
-		}
-		calendar := event.CalendarSlug()
-		if err := events.CreateEventCalendar(event, g.now, g.baseUrl, g.baseUrl.Join(calendar), g.out.Join(calendar)); err != nil {
-			return fmt.Errorf("create event calendar: %v", err)
-		} else {
-			event.Calendar = fmt.Sprintf("/%s", calendar)
-		}
+
+	// Create calendar files for current and past events
+	if err := createCalendarsForEvents(eventsData.Events); err != nil {
+		return err
 	}
+	if err := createCalendarsForEvents(eventsData.EventsOld); err != nil {
+		return err
+	}
+
+	// Create calendar files for all upcoming events
 	if err := events.CreateCalendar(eventsData.Events, g.now, g.baseUrl, g.baseUrl.Join("events.ics"), g.out.Join("events.ics")); err != nil {
 		return fmt.Errorf("create events.ics: %v", err)
 	}
@@ -283,18 +284,6 @@ func (g Generator) Generate(eventsData events.Data) error {
 	sitemap.AddCategory("Serien")
 	sitemap.AddCategory("Lauftreffs")
 	sitemap.AddCategory("Lauf-Shops")
-	sitemap.Add("", "Alle Laufveranstaltungen", "Laufveranstaltungen")
-	sitemap.Add("events-old.html", "Alle vergangenen Laufveranstaltungen", "Vergangene Laufveranstaltungen")
-	sitemap.Add("tags.html", "Alle Kategorieren", "Kategorien")
-	sitemap.Add("lauftreffs.html", "Alle Lauftreffes", "Lauftreffs")
-	sitemap.Add("shops.html", "Alle Lauf-Shops", "Lauf-Shops")
-	sitemap.Add("dietenbach-parkrun.html", "Dietenbach parkrun", "Allgemein")
-	sitemap.Add("map.html", "Karte", "Laufveranstaltungen")
-	sitemap.Add("series.html", "Alle Lauf-Serien", "Serien")
-	sitemap.Add("info.html", "Informationen", "Allgemein")
-	sitemap.Add("support.html", "Unterstützen", "Allgemein")
-	sitemap.Add("datenschutz.html", "Datenschutz", "Allgemein")
-	sitemap.Add("impressum.html", "Impressum", "Allgemein")
 
 	resourceManager := resources.NewResourceManager(string(g.out))
 	resourceManager.CopyExternalAssets()
@@ -302,6 +291,12 @@ func (g Generator) Generate(eventsData events.Data) error {
 
 	breadcrumbsBase := utils.InitBreadcrumbs(utils.CreateLink("freiburg.run", "/"))
 	breadcrumbsEvents := breadcrumbsBase.Push(utils.CreateLink("Laufveranstaltungen", "/"))
+	breadcrumbsEventsOld := breadcrumbsEvents.Push(utils.CreateLink("Archiv", "/events-old.html"))
+	breadcrumbsTags := breadcrumbsEvents.Push(utils.CreateLink("Kategoriene", "/tags.html"))
+	breadcrumbsGroups := breadcrumbsBase.Push(utils.CreateLink("Lauftreffs", "/lauftreffs.html"))
+	breadcrumbsShops := breadcrumbsBase.Push(utils.CreateLink("Lauf-Shops", "/shops.html"))
+	breadcrumbsSeries := breadcrumbsEvents.Push(utils.CreateLink("Serien", "/series.html"))
+	breadcrumbsInfo := breadcrumbsBase.Push(utils.CreateLink("Info", "/info.html"))
 
 	commondata := CommonData{
 		g.timestamp,
@@ -319,7 +314,6 @@ func (g Generator) Generate(eventsData events.Data) error {
 	data := TemplateData{
 		commondata,
 		"Laufveranstaltungen im Raum Freiburg",
-		"Veranstaltung",
 		"Liste von aktuellen und zukünftigen Laufveranstaltungen, Lauf-Wettkämpfen, Volksläufen im Raum Freiburg",
 		"events",
 		string(g.baseUrl),
@@ -327,188 +321,139 @@ func (g Generator) Generate(eventsData events.Data) error {
 		"/",
 	}
 
-	utils.ExecuteTemplate("events", g.out.Join("index.html"), data)
+	// Render general pages
+	renderPage := func(slug, template, nav, sitemapCategory, title, description string, breadcrumbs utils.Breadcrumbs) {
+		data := TemplateData{
+			commondata,
+			title,
+			description,
+			nav,
+			g.baseUrl.Join(slug),
+			breadcrumbs,
+			"/",
+		}
+		if slug == "" {
+			utils.ExecuteTemplate(template, g.out.Join("index.html"), data)
+		} else {
+			utils.ExecuteTemplate(template, g.out.Join(slug), data)
+		}
+		if template != "404" {
+			sitemap.Add(slug, title, sitemapCategory)
+		}
+		sitemap.Add(slug, title, sitemapCategory)
+	}
+	renderSubPage := func(slug, template, nav, sitemapCategory, title, description string, breadcrumbs utils.Breadcrumbs) {
+		renderPage(slug, template, nav, sitemapCategory, title, description, breadcrumbs.Push(utils.CreateLink(data.Title, "/"+slug)))
+	}
 
-	slug := "events-old.html"
-	data.Title = "Vergangene Laufveranstaltungen im Raum Freiburg "
-	data.Description = "Liste von vergangenen Laufveranstaltungen, Lauf-Wettkämpfen, Volksläufen im Raum Freiburg "
-	data.Canonical = g.baseUrl.Join(slug)
-	breadcrumbsEventsOld := breadcrumbsEvents.Push(utils.CreateLink("Archiv", "/"+slug))
-	data.Breadcrumbs = breadcrumbsEventsOld
-	utils.ExecuteTemplate("events-old", g.out.Join(slug), data)
+	renderPage("", "events", "events", "Laufveranstaltungen",
+		"Laufveranstaltungen im Raum Freiburg",
+		"Liste von Laufveranstaltungen, Lauf-Wettkämpfen, Volksläufen im Raum Freiburg",
+		breadcrumbsEvents)
 
-	slug = "tags.html"
-	data.Nav = "tags"
-	data.Title = "Kategorien"
-	data.Description = "Liste aller Kategorien von Laufveranstaltungen, Lauf-Wettkämpfen, Volksläufen im Raum Freiburg"
-	data.Canonical = g.baseUrl.Join(slug)
-	breadcrumbsEventsTags := breadcrumbsEvents.Push(utils.CreateLink(data.Title, "/"+slug))
-	data.Breadcrumbs = breadcrumbsEventsTags
-	utils.ExecuteTemplate("tags", g.out.Join(slug), data)
+	renderPage("events-old.html", "events-old", "events", "Vergangene Laufveranstaltungen",
+		"Vergangene Laufveranstaltungen im Raum Freiburg",
+		"Liste von vergangenen Laufveranstaltungen, Lauf-Wettkämpfen, Volksläufen im Raum Freiburg",
+		breadcrumbsEventsOld)
 
-	slug = "lauftreffs.html"
-	data.Nav = "groups"
-	data.Title = "Lauftreffs im Raum Freiburg"
-	data.Type = "Lauftreff"
-	data.Description = "Liste von Lauftreffs, Laufgruppen, Lauf-Trainingsgruppen im Raum Freiburg"
-	data.Canonical = g.baseUrl.Join(slug)
-	breadcrumbsGroups := breadcrumbsBase.Push(utils.CreateLink("Lauftreffs", "/"+slug))
-	data.Breadcrumbs = breadcrumbsGroups
-	utils.ExecuteTemplate("groups", g.out.Join(slug), data)
+	renderPage("tags.html", "tags", "tags", "Kategorien",
+		"Kategorien",
+		"Liste aller Kategorien von Laufveranstaltungen, Lauf-Wettkämpfen, Volksläufen im Raum Freiburg",
+		breadcrumbsTags)
 
-	slug = "shops.html"
-	data.Nav = "shops"
-	data.Title = "Lauf-Shops im Raum Freiburg"
-	data.Type = "Lauf-Shop"
-	data.Description = "Liste von Lauf-Shops und Einzelhandelsgeschäften mit Laufschuh-Auswahl im Raum Freiburg"
-	data.Canonical = g.baseUrl.Join(slug)
-	breadcrumbsShops := breadcrumbsBase.Push(utils.CreateLink("Lauf-Shops", "/"+slug))
-	data.Breadcrumbs = breadcrumbsShops
-	utils.ExecuteTemplate("shops", g.out.Join(slug), data)
+	renderPage("lauftreffs.html", "groups", "groups", "Lauftreffs",
+		"Lauftreffs im Raum Freiburg",
+		"Liste von Lauftreffs, Laufgruppen, Lauf-Trainingsgruppen im Raum Freiburg",
+		breadcrumbsGroups)
 
-	slug = "dietenbach-parkrun.html"
-	data.Nav = "parkrun"
-	data.Type = "Dietenbach parkrun"
-	data.Description = "Vollständige Liste aller Ergebnisse, Laufberichte und Fotogalerien des 'Dietenbach parkrun' im Freiburger Dietenbachpark."
-	data.SetNameLink("Dietenbach parkrun", slug, breadcrumbsBase, g.baseUrl)
-	utils.ExecuteTemplate("dietenbach-parkrun", g.out.Join(slug), data)
+	renderPage("shops.html", "shops", "shops", "Lauf-Shops",
+		"Lauf-Shops im Raum Freiburg",
+		"Liste von Lauf-Shops und Einzelhandelsgeschäften mit Laufschuh-Auswahl im Raum Freiburg",
+		breadcrumbsShops)
+
+	renderSubPage("dietenbach-parkrun.html", "dietenbach-parkrun", "parkrun", "Allgemein",
+		"Dietenbach parkrun",
+		"Vollständige Liste aller Ergebnisse, Laufberichte und Fotogalerien des 'Dietenbach parkrun' im Freiburger Dietenbachpark.",
+		breadcrumbsBase)
+
+	renderPage("series.html", "series", "series", "Serien",
+		"Lauf-Serien",
+		"Liste aller Serien von Laufveranstaltungen, Lauf-Wettkämpfen, Volksläufen im Raum Freiburg",
+		breadcrumbsSeries)
+
+	renderSubPage("map.html", "map", "map", "Allgemein",
+		"Karte aller Laufveranstaltungen",
+		"Karte",
+		breadcrumbsBase)
+
+	renderPage("info.html", "info", "info", "Allgemein",
+		"Info",
+		"Kontaktmöglichkeiten, allgemeine & technische Informationen über freiburg.run",
+		breadcrumbsInfo)
+
+	renderSubPage("datenschutz.html", "datenschutz", "datenschutz", "Allgemein",
+		"Datenschutz",
+		"Datenschutzerklärung von freiburg.run",
+		breadcrumbsInfo)
+
+	renderSubPage("impressum.html", "impressum", "impressum", "Allgemein",
+		"Impressum",
+		"Impressum von freiburg.run",
+		breadcrumbsInfo)
+
+	renderSubPage("support.html", "support", "support", "Allgemein",
+		"freiburg.run unterstützen",
+		"Möglichkeiten freiburg.run zu unterstützen",
+		breadcrumbsInfo)
+
+	renderSubPage("404.html", "404", "404", "",
+		"404 - Seite nicht gefunden :(",
+		"Fehlerseite von freiburg.run",
+		breadcrumbsBase)
+
+	// Special rendering of parkrun page for wordpress
 	utils.ExecuteTemplateNoMinify("dietenbach-parkrun-wordpress", g.out.Join("dietenbach-parkrun-wordpress.html"), data)
 
-	slug = "series.html"
-	data.Nav = "series"
-	data.Title = "Serien"
-	data.Description = "Liste aller Serien von Laufveranstaltungen, Lauf-Wettkämpfen, Volksläufen im Raum Freiburg "
-	data.Canonical = g.baseUrl.Join(slug)
-	breadcrumbsEventsSeries := breadcrumbsEvents.Push(utils.CreateLink(data.Title, "/"+slug))
-	data.Breadcrumbs = breadcrumbsEventsSeries
-	utils.ExecuteTemplate("series", g.out.Join(slug), data)
-
-	slug = "map.html"
-	data.Nav = "map"
-	data.Title = "Karte aller Laufveranstaltungen"
-	data.Type = "Karte"
-	data.Description = "Karte"
-	data.Canonical = g.baseUrl.Join(slug)
-	data.Breadcrumbs = breadcrumbsBase.Push(utils.CreateLink(data.Title, "/"+slug))
-	utils.ExecuteTemplate("map", g.out.Join(slug), data)
-
-	slug = "info.html"
-	data.Nav = "info"
-	data.Title = "Info"
-	data.Type = "Info"
-	data.Description = "Kontaktmöglichkeiten, allgemeine & technische Informationen über freiburg.run"
-	data.Canonical = g.baseUrl.Join(slug)
-	breadcrumbsInfo := breadcrumbsBase.Push(utils.CreateLink(data.Title, "/"+slug))
-	data.Breadcrumbs = breadcrumbsInfo
-	utils.ExecuteTemplate("info", g.out.Join(slug), data)
-
-	slug = "datenschutz.html"
-	data.Nav = "datenschutz"
-	data.Title = "Datenschutz"
-	data.Type = "Datenschutz"
-	data.Description = "Datenschutzerklärung von freiburg.run"
-	data.Canonical = g.baseUrl.Join(slug)
-	data.Breadcrumbs = breadcrumbsInfo.Push(utils.CreateLink(data.Title, "/"+slug))
-	utils.ExecuteTemplate("datenschutz", g.out.Join(slug), data)
-
-	slug = "impressum.html"
-	data.Nav = "impressum"
-	data.Title = "Impressum"
-	data.Type = "Impressum"
-	data.Description = "Impressum von freiburg.run"
-	data.Canonical = g.baseUrl.Join(slug)
-	data.Breadcrumbs = breadcrumbsInfo.Push(utils.CreateLink(data.Title, "/"+slug))
-	utils.ExecuteTemplate("impressum", g.out.Join(slug), data)
-
-	slug = "support.html"
-	data.Nav = "support"
-	data.Title = "freiburg.run unterstützen"
-	data.Type = "Support"
-	data.Description = "Möglichkeiten freiburg.run zu unterstützen"
-	data.Canonical = g.baseUrl.Join(slug)
-	data.Breadcrumbs = breadcrumbsInfo.Push(utils.CreateLink(data.Title, "/"+slug))
-	utils.ExecuteTemplate("support", g.out.Join(slug), data)
-
-	slug = "404.html"
-	data.Nav = "404"
-	data.Title = "404 - Seite nicht gefunden :("
-	data.Type = ""
-	data.Description = "Fehlerseite von freiburg.run"
-	data.Canonical = g.baseUrl.Join(slug)
-	data.Breadcrumbs = breadcrumbsBase.Push(utils.CreateLink(data.Title, "/"+slug))
-	utils.ExecuteTemplate("404", g.out.Join(slug), data)
-
-	eventdata := EventTemplateData{
-		TemplateData{
-			commondata,
-			"",
-			"Veranstaltung",
-			"",
-			"events",
-			"",
-			breadcrumbsEvents,
-			"/",
-		},
-		nil,
-	}
-	for _, event := range eventsData.Events {
-		if event.IsSeparator() {
-			continue
+	// Render events, groups, shops lists
+	renderEventList := func(eventList []*events.Event, nav, main, sitemapCategory string, breadcrumbs utils.Breadcrumbs) {
+		eventdata := EventTemplateData{
+			TemplateData{
+				commondata,
+				"",
+				"",
+				nav,
+				"",
+				breadcrumbs,
+				main,
+			},
+			nil,
 		}
-		eventdata.Event = event
-		eventdata.Description = event.GenerateDescription()
-		slug := event.Slug()
-		eventdata.SetNameLink(event.Name, slug, breadcrumbsEvents, g.baseUrl)
-		utils.ExecuteTemplate("event", g.out.Join(slug), eventdata)
-		sitemap.Add(slug, event.Name, "Laufveranstaltungen")
-	}
-
-	eventdata.Main = "/events-old.html"
-	for _, event := range eventsData.EventsOld {
-		if event.IsSeparator() {
-			continue
+		for _, event := range eventList {
+			if event.IsSeparator() {
+				continue
+			}
+			eventdata.Event = event
+			eventdata.Description = event.GenerateDescription()
+			slug := event.Slug()
+			eventdata.SetNameLink(event.Name, slug, breadcrumbsEvents, g.baseUrl)
+			utils.ExecuteTemplate("event", g.out.Join(slug), eventdata)
+			sitemap.Add(slug, event.Name, sitemapCategory)
 		}
-		eventdata.Event = event
-		eventdata.Description = event.GenerateDescription()
-		slug := event.Slug()
-		eventdata.SetNameLink(event.Name, slug, breadcrumbsEventsOld, g.baseUrl)
-		utils.ExecuteTemplate("event", g.out.Join(slug), eventdata)
-		sitemap.Add(slug, event.Name, "Vergangene Laufveranstaltungen")
 	}
+	renderEventList(eventsData.Events, "events", "/", "Laufveranstaltungen", breadcrumbsEvents)
+	renderEventList(eventsData.EventsOld, "events", "/events-old.html", "Vergangene Laufveranstaltungen", breadcrumbsEventsOld)
+	renderEventList(eventsData.Groups, "groups", "/lauftreffs.html", "Lauftreffs", breadcrumbsGroups)
+	renderEventList(eventsData.Shops, "shops", "/shops.html", "Lauf-Shops", breadcrumbsShops)
 
-	eventdata.Type = "Lauftreff"
-	eventdata.Nav = "groups"
-	eventdata.Main = "/lauftreffs.html"
-	for _, event := range eventsData.Groups {
-		eventdata.Event = event
-		eventdata.Description = event.GenerateDescription()
-		slug := event.Slug()
-		eventdata.SetNameLink(event.Name, slug, breadcrumbsGroups, g.baseUrl)
-		utils.ExecuteTemplate("event", g.out.Join(slug), eventdata)
-		sitemap.Add(slug, event.Name, "Lauftreffs")
-	}
-
-	eventdata.Type = "Lauf-Shop"
-	eventdata.Nav = "shops"
-	eventdata.Main = "/shops.html"
-	for _, event := range eventsData.Shops {
-		eventdata.Event = event
-		eventdata.Description = event.GenerateDescription()
-		slug := event.Slug()
-		eventdata.SetNameLink(event.Name, slug, breadcrumbsShops, g.baseUrl)
-		utils.ExecuteTemplate("event", g.out.Join(slug), eventdata)
-		sitemap.Add(slug, event.Name, "Lauf-Shops")
-	}
-
+	// Render tags
 	tagdata := TagTemplateData{
 		TemplateData{
 			commondata,
 			"",
-			"Kategorie",
 			"",
 			"tags",
 			"",
-			breadcrumbsEventsTags,
+			breadcrumbsTags,
 			"/tags.html",
 		},
 		nil,
@@ -517,7 +462,7 @@ func (g Generator) Generate(eventsData events.Data) error {
 		tagdata.Tag = tag
 		tagdata.Description = fmt.Sprintf("Liste an Laufveranstaltungen im Raum Freiburg, die mit der Kategorie '%s' getaggt sind", tag.Name)
 		slug := tag.Slug()
-		tagdata.SetNameLink(tag.Name, slug, breadcrumbsEventsTags, g.baseUrl)
+		tagdata.SetNameLink(tag.Name, slug, breadcrumbsTags, g.baseUrl)
 		tagdata.Title = fmt.Sprintf("Laufveranstaltungen der Kategorie '%s'", tag.Name)
 		utils.ExecuteTemplate("tag", g.out.Join(slug), tagdata)
 		sitemap.Add(slug, tag.Name, "Kategorien")
@@ -533,42 +478,38 @@ func (g Generator) Generate(eventsData events.Data) error {
 		}
 	}
 
-	seriedata := SerieTemplateData{
-		TemplateData{
-			commondata,
-			"",
-			"Serie",
-			"",
-			"series",
-			"",
-			breadcrumbsEventsSeries,
-			"/series.html",
-		},
-		nil,
+	// Render series
+	renderSeries := func(series []*events.Serie) {
+		seriedata := SerieTemplateData{
+			TemplateData{
+				commondata,
+				"",
+				"",
+				"series",
+				"",
+				breadcrumbsSeries,
+				"/series.html",
+			},
+			nil,
+		}
+		for _, s := range series {
+			seriedata.Serie = s
+			seriedata.Description = fmt.Sprintf("Lauf-Serie '%s'", s.Name)
+			slug := s.Slug()
+			seriedata.SetNameLink(s.Name, slug, breadcrumbsSeries, g.baseUrl)
+			utils.ExecuteTemplate("serie", g.out.Join(slug), seriedata)
+			sitemap.Add(slug, s.Name, "Serien")
+		}
 	}
-	for _, s := range eventsData.Series {
-		seriedata.Serie = s
-		seriedata.Description = fmt.Sprintf("Lauf-Serie '%s'", s.Name)
-		slug := s.Slug()
-		seriedata.SetNameLink(s.Name, slug, breadcrumbsEventsSeries, g.baseUrl)
-		utils.ExecuteTemplate("serie", g.out.Join(slug), seriedata)
-		sitemap.Add(slug, s.Name, "Serien")
-	}
-	for _, s := range eventsData.SeriesOld {
-		seriedata.Serie = s
-		seriedata.Description = fmt.Sprintf("Lauf-Serie '%s'", s.Name)
-		slug := s.Slug()
-		seriedata.SetNameLink(s.Name, slug, breadcrumbsEventsSeries, g.baseUrl)
-		utils.ExecuteTemplate("serie", g.out.Join(slug), seriedata)
-		sitemap.Add(slug, s.Name, "Serien")
-	}
+	renderSeries(eventsData.Series)
+	renderSeries(eventsData.SeriesOld)
 
+	// Render sitemap
 	sitemap.Gen(g.out.Join("sitemap.xml"), g.hashFile, g.out)
 	sitemapTemplate := SitemapTemplateData{
 		TemplateData{
 			commondata,
 			"Sitemap von freiburg.run",
-			"",
 			"Sitemap von freiburg.run",
 			"",
 			fmt.Sprintf("%s/sitemap.html", g.baseUrl),
@@ -579,6 +520,7 @@ func (g Generator) Generate(eventsData events.Data) error {
 	}
 	utils.ExecuteTemplate("sitemap", g.out.Join("sitemap.html"), sitemapTemplate)
 
+	// Render .htaccess
 	if err := createHtaccess(eventsData, g.out); err != nil {
 		return fmt.Errorf("create .htaccess: %v", err)
 	}

@@ -17,11 +17,6 @@ build:
 	rm -rf .out
 	go run cmd/generate/main.go -config config.json -out .out -hashfile .hashes -addedfile .added
 
-.phony: upload-test
-upload-test: build
-	scp -r .out/* .out/.htaccess echeclus.uberspace.de:/var/www/virtual/floppnet/fraig.de/
-	ssh echeclus.uberspace.de chmod -R a+rx /var/www/virtual/floppnet/fraig.de/
-
 .repo/.git/config:
 	git clone https://github.com/flopp/freiburg-run.git .repo
 

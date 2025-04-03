@@ -13,5 +13,8 @@ func (p Path) String() string {
 }
 
 func (p Path) Join(s string) string {
+	if len(s) == 0 {
+		return string(p)
+	}
 	return filepath.Join(string(p), s)
 }
