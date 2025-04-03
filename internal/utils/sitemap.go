@@ -89,8 +89,8 @@ func writeHashFile(fileName string, m map[string]*FileHashDate) {
 }
 
 var reTimestamp = regexp.MustCompile(`<span class="timestamp">[^<]*</span>`)
-var reScript = regexp.MustCompile(`<script src="[^"]*"></script>`)
-var reStyle = regexp.MustCompile(`<link rel="stylesheet" href="[^"]*"/>`)
+var reScript = regexp.MustCompile(`<script [^>]*>`)
+var reStyle = regexp.MustCompile(`<link [^>]*>`)
 
 func replaceRegexp(s []byte, r regexp.Regexp) []byte {
 	for {
@@ -133,7 +133,7 @@ func getMtimeYMD(filePath string) string {
 	}
 }
 
-func (sitemap Sitemap) Gen(fileName string, hashFileName string, outDir string) error {
+func (sitemap Sitemap) Gen(fileName string, hashFileName string, outDir Path) error {
 	if err := os.MkdirAll(filepath.Dir(fileName), 0770); err != nil {
 		return err
 	}
@@ -154,9 +154,9 @@ func (sitemap Sitemap) Gen(fileName string, hashFileName string, outDir string) 
 		e := entry.Slug
 		var fileName string
 		if e == "" {
-			fileName = filepath.Join(outDir, "index.html")
+			fileName = outDir.Join("index.html")
 		} else {
-			fileName = filepath.Join(outDir, e)
+			fileName = outDir.Join(e)
 		}
 		timeStamp := getMtimeYMD(fileName)
 		if timeStamp == "" {
