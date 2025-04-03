@@ -51,9 +51,9 @@ func (r *ResourceManager) CopyExternalAssets() {
 	leafletLegendVersion := "v1.0.0"
 
 	// URLs
-	bulmaUrl := utils.Url(fmt.Sprintf("https://unpkg.com/bulma@%s", bulmaVersion))
+	bulmaUrl := utils.Url(fmt.Sprintf("https://cdnjs.cloudflare.com/ajax/libs/bulma/%s", bulmaVersion))
 	leafletUrl := utils.Url(fmt.Sprintf("https://cdnjs.cloudflare.com/ajax/libs/leaflet/%s", leafletVersion))
-	leafletGestureHandlingUrl := utils.Url(fmt.Sprintf("https://unpkg.com/leaflet-gesture-handling@%s", leafletGestureHandlingVersion))
+	leafletGestureHandlingUrl := utils.Url(fmt.Sprintf("https://raw.githubusercontent.com/elmarquis/Leaflet.GestureHandling/refs/tags/v%s", leafletGestureHandlingVersion))
 	leafletLegendUrl := utils.Url(fmt.Sprintf("https://raw.githubusercontent.com/ptma/Leaflet.Legend/%s", leafletLegendVersion))
 
 	// JS files
