@@ -343,7 +343,8 @@ func (g Generator) Generate(eventsData events.Data) error {
 		sitemap.Add(slug, title, sitemapCategory)
 	}
 	renderSubPage := func(slug, template, nav, sitemapCategory, title, description string, breadcrumbs utils.Breadcrumbs) {
-		renderPage(slug, template, nav, sitemapCategory, title, description, breadcrumbs.Push(utils.CreateLink(data.Title, "/"+slug)))
+		subBreadcrumbs := breadcrumbsBase.Push(utils.CreateLink(title, "/"+slug))
+		renderPage(slug, template, nav, sitemapCategory, title, description, subBreadcrumbs)
 	}
 
 	renderPage("", "events", "events", "Laufveranstaltungen",
