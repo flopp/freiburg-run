@@ -8,14 +8,14 @@ backup:
 	@mkdir -p backup-data
 	@go run cmd/backup/main.go -config config.json -output backup-data/$(shell date +%Y-%m-%d).ods
 
-.bin/generate-linux: main.go internal/events/*.go internal/utils/*.go go.mod
+.bin/generate-linux: cmd/generate/main.go internal/events/*.go internal/resources/*.go internal/utils/*.go go.mod
 	mkdir -p .bin
-	GOOS=linux GOARCH=amd64 go build -o .bin/generate-linux main.go
+	GOOS=linux GOARCH=amd64 go build -o .bin/generate-linux cmd/generate/main.go
 
 .phony: build
 build:
 	rm -rf .out
-	go run main.go -config config.json -out .out -hashfile .hashes -addedfile .added
+	go run cmd/generate/main.go -config config.json -out .out -hashfile .hashes -addedfile .added
 
 .phony: upload-test
 upload-test: build
