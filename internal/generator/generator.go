@@ -247,8 +247,12 @@ func NewGenerator(
 }
 
 func (g Generator) Generate(eventsData events.Data) error {
+	// Prepare assets
+	resourceManager := resources.NewResourceManager(string(g.out))
+	resourceManager.CopyExternalAssets()
+	resourceManager.CopyStaticAssets()
+
 	// create ics files for events
-	// Helper function to create calendar files for a slice of events
 	createCalendarsForEvents := func(eventList []*events.Event) error {
 		for _, event := range eventList {
 			if event.IsSeparator() {
@@ -262,8 +266,6 @@ func (g Generator) Generate(eventsData events.Data) error {
 		}
 		return nil
 	}
-
-	// Create calendar files for current and past events
 	if err := createCalendarsForEvents(eventsData.Events); err != nil {
 		return err
 	}
@@ -284,10 +286,6 @@ func (g Generator) Generate(eventsData events.Data) error {
 	sitemap.AddCategory("Serien")
 	sitemap.AddCategory("Lauftreffs")
 	sitemap.AddCategory("Lauf-Shops")
-
-	resourceManager := resources.NewResourceManager(string(g.out))
-	resourceManager.CopyExternalAssets()
-	resourceManager.CopyStaticAssets()
 
 	breadcrumbsBase := utils.InitBreadcrumbs(utils.CreateLink("freiburg.run", "/"))
 	breadcrumbsEvents := breadcrumbsBase.Push(utils.CreateLink("Laufveranstaltungen", "/"))
@@ -311,16 +309,6 @@ func (g Generator) Generate(eventsData events.Data) error {
 		},
 	}
 
-	data := TemplateData{
-		commondata,
-		"Laufveranstaltungen im Raum Freiburg",
-		"Liste von aktuellen und zukünftigen Laufveranstaltungen, Lauf-Wettkämpfen, Volksläufen im Raum Freiburg",
-		"events",
-		string(g.baseUrl),
-		breadcrumbsEvents,
-		"/",
-	}
-
 	// Render general pages
 	renderPage := func(slug, template, nav, sitemapCategory, title, description string, breadcrumbs utils.Breadcrumbs) {
 		data := TemplateData{
@@ -340,11 +328,10 @@ func (g Generator) Generate(eventsData events.Data) error {
 		if template != "404" {
 			sitemap.Add(slug, title, sitemapCategory)
 		}
-		sitemap.Add(slug, title, sitemapCategory)
 	}
-	renderSubPage := func(slug, template, nav, sitemapCategory, title, description string, breadcrumbs utils.Breadcrumbs) {
-		subBreadcrumbs := breadcrumbsBase.Push(utils.CreateLink(title, "/"+slug))
-		renderPage(slug, template, nav, sitemapCategory, title, description, subBreadcrumbs)
+	renderSubPage := func(slug, template, nav, sitemapCategory, title, description string, breadcrumbsParent utils.Breadcrumbs) {
+		breadcrumbs := breadcrumbsParent.Push(utils.CreateLink(title, "/"+slug))
+		renderPage(slug, template, nav, sitemapCategory, title, description, breadcrumbs)
 	}
 
 	renderPage("", "events", "events", "Laufveranstaltungen",
@@ -413,6 +400,7 @@ func (g Generator) Generate(eventsData events.Data) error {
 		breadcrumbsBase)
 
 	// Special rendering of parkrun page for wordpress
+	data := TemplateData{commondata, "", "", "", "", breadcrumbsBase, "/"}
 	utils.ExecuteTemplateNoMinify("dietenbach-parkrun-wordpress", g.out.Join("dietenbach-parkrun-wordpress.html"), data)
 
 	// Render events, groups, shops lists

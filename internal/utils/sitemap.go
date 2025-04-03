@@ -37,9 +37,6 @@ func (sitemap *Sitemap) AddCategory(name string) {
 }
 
 func (sitemap *Sitemap) Add(slug string, name string, category string) {
-	if category == "" {
-		return
-	}
 	sitemap.Entries = append(sitemap.Entries, &SitemapEntry{slug, name, category})
 }
 
