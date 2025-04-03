@@ -293,9 +293,9 @@ func (g Generator) Generate(eventsData events.Data) error {
 	breadcrumbsEvents := breadcrumbsBase.Push(utils.CreateLink("Laufveranstaltungen", "/"))
 	breadcrumbsEventsOld := breadcrumbsEvents.Push(utils.CreateLink("Archiv", "/events-old.html"))
 	breadcrumbsTags := breadcrumbsEvents.Push(utils.CreateLink("Kategoriene", "/tags.html"))
+	breadcrumbsSeries := breadcrumbsEvents.Push(utils.CreateLink("Serien", "/series.html"))
 	breadcrumbsGroups := breadcrumbsBase.Push(utils.CreateLink("Lauftreffs", "/lauftreffs.html"))
 	breadcrumbsShops := breadcrumbsBase.Push(utils.CreateLink("Lauf-Shops", "/shops.html"))
-	breadcrumbsSeries := breadcrumbsEvents.Push(utils.CreateLink("Serien", "/series.html"))
 	breadcrumbsInfo := breadcrumbsBase.Push(utils.CreateLink("Info", "/info.html"))
 
 	commondata := CommonData{
@@ -435,7 +435,7 @@ func (g Generator) Generate(eventsData events.Data) error {
 			eventdata.Event = event
 			eventdata.Description = event.GenerateDescription()
 			slug := event.Slug()
-			eventdata.SetNameLink(event.Name, slug, breadcrumbsEvents, g.baseUrl)
+			eventdata.SetNameLink(event.Name, slug, breadcrumbs, g.baseUrl)
 			utils.ExecuteTemplate("event", g.out.Join(slug), eventdata)
 			sitemap.Add(slug, event.Name, sitemapCategory)
 		}
