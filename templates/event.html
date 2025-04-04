@@ -3,7 +3,7 @@
 <section class="section">
     <div class="container is-max-desktop">
         <a id="back" href="{{.Main}}">Zurück zur Liste</a>
-        <h1 class="title">{{.Event.Name}}</h1>
+        <h1 class="title">{{.Event.Name.Orig}}</h1>
         <div class="columns">
             <div class="column is-two-thirds">
                 {{if .Event.Cancelled}}
@@ -37,7 +37,7 @@
                             <th>Ort</th>
                             <td class="is-w100">
                                 {{if .Event.Location.HasGeo}}
-                                <a href="{{.Event.Location.GoogleMaps}}" title="{{.Event.Name}}: {{.Event.Location.Name}}" target="_blank">{{.Event.Location.Name}}</a>
+                                <a href="{{.Event.Location.GoogleMaps}}" title="{{.Event.Name.Orig}}: {{.Event.Location.Name}}" target="_blank">{{.Event.Location.Name}}</a>
                                 ({{.Event.Location.DirLong}})
                                 {{else}}
                                 {{.Event.Location.Name}}
@@ -61,9 +61,9 @@
                             <td class="is-w100">
                                 {{range .Event.Links}}
                                 {{if .IsRegistration}}
-                                    <a class="tag is-primary" href="{{.Url}}" title="{{$.Event.Name}}: {{.Name}}" target="_blank">{{.Name}}</a>
+                                    <a class="tag is-primary" href="{{.Url}}" title="{{$.Event.Name.Orig}}: {{.Name}}" target="_blank">{{.Name}}</a>
                                 {{else}}
-                                    <a class="tag is-link is-light" href="{{.Url}}" title="{{$.Event.Name}}: {{.Name}}" target="_blank">{{.Name}}</a>
+                                    <a class="tag is-link is-light" href="{{.Url}}" title="{{$.Event.Name.Orig}}: {{.Name}}" target="_blank">{{.Name}}</a>
                                 {{end}}
                                 {{end}}
                             </td>
@@ -74,7 +74,7 @@
                             <th>Serien</th>
                             <td class="is-w100">
                                 {{range .Event.Series}}
-                                    <a class="tag is-link is-light" title="Serie: {{.Name}}" href="/{{.Slug}}">{{.Name}}</a>
+                                    <a class="tag is-link is-light" title="Serie: {{.Name.Orig}}" href="/{{.Slug}}">{{.Name.Orig}}</a>
                                 {{end}}
                             </td>
                         </tr>
@@ -84,7 +84,7 @@
                             <th>Kategorien</th>
                             <td class="is-w100">
                                 {{range .Event.Tags}}
-                                    <a class="tag is-link is-light" title="Kategorie: {{.Name}}" href="/{{.Slug}}">{{.Name}}</a>
+                                    <a class="tag is-link is-light" title="Kategorie: {{.Name.Orig}}" href="/{{.Slug}}">{{.Name.Orig}}</a>
                                 {{end}}
                             </td>
                         </tr>
@@ -93,7 +93,7 @@
                         <tr>
                             <th>Voriger</th>
                             <td class="is-w100">
-                                <a href="/{{.Event.Prev.Slug}}">{{.Event.Prev.Name}} ({{.Event.Prev.Time.Formatted}})</a>
+                                <a href="/{{.Event.Prev.Slug}}">{{.Event.Prev.Name.Orig}} ({{.Event.Prev.Time.Formatted}})</a>
                             </td>
                         </tr>
                         {{end}}
@@ -101,7 +101,7 @@
                         <tr>
                             <th>Nächster</th>
                             <td class="is-w100">
-                                <a href="/{{.Event.Next.Slug}}">{{.Event.Next.Name}} ({{.Event.Next.Time.Formatted}})</a>
+                                <a href="/{{.Event.Next.Slug}}">{{.Event.Next.Name.Orig}} ({{.Event.Next.Time.Formatted}})</a>
                             </td>
                         </tr>
                         {{end}}
@@ -110,7 +110,7 @@
                             <th>In der Nähe (5km)</th>
                             <td class="is-w100">
                                 <ul>
-                                    {{range .Event.UpcomingNear}}<li><a href="/{{.Slug}}">{{.Name}} ({{.Time.Formatted}} @ {{.Location.Name}})</a></li>{{end}}
+                                    {{range .Event.UpcomingNear}}<li><a href="/{{.Slug}}">{{.Name.Orig}} ({{.Time.Formatted}} @ {{.Location.Name}})</a></li>{{end}}
                                 </ul>
                             </td>
                         </tr>
@@ -127,7 +127,7 @@
             </div>
         </div>
         {{if .Event.Location.HasGeo}}
-        <div id="event-map" data-geo="{{.Event.Location.Geo}}" data-name="{{.Event.Name}}"></div>
+        <div id="event-map" data-geo="{{.Event.Location.Geo}}" data-name="{{.Event.Name.Orig}}"></div>
         {{end}}
     </div>
 </section>

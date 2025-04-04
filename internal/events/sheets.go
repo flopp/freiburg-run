@@ -334,10 +334,8 @@ func fetchEvents(config SheetsConfigData, srv *sheets.Service, today time.Time, 
 
 		eventsList = append(eventsList, &Event{
 			eventType,
-			name,
-			utils.SanitizeName(name),
-			nameOld,
-			utils.SanitizeName(nameOld),
+			utils.NewName(name),
+			utils.NewName(nameOld),
 			timeRange,
 			isOld,
 			statusS,
@@ -491,7 +489,7 @@ func fetchTags(config SheetsConfigData, srv *sheets.Service, table string) ([]*T
 		tag := utils.SanitizeName(tagS)
 		if tag != "" && (nameS != "" || descriptionS != "") {
 			t := CreateTag(tag)
-			t.Name = nameS
+			t.Name.Orig = nameS
 			t.Description = descriptionS
 			tags = append(tags, t)
 		}
@@ -518,14 +516,13 @@ func fetchSeries(config SheetsConfigData, srv *sheets.Service, table string) ([]
 	series := make([]*Serie, 0)
 	for _, row := range rows {
 		nameS := cols.getValue(colName, row)
-		id := utils.SanitizeName(nameS)
 		descriptionS := cols.getValue(colDescription, row)
 		linksS := getLinks(cols, row)
 		links, err := parseLinks(linksS, "")
 		if err != nil {
-			return nil, fmt.Errorf("parsing links of series '%s': %w", id, err)
+			return nil, fmt.Errorf("parsing links of series '%s': %w", nameS, err)
 		}
-		series = append(series, &Serie{id, nameS, template.HTML(descriptionS), links, make([]*Event, 0), make([]*Event, 0), make([]*Event, 0), make([]*Event, 0)})
+		series = append(series, &Serie{utils.NewName(nameS), template.HTML(descriptionS), links, make([]*Event, 0), make([]*Event, 0), make([]*Event, 0), make([]*Event, 0)})
 	}
 
 	return series, nil

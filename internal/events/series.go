@@ -8,8 +8,7 @@ import (
 )
 
 type Serie struct {
-	Sanitized   string
-	Name        string
+	Name        utils.Name
 	Description template.HTML
 	Links       []utils.Link
 	Events      []*Event
@@ -27,15 +26,15 @@ func (s Serie) Num() int {
 }
 
 func CreateSerie(id string, name string) *Serie {
-	return &Serie{id, name, "", make([]utils.Link, 0), make([]*Event, 0), make([]*Event, 0), make([]*Event, 0), make([]*Event, 0)}
+	return &Serie{utils.NewName2(name, id), "", make([]utils.Link, 0), make([]*Event, 0), make([]*Event, 0), make([]*Event, 0), make([]*Event, 0)}
 }
 
 func (serie *Serie) Slug() string {
-	return fmt.Sprintf("serie/%s.html", serie.Sanitized)
+	return fmt.Sprintf("serie/%s.html", serie.Name.Sanitized)
 }
 
 func (serie *Serie) ImageSlug() string {
-	return fmt.Sprintf("serie/%s.png", serie.Sanitized)
+	return fmt.Sprintf("serie/%s.png", serie.Name.Sanitized)
 }
 
 func GetSerie(series map[string]*Serie, name string) *Serie {

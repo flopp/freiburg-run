@@ -1,9 +1,9 @@
 {{if .IsSeparator}}
 <div class="column is-full event-separator">
-    <div class="notification is-link is-light pt-2 pb-2 pl-4">{{.Name}}</div>
+    <div class="notification is-link is-light pt-2 pb-2 pl-4">{{.Name.Orig}}</div>
 </div>
 {{else}}
-<div class="column is-half event" data-type="{{.NiceType}}" data-name="{{.Name}}" data-time="{{.Time.Formatted}}" data-geo="{{.Location.Geo}}" data-location="{{.Location.Name}}" data-slug="{{.Slug}}" data-ics="{{.Calendar}}" data-googlecal="{{.CalendarGoogle}}">
+<div class="column is-half event" data-type="{{.NiceType}}" data-name="{{.Name.Orig}}" data-time="{{.Time.Formatted}}" data-geo="{{.Location.Geo}}" data-location="{{.Location.Name}}" data-slug="{{.Slug}}" data-ics="{{.Calendar}}" data-googlecal="{{.CalendarGoogle}}">
     {{if .Special}}
     <div class="card pulsating-border" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
     {{else}}
@@ -13,7 +13,7 @@
             {{if .Cancelled}}
             <a class="button is-danger has-text-white is-fullwidth is-radiusless button-wrap" href="/{{.Slug}}" itemprop="item">
                 <span class="icon"><i class="info-icon"></i></span>
-                <span itemprop="name">{{.Name}}</span>
+                <span itemprop="name">{{.Name.Orig}}</span>
             </a>
             <a class="button is-danger has-text-white is-small is-fullwidth is-radiusless" href="/{{.Slug}}">
                 <span>(abgesagt)</span>
@@ -21,7 +21,7 @@
             {{else if .New}}
             <a class="button is-success has-text-white is-fullwidth is-radiusless button-wrap" href="/{{.Slug}}" itemprop="item">
                 <span class="icon"><i class="info-icon"></i></span>
-                <span itemprop="name">{{.Name}}</span>
+                <span itemprop="name">{{.Name.Orig}}</span>
             </a>
             <a class="button is-success has-text-white is-small is-fullwidth is-radiusless" href="/{{.Slug}}">
                 <span>(neu hinzugefügt)</span>
@@ -29,7 +29,7 @@
             {{else}}
             <a class="button is-link is-fullwidth is-radiusless button-wrap" href="/{{.Slug}}" itemprop="item">
                 <span class="icon"><i class="info-icon"></i></span>
-                <span itemprop="name">{{.Name}}</span>
+                <span itemprop="name">{{.Name.Orig}}</span>
             </a>
             {{end}}
         </header>
@@ -41,7 +41,7 @@
                     <tr>
                         <th class="w-2em no-border" title="Ort">🗺</th>
                         <td class="no-border">
-                        {{if .Location.HasGeo}}<a href="{{.Location.GoogleMaps}}" title="{{$.Name}}: {{.Location.Name}}" target="_blank">{{.Location.Name}}</a> (<span title="Distanz und Richtung von Freiburg Zentrum">{{.Location.Dir}}</span>){{else}}{{.Location.Name}}{{end}}
+                        {{if .Location.HasGeo}}<a href="{{.Location.GoogleMaps}}" title="{{$.Name.Orig}}: {{.Location.Name}}" target="_blank">{{.Location.Name}}</a> (<span title="Distanz und Richtung von Freiburg Zentrum">{{.Location.Dir}}</span>){{else}}{{.Location.Name}}{{end}}
                         </td>
                     </tr>
                     {{if .Details}}<tr><th class="w-2em no-border" title="Details">ℹ️</th><td class="no-border">{{.Details}}</td></tr>{{end}}
@@ -50,9 +50,9 @@
                         <td class="no-border">
                             {{range .Links}}
                             {{if .IsRegistration}}
-                            <a class="tag is-primary mr-2" href="{{.Url}}" title="{{$.Name}}: {{.Name}}" target="_blank">{{.Name}}</a>
+                            <a class="tag is-primary mr-2" href="{{.Url}}" title="{{$.Name.Orig}}: {{.Name}}" target="_blank">{{.Name}}</a>
                             {{else}}
-                            <a class="tag is-link is-light mr-2" href="{{.Url}}" title="{{$.Name}}: {{.Name}}" target="_blank">{{.Name}}</a>
+                            <a class="tag is-link is-light mr-2" href="{{.Url}}" title="{{$.Name.Orig}}: {{.Name}}" target="_blank">{{.Name}}</a>
                             {{end}}
                             {{end}}
                         </td>
@@ -60,13 +60,13 @@
                     {{if .Series}}<tr>
                         <th class="w-2em no-border" title="Serien">🔢</th>
                         <td class="no-border">
-                        {{range .Series}}<a class="tag is-link is-light mr-2" href="/{{.Slug}}">{{.Name}}</a>{{end}}
+                        {{range .Series}}<a class="tag is-link is-light mr-2" href="/{{.Slug}}">{{.Name.Orig}}</a>{{end}}
                         </td>
                     </tr>{{end}}
                     {{if .Tags}}<tr>
                         <th class="w-2em no-border" title="Kategorien">🏷</th>
                         <td class="no-border">
-                        {{range .Tags}}<a class="tag is-link is-light mr-2" href="/{{.Slug}}" data-tag="{{.Sanitized}}">{{.Name}}</a>{{end}}
+                        {{range .Tags}}<a class="tag is-link is-light mr-2" href="/{{.Slug}}" data-tag="{{.Name.Sanitized}}">{{.Name.Orig}}</a>{{end}}
                         </td>
                     </tr>{{end}}
                 </table>
@@ -75,7 +75,7 @@
         <footer class="card-footer">
             <p class="card-footer-item">
                 <span>
-                    <a href="{{.Url}}" title="{{.Name}}: {{.LinkTitle}}" target="_blank">{{.LinkTitle}}</a>
+                    <a href="{{.Url}}" title="{{.Name.Orig}}: {{.LinkTitle}}" target="_blank">{{.LinkTitle}}</a>
                 </span>
             </p>
         </footer>

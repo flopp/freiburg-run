@@ -4,25 +4,25 @@
 <div class="is-hidden">
     {{range .Data.Events}}
     {{if .Location.HasGeo}}
-    <div class="event" data-type="{{.NiceType}}" data-name="{{.Name}}" data-time="{{.Time.Formatted}}" data-geo="{{.Location.Geo}}" data-location="{{.Location.Name}}" data-slug="{{.Slug}}"></div>
+    <div class="event" data-type="{{.NiceType}}" data-name="{{.Name.Orig}}" data-time="{{.Time.Formatted}}" data-geo="{{.Location.Geo}}" data-location="{{.Location.Name}}" data-slug="{{.Slug}}"></div>
     {{end}}
     {{end}}
 
     {{range .Data.EventsOld}}
     {{if .Location.HasGeo}}
-    <div class="event" data-type="{{.NiceType}}" data-name="{{.Name}}" data-time="{{.Time.Formatted}}" data-geo="{{.Location.Geo}}" data-location="{{.Location.Name}}" data-slug="{{.Slug}}"></div>
+    <div class="event" data-type="{{.NiceType}}" data-name="{{.Name.Orig}}" data-time="{{.Time.Formatted}}" data-geo="{{.Location.Geo}}" data-location="{{.Location.Name}}" data-slug="{{.Slug}}"></div>
     {{end}}
     {{end}}
 
     {{range .Data.Groups}}
     {{if .Location.HasGeo}}
-    <div class="event" data-type="{{.NiceType}}" data-name="{{.Name}}" data-time="{{.Time.Formatted}}" data-geo="{{.Location.Geo}}" data-location="{{.Location.Name}}" data-slug="{{.Slug}}"></div>
+    <div class="event" data-type="{{.NiceType}}" data-name="{{.Name.Orig}}" data-time="{{.Time.Formatted}}" data-geo="{{.Location.Geo}}" data-location="{{.Location.Name}}" data-slug="{{.Slug}}"></div>
     {{end}}
     {{end}}
 
     {{range .Data.Shops}}
     {{if .Location.HasGeo}}
-    <div class="event" data-type="{{.NiceType}}" data-name="{{.Name}}" data-time="{{.Time.Formatted}}" data-geo="{{.Location.Geo}}" data-location="{{.Location.Name}}" data-slug="{{.Slug}}"></div>
+    <div class="event" data-type="{{.NiceType}}" data-name="{{.Name.Orig}}" data-time="{{.Time.Formatted}}" data-geo="{{.Location.Geo}}" data-location="{{.Location.Name}}" data-slug="{{.Slug}}"></div>
     {{end}}
     {{end}}
 </div>

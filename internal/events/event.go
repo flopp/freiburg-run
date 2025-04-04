@@ -13,33 +13,31 @@ import (
 )
 
 type Event struct {
-	Type             string
-	Name             string
-	NameSanitized    string
-	NameOld          string
-	NameOldSanitized string
-	Time             utils.TimeRange
-	Old              bool
-	Status           string
-	Cancelled        bool
-	Obsolete         bool
-	Special          bool
-	Location         Location
-	Details          string
-	Details2         template.HTML
-	Url              string
-	RawTags          []string
-	Tags             []*Tag
-	RawSeries        []string
-	Series           []*Serie
-	Links            []utils.Link
-	Calendar         string
-	CalendarGoogle   string
-	Added            string
-	New              bool
-	Prev             *Event
-	Next             *Event
-	UpcomingNear     []*Event
+	Type           string
+	Name           utils.Name
+	NameOld        utils.Name
+	Time           utils.TimeRange
+	Old            bool
+	Status         string
+	Cancelled      bool
+	Obsolete       bool
+	Special        bool
+	Location       Location
+	Details        string
+	Details2       template.HTML
+	Url            string
+	RawTags        []string
+	Tags           []*Tag
+	RawSeries      []string
+	Series         []*Serie
+	Links          []utils.Link
+	Calendar       string
+	CalendarGoogle string
+	Added          string
+	New            bool
+	Prev           *Event
+	Next           *Event
+	UpcomingNear   []*Event
 }
 
 func (event Event) GetUUID() (uuid.UUID, error) {
@@ -81,11 +79,11 @@ func (event Event) GenerateDescription() string {
 
 	switch event.Type {
 	case "event":
-		description = fmt.Sprintf("Informationen zur Laufveranstaltung '%s'%s%s", event.Name, location, time)
+		description = fmt.Sprintf("Informationen zur Laufveranstaltung '%s'%s%s", event.Name.Orig, location, time)
 	case "group":
-		description = fmt.Sprintf("Informationen zur Laufgruppe / zum Lauftreff '%s'%s%s", event.Name, location, time)
+		description = fmt.Sprintf("Informationen zur Laufgruppe / zum Lauftreff '%s'%s%s", event.Name.Orig, location, time)
 	case "shop":
-		description = fmt.Sprintf("Informationen zum Laufshop '%s'%s", event.Name, location)
+		description = fmt.Sprintf("Informationen zum Laufshop '%s'%s", event.Name.Orig, location)
 	}
 
 	if len(description) >= min {
@@ -101,7 +99,7 @@ func (event Event) GenerateDescription() string {
 		} else {
 			description += ", "
 		}
-		description += tag.Name
+		description += tag.Name.Orig
 	}
 
 	return description
@@ -126,10 +124,8 @@ func createSeparatorEvent(t time.Time) *Event {
 
 	return &Event{
 		"",
-		label,
-		"",
-		"",
-		"",
+		utils.NewName(label),
+		utils.NewName(""),
 		utils.TimeRange{},
 		false,
 		"",
@@ -158,7 +154,7 @@ func createSeparatorEvent(t time.Time) *Event {
 func (event *Event) slug(ext string) string {
 	t := event.Type
 
-	sanitized := event.NameSanitized
+	sanitized := event.Name.Sanitized
 	if !event.Time.IsZero() {
 		return fmt.Sprintf("%s/%d-%s.%s", t, event.Time.Year(), sanitized, ext)
 	}
@@ -166,16 +162,16 @@ func (event *Event) slug(ext string) string {
 }
 
 func (event *Event) SlugOld() string {
-	if event.NameOld == "" {
+	if event.NameOld.Orig == "" {
 		return ""
 	}
 
 	t := event.Type
-	if strings.Contains(event.NameOld, "parkrun") {
+	if strings.Contains(event.NameOld.Orig, "parkrun") {
 		t = "event"
 	}
 
-	sanitized := event.NameOldSanitized
+	sanitized := event.NameOld.Sanitized
 	if !event.Time.IsZero() {
 		return fmt.Sprintf("%s/%d-%s.html", t, event.Time.Year(), sanitized)
 	}
@@ -348,11 +344,11 @@ func ValidateDateOrder(events []*Event) {
 	for _, event := range events {
 		if !lastDate.IsZero() {
 			if event.Time.From.IsZero() {
-				log.Printf("event '%s' has no date", event.Name)
+				log.Printf("event '%s' has no date", event.Name.Orig)
 				return
 			}
 			if event.Time.From.Before(lastDate.From) {
-				log.Printf("event '%s' has date '%s' before date of previous event '%s'", event.Name, event.Time.Formatted, lastDate.Formatted)
+				log.Printf("event '%s' has date '%s' before date of previous event '%s'", event.Name.Orig, event.Time.Formatted, lastDate.Formatted)
 				return
 			}
 		}
@@ -369,7 +365,7 @@ func FindPrevNextEvents(eventList []*Event) {
 				break
 			}
 
-			if utils.IsSimilarName(event2.Name, event.Name) /*&& event2.Location.Geo == event.Location.Geo*/ {
+			if utils.IsSimilarName(event2.Name.Sanitized, event.Name.Sanitized) /*&& event2.Location.Geo == event.Location.Geo*/ {
 				prev = event2
 			}
 		}

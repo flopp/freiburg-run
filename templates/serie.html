@@ -11,13 +11,13 @@
             </p>
 {{else}}
             <p class="block">
-                Lauf-Serie <b>{{.Serie.Name}}</b>
+                Lauf-Serie <b>{{.Serie.Name.Orig}}</b>
             </p>
 {{end}}
 {{if .Serie.Links}}
             <p class="block">
                 {{range .Serie.Links}}
-                    <a class="tag is-white" href="{{.Url}}" title="{{$.Serie.Name}}: {{.Name}}" target="_blank">{{.Name}}</a>
+                    <a class="tag is-white" href="{{.Url}}" title="{{$.Serie.Name.Orig}}: {{.Name}}" target="_blank">{{.Name}}</a>
                 {{end}}
             </p>
 {{end}}

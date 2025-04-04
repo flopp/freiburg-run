@@ -18,7 +18,7 @@
 {{if .Events}}
 {{range .Events}}
 <tr><td>
-    <a class="has-text-weight-bold" href="https://freiburg.run/{{.Slug}}" target="_blank">{{.Name}}</a><br>
+    <a class="has-text-weight-bold" href="https://freiburg.run/{{.Slug}}" target="_blank">{{.Name.Orig}}</a><br>
     {{if .Cancelled}}<span style="color: red;">{{.Status}}</span><br>{{end}}
     {{.Time.Formatted}}<br>
     {{.Location.Name}}

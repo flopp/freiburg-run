@@ -424,9 +424,9 @@ func (g Generator) Generate(eventsData events.Data) error {
 			eventdata.Event = event
 			eventdata.Description = event.GenerateDescription()
 			slug := event.Slug()
-			eventdata.SetNameLink(event.Name, slug, breadcrumbs, g.baseUrl)
+			eventdata.SetNameLink(event.Name.Orig, slug, breadcrumbs, g.baseUrl)
 			utils.ExecuteTemplate("event", g.out.Join(slug), eventdata)
-			sitemap.Add(slug, event.Name, sitemapCategory)
+			sitemap.Add(slug, event.Name.Orig, sitemapCategory)
 		}
 	}
 	renderEventList(eventsData.Events, "events", "/", "Laufveranstaltungen", breadcrumbsEvents)
@@ -451,15 +451,15 @@ func (g Generator) Generate(eventsData events.Data) error {
 		tagdata.Tag = tag
 		tagdata.Description = fmt.Sprintf("Liste an Laufveranstaltungen im Raum Freiburg, die mit der Kategorie '%s' getaggt sind", tag.Name)
 		slug := tag.Slug()
-		tagdata.SetNameLink(tag.Name, slug, breadcrumbsTags, g.baseUrl)
+		tagdata.SetNameLink(tag.Name.Orig, slug, breadcrumbsTags, g.baseUrl)
 		tagdata.Title = fmt.Sprintf("Laufveranstaltungen der Kategorie '%s'", tag.Name)
 		utils.ExecuteTemplate("tag", g.out.Join(slug), tagdata)
-		sitemap.Add(slug, tag.Name, "Kategorien")
+		sitemap.Add(slug, tag.Name.Orig, "Kategorien")
 	}
 
 	// Special rendering of the "traillauf" tag
 	for _, tag := range eventsData.Tags {
-		if tag.Sanitized == "traillauf" {
+		if tag.Name.Sanitized == "traillauf" {
 			if err := renderEmbedList(g.baseUrl, g.out, data, tag); err != nil {
 				return fmt.Errorf("create embed lists: %v", err)
 			}
@@ -485,9 +485,9 @@ func (g Generator) Generate(eventsData events.Data) error {
 			seriedata.Serie = s
 			seriedata.Description = fmt.Sprintf("Lauf-Serie '%s'", s.Name)
 			slug := s.Slug()
-			seriedata.SetNameLink(s.Name, slug, breadcrumbsSeries, g.baseUrl)
+			seriedata.SetNameLink(s.Name.Orig, slug, breadcrumbsSeries, g.baseUrl)
 			utils.ExecuteTemplate("serie", g.out.Join(slug), seriedata)
-			sitemap.Add(slug, s.Name, "Serien")
+			sitemap.Add(slug, s.Name.Orig, "Serien")
 		}
 	}
 	renderSeries(eventsData.Series)

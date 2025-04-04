@@ -25,10 +25,10 @@
                         {{range .Data.Tags}}
                         <tr>
                             <td>
-                                <a href="/{{.Slug}}">{{.Name}}</a>
+                                <a href="/{{.Slug}}">{{.Name.Orig}}</a>
                             </td>
                             <td>
-                                <input type="checkbox" data-tag="{{.Sanitized}}">
+                                <input type="checkbox" data-tag="{{.Name.Sanitized}}">
                             </td>
                             <td>
                                 {{.NumEvents}}

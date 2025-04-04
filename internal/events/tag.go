@@ -1,10 +1,13 @@
 package events
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/flopp/freiburg-run/internal/utils"
+)
 
 type Tag struct {
-	Sanitized   string
-	Name        string
+	Name        utils.Name
 	Description string
 	Events      []*Event
 	EventsOld   []*Event
@@ -13,11 +16,11 @@ type Tag struct {
 }
 
 func CreateTag(name string) *Tag {
-	return &Tag{name, name, "", make([]*Event, 0), make([]*Event, 0), make([]*Event, 0), make([]*Event, 0)}
+	return &Tag{utils.NewName(name), "", make([]*Event, 0), make([]*Event, 0), make([]*Event, 0), make([]*Event, 0)}
 }
 
 func (tag *Tag) Slug() string {
-	return fmt.Sprintf("tag/%s.html", tag.Sanitized)
+	return fmt.Sprintf("tag/%s.html", tag.Name.Sanitized)
 }
 
 func (tag *Tag) NumEvents() int {

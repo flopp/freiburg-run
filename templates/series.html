@@ -21,7 +21,7 @@
                         {{range .Data.Series}}
                         <tr>
                             <td>
-                                <a href="/{{.Slug}}">{{.Name}}</a>
+                                <a href="/{{.Slug}}">{{.Name.Orig}}</a>
                             </td>
                             <td>
                                 {{.Num}}
@@ -53,7 +53,7 @@
                         {{range .Data.SeriesOld}}
                         <tr>
                             <td>
-                                <a href="/{{.Slug}}">{{.Name}}</a>
+                                <a href="/{{.Slug}}">{{.Name.Orig}}</a>
                             </td>
                             <td>
                                 {{.Num}}

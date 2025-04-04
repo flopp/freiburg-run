@@ -41,14 +41,14 @@ func CreateCalendar(eventsList []*Event, now time.Time, baseUrl utils.Url, calen
 
 		uid, err := e.GetUUID()
 		if err != nil {
-			return fmt.Errorf("create UUID for '%s': %w", e.Name, err)
+			return fmt.Errorf("create UUID for '%s': %w", e.Name.Orig, err)
 		}
 
 		infoUrl := baseUrl.Join(e.Slug())
 
 		calEvent := cal.AddEvent(uid.String())
 		calEvent.SetDtStampTime(now)
-		calEvent.SetSummary(e.Name)
+		calEvent.SetSummary(e.Name.Orig)
 		calEvent.SetLocation(e.Location.NameNoFlag())
 		calEvent.SetDescription(e.Details)
 		calEvent.SetProperty(componentPropertyDtStart, e.Time.From.Format(dateFormatUtc))
@@ -59,7 +59,7 @@ func CreateCalendar(eventsList []*Event, now time.Time, baseUrl utils.Url, calen
 
 		// Google Calendar link
 		e.CalendarGoogle = fmt.Sprintf("https://calendar.google.com/calendar/u/0/r/eventedit?text=%s&dates=%s/%s&details=%s&location=%s",
-			url.QueryEscape(e.Name),
+			url.QueryEscape(e.Name.Orig),
 			e.Time.From.Format(dateFormatUtc),
 			endPlusOneDay.Format(dateFormatUtc),
 			url.QueryEscape(fmt.Sprintf(`%s<br>Infos: <a href="%s">freiburg.run</a>`, e.Details, infoUrl)),
