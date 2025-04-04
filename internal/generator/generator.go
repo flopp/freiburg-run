@@ -290,7 +290,7 @@ func (g Generator) Generate(eventsData events.Data) error {
 	breadcrumbsBase := utils.InitBreadcrumbs(utils.CreateLink("freiburg.run", "/"))
 	breadcrumbsEvents := breadcrumbsBase.Push(utils.CreateLink("Laufveranstaltungen", "/"))
 	breadcrumbsEventsOld := breadcrumbsEvents.Push(utils.CreateLink("Archiv", "/events-old.html"))
-	breadcrumbsTags := breadcrumbsEvents.Push(utils.CreateLink("Kategoriene", "/tags.html"))
+	breadcrumbsTags := breadcrumbsEvents.Push(utils.CreateLink("Kategorien", "/tags.html"))
 	breadcrumbsSeries := breadcrumbsEvents.Push(utils.CreateLink("Serien", "/series.html"))
 	breadcrumbsGroups := breadcrumbsBase.Push(utils.CreateLink("Lauftreffs", "/lauftreffs.html"))
 	breadcrumbsShops := breadcrumbsBase.Push(utils.CreateLink("Lauf-Shops", "/shops.html"))
@@ -449,10 +449,10 @@ func (g Generator) Generate(eventsData events.Data) error {
 	}
 	for _, tag := range eventsData.Tags {
 		tagdata.Tag = tag
-		tagdata.Description = fmt.Sprintf("Laufveranstaltungen der Kategorie '%s' im Raum Freiburg; Vollständige Übersicht mit Terminen, Details und Anmeldelinks für alle Events dieser Kategorie.", tag.Name)
+		tagdata.Description = fmt.Sprintf("Laufveranstaltungen der Kategorie '%s' im Raum Freiburg; Vollständige Übersicht mit Terminen, Details und Anmeldelinks für alle Events dieser Kategorie.", tag.Name.Orig)
 		slug := tag.Slug()
 		tagdata.SetNameLink(tag.Name.Orig, slug, breadcrumbsTags, g.baseUrl)
-		tagdata.Title = fmt.Sprintf("Laufveranstaltungen der Kategorie '%s'", tag.Name)
+		tagdata.Title = fmt.Sprintf("Laufveranstaltungen der Kategorie '%s'", tag.Name.Orig)
 		utils.ExecuteTemplate("tag", g.out.Join(slug), tagdata)
 		sitemap.Add(slug, tag.Name.Orig, "Kategorien")
 	}
