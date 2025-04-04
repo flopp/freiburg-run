@@ -35,16 +35,18 @@ type Breadcrumb struct {
 type Breadcrumbs []Breadcrumb
 
 func InitBreadcrumbs(link Link) Breadcrumbs {
-	res := make([]Breadcrumb, 0, 1)
-	res = append(res, Breadcrumb{link, true, 1})
-	return res
+	return Breadcrumbs{Breadcrumb{Link: link, IsLast: true, Position: 1}}
 }
 
 func (breadcrumbs Breadcrumbs) Push(link Link) Breadcrumbs {
-	res := make([]Breadcrumb, 0, len(breadcrumbs)+1)
+	res := make(Breadcrumbs, 0, len(breadcrumbs)+1)
+
+	// Copy existing breadcrumbs, marking none as last
 	for _, b := range breadcrumbs {
-		res = append(res, Breadcrumb{b.Link, false, b.Position})
+		res = append(res, Breadcrumb{Link: b.Link, IsLast: false, Position: b.Position})
 	}
-	res = append(res, Breadcrumb{link, true, len(breadcrumbs) + 1})
+
+	// Add new breadcrumb as last
+	res = append(res, Breadcrumb{Link: link, IsLast: true, Position: len(breadcrumbs) + 1})
 	return res
 }

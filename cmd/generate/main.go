@@ -69,19 +69,16 @@ type ConfigData struct {
 
 func updateAddedDates(events []*events.Event, added *utils.Added, eventType string, timestamp string, now time.Time) {
 	for _, event := range events {
-		fromFile, err := added.GetAdded(eventType, event.Slug())
-		if err == nil {
-			if fromFile == "" {
-				if event.Added == "" {
-					event.Added = timestamp
-				}
-				_ = added.SetAdded(eventType, event.Slug(), event.Added)
-			} else {
-				if event.Added == "" {
-					event.Added = fromFile
-				}
+		fromFile := added.GetAdded(eventType, event.Slug())
+		if fromFile == "" {
+			if event.Added == "" {
+				event.Added = timestamp
 			}
-
+			added.SetAdded(eventType, event.Slug(), event.Added)
+		} else {
+			if event.Added == "" {
+				event.Added = fromFile
+			}
 		}
 		event.New = IsNew(event.Added, now)
 	}

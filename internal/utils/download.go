@@ -11,33 +11,46 @@ import (
 )
 
 func Download(url string, dst string) error {
+	wrapErr := func(err error) error {
+		return fmt.Errorf("download %s to %s: %w", url, dst, err)
+	}
+
+	// Check directory exists before attempting to create file
 	err := os.MkdirAll(filepath.Dir(dst), 0770)
 	if err != nil {
-		return err
+		return wrapErr(err)
 	}
 
-	out, err := os.Create(dst)
-	if err != nil {
-		return err
+	// Create custom transport with insecure certificates
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
-	defer out.Close()
+	client := &http.Client{Transport: tr}
 
-	// temporarily skip insecure certificates
-	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
-	resp, err := http.Get(url)
+	// Make the request
+	resp, err := client.Get(url)
 	if err != nil {
-		return err
+		return wrapErr(err)
 	}
 	defer resp.Body.Close()
 
-	// check for HTTP errors
+	// Check for HTTP errors before creating the file
 	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("non-ok http status: %v", resp.Status)
+		return wrapErr(fmt.Errorf("non-ok http status: %v", resp.Status))
 	}
 
-	_, err = io.Copy(out, resp.Body)
+	// Create the output file after confirming the download is working
+	out, err := os.Create(dst)
 	if err != nil {
-		return err
+		return wrapErr(err)
+	}
+	defer out.Close()
+
+	// Use a buffer for more efficient copying
+	buf := make([]byte, 32*1024) // 32KB buffer
+	_, err = io.CopyBuffer(out, resp.Body, buf)
+	if err != nil {
+		return wrapErr(err)
 	}
 
 	return nil

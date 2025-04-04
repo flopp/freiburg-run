@@ -65,25 +65,33 @@ func (tr TimeRange) Before(t time.Time) bool {
 var dateRe = regexp.MustCompile(`\b(\d\d\.\d\d\.\d\d\d\d)\b`)
 
 func CreateTimeRange(original string) (TimeRange, error) {
+	dates := dateRe.FindAllStringSubmatch(original, -1)
+	if dates == nil {
+		// no dates found, just return as is
+		return TimeRange{original, original, time.Time{}, time.Time{}}, nil
+	}
+
 	replacements := make(map[string]string)
 	var from, to time.Time
 
-	for _, mm := range dateRe.FindAllStringSubmatch(original, -1) {
-		d, err := ParseDate(mm[1])
+	for _, d := range dates {
+		dateStr := d[1]
+		date, err := ParseDate(dateStr)
 		if err != nil {
-			return TimeRange{original, original, from, to}, fmt.Errorf("cannot parse date '%s' from '%s'", mm[1], original)
+			return TimeRange{}, fmt.Errorf("cannot parse date '%s' from '%s'", dateStr, original)
 		}
 
-		replacements[mm[1]] = fmt.Sprintf("%s, %s", WeekdayStr(d.Weekday()), mm[1])
+		replacements[dateStr] = fmt.Sprintf("%s, %s", WeekdayStr(date.Weekday()), dateStr)
 
+		// update range
 		if from.IsZero() {
-			from = d
-			to = d
+			from = date
+			to = date
 		} else {
-			if d.Before(from) {
-				from = d
-			} else if d.After(to) {
-				to = d
+			if date.Before(from) {
+				from = date
+			} else if date.After(to) {
+				to = date
 			}
 		}
 	}
@@ -97,52 +105,41 @@ func CreateTimeRange(original string) (TimeRange, error) {
 	return TimeRange{original, formatted, from, to}, nil
 }
 
+var germanWeekdays = map[time.Weekday]string{
+	time.Monday:    "Montag",
+	time.Tuesday:   "Dienstag",
+	time.Wednesday: "Mittwoch",
+	time.Thursday:  "Donnerstag",
+	time.Friday:    "Freitag",
+	time.Saturday:  "Samstag",
+	time.Sunday:    "Sonntag",
+}
+
 func WeekdayStr(d time.Weekday) string {
-	switch d {
-	case time.Monday:
-		return "Montag"
-	case time.Tuesday:
-		return "Dienstag"
-	case time.Wednesday:
-		return "Mittwoch"
-	case time.Thursday:
-		return "Donnerstag"
-	case time.Friday:
-		return "Freitag"
-	case time.Saturday:
-		return "Samstag"
-	case time.Sunday:
-		return "Sonntag"
+	if name, ok := germanWeekdays[d]; ok {
+		return name
 	}
 	return "Sonntag"
 }
 
+var germanMonths = map[time.Month]string{
+	time.January:   "Januar",
+	time.February:  "Februar",
+	time.March:     "März",
+	time.April:     "April",
+	time.May:       "Mai",
+	time.June:      "Juni",
+	time.July:      "Juli",
+	time.August:    "August",
+	time.September: "September",
+	time.October:   "Oktober",
+	time.November:  "November",
+	time.December:  "Dezember",
+}
+
 func MonthStr(m time.Month) string {
-	switch m {
-	case time.January:
-		return "Januar"
-	case time.February:
-		return "Februar"
-	case time.March:
-		return "März"
-	case time.April:
-		return "April"
-	case time.May:
-		return "Mai"
-	case time.June:
-		return "Juni"
-	case time.July:
-		return "Juli"
-	case time.August:
-		return "August"
-	case time.September:
-		return "September"
-	case time.October:
-		return "Oktober"
-	case time.November:
-		return "November"
-	case time.December:
-		return "Dezember"
+	if name, ok := germanMonths[m]; ok {
+		return name
 	}
 	return "Dezember"
 }

@@ -118,3 +118,22 @@ func IsSimilarName(s1, s2 string) bool {
 	}
 	return builder1.String() == builder2.String()
 }
+
+type Name struct {
+	Orig      string
+	Sanitized string
+}
+
+func NewName(name string) Name {
+	return Name{
+		Orig:      name,
+		Sanitized: SanitizeName(name),
+	}
+}
+
+func NewName2(name string, sanitized string) Name {
+	return Name{
+		Orig:      name,
+		Sanitized: sanitized,
+	}
+}

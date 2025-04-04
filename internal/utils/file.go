@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"io"
 	"os"
 	"path/filepath"
@@ -19,38 +20,35 @@ func GetMtime(filePath string) (time.Time, error) {
 }
 
 func MakeDir(dir string) error {
-	if err := os.MkdirAll(dir, 0770); err != nil {
-		return err
-	}
-	return nil
-}
-
-func MustMakeDir(dir string) {
-	err := MakeDir(dir)
-	if err != nil {
-		panic(err)
-	}
+	return os.MkdirAll(dir, 0770)
 }
 
 func Copy(sourceFileName, targetFileName string) error {
+	wrapErr := func(err error) error {
+		return fmt.Errorf("copy %s to %s: %w", sourceFileName, targetFileName, err)
+	}
+
 	source, err := os.Open(sourceFileName)
 	if err != nil {
-		return err
+		return wrapErr(err)
 	}
 	defer source.Close()
 
-	if err := os.MkdirAll(filepath.Dir(targetFileName), 0770); err != nil {
-		return err
+	if err := MakeDir(filepath.Dir(targetFileName)); err != nil {
+		return wrapErr(err)
 	}
 
 	destination, err := os.Create(targetFileName)
 	if err != nil {
-		return err
+		return wrapErr(err)
 	}
 	defer destination.Close()
 
 	_, err = io.Copy(destination, source)
-	return err
+	if err != nil {
+		return wrapErr(err)
+	}
+	return nil
 }
 
 func MustCopy(sourceFileName, targetFileName string) {

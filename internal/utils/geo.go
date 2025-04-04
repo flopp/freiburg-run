@@ -45,24 +45,21 @@ func DistanceBearing(lat1deg, lon1deg, lat2deg, lon2deg float64) (float64, float
 	return distance, bearing
 }
 
+var directionMap = map[compass.Direction]string{
+	compass.N:  "nördl.",
+	compass.NE: "nordöstl.",
+	compass.E:  "östl.",
+	compass.SE: "südostl.",
+	compass.S:  "südl.",
+	compass.SW: "südwestl.",
+	compass.W:  "westl.",
+	compass.NW: "nordwestl.",
+}
+
 func ApproxDirection(deg float64) string {
-	switch compass.GetDirection(deg, compass.Resolution8) {
-	case compass.N:
-		return "nördl."
-	case compass.NE:
-		return "nordöstl."
-	case compass.E:
-		return "östl."
-	case compass.SE:
-		return "südostl."
-	case compass.S:
-		return "südl."
-	case compass.SW:
-		return "südwestl."
-	case compass.W:
-		return "westl."
-	case compass.NW:
-		return "nordwestl."
+	direction := compass.GetDirection(deg, compass.Resolution8)
+	if result, ok := directionMap[direction]; ok {
+		return result
 	}
 	return "???"
 }

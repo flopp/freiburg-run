@@ -3,56 +3,31 @@ package utils
 import (
 	"bufio"
 	"fmt"
-	"log"
 	"os"
 	"regexp"
 )
 
 type Added struct {
-	events map[string]string
-	groups map[string]string
-	shops  map[string]string
+	items map[string]string
 }
 
-func (added *Added) SetAdded(t string, name string, date string) error {
-	if t == "event" {
-		added.events[name] = date
-	} else if t == "group" {
-		added.groups[name] = date
-	} else if t == "shop" {
-		added.shops[name] = date
-	} else {
-		return fmt.Errorf("invalid event type: %s", t)
+func (added *Added) SetAdded(t string, name string, date string) {
+	key := fmt.Sprintf("%s:%s", t, name)
+	added.items[key] = date
+}
+
+func (added Added) GetAdded(t string, name string) string {
+	key := fmt.Sprintf("%s:%s", t, name)
+	if date, ok := added.items[key]; ok {
+		return date
 	}
-	return nil
+	return ""
 }
 
-func (added Added) GetAdded(t string, name string) (string, error) {
-	if t == "event" {
-		if date, ok := added.events[name]; ok {
-			return date, nil
-		} else {
-			return "", nil
-		}
-	} else if t == "group" {
-		if date, ok := added.groups[name]; ok {
-			return date, nil
-		} else {
-			return "", nil
-		}
-	} else if t == "shop" {
-		if date, ok := added.shops[name]; ok {
-			return date, nil
-		} else {
-			return "", nil
-		}
-	}
-
-	return "", fmt.Errorf("invalid event type: %s", t)
-}
+var reLine = regexp.MustCompile(`^([^\t]+)\t([^\t]+)\t([^\t]+)\s*$`)
 
 func ReadAdded(fileName string) (*Added, error) {
-	added := &Added{make(map[string]string), make(map[string]string), make(map[string]string)}
+	added := &Added{make(map[string]string)}
 	f, err := os.Open(fileName)
 	if err != nil {
 		return added, err
@@ -62,20 +37,18 @@ func ReadAdded(fileName string) (*Added, error) {
 	fileScanner := bufio.NewScanner(f)
 	fileScanner.Split(bufio.ScanLines)
 
-	r := regexp.MustCompile(`^([^\t]+)\t([^\t]+)\t([^\t]+)\s*$`)
 	for fileScanner.Scan() {
 		line := fileScanner.Text()
-		if match := r.FindStringSubmatch(line); match != nil {
-			err = added.SetAdded(match[1], match[2], match[3])
-			if err != nil {
-				log.Printf("%s: cannot process line <%s> - %v", fileName, line, err)
-			}
+		if match := reLine.FindStringSubmatch(line); match != nil {
+			added.SetAdded(match[1], match[2], match[3])
 		} else {
-			log.Printf("%s: cannot parse line <%s>", fileName, line)
+			return nil, fmt.Errorf("%s: cannot parse line <%s>", fileName, line)
 		}
 	}
 	return added, nil
 }
+
+var reKey = regexp.MustCompile(`:`)
 
 func (added Added) Write(fileName string) error {
 	f, err := os.Create(fileName)
@@ -84,16 +57,18 @@ func (added Added) Write(fileName string) error {
 	}
 	defer f.Close()
 
-	for name, date := range added.events {
-		f.WriteString(fmt.Sprintf("event\t%s\t%s\n", name, date))
-	}
-
-	for name, date := range added.groups {
-		f.WriteString(fmt.Sprintf("group\t%s\t%s\n", name, date))
-	}
-
-	for name, date := range added.shops {
-		f.WriteString(fmt.Sprintf("shop\t%s\t%s\n", name, date))
+	for name, date := range added.items {
+		// Split the key into type and name
+		parts := reKey.Split(name, 2)
+		if len(parts) != 2 {
+			return fmt.Errorf("invalid key format: %s", name)
+		}
+		entryType := parts[0]
+		name = parts[1]
+		_, err := fmt.Fprintf(f, "%s\t%s\t%s\n", entryType, name, date)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
