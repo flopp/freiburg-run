@@ -449,7 +449,7 @@ func (g Generator) Generate(eventsData events.Data) error {
 	}
 	for _, tag := range eventsData.Tags {
 		tagdata.Tag = tag
-		tagdata.Description = fmt.Sprintf("Liste an Laufveranstaltungen im Raum Freiburg, die mit der Kategorie '%s' getaggt sind", tag.Name)
+		tagdata.Description = fmt.Sprintf("Laufveranstaltungen der Kategorie '%s' im Raum Freiburg; Vollständige Übersicht mit Terminen, Details und Anmeldelinks für alle Events dieser Kategorie.", tag.Name)
 		slug := tag.Slug()
 		tagdata.SetNameLink(tag.Name.Orig, slug, breadcrumbsTags, g.baseUrl)
 		tagdata.Title = fmt.Sprintf("Laufveranstaltungen der Kategorie '%s'", tag.Name)

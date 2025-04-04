@@ -79,11 +79,11 @@ func (event Event) GenerateDescription() string {
 
 	switch event.Type {
 	case "event":
-		description = fmt.Sprintf("Informationen zur Laufveranstaltung '%s'%s%s", event.Name.Orig, location, time)
+		description = fmt.Sprintf("Informationen zur Laufveranstaltung '%s' %s %s", event.Name.Orig, location, time)
 	case "group":
-		description = fmt.Sprintf("Informationen zur Laufgruppe / zum Lauftreff '%s'%s%s", event.Name.Orig, location, time)
+		description = fmt.Sprintf("Informationen zur Laufgruppe / zum Lauftreff '%s' %s %s", event.Name.Orig, location, time)
 	case "shop":
-		description = fmt.Sprintf("Informationen zum Laufshop '%s'%s", event.Name.Orig, location)
+		description = fmt.Sprintf("Informationen zum Lauf-Shop '%s' %s", event.Name.Orig, location)
 	}
 
 	if len(description) >= min {

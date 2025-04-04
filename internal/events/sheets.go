@@ -7,7 +7,6 @@ import (
 	"html/template"
 	"log"
 	"os"
-	"strconv"
 	"strings"
 	"time"
 
@@ -226,41 +225,48 @@ func fetchEvents(config SheetsConfigData, srv *sheets.Service, today time.Time, 
 	if err != nil {
 		return nil, err
 	}
-	colDate := cols.getIndex("DATE")
-	if colDate < 0 {
-		return nil, fmt.Errorf("table '%s': missing column 'DATE'", table)
+	getCol := func(name string) (int, error) {
+		col := cols.getIndex(name)
+		if col < 0 {
+			return -1, fmt.Errorf("table '%s': missing column '%s'", table, name)
+		}
+		return col, nil
 	}
-	colName := cols.getIndex("NAME")
-	if colName < 0 {
-		return nil, fmt.Errorf("table '%s': missing column 'NAME'", table)
+	colDate, err := getCol("DATE")
+	if err != nil {
+		return nil, err
 	}
-	colStatus := cols.getIndex("STATUS")
-	if colStatus < 0 {
-		return nil, fmt.Errorf("table '%s': missing column 'STATUS'", table)
+	colName, err := getCol("NAME")
+	if err != nil {
+		return nil, err
 	}
-	colUrl := cols.getIndex("URL")
-	if colUrl < 0 {
-		return nil, fmt.Errorf("table '%s': missing column 'URL'", table)
+	colStatus, err := getCol("STATUS")
+	if err != nil {
+		return nil, err
 	}
-	colDescription := cols.getIndex("DESCRIPTION")
-	if colDescription < 0 {
-		return nil, fmt.Errorf("table '%s': missing column 'DESCRIPTION'", table)
+	colUrl, err := getCol("URL")
+	if err != nil {
+		return nil, err
 	}
-	colLocation := cols.getIndex("LOCATION")
-	if colLocation < 0 {
-		return nil, fmt.Errorf("table '%s': missing column 'LOCATION'", table)
+	colDescription, err := getCol("DESCRIPTION")
+	if err != nil {
+		return nil, err
 	}
-	colCoordinates := cols.getIndex("COORDINATES")
-	if colCoordinates < 0 {
-		return nil, fmt.Errorf("table '%s': missing column 'COORDINATES'", table)
+	colLocation, err := getCol("LOCATION")
+	if err != nil {
+		return nil, err
 	}
-	colRegistration := cols.getIndex("REGISTRATION")
-	if colRegistration < 0 {
-		return nil, fmt.Errorf("table '%s': missing column 'REGISTRATION'", table)
+	colCoordinates, err := getCol("COORDINATES")
+	if err != nil {
+		return nil, err
 	}
-	colTags := cols.getIndex("TAGS")
-	if colTags < 0 {
-		return nil, fmt.Errorf("table '%s': missing column 'TAGS'", table)
+	colRegistration, err := getCol("REGISTRATION")
+	if err != nil {
+		return nil, err
+	}
+	colTags, err := getCol("TAGS")
+	if err != nil {
+		return nil, err
 	}
 
 	eventsList := make([]*Event, 0)
@@ -370,45 +376,52 @@ func fetchParkrunEvents(config SheetsConfigData, srv *sheets.Service, today time
 	if err != nil {
 		return nil, err
 	}
-	colIndex := cols.getIndex("INDEX")
-	if colIndex < 0 {
-		return nil, fmt.Errorf("table '%s': missing column 'INDEX'", table)
+	getCol := func(name string) (int, error) {
+		col := cols.getIndex(name)
+		if col < 0 {
+			return -1, fmt.Errorf("table '%s': missing column '%s'", table, name)
+		}
+		return col, nil
 	}
-	colDate := cols.getIndex("DATE")
-	if colDate < 0 {
-		return nil, fmt.Errorf("table '%s': missing column 'DATE'", table)
+	colIndex, err := getCol("INDEX")
+	if err != nil {
+		return nil, err
 	}
-	colRunners := cols.getIndex("RUNNERS")
-	if colRunners < 0 {
-		return nil, fmt.Errorf("table '%s': missing column 'RUNNERS'", table)
+	colDate, err := getCol("DATE")
+	if err != nil {
+		return nil, err
 	}
-	colTemp := cols.getIndex("TEMP")
-	if colTemp < 0 {
-		return nil, fmt.Errorf("table '%s': missing column 'TEMP'", table)
+	colRunners, err := getCol("RUNNERS")
+	if err != nil {
+		return nil, err
 	}
-	colSpecial := cols.getIndex("SPECIAL")
-	if colSpecial < 0 {
-		return nil, fmt.Errorf("table '%s': missing column 'SPECIAL'", table)
+	colTemp, err := getCol("TEMP")
+	if err != nil {
+		return nil, err
 	}
-	colCafe := cols.getIndex("CAFE")
-	if colCafe < 0 {
-		return nil, fmt.Errorf("table '%s': missing column 'CAFE'", table)
+	colSpecial, err := getCol("SPECIAL")
+	if err != nil {
+		return nil, err
 	}
-	colResults := cols.getIndex("RESULTS")
-	if colResults < 0 {
-		return nil, fmt.Errorf("table '%s': missing column 'RESULTS'", table)
+	colCafe, err := getCol("CAFE")
+	if err != nil {
+		return nil, err
 	}
-	colReport := cols.getIndex("REPORT")
-	if colReport < 0 {
-		return nil, fmt.Errorf("table '%s': missing column 'REPORT'", table)
+	colResults, err := getCol("RESULTS")
+	if err != nil {
+		return nil, err
 	}
-	colAuthor := cols.getIndex("AUTHOR")
-	if colAuthor < 0 {
-		return nil, fmt.Errorf("table '%s': missing column 'AUTHOR'", table)
+	colReport, err := getCol("REPORT")
+	if err != nil {
+		return nil, err
 	}
-	colPhotos := cols.getIndex("PHOTOS")
-	if colPhotos < 0 {
-		return nil, fmt.Errorf("table '%s': missing column 'PHOTOS'", table)
+	colAuthor, err := getCol("AUTHOR")
+	if err != nil {
+		return nil, err
+	}
+	colPhotos, err := getCol("PHOTOS")
+	if err != nil {
+		return nil, err
 	}
 
 	eventsList := make([]*ParkrunEvent, 0)
@@ -429,10 +442,7 @@ func fetchParkrunEvents(config SheetsConfigData, srv *sheets.Service, today time
 		}
 
 		if results != "" {
-			// if "results" only contains a number, build full url
-			if _, err := strconv.ParseInt(results, 10, 64); err == nil {
-				results = fmt.Sprintf("https://www.parkrun.com.de/dietenbach/results/%s", results)
-			}
+			results = fmt.Sprintf("https://www.parkrun.com.de/dietenbach/results/%s", results)
 		}
 
 		// determine is this is for the current week (but only for "real" parkrun events with index)
@@ -470,17 +480,24 @@ func fetchTags(config SheetsConfigData, srv *sheets.Service, table string) ([]*T
 	if err != nil {
 		return nil, err
 	}
-	colTag := cols.getIndex("TAG")
-	if colTag < 0 {
-		return nil, fmt.Errorf("table '%s': missing column 'TAG'", table)
+	getCol := func(name string) (int, error) {
+		col := cols.getIndex(name)
+		if col < 0 {
+			return -1, fmt.Errorf("table '%s': missing column '%s'", table, name)
+		}
+		return col, nil
 	}
-	colName := cols.getIndex("NAME")
-	if colName < 0 {
-		return nil, fmt.Errorf("table '%s': missing column 'NAME'", table)
+	colTag, err := getCol("TAG")
+	if err != nil {
+		return nil, err
 	}
-	colDescription := cols.getIndex("DESCRIPTION")
-	if colDescription < 0 {
-		return nil, fmt.Errorf("table '%s': missing column 'DESCRIPTION'", table)
+	colName, err := getCol("NAME")
+	if err != nil {
+		return nil, err
+	}
+	colDescription, err := getCol("DESCRIPTION")
+	if err != nil {
+		return nil, err
 	}
 
 	tags := make([]*Tag, 0)
@@ -507,13 +524,20 @@ func fetchSeries(config SheetsConfigData, srv *sheets.Service, table string) ([]
 	if err != nil {
 		return nil, err
 	}
-	colName := cols.getIndex("NAME")
-	if colName < 0 {
-		return nil, fmt.Errorf("table '%s': missing column 'NAME'", table)
+	getCol := func(name string) (int, error) {
+		col := cols.getIndex(name)
+		if col < 0 {
+			return -1, fmt.Errorf("table '%s': missing column '%s'", table, name)
+		}
+		return col, nil
 	}
-	colDescription := cols.getIndex("DESCRIPTION")
-	if colDescription < 0 {
-		return nil, fmt.Errorf("table '%s': missing column 'DESCRIPTION'", table)
+	colName, err := getCol("NAME")
+	if err != nil {
+		return nil, err
+	}
+	colDescription, err := getCol("DESCRIPTION")
+	if err != nil {
+		return nil, err
 	}
 
 	series := make([]*Serie, 0)
