@@ -221,11 +221,11 @@ func getLinks(cols Columns, row []interface{}) []string {
 }
 
 func fetchEvents(config SheetsConfigData, srv *sheets.Service, today time.Time, eventType string, table string) ([]*Event, error) {
+	// determine required columns
 	cols, rows, err := fetchTable(config, srv, table)
 	if err != nil {
 		return nil, err
 	}
-
 	colDate := cols.getIndex("DATE")
 	if colDate < 0 {
 		return nil, fmt.Errorf("table '%s': missing column 'DATE'", table)
@@ -365,11 +365,11 @@ func fetchEvents(config SheetsConfigData, srv *sheets.Service, today time.Time, 
 }
 
 func fetchParkrunEvents(config SheetsConfigData, srv *sheets.Service, today time.Time, table string) ([]*ParkrunEvent, error) {
+	// determine required columns
 	cols, rows, err := fetchTable(config, srv, table)
 	if err != nil {
 		return nil, err
 	}
-
 	colIndex := cols.getIndex("INDEX")
 	if colIndex < 0 {
 		return nil, fmt.Errorf("table '%s': missing column 'INDEX'", table)
@@ -435,12 +435,15 @@ func fetchParkrunEvents(config SheetsConfigData, srv *sheets.Service, today time
 			}
 		}
 
+		// determine is this is for the current week (but only for "real" parkrun events with index)
 		currentWeek := false
-		d, err := utils.ParseDate(date)
-		if err == nil {
-			today_y, today_m, today_d := today.Date()
-			d_y, d_m, d_d := d.Date()
-			currentWeek = (today_y == d_y && today_m == d_m && today_d == d_d) || (today.After(d) && today.Before(d.AddDate(0, 0, 7)))
+		if index != "" {
+			d, err := utils.ParseDate(date)
+			if err == nil {
+				today_y, today_m, today_d := today.Date()
+				d_y, d_m, d_d := d.Date()
+				currentWeek = (today_y == d_y && today_m == d_m && today_d == d_d) || (today.After(d) && today.Before(d.AddDate(0, 0, 7)))
+			}
 		}
 
 		eventsList = append(eventsList, &ParkrunEvent{
@@ -462,11 +465,11 @@ func fetchParkrunEvents(config SheetsConfigData, srv *sheets.Service, today time
 }
 
 func fetchTags(config SheetsConfigData, srv *sheets.Service, table string) ([]*Tag, error) {
+	// determine required columns
 	cols, rows, err := fetchTable(config, srv, table)
 	if err != nil {
 		return nil, err
 	}
-
 	colTag := cols.getIndex("TAG")
 	if colTag < 0 {
 		return nil, fmt.Errorf("table '%s': missing column 'TAG'", table)
@@ -499,11 +502,11 @@ func fetchTags(config SheetsConfigData, srv *sheets.Service, table string) ([]*T
 }
 
 func fetchSeries(config SheetsConfigData, srv *sheets.Service, table string) ([]*Serie, error) {
+	// determine required columns
 	cols, rows, err := fetchTable(config, srv, table)
 	if err != nil {
 		return nil, err
 	}
-
 	colName := cols.getIndex("NAME")
 	if colName < 0 {
 		return nil, fmt.Errorf("table '%s': missing column 'NAME'", table)
