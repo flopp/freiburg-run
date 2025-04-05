@@ -286,6 +286,16 @@ function getLocalStorage() {
     }
 }
 
+function createEl(tag, classes) {
+    const el = document.createElement(tag);
+    if (classes !== undefined) {
+        classes.split(" ").forEach(c => {
+            el.classList.add(c);
+        });
+    }
+    return el;
+} 
+
 var main = () => {
     // TAG FILTER, LOCAL STORAGE
     var storage = getLocalStorage();
@@ -339,41 +349,39 @@ var main = () => {
     document.querySelectorAll(".calendar-button").forEach(dropdown => {
         dropdown.classList.add("dropdown");
 
-        const dropdownTrigger = document.createElement("div");
-        dropdownTrigger.classList.add("dropdown-trigger");
-        const dropdownTriggerButton = document.createElement("button");
-        dropdownTriggerButton.classList.add("button", "is-text", "is-small", "py-1", "ml-1");
+        const dropdownTrigger = createEl("div", "dropdown-trigger");
+        const dropdownTriggerButton = createEl("button", "button is-text is-small py-1 ml-1");
         dropdownTriggerButton.innerHTML = "Zum Kalender hinzufügen";
         dropdownTrigger.appendChild(dropdownTriggerButton);
         dropdown.appendChild(dropdownTrigger);
-        const dropdownMenu = document.createElement("div");
-        dropdownMenu.classList.add("dropdown-menu");
-        const dropdownContent = document.createElement("div");
-        dropdownContent.classList.add("dropdown-content");
-        const hint = document.createElement("p");
-        hint.classList.add("dropdown-item", "is-italic");
+
+        const dropdownMenu = createEl("div", "dropdown-menu");
+        const dropdownContent = createEl("div", "dropdown-content");
+
+        const hint = createEl("p", "dropdown-item is-italic");
         hint.innerHTML = "Da genaue Start- & End-Zeiten unbekannt sind, werden Events als Ganztages-Einträge angelegt.";
         dropdownContent.appendChild(hint);
-        const div1 = document.createElement("hr");
-        div1.classList.add("dropdown-divider");
+
+        const div1 = createEl("hr", "dropdown-divider");
         dropdownContent.appendChild(div1);
-        const googlecal = document.createElement("a");
-        googlecal.classList.add("dropdown-item");
+
+        const googlecal = createEl("a", "dropdown-item");
         googlecal.setAttribute("href", dropdown.dataset.googlecal);
         googlecal.setAttribute("data-umami-event", "calendar-click");
         googlecal.setAttribute("target", "_blank");
         googlecal.innerHTML = "Google Calendar";
         dropdownContent.appendChild(googlecal);
-        const div2 = document.createElement("hr");
-        div2.classList.add("dropdown-divider");
-        dropdownContent.appendChild(div2)
-        const ics = document.createElement("a");
-        ics.classList.add("dropdown-item");
+
+        const div2 = createEl("hr", "dropdown-divider");
+        dropdownContent.appendChild(div2);
+
+        const ics = createEl("a", "dropdown-item");
         ics.setAttribute("href", dropdown.dataset.calendar);
         ics.setAttribute("data-umami-event", "calendar-click");
         ics.setAttribute("target", "_blank");
         ics.innerHTML = "Outlook, Apple Calendar & andere (.ics)";
         dropdownContent.appendChild(ics);
+
         dropdownMenu.appendChild(dropdownContent);
         dropdown.appendChild(dropdownMenu);
     });

@@ -38,15 +38,19 @@ func InitBreadcrumbs(link Link) Breadcrumbs {
 	return Breadcrumbs{Breadcrumb{Link: link, IsLast: true, Position: 1}}
 }
 
-func (breadcrumbs Breadcrumbs) Push(link Link) Breadcrumbs {
-	res := make(Breadcrumbs, 0, len(breadcrumbs)+1)
+func (breadcrumbs Breadcrumbs) Push(links ...Link) Breadcrumbs {
+	res := make(Breadcrumbs, 0, len(breadcrumbs)+len(links))
 
 	// Copy existing breadcrumbs, marking none as last
 	for _, b := range breadcrumbs {
 		res = append(res, Breadcrumb{Link: b.Link, IsLast: false, Position: b.Position})
 	}
 
-	// Add new breadcrumb as last
-	res = append(res, Breadcrumb{Link: link, IsLast: true, Position: len(breadcrumbs) + 1})
+	// Add new breadcrumbs
+	for i, link := range links {
+		isLast := i == len(links)-1
+		res = append(res, Breadcrumb{Link: link, IsLast: isLast, Position: len(breadcrumbs) + i + 1})
+	}
+
 	return res
 }
