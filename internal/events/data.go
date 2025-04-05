@@ -51,27 +51,29 @@ func FetchData(config SheetsConfigData, today time.Time) (Data, error) {
 	return data, nil
 }
 
-func collectEventTags(tags map[string]*Tag, event *Event) error {
-	if event.Tags != nil {
-		return fmt.Errorf("expecting event.Tags=nil for '%s'", event.Name.Orig)
-	}
+func collectEventTags(tags map[string]*Tag, eventList []*Event) error {
+	for _, event := range eventList {
+		if event.Tags != nil {
+			return fmt.Errorf("expecting event.Tags=nil for '%s'", event.Name.Orig)
+		}
 
-	event.Tags = make([]*Tag, 0, len(event.RawTags))
-	for _, t := range event.RawTags {
-		tag := GetTag(tags, t)
-		event.Tags = append(event.Tags, tag)
-		if event.Type == "event" {
-			if event.Old {
-				tag.EventsOld = append(tag.EventsOld, event)
+		event.Tags = make([]*Tag, 0, len(event.RawTags))
+		for _, t := range event.RawTags {
+			tag := GetTag(tags, t)
+			event.Tags = append(event.Tags, tag)
+			if event.Type == "event" {
+				if event.Old {
+					tag.EventsOld = append(tag.EventsOld, event)
+				} else {
+					tag.Events = append(tag.Events, event)
+				}
+			} else if event.Type == "group" {
+				tag.Groups = append(tag.Groups, event)
+			} else if event.Type == "shop" {
+				tag.Shops = append(tag.Shops, event)
 			} else {
-				tag.Events = append(tag.Events, event)
+				return fmt.Errorf("unexpected event.Type for '%s': %s", event.Name.Orig, event.Type)
 			}
-		} else if event.Type == "group" {
-			tag.Groups = append(tag.Groups, event)
-		} else if event.Type == "shop" {
-			tag.Shops = append(tag.Shops, event)
-		} else {
-			return fmt.Errorf("unexpected event.Type for '%s': %s", event.Name.Orig, event.Type)
 		}
 	}
 	return nil
@@ -83,17 +85,17 @@ func (data *Data) collectTags() {
 		tags[tag.Name.Sanitized] = tag
 	}
 
-	for _, e := range data.Events {
-		collectEventTags(tags, e)
+	if err := collectEventTags(tags, data.Events); err != nil {
+		panic(fmt.Errorf("collectEventTags for events: %w", err))
 	}
-	for _, e := range data.EventsOld {
-		collectEventTags(tags, e)
+	if err := collectEventTags(tags, data.EventsOld); err != nil {
+		panic(fmt.Errorf("collectEventTags for eventsOld: %w", err))
 	}
-	for _, e := range data.Groups {
-		collectEventTags(tags, e)
+	if err := collectEventTags(tags, data.Groups); err != nil {
+		panic(fmt.Errorf("collectEventTags for groups: %w", err))
 	}
-	for _, e := range data.Shops {
-		collectEventTags(tags, e)
+	if err := collectEventTags(tags, data.Shops); err != nil {
+		panic(fmt.Errorf("collectEventTags for shops: %w", err))
 	}
 
 	tagsList := make([]*Tag, 0, len(tags))
@@ -106,27 +108,29 @@ func (data *Data) collectTags() {
 	data.Tags = tagsList
 }
 
-func collectEventSeries(seriesMap map[string]*Serie, event *Event) error {
-	if event.Series != nil {
-		return fmt.Errorf("expecting event.Series=nil for '%s'", event.Name.Orig)
-	}
+func collectEventSeries(seriesMap map[string]*Serie, eventList []*Event) error {
+	for _, event := range eventList {
+		if event.Series != nil {
+			return fmt.Errorf("expecting event.Series=nil for '%s'", event.Name.Orig)
+		}
 
-	event.Series = make([]*Serie, 0, len(event.RawSeries))
-	for _, s := range event.RawSeries {
-		serie := GetSerie(seriesMap, s)
-		event.Series = append(event.Series, serie)
-		if event.Type == "event" {
-			if event.Old {
-				serie.EventsOld = append(serie.EventsOld, event)
+		event.Series = make([]*Serie, 0, len(event.RawSeries))
+		for _, s := range event.RawSeries {
+			serie := GetSerie(seriesMap, s)
+			event.Series = append(event.Series, serie)
+			if event.Type == "event" {
+				if event.Old {
+					serie.EventsOld = append(serie.EventsOld, event)
+				} else {
+					serie.Events = append(serie.Events, event)
+				}
+			} else if event.Type == "group" {
+				serie.Groups = append(serie.Groups, event)
+			} else if event.Type == "shop" {
+				serie.Shops = append(serie.Shops, event)
 			} else {
-				serie.Events = append(serie.Events, event)
+				return fmt.Errorf("unexpected event.Type for '%s': %s", event.Name.Orig, event.Type)
 			}
-		} else if event.Type == "group" {
-			serie.Groups = append(serie.Groups, event)
-		} else if event.Type == "shop" {
-			serie.Shops = append(serie.Shops, event)
-		} else {
-			return fmt.Errorf("unexpected event.Type for '%s': %s", event.Name.Orig, event.Type)
 		}
 	}
 	return nil
@@ -138,40 +142,38 @@ func (data *Data) collectSeries() error {
 		seriesMap[series.Name.Sanitized] = series
 	}
 
-	for _, e := range data.Events {
-		if err := collectEventSeries(seriesMap, e); err != nil {
-			return fmt.Errorf("collectEventSeries for events: %w", err)
-		}
+	if err := collectEventSeries(seriesMap, data.Events); err != nil {
+		return err
 	}
-	for _, e := range data.EventsOld {
-		if err := collectEventSeries(seriesMap, e); err != nil {
-			return fmt.Errorf("collectEventSeries for eventsOld: %w", err)
-		}
+	if err := collectEventSeries(seriesMap, data.EventsOld); err != nil {
+		return err
 	}
-	for _, e := range data.Groups {
-		if err := collectEventSeries(seriesMap, e); err != nil {
-			return fmt.Errorf("collectEventSeries for groups: %w", err)
-		}
+	if err := collectEventSeries(seriesMap, data.Groups); err != nil {
+		return err
 	}
-	for _, e := range data.Shops {
-		if err := collectEventSeries(seriesMap, e); err != nil {
-			return fmt.Errorf("collectEventSeries for shops: %w", err)
-		}
+	if err := collectEventSeries(seriesMap, data.Shops); err != nil {
+		return err
 	}
 
-	seriesList := make([]*Serie, 0, len(data.Series))
-	seriesListOld := make([]*Serie, 0, len(data.Series))
+	var seriesList, seriesListOld []*Serie
 	for _, s := range data.Series {
+		s.Events = AddMonthSeparators(s.Events)
+		s.EventsOld = AddMonthSeparatorsDescending(s.EventsOld)
+
 		if s.IsOld() {
 			seriesListOld = append(seriesListOld, s)
 		} else {
 			seriesList = append(seriesList, s)
 		}
-		s.Events = AddMonthSeparators(s.Events)
-		s.EventsOld = AddMonthSeparatorsDescending(s.EventsOld)
 	}
-	sort.Slice(seriesList, func(i, j int) bool { return seriesList[i].Name.Sanitized < seriesList[j].Name.Sanitized })
-	sort.Slice(seriesListOld, func(i, j int) bool { return seriesListOld[i].Name.Sanitized < seriesListOld[j].Name.Sanitized })
+
+	sortSeries := func(sl []*Serie) {
+		sort.Slice(sl, func(i, j int) bool {
+			return sl[i].Name.Sanitized < sl[j].Name.Sanitized
+		})
+	}
+	sortSeries(seriesList)
+	sortSeries(seriesListOld)
 
 	data.Series = seriesList
 	data.SeriesOld = seriesListOld

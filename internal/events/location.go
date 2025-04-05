@@ -18,8 +18,8 @@ type Location struct {
 	Direction string
 }
 
-var reFr = regexp.MustCompile(`\s*^(.*)\s*,\s*FR\s*🇫🇷\s*$`)
-var reCh = regexp.MustCompile(`\s*^(.*)\s*,\s*CH\s*🇨🇭\s*$`)
+var reFr = regexp.MustCompile(`\s*^(.*)\s*,\s*FR\s*(🇫🇷)?\s*$`)
+var reCh = regexp.MustCompile(`\s*^(.*)\s*,\s*CH\s*(🇨🇭)?\s*$`)
 
 func CreateLocation(locationS, coordinatesS string) Location {
 	country := ""
