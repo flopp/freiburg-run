@@ -357,6 +357,23 @@ func ValidateDateOrder(events []*Event) {
 	}
 }
 
+func ValidateNameOrder(eventList []*Event) {
+	var last *Event = nil
+
+	for _, event := range eventList {
+		if last == nil {
+			last = event
+			continue
+		}
+
+		if !(last.Name.Sanitized < event.Name.Sanitized) {
+			log.Printf("bad order: %s ... %s\n", last.Name.Sanitized, event.Name.Sanitized)
+		}
+
+		last = event
+	}
+}
+
 func FindPrevNextEvents(eventList []*Event) {
 	for _, event := range eventList {
 		var prev *Event = nil
@@ -365,7 +382,7 @@ func FindPrevNextEvents(eventList []*Event) {
 				break
 			}
 
-			if utils.IsSimilarName(event2.Name.Sanitized, event.Name.Sanitized) /*&& event2.Location.Geo == event.Location.Geo*/ {
+			if utils.IsSimilarName(event2.Name.Sanitized, event.Name.Sanitized) {
 				prev = event2
 			}
 		}
