@@ -11,7 +11,7 @@ require (
 	github.com/flopp/go-filehash v0.0.0-20250313113005-e3e8650a2258
 	github.com/google/uuid v1.6.0
 	github.com/tdewolff/minify/v2 v2.22.4
-	golang.org/x/text v0.23.0
+	golang.org/x/text v0.24.0
 	google.golang.org/api v0.228.0
 )
 
