@@ -12,11 +12,16 @@ import (
 	"github.com/google/uuid"
 )
 
+type EventMeta struct {
+	Current  bool
+	BaseName utils.Name
+	Siblings []*Event
+}
+
 type Event struct {
 	Type           string
 	Name           utils.Name
 	NameOld        utils.Name
-	Name2          utils.Name
 	Time           utils.TimeRange
 	Old            bool
 	Status         string
@@ -39,6 +44,7 @@ type Event struct {
 	Prev           *Event
 	Next           *Event
 	UpcomingNear   []*Event
+	Meta           EventMeta
 }
 
 func (event Event) GetUUID() (uuid.UUID, error) {
@@ -127,7 +133,6 @@ func createSeparatorEvent(t time.Time) *Event {
 		"",
 		utils.NewName(label),
 		utils.NewName(""),
-		utils.NewName(""),
 		utils.TimeRange{},
 		false,
 		"",
@@ -150,16 +155,18 @@ func createSeparatorEvent(t time.Time) *Event {
 		nil,
 		nil,
 		nil,
+		EventMeta{},
 	}
 }
 
 func (event *Event) slug(ext string) string {
 	t := event.Type
-
 	sanitized := event.Name.Sanitized
+
 	if !event.Time.IsZero() {
 		return fmt.Sprintf("%s/%d-%s.%s", t, event.Time.Year(), sanitized, ext)
 	}
+
 	return fmt.Sprintf("%s/%s.%s", t, sanitized, ext)
 }
 
@@ -180,12 +187,22 @@ func (event *Event) SlugOld() string {
 	return fmt.Sprintf("%s/%s.html", t, sanitized)
 }
 
-func (event *Event) Slug() string {
+func (event *Event) SlugFile() string {
+	if event.Type == "event" && event.Meta.BaseName.Sanitized != "" && event.Meta.Current {
+		return fmt.Sprintf("%s/%s/index.html", event.Type, event.Meta.BaseName.Sanitized)
+	}
 	return event.slug("html")
 }
 
-func (event *Event) ImageSlug() string {
-	return event.slug("png")
+func (event *Event) Slug() string {
+	if event.Type == "event" && event.Meta.BaseName.Sanitized != "" && event.Meta.Current {
+		return fmt.Sprintf("%s/%s", event.Type, event.Meta.BaseName.Sanitized)
+	}
+	return event.slug("html")
+}
+
+func (event *Event) SlugNoBase() string {
+	return event.slug("html")
 }
 
 func (event *Event) CalendarSlug() string {
@@ -395,6 +412,50 @@ func FindPrevNextEvents(eventList []*Event) {
 			prev.Next = event
 			event.Prev = prev
 		}
+	}
+}
+
+func FindSiblings(eventList []*Event, today time.Time) {
+	collected := make(map[*Event]struct{})
+
+	for i, startEvent := range eventList {
+		if _, found := collected[startEvent]; found {
+			continue
+		}
+		if startEvent.Meta.BaseName.Sanitized == "" {
+			continue
+		}
+
+		siblings := make([]*Event, 0)
+		for j := i; j < len(eventList); j++ {
+			event := eventList[j]
+			if _, found := collected[event]; found {
+				continue
+			}
+			if event.Meta.BaseName.Sanitized != startEvent.Meta.BaseName.Sanitized {
+				continue
+			}
+			collected[event] = struct{}{}
+			siblings = append(siblings, event)
+		}
+		for _, event := range siblings {
+			event.Meta.Siblings = siblings
+			event.Meta.Current = false
+		}
+
+		limitBefore := today.AddDate(0, 0, -7)
+		var current *Event
+		for i := len(siblings) - 1; i >= 0; i -= 1 {
+			event := siblings[i]
+			if current == nil {
+				current = event
+			} else if event.Time.Before(limitBefore) {
+				break
+			} else {
+				current = event
+			}
+		}
+		current.Meta.Current = true
 	}
 }
 

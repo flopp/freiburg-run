@@ -350,7 +350,6 @@ func fetchEvents(config SheetsConfigData, srv *sheets.Service, today time.Time, 
 			eventType,
 			utils.NewName(name),
 			utils.NewName(nameOld),
-			utils.NewName(name2S),
 			timeRange,
 			isOld,
 			statusS,
@@ -373,6 +372,11 @@ func fetchEvents(config SheetsConfigData, srv *sheets.Service, today time.Time, 
 			nil,
 			nil,
 			nil,
+			EventMeta{
+				false,
+				utils.NewName(name2S),
+				nil,
+			},
 		})
 	}
 

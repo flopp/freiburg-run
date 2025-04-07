@@ -29,6 +29,8 @@ func FetchData(config SheetsConfigData, today time.Time) (Data, error) {
 	}
 
 	ValidateDateOrder(eventList)
+	ValidateNameOrder(groupList)
+	ValidateNameOrder(shopList)
 
 	data.Events, data.EventsObsolete = SplitObsolete(eventList)
 	data.Groups, data.GroupsObsolete = SplitObsolete(groupList)
@@ -38,6 +40,7 @@ func FetchData(config SheetsConfigData, today time.Time) (Data, error) {
 	data.ParkrunEvents = parkrunList
 
 	FindPrevNextEvents(data.Events)
+	FindSiblings(data.Events, today)
 	data.Events, data.EventsOld = SplitEvents(data.Events)
 	data.Events = AddMonthSeparators(data.Events)
 	FindUpcomingNearEvents(data.Events, data.Events, 5.0, 3)

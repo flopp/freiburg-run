@@ -18,6 +18,7 @@ type FileHashDate struct {
 
 type SitemapEntry struct {
 	Slug     string
+	SlugFile string
 	Name     string
 	Category string
 }
@@ -36,8 +37,8 @@ func (sitemap *Sitemap) AddCategory(name string) {
 	sitemap.Categories = append(sitemap.Categories, name)
 }
 
-func (sitemap *Sitemap) Add(slug string, name string, category string) {
-	sitemap.Entries = append(sitemap.Entries, &SitemapEntry{slug, name, category})
+func (sitemap *Sitemap) Add(slug string, slugfile string, name string, category string) {
+	sitemap.Entries = append(sitemap.Entries, &SitemapEntry{slug, slugfile, name, category})
 }
 
 func genSitemapEntry(f *os.File, url string, timeStamp string) {
@@ -151,13 +152,7 @@ func (sitemap Sitemap) Gen(fileName string, hashFileName string, outDir Path) er
 	f.WriteString("<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n")
 
 	for _, entry := range sitemap.Entries {
-		e := entry.Slug
-		var fileName string
-		if e == "" {
-			fileName = outDir.Join("index.html")
-		} else {
-			fileName = outDir.Join(e)
-		}
+		fileName := outDir.Join(entry.SlugFile)
 		timeStamp := getMtimeYMD(fileName)
 		if timeStamp == "" {
 			log.Printf("cannot get mtime '%s'", fileName)
@@ -177,7 +172,7 @@ func (sitemap Sitemap) Gen(fileName string, hashFileName string, outDir Path) er
 		}
 		mNew[fileName] = &FileHashDate{fileName, currentHash, timeStamp}
 
-		genSitemapEntry(f, sitemap.BaseUrl.Join(e), timeStamp)
+		genSitemapEntry(f, sitemap.BaseUrl.Join(entry.Slug), timeStamp)
 	}
 
 	f.WriteString("</urlset>")

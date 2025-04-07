@@ -33,10 +33,6 @@ func (serie *Serie) Slug() string {
 	return fmt.Sprintf("serie/%s.html", serie.Name.Sanitized)
 }
 
-func (serie *Serie) ImageSlug() string {
-	return fmt.Sprintf("serie/%s.png", serie.Name.Sanitized)
-}
-
 func GetSerie(series map[string]*Serie, name string) *Serie {
 	id := utils.SanitizeName(name)
 	if s, found := series[id]; found {
