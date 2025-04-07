@@ -7,8 +7,8 @@ type Link struct {
 	Url  string
 }
 
-func CreateLink(name string, url string) Link {
-	return Link{
+func CreateLink(name string, url string) *Link {
+	return &Link{
 		Name: name,
 		Url:  url,
 	}
@@ -27,18 +27,18 @@ func (link Link) IsRegistration() bool {
 }
 
 type Breadcrumb struct {
-	Link     Link
+	Link     *Link
 	IsLast   bool
 	Position int
 }
 
 type Breadcrumbs []Breadcrumb
 
-func InitBreadcrumbs(link Link) Breadcrumbs {
+func InitBreadcrumbs(link *Link) Breadcrumbs {
 	return Breadcrumbs{Breadcrumb{Link: link, IsLast: true, Position: 1}}
 }
 
-func (breadcrumbs Breadcrumbs) Push(links ...Link) Breadcrumbs {
+func (breadcrumbs Breadcrumbs) Push(links ...*Link) Breadcrumbs {
 	res := make(Breadcrumbs, 0, len(breadcrumbs)+len(links))
 
 	// Copy existing breadcrumbs, marking none as last

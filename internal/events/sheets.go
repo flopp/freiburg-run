@@ -564,8 +564,8 @@ func fetchSeries(config SheetsConfigData, srv *sheets.Service, table string) ([]
 	return series, nil
 }
 
-func parseLinks(ss []string, registration string) ([]utils.Link, error) {
-	links := make([]utils.Link, 0, len(ss))
+func parseLinks(ss []string, registration string) ([]*utils.Link, error) {
+	links := make([]*utils.Link, 0, len(ss))
 	hasRegistration := registration != ""
 	if hasRegistration {
 		links = append(links, utils.CreateLink("Anmeldung", registration))

@@ -189,7 +189,7 @@ func (sitemap Sitemap) Gen(fileName string, hashFileName string, outDir Path) er
 
 type SitemapCategory struct {
 	Name  string
-	Links []Link
+	Links []*Link
 }
 
 func (sitemap Sitemap) GenHTML() []SitemapCategory {
@@ -211,7 +211,7 @@ func (sitemap Sitemap) GenHTML() []SitemapCategory {
 
 	categories := make([]SitemapCategory, 0)
 	for _, c := range sitemap.Categories {
-		links := make([]Link, 0)
+		links := make([]*Link, 0)
 		for _, e := range byCategory[c] {
 			links = append(links, CreateLink(e.Name, sitemap.BaseUrl.Join(e.Slug)))
 		}

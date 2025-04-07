@@ -10,7 +10,7 @@ import (
 type Serie struct {
 	Name        utils.Name
 	Description template.HTML
-	Links       []utils.Link
+	Links       []*utils.Link
 	Events      []*Event
 	EventsOld   []*Event
 	Groups      []*Event
@@ -26,7 +26,7 @@ func (s Serie) Num() int {
 }
 
 func CreateSerie(id string, name string) *Serie {
-	return &Serie{utils.NewName2(name, id), "", make([]utils.Link, 0), make([]*Event, 0), make([]*Event, 0), make([]*Event, 0), make([]*Event, 0)}
+	return &Serie{utils.NewName2(name, id), "", make([]*utils.Link, 0), make([]*Event, 0), make([]*Event, 0), make([]*Event, 0), make([]*Event, 0)}
 }
 
 func (serie *Serie) Slug() string {
