@@ -16,6 +16,7 @@ type Event struct {
 	Type           string
 	Name           utils.Name
 	NameOld        utils.Name
+	Name2          utils.Name
 	Time           utils.TimeRange
 	Old            bool
 	Status         string
@@ -125,6 +126,7 @@ func createSeparatorEvent(t time.Time) *Event {
 	return &Event{
 		"",
 		utils.NewName(label),
+		utils.NewName(""),
 		utils.NewName(""),
 		utils.TimeRange{},
 		false,

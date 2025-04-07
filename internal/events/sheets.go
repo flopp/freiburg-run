@@ -240,6 +240,10 @@ func fetchEvents(config SheetsConfigData, srv *sheets.Service, today time.Time, 
 	if err != nil {
 		return nil, err
 	}
+	colName2, err := getCol("NAME2")
+	if err != nil {
+		return nil, err
+	}
 	colStatus, err := getCol("STATUS")
 	if err != nil {
 		return nil, err
@@ -273,6 +277,7 @@ func fetchEvents(config SheetsConfigData, srv *sheets.Service, today time.Time, 
 	for line, row := range rows {
 		dateS := cols.getValue(colDate, row)
 		nameS := cols.getValue(colName, row)
+		name2S := cols.getValue(colName2, row)
 		statusS := cols.getValue(colStatus, row)
 		cancelled := strings.HasPrefix(statusS, "abgesagt")
 		if cancelled && statusS == "abgesagt" {
@@ -297,6 +302,9 @@ func fetchEvents(config SheetsConfigData, srv *sheets.Service, today time.Time, 
 		if nameS == "" {
 			log.Printf("table '%s', line '%d': skipping row with empty name", table, line)
 			continue
+		}
+		if !strings.Contains(nameS, name2S) {
+			log.Printf("table '%s', line '%d': name '%s' does not contain name2 '%s'", table, line, nameS, name2S)
 		}
 		if urlS == "" {
 			log.Printf("table '%s', line '%d': skipping row with empty url", table, line)
@@ -342,6 +350,7 @@ func fetchEvents(config SheetsConfigData, srv *sheets.Service, today time.Time, 
 			eventType,
 			utils.NewName(name),
 			utils.NewName(nameOld),
+			utils.NewName(name2S),
 			timeRange,
 			isOld,
 			statusS,
