@@ -322,8 +322,10 @@ func AddMonthSeparatorsDescending(eventList []*Event) []*Event {
 func ChangeRegistrationLinks(events []*Event) {
 	for _, event := range events {
 		for _, link := range event.Links {
-			if link.IsRegistration() && strings.Contains(link.Url, "raceresult") {
-				link.Name = "Ergebnisse / Anmeldung"
+			if link.IsRegistration() {
+				if strings.Contains(link.Url, "raceresult") || strings.Contains(link.Url, "sporkrono") {
+					link.Name = "Ergebnisse / Anmeldung"
+				}
 			}
 		}
 	}
