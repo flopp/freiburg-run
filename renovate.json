@@ -8,7 +8,7 @@
       "customType": "regex",
       "fileMatch": ["^internal/resources/manager.go$"],
       "matchStrings": [
-        "datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\s*.*_version := \"(?<currentValue>.*)\""
+        "datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\s*.*(?:Version|_version) := \"(?<currentValue>.*)\""
       ],
       "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
     }
