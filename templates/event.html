@@ -89,21 +89,32 @@
                             </td>
                         </tr>
                         {{end}}
-                        {{if .Event.Prev}}
-                        <tr>
-                            <th>Voriger</th>
-                            <td class="is-w100">
-                                <a href="/{{.Event.Prev.Slug}}">{{.Event.Prev.Name.Orig}} ({{.Event.Prev.Time.Formatted}})</a>
-                            </td>
-                        </tr>
-                        {{end}}
-                        {{if .Event.Next}}
-                        <tr>
-                            <th>Nächster</th>
-                            <td class="is-w100">
-                                <a href="/{{.Event.Next.Slug}}">{{.Event.Next.Name.Orig}} ({{.Event.Next.Time.Formatted}})</a>
-                            </td>
-                        </tr>
+                        {{if .Event.Meta.Siblings}}
+                            <tr>
+                                <th>Historie</th>
+                                <td class="is-w100">
+                                    <ul>
+                                        {{range .Event.Meta.Siblings}}<li {{if .Meta.Current}} class="has-text-weight-bold"{{end}}><a href="/{{.Slug}}">{{.Name.Orig}} ({{.Time.Formatted}})</a></li>{{end}}
+                                    </ul>
+                                </td>
+                            </tr>
+                        {{else }}
+                            {{if .Event.Prev}}
+                            <tr>
+                                <th>Voriger</th>
+                                <td class="is-w100">
+                                    <a href="/{{.Event.Prev.Slug}}">{{.Event.Prev.Name.Orig}} ({{.Event.Prev.Time.Formatted}})</a>
+                                </td>
+                            </tr>
+                            {{end}}
+                            {{if .Event.Next}}
+                            <tr>
+                                <th>Nächster</th>
+                                <td class="is-w100">
+                                    <a href="/{{.Event.Next.Slug}}">{{.Event.Next.Name.Orig}} ({{.Event.Next.Time.Formatted}})</a>
+                                </td>
+                            </tr>
+                            {{end}}
                         {{end}}
                         {{if .Event.UpcomingNear}}
                         <tr>
