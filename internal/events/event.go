@@ -196,7 +196,7 @@ func (event *Event) SlugFile() string {
 
 func (event *Event) Slug() string {
 	if event.Type == "event" && event.Meta.BaseName.Sanitized != "" && event.Meta.Current {
-		return fmt.Sprintf("%s/%s", event.Type, event.Meta.BaseName.Sanitized)
+		return fmt.Sprintf("%s/%s/", event.Type, event.Meta.BaseName.Sanitized)
 	}
 	return event.slug("html")
 }
