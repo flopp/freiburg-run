@@ -42,7 +42,7 @@ func (r *ResourceManager) CopyHash(sourcePath, targetFile string) string {
 func (r *ResourceManager) CopyExternalAssets() {
 
 	// renovate: datasource=npm depName=bulma
-	bulmaVersion := "1.0.4"
+	bulmaVersion := "1.0.3"
 	// renovate: datasource=npm depName=leaflet
 	leafletVersion := "1.9.4"
 	// renovate: datasource=npm depName=leaflet-gesture-handling
