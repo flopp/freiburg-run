@@ -8,29 +8,31 @@ import (
 )
 
 type ResourceManager struct {
-	Out         string
+	SourceDir   string
+	TargetDir   string
 	JsFiles     []string
 	CssFiles    []string
 	UmamiScript string
 	Error       error
 }
 
-func NewResourceManager(out string) *ResourceManager {
+func NewResourceManager(sourceDir string, out string) *ResourceManager {
 	return &ResourceManager{
-		Out:      out,
-		JsFiles:  make([]string, 0),
-		CssFiles: make([]string, 0),
+		SourceDir: sourceDir,
+		TargetDir: out,
+		JsFiles:   make([]string, 0),
+		CssFiles:  make([]string, 0),
 	}
 }
 
 func (r *ResourceManager) MustRel(path string) string {
-	rel, err := filepath.Rel(r.Out, path)
+	rel, err := filepath.Rel(r.TargetDir, path)
 	utils.Check(err)
 	return rel
 }
 
 func (r *ResourceManager) DownloadErr(url, targetFile string) {
-	target := filepath.Join(r.Out, targetFile)
+	target := filepath.Join(r.TargetDir, targetFile)
 	err := utils.Download(url, target)
 	if err != nil {
 		r.Error = err
@@ -38,14 +40,14 @@ func (r *ResourceManager) DownloadErr(url, targetFile string) {
 }
 
 func (r *ResourceManager) DownloadHashErr(url, targetFile string) string {
-	target := filepath.Join(r.Out, targetFile)
+	target := filepath.Join(r.TargetDir, targetFile)
 	res, err := utils.DownloadHash(url, target)
 	if err != nil {
 		r.Error = err
 		return ""
 	}
 
-	rel, err := filepath.Rel(r.Out, res)
+	rel, err := filepath.Rel(r.TargetDir, res)
 	if err != nil {
 		r.Error = err
 		return ""
@@ -55,13 +57,13 @@ func (r *ResourceManager) DownloadHashErr(url, targetFile string) string {
 }
 
 func (r *ResourceManager) CopyHashErr(sourcePath, targetFile string) string {
-	res, err := utils.CopyHash(sourcePath, filepath.Join(r.Out, targetFile))
+	res, err := utils.CopyHash(sourcePath, filepath.Join(r.TargetDir, targetFile))
 	if err != nil {
 		r.Error = err
 		return ""
 	}
 
-	rel, err := filepath.Rel(r.Out, res)
+	rel, err := filepath.Rel(r.TargetDir, res)
 	if err != nil {
 		r.Error = err
 		return ""
@@ -87,12 +89,14 @@ func (r *ResourceManager) CopyExternalAssets() {
 	leafletGestureHandlingUrl := utils.Url(fmt.Sprintf("https://raw.githubusercontent.com/elmarquis/Leaflet.GestureHandling/refs/tags/v%s", leafletGestureHandlingVersion))
 	leafletLegendUrl := utils.Url(fmt.Sprintf("https://raw.githubusercontent.com/ptma/Leaflet.Legend/%s", leafletLegendVersion))
 
+	source := utils.Path(r.SourceDir)
+
 	// JS files
 	r.JsFiles = append(r.JsFiles, r.DownloadHashErr(leafletUrl.Join("leaflet.min.js"), "leaflet-HASH.js"))
 	r.JsFiles = append(r.JsFiles, r.DownloadHashErr(leafletLegendUrl.Join("src/leaflet.legend.js"), "leaflet-legend-HASH.js"))
 	r.JsFiles = append(r.JsFiles, r.DownloadHashErr(leafletGestureHandlingUrl.Join("dist/leaflet-gesture-handling.min.js"), "leaflet-gesture-handling-HASH.js"))
-	r.JsFiles = append(r.JsFiles, r.CopyHashErr("static/parkrun-track.js", "parkrun-track-HASH.js"))
-	r.JsFiles = append(r.JsFiles, r.CopyHashErr("static/main.js", "main-HASH.js"))
+	r.JsFiles = append(r.JsFiles, r.CopyHashErr(source.Join("static/parkrun-track.js"), "parkrun-track-HASH.js"))
+	r.JsFiles = append(r.JsFiles, r.CopyHashErr(source.Join("static/main.js"), "main-HASH.js"))
 
 	r.UmamiScript = r.DownloadHashErr("https://cloud.umami.is/script.js", "umami-HASH.js")
 
@@ -101,12 +105,12 @@ func (r *ResourceManager) CopyExternalAssets() {
 	r.CssFiles = append(r.CssFiles, r.DownloadHashErr(leafletUrl.Join("leaflet.min.css"), "leaflet-HASH.css"))
 	r.CssFiles = append(r.CssFiles, r.DownloadHashErr(leafletLegendUrl.Join("src/leaflet.legend.css"), "leaflet-legend-HASH.css"))
 	r.CssFiles = append(r.CssFiles, r.DownloadHashErr(leafletGestureHandlingUrl.Join("dist/leaflet-gesture-handling.min.css"), "leaflet-gesture-handling-HASH.css"))
-	r.CssFiles = append(r.CssFiles, r.CopyHashErr("static/style.css", "style-HASH.css"))
+	r.CssFiles = append(r.CssFiles, r.CopyHashErr(source.Join("static/style.css"), "style-HASH.css"))
 
 	// Images
-	utils.MustDownload(leafletUrl.Join("images/marker-icon.png"), filepath.Join(r.Out, "images/marker-icon.png"))
-	utils.MustDownload(leafletUrl.Join("images/marker-icon-2x.png"), filepath.Join(r.Out, "images/marker-icon-2x.png"))
-	utils.MustDownload(leafletUrl.Join("images/marker-shadow.png"), filepath.Join(r.Out, "images/marker-shadow.png"))
+	utils.MustDownload(leafletUrl.Join("images/marker-icon.png"), filepath.Join(r.TargetDir, "images/marker-icon.png"))
+	utils.MustDownload(leafletUrl.Join("images/marker-icon-2x.png"), filepath.Join(r.TargetDir, "images/marker-icon-2x.png"))
+	utils.MustDownload(leafletUrl.Join("images/marker-shadow.png"), filepath.Join(r.TargetDir, "images/marker-shadow.png"))
 }
 
 func (r *ResourceManager) CopyStaticAssets() {
@@ -139,7 +143,13 @@ func (r *ResourceManager) CopyStaticAssets() {
 		{"static/freiburg-run-flyer.pdf", "freiburg-run-flyer.pdf"},
 	}
 
+	source := utils.Path(r.SourceDir)
+	target := utils.Path(r.TargetDir)
+
 	for _, file := range staticFiles {
-		utils.MustCopy(file.Source, filepath.Join(r.Out, file.Destination))
+		if err := utils.Copy(source.Join(file.Source), target.Join(file.Destination)); err != nil {
+			r.Error = err
+			return
+		}
 	}
 }

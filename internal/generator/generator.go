@@ -256,7 +256,7 @@ func NewGenerator(
 
 func (g Generator) Generate(eventsData events.Data) error {
 	// Prepare assets
-	resourceManager := resources.NewResourceManager(string(g.out))
+	resourceManager := resources.NewResourceManager(".", string(g.out))
 	resourceManager.CopyExternalAssets()
 	resourceManager.CopyStaticAssets()
 

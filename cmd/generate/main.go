@@ -128,9 +128,15 @@ func main() {
 		}
 	}
 
-	resourceManager := resources.NewResourceManager(string(out))
+	resourceManager := resources.NewResourceManager(".", string(out))
 	resourceManager.CopyExternalAssets()
+	if resourceManager.Error != nil {
+		log.Fatalf("failed to copy external assets: %v", resourceManager.Error)
+	}
 	resourceManager.CopyStaticAssets()
+	if resourceManager.Error != nil {
+		log.Fatalf("failed to copy static assets: %v", resourceManager.Error)
+	}
 
 	gen := generator.NewGenerator(
 		out, baseUrl,
