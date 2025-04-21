@@ -12,6 +12,7 @@ type ResourceManager struct {
 	JsFiles     []string
 	CssFiles    []string
 	UmamiScript string
+	Error       error
 }
 
 func NewResourceManager(out string) *ResourceManager {
@@ -28,15 +29,45 @@ func (r *ResourceManager) MustRel(path string) string {
 	return rel
 }
 
-func (r *ResourceManager) DownloadHash(url, targetFile string) string {
+func (r *ResourceManager) DownloadErr(url, targetFile string) {
 	target := filepath.Join(r.Out, targetFile)
-	res := utils.MustDownloadHash(url, target)
-	return r.MustRel(res)
+	err := utils.Download(url, target)
+	if err != nil {
+		r.Error = err
+	}
 }
 
-func (r *ResourceManager) CopyHash(sourcePath, targetFile string) string {
-	res := utils.MustCopyHash(sourcePath, filepath.Join(r.Out, targetFile))
-	return r.MustRel(res)
+func (r *ResourceManager) DownloadHashErr(url, targetFile string) string {
+	target := filepath.Join(r.Out, targetFile)
+	res, err := utils.DownloadHash(url, target)
+	if err != nil {
+		r.Error = err
+		return ""
+	}
+
+	rel, err := filepath.Rel(r.Out, res)
+	if err != nil {
+		r.Error = err
+		return ""
+	}
+
+	return rel
+}
+
+func (r *ResourceManager) CopyHashErr(sourcePath, targetFile string) string {
+	res, err := utils.CopyHash(sourcePath, filepath.Join(r.Out, targetFile))
+	if err != nil {
+		r.Error = err
+		return ""
+	}
+
+	rel, err := filepath.Rel(r.Out, res)
+	if err != nil {
+		r.Error = err
+		return ""
+	}
+
+	return rel
 }
 
 func (r *ResourceManager) CopyExternalAssets() {
@@ -57,20 +88,20 @@ func (r *ResourceManager) CopyExternalAssets() {
 	leafletLegendUrl := utils.Url(fmt.Sprintf("https://raw.githubusercontent.com/ptma/Leaflet.Legend/%s", leafletLegendVersion))
 
 	// JS files
-	r.JsFiles = append(r.JsFiles, r.DownloadHash(leafletUrl.Join("leaflet.min.js"), "leaflet-HASH.js"))
-	r.JsFiles = append(r.JsFiles, r.DownloadHash(leafletLegendUrl.Join("src/leaflet.legend.js"), "leaflet-legend-HASH.js"))
-	r.JsFiles = append(r.JsFiles, r.DownloadHash(leafletGestureHandlingUrl.Join("dist/leaflet-gesture-handling.min.js"), "leaflet-gesture-handling-HASH.js"))
-	r.JsFiles = append(r.JsFiles, r.CopyHash("static/parkrun-track.js", "parkrun-track-HASH.js"))
-	r.JsFiles = append(r.JsFiles, r.CopyHash("static/main.js", "main-HASH.js"))
+	r.JsFiles = append(r.JsFiles, r.DownloadHashErr(leafletUrl.Join("leaflet.min.js"), "leaflet-HASH.js"))
+	r.JsFiles = append(r.JsFiles, r.DownloadHashErr(leafletLegendUrl.Join("src/leaflet.legend.js"), "leaflet-legend-HASH.js"))
+	r.JsFiles = append(r.JsFiles, r.DownloadHashErr(leafletGestureHandlingUrl.Join("dist/leaflet-gesture-handling.min.js"), "leaflet-gesture-handling-HASH.js"))
+	r.JsFiles = append(r.JsFiles, r.CopyHashErr("static/parkrun-track.js", "parkrun-track-HASH.js"))
+	r.JsFiles = append(r.JsFiles, r.CopyHashErr("static/main.js", "main-HASH.js"))
 
-	r.UmamiScript = r.DownloadHash("https://cloud.umami.is/script.js", "umami-HASH.js")
+	r.UmamiScript = r.DownloadHashErr("https://cloud.umami.is/script.js", "umami-HASH.js")
 
 	// CSS files
-	r.CssFiles = append(r.CssFiles, r.DownloadHash(bulmaUrl.Join("css/bulma.min.css"), "bulma-HASH.css"))
-	r.CssFiles = append(r.CssFiles, r.DownloadHash(leafletUrl.Join("leaflet.min.css"), "leaflet-HASH.css"))
-	r.CssFiles = append(r.CssFiles, r.DownloadHash(leafletLegendUrl.Join("src/leaflet.legend.css"), "leaflet-legend-HASH.css"))
-	r.CssFiles = append(r.CssFiles, r.DownloadHash(leafletGestureHandlingUrl.Join("dist/leaflet-gesture-handling.min.css"), "leaflet-gesture-handling-HASH.css"))
-	r.CssFiles = append(r.CssFiles, r.CopyHash("static/style.css", "style-HASH.css"))
+	r.CssFiles = append(r.CssFiles, r.DownloadHashErr(bulmaUrl.Join("css/bulma.min.css"), "bulma-HASH.css"))
+	r.CssFiles = append(r.CssFiles, r.DownloadHashErr(leafletUrl.Join("leaflet.min.css"), "leaflet-HASH.css"))
+	r.CssFiles = append(r.CssFiles, r.DownloadHashErr(leafletLegendUrl.Join("src/leaflet.legend.css"), "leaflet-legend-HASH.css"))
+	r.CssFiles = append(r.CssFiles, r.DownloadHashErr(leafletGestureHandlingUrl.Join("dist/leaflet-gesture-handling.min.css"), "leaflet-gesture-handling-HASH.css"))
+	r.CssFiles = append(r.CssFiles, r.CopyHashErr("static/style.css", "style-HASH.css"))
 
 	// Images
 	utils.MustDownload(leafletUrl.Join("images/marker-icon.png"), filepath.Join(r.Out, "images/marker-icon.png"))

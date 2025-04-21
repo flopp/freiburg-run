@@ -29,6 +29,10 @@ func TestExternalResourcePaths(t *testing.T) {
 		t.Fatalf("failed to change directory: %v", err)
 	}
 
-	// Copy external assets (this might panic!)
+	// Copy external assets
 	rm.CopyExternalAssets()
+
+	if rm.Error != nil {
+		t.Fatalf("failed to copy external assets: %v", rm.Error)
+	}
 }
