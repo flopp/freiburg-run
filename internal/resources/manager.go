@@ -25,12 +25,6 @@ func NewResourceManager(sourceDir string, out string) *ResourceManager {
 	}
 }
 
-func (r *ResourceManager) MustRel(path string) string {
-	rel, err := filepath.Rel(r.TargetDir, path)
-	utils.Check(err)
-	return rel
-}
-
 func (r *ResourceManager) DownloadErr(url, targetFile string) {
 	target := filepath.Join(r.TargetDir, targetFile)
 	err := utils.Download(url, target)
