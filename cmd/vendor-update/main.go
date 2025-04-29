@@ -69,7 +69,7 @@ func main() {
 	vendorDir := utils.Path(options.vendorDir)
 
 	// download bulma
-	MustDownload(bulmaUrl.Join("css/bulma.min.css"), vendorDir.Join("bulma", "bulma.min.css"))
+	MustDownload(bulmaUrl.Join("css/bulma.min.css"), vendorDir.Join("bulma", "bulma.css"))
 
 	// download leaflet
 	MustDownload(leafletUrl.Join("leaflet.min.css"), vendorDir.Join("leaflet", "leaflet.css"))

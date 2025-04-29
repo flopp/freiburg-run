@@ -8,6 +8,12 @@ backup:
 	@mkdir -p backup-data
 	@go run cmd/backup/main.go -config config.json -output backup-data/$(shell date +%Y-%m-%d).ods
 
+.phony: update-vendor
+update-vendor:
+	@go run cmd/vendor-update/main.go -dir external-files
+	@git status external-files
+	@echo "Don't forget to commit if there are changes"
+
 .bin/generate-linux: cmd/generate/main.go internal/events/*.go internal/generator/*.go internal/resources/*.go internal/utils/*.go go.mod
 	mkdir -p .bin
 	GOOS=linux GOARCH=amd64 go build -o .bin/generate-linux cmd/generate/main.go
