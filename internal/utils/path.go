@@ -12,9 +12,7 @@ func (p Path) String() string {
 	return string(p)
 }
 
-func (p Path) Join(s string) string {
-	if len(s) == 0 {
-		return string(p)
-	}
-	return filepath.Join(string(p), s)
+func (p Path) Join(parts ...string) string {
+	paths := append([]string{string(p)}, parts...)
+	return filepath.Join(paths...)
 }
