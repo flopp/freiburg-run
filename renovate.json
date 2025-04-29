@@ -6,7 +6,7 @@
   "customManagers": [
     {
       "customType": "regex",
-      "fileMatch": ["^internal/resources/manager.go$"],
+      "fileMatch": ["^cmd/vendor-update/main.go$"],
       "matchStrings": [
         "datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\s*.*(?:Version|_version) := \"(?<currentValue>.*)\""
       ],
