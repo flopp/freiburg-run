@@ -52,7 +52,7 @@ func main() {
 	options := parseCommandLine()
 
 	// renovate: datasource=npm depName=bulma
-	bulmaVersion := "1.0.3"
+	bulmaVersion := "1.0.4"
 	// renovate: datasource=npm depName=leaflet
 	leafletVersion := "1.9.4"
 	// renovate: datasource=npm depName=leaflet-gesture-handling
