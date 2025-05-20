@@ -236,13 +236,8 @@ var filter = (s, hiddenTags) => {
             // hide by search
             if (needle != "") {
                 let name = el.dataset.name.toLowerCase();
-                if (!name.includes(needle)) {
-                    hidden++;
-                    el.classList.add("is-hidden");
-                    return;
-                }
                 let location = el.dataset.location.toLowerCase();
-                if (!location.includes(needle)) {
+                if (!name.includes(needle) && !location.includes(needle)) {
                     hidden++;
                     el.classList.add("is-hidden");
                     return;
