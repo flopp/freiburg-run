@@ -22,25 +22,33 @@ type Data struct {
 	ParkrunEvents  []*ParkrunEvent
 }
 
-func (data *Data) CheckLinks() {
-	lc := utils.NewLinkChecker()
+type CheckUrl struct {
+	Url   string
+	Event *Event
+	Name  string
+}
 
-	// checking links in current & future events
+func (data *Data) CheckLinks() {
+	// collect urls to check from current events
+	urls := make([]CheckUrl, 0)
 	for _, event := range data.Events {
 		if event.IsSeparator() {
 			continue
 		}
-		if err := lc.Check(event.Url); err != nil {
-			fmt.Printf("Invalid main link in event '%s': %s -> %w\n", event.Name.Orig, event.Url, err)
-		}
+		urls = append(urls, CheckUrl{Url: event.Url, Event: event, Name: "main"})
 		for _, link := range event.Links {
 			if link.IsExternal() {
-				if err := lc.Check(link.Url); err != nil {
-					fmt.Printf("Invalid link in event '%s': %s -> %w\n", event.Name.Orig, link.Url, err)
-				}
+				urls = append(urls, CheckUrl{Url: link.Url, Event: event, Name: "link"})
 			}
 		}
+	}
 
+	// do actual checks
+	lc := utils.NewLinkChecker()
+	for _, url := range urls {
+		if err := lc.Check(url.Url); err != nil {
+			fmt.Printf("Invalid %s link in event '%s': %s -> %v\n", url.Name, url.Event.Name.Orig, url.Url, err)
+		}
 		checked, issues := lc.Stats()
 		fmt.Printf("Checked %d links, found %d issues\n", checked, issues)
 	}
