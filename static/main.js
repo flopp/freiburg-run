@@ -241,6 +241,12 @@ var filter = (s, hiddenTags) => {
                     el.classList.add("is-hidden");
                     return;
                 }
+                let location = el.dataset.location.toLowerCase();
+                if (!location.includes(needle)) {
+                    hidden++;
+                    el.classList.add("is-hidden");
+                    return;
+                }
             }
             
             // shown

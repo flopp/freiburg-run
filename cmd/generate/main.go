@@ -25,6 +25,7 @@ type CommandLineOptions struct {
 	outDir     string
 	hashFile   string
 	addedFile  string
+	checkLinks bool
 }
 
 func parseCommandLine() CommandLineOptions {
@@ -32,6 +33,7 @@ func parseCommandLine() CommandLineOptions {
 	outDir := flag.String("out", ".out", "output directory")
 	hashFile := flag.String("hashfile", ".hashes", "file storing file hashes (for sitemap)")
 	addedFile := flag.String("addedfile", ".added", "file storing event addition dates")
+	checkLinks := flag.Bool("checklinks", false, "check links in the generated files")
 
 	flag.Usage = func() {
 		fmt.Fprintf(flag.CommandLine.Output(), usage, os.Args[0])
@@ -48,6 +50,7 @@ func parseCommandLine() CommandLineOptions {
 		*outDir,
 		*hashFile,
 		*addedFile,
+		*checkLinks,
 	}
 }
 
@@ -109,6 +112,11 @@ func main() {
 	})
 	if err != nil {
 		log.Fatalf("failed to fetch data: %v", err)
+		return
+	}
+
+	if options.checkLinks {
+		eventsData.CheckLinks()
 		return
 	}
 

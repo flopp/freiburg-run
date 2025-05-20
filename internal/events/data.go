@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"sort"
 	"time"
+
+	"github.com/flopp/freiburg-run/internal/utils"
 )
 
 type Data struct {
@@ -18,6 +20,30 @@ type Data struct {
 	Series         []*Serie
 	SeriesOld      []*Serie
 	ParkrunEvents  []*ParkrunEvent
+}
+
+func (data *Data) CheckLinks() {
+	lc := utils.NewLinkChecker()
+
+	// checking links in current & future events
+	for _, event := range data.Events {
+		if event.IsSeparator() {
+			continue
+		}
+		if err := lc.Check(event.Url); err != nil {
+			fmt.Printf("Invalid main link in event '%s': %s -> %w\n", event.Name.Orig, event.Url, err)
+		}
+		for _, link := range event.Links {
+			if link.IsExternal() {
+				if err := lc.Check(link.Url); err != nil {
+					fmt.Printf("Invalid link in event '%s': %s -> %w\n", event.Name.Orig, link.Url, err)
+				}
+			}
+		}
+
+		checked, issues := lc.Stats()
+		fmt.Printf("Checked %d links, found %d issues\n", checked, issues)
+	}
 }
 
 func FetchData(config SheetsConfigData, today time.Time) (Data, error) {

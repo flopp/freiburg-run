@@ -23,6 +23,11 @@ build:
 	rm -rf .out
 	go run cmd/generate/main.go -config config.json -out .out -hashfile .hashes -addedfile .added
 
+.phony: checklinks
+checklinks:
+	rm -rf .out
+	go run cmd/generate/main.go -config config.json -out .out -hashfile .hashes -addedfile .added -checklinks
+
 .repo/.git/config:
 	git clone https://github.com/flopp/freiburg-run.git .repo
 
