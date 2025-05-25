@@ -44,13 +44,42 @@ func (data *Data) CheckLinks() {
 	}
 
 	// do actual checks
-	lc := utils.NewLinkChecker()
+	// Group URLs by domain to implement per-domain rate limiting
+	domainMap := make(map[string][]CheckUrl)
 	for _, url := range urls {
-		if err := lc.Check(url.Url); err != nil {
-			fmt.Printf("Invalid %s link in event '%s': %s -> %v\n", url.Name, url.Event.Name.Orig, url.Url, err)
+		domain := utils.ExtractDomain(url.Url)
+		domainMap[domain] = append(domainMap[domain], url)
+	}
+
+	lc := utils.NewLinkChecker()
+	results := make(chan struct {
+		url CheckUrl
+		err error
+	}, len(urls))
+
+	// Limit concurrent requests per domain
+	const perDomainLimit = 2
+	for domain, urlList := range domainMap {
+		fmt.Printf("Checking %d links for domain %s\n", len(urlList), domain)
+		sem := make(chan struct{}, perDomainLimit)
+		for _, u := range urlList {
+			sem <- struct{}{}
+			go func(u CheckUrl, sem chan struct{}) {
+				defer func() { <-sem }()
+				err := lc.Check(u.Url)
+				results <- struct {
+					url CheckUrl
+					err error
+				}{u, err}
+			}(u, sem)
 		}
-		checked, issues := lc.Stats()
-		fmt.Printf("Checked %d links, found %d issues\n", checked, issues)
+	}
+
+	for i := 0; i < len(urls); i++ {
+		res := <-results
+		if res.err != nil {
+			fmt.Printf("Invalid %s link in event '%s': %s -> %v\n", res.url.Name, res.url.Event.Name.Orig, res.url.Url, res.err)
+		}
 	}
 }
 
