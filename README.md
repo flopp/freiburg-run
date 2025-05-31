@@ -9,7 +9,7 @@ Workflow:
   * There are pages for running events (by year), running groups, shops, the [local parkrun](https://parkrun.com.de/dietenbach),  and special pages listing tags & running series
   * I use a color coding scheme to highlight complete & missing information: green = event is done & there is already a version for the next year, yellow = event is incomplete, e.g. registration link is missing, I need to revisit it later. This allows me to quickly identify events that need to be updated.
   * Using Google Spreadsheets allows me to completely ignore the "admin interface" part, because I can just use Google's apps to manage the data. 
-* On my server (hosted at [Uberspace](https://uberspace.de)), a cronjob is running every 30min, that calls a custom Golang to
+* On my server (hosted at [Uberspace](https://uberspace.de)), a cronjob is running every 30min, that calls a custom Golang app (`cmd/generate/main.go`) to
   * download the spreadsheet,
   * extract all data,
   * produce static HTML pages using Golang's HTML templates, and

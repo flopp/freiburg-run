@@ -258,3 +258,12 @@ a.no-external::after
         border: 4px solid #3e8ed0;
     }
 }
+
+.has-pushed-down-footer-child {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.has-pushed-down-footer-child > section:last-of-type {
+    flex-grow: 1;
+}
