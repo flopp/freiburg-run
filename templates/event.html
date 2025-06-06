@@ -121,7 +121,7 @@
                             <th>In der Nähe (5km)</th>
                             <td class="is-w100">
                                 <ul>
-                                    {{range .Event.UpcomingNear}}<li><a href="/{{.Slug}}">{{.Name.Orig}} ({{.Time.Formatted}} @ {{.Location.Name}})</a></li>{{end}}
+                                    {{range .Event.UpcomingNear}}<li><a href="/{{.Slug}}">{{.Name.Orig}} <span class="is-size-7">({{.Time.Formatted}}; {{.Location.Name}})</span></a></li>{{end}}
                                 </ul>
                             </td>
                         </tr>

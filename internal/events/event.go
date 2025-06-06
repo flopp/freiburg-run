@@ -337,11 +337,15 @@ func AddMonthSeparatorsDescending(eventList []*Event) []*Event {
 }
 
 func ChangeRegistrationLinks(events []*Event) {
+	regSitesWithResults := []string{"raceresult.com", "sporkrono.fr", "racepedia.de"}
 	for _, event := range events {
 		for _, link := range event.Links {
 			if link.IsRegistration() {
-				if strings.Contains(link.Url, "raceresult") || strings.Contains(link.Url, "sporkrono") {
-					link.Name = "Ergebnisse / Anmeldung"
+				for _, regSite := range regSitesWithResults {
+					if strings.Contains(link.Url, regSite) {
+						link.Name = "Anmeldung / Ergebnisse"
+						break
+					}
 				}
 			}
 		}
