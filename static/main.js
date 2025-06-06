@@ -369,6 +369,7 @@ var main = () => {
         const googlecal = createEl("a", "dropdown-item");
         googlecal.setAttribute("href", dropdown.dataset.googlecal);
         googlecal.setAttribute("data-umami-event", "calendar-click");
+        googlecal.setAttribute("rel", "nofollow");
         googlecal.setAttribute("target", "_blank");
         googlecal.innerHTML = "Google Calendar";
         dropdownContent.appendChild(googlecal);
@@ -379,6 +380,7 @@ var main = () => {
         const ics = createEl("a", "dropdown-item");
         ics.setAttribute("href", dropdown.dataset.calendar);
         ics.setAttribute("data-umami-event", "calendar-click");
+        ics.setAttribute("rel", "nofollow");
         ics.setAttribute("target", "_blank");
         ics.innerHTML = "Outlook, Apple Calendar & andere (.ics)";
         dropdownContent.appendChild(ics);
