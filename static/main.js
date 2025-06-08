@@ -575,6 +575,7 @@ var main = () => {
         container.id = "notificationDiv";
         container.className = "container";
         container.style.position = "fixed";
+        container.style.zIndex = "2000";
         container.style.left = "50%";
         container.style.bottom = "0px";
         container.style.transform = "translate(-50%, 100%)";
@@ -583,7 +584,6 @@ var main = () => {
 
         const div = document.createElement("div");
         div.className = "notification is-radiusless " + notification.class;
-        div.style.zIndex = "1000";
         container.appendChild(div);
 
         const closeButton = document.createElement("button");
