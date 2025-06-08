@@ -531,6 +531,76 @@ var main = () => {
         localStorage.removeItem('umami.disabled');
         alert('Umami is now ENABLED in this browser.');
     }
+
+    // NOTIFICATIONS
+    function notificationGuard(id) {
+        const lastNotificationShown = localStorage.getItem("last-notification-shown");
+        if (lastNotificationShown !== null) {
+            const lastNotificationId = parseInt(lastNotificationShown, 10);
+            if (lastNotificationId === id) {
+                console.log("Notification already shown, skipping.");
+                return true;
+            }
+        }
+        localStorage.setItem("last-notification-shown", `${id}`);
+        return false;
+    }
+
+    function triggerNotificationOnce(force=false) {
+        const notification = {
+            id: 1,
+            content: "<b>Gewinnspiel zum \"Tote Mann Berglauf 2025\"</b><br>Irgendwo auf <b>freiburg.run</b> sind Instruktionen für das Gewinnspiel versteckt - finde sie bis zum 31.06.2025 und nimm an der Verlosung eines Startplatzes für den <b>Tote Mann Berglauf 2025</b> teil!",
+            class: "is-warning",
+        };
+
+        if (force || !notificationGuard(notification.id)) {
+            setTimeout(() => {
+                showNotification(notification);
+            }, 2000);
+        }
+    }
+
+    function showNotification(notification) {
+        if (!notification || !notification.content || !notification.class) {
+            console.error("Invalid notification object.");
+            return;
+        }
+
+        const existing = document.getElementById("notificationDiv");
+        if (existing) {
+            existing.remove();
+        }
+
+        const container = document.createElement("div");
+        container.id = "notificationDiv";
+        container.className = "container";
+        container.style.position = "fixed";
+        container.style.left = "50%";
+        container.style.bottom = "0px";
+        container.style.transform = "translate(-50%, 100%)";
+        container.style.transition = "transform 1s cubic-bezier(.4,0,.2,1)";
+        document.body.appendChild(container);
+
+        const div = document.createElement("div");
+        div.className = "notification is-radiusless " + notification.class;
+        div.style.zIndex = "1000";
+        container.appendChild(div);
+
+        const closeButton = document.createElement("button");
+        closeButton.className = "delete";
+        closeButton.onclick = () => container.remove();
+        div.appendChild(closeButton);
+
+        const contentDiv = document.createElement("div");
+        contentDiv.innerHTML = notification.content;
+        div.appendChild(contentDiv);
+        
+        setTimeout(() => {
+            container.style.transform = "translate(-50%, 0)";
+        }, 10);
+    }
+
+    window.addEventListener("DOMContentLoaded", triggerNotificationOnce);
 };
 
 on_load(main);
