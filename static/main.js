@@ -549,7 +549,7 @@ var main = () => {
     function triggerNotificationOnce() {
         const notification = {
             id: 2,
-            content: "<b>Gewinnspiel zum \"Tote Mann Berglauf 2025\"</b><br>Irgendwo auf <b>freiburg.run</b> sind Instruktionen für das Gewinnspiel versteckt - finde sie bis zum 31.06.2025 und nimm an der Verlosung eines Startplatzes für den <b>Tote Mann Berglauf 2025</b> teil!",
+            content: "<b>Gewinnspiel zum \"Tote Mann Berglauf 2025\"</b><br>Irgendwo auf <b>freiburg.run</b> (an einem nahe-liegenden Ort 😉) sind Instruktionen für das Gewinnspiel versteckt - finde sie bis zum 30.06.2025 und nimm an der Verlosung eines Startplatzes für den <b>Tote Mann Berglauf 2025</b> teil!",
             class: "is-warning",
         };
 
