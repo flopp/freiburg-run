@@ -536,13 +536,12 @@ var main = () => {
     function notificationGuard(id) {
         const lastNotificationShown = localStorage.getItem("last-notification-shown");
         if (lastNotificationShown !== null) {
-            const lastNotificationId = parseInt(lastNotificationShown, 10);
-            if (lastNotificationId === id) {
+            if (lastNotificationShown === id) {
                 console.log("Notification already shown, skipping.");
                 return true;
             }
         }
-        localStorage.setItem("last-notification-shown", `${id}`);
+        localStorage.setItem("last-notification-shown", id);
         return false;
     }
 
@@ -553,7 +552,8 @@ var main = () => {
             class: "is-warning",
         };
 
-        if (!notificationGuard(notification.id)) {
+        const current_date_str = new Date().toISOString().split('T')[0];
+        if (!notificationGuard(current_date_str)) {
             setTimeout(() => {
                 showNotification(notification);
             }, 2000);
