@@ -19,6 +19,8 @@ type UmamiData struct {
 type CommonData struct {
 	Timestamp     string
 	TimestampFull string
+	BaseUrl       string
+	BasePath      string
 	SheetUrl      string
 	Data          *events.Data
 	JsFiles       []string
@@ -221,6 +223,7 @@ func renderEmbedList(baseUrl utils.Url, out utils.Path, data TemplateData, tag *
 type Generator struct {
 	out           utils.Path
 	baseUrl       utils.Url
+	basePath      string
 	now           time.Time
 	timestamp     string
 	timestampFull string
@@ -233,7 +236,9 @@ type Generator struct {
 }
 
 func NewGenerator(
-	out utils.Path, baseUrl utils.Url, now time.Time,
+	out utils.Path,
+	baseUrl utils.Url, basePath string,
+	now time.Time,
 	jsFiles []string, cssFiles []string,
 	umamiScript string, umamiId string,
 	sheetUrl string,
@@ -242,6 +247,7 @@ func NewGenerator(
 	return Generator{
 		out:           out,
 		baseUrl:       baseUrl,
+		basePath:      basePath,
 		now:           now,
 		timestamp:     now.Format("2006-01-02"),
 		timestampFull: now.Format("2006-01-02 15:04:05"),
@@ -307,6 +313,8 @@ func (g Generator) Generate(eventsData events.Data) error {
 	commondata := CommonData{
 		g.timestamp,
 		g.timestampFull,
+		string(g.baseUrl),
+		g.basePath,
 		g.sheetUrl,
 		&eventsData,
 		resourceManager.JsFiles,

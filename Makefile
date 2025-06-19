@@ -21,7 +21,7 @@ update-vendor:
 .phony: build
 build:
 	rm -rf .out
-	go run cmd/generate/main.go -config config.json -out .out -hashfile .hashes -addedfile .added
+	go run cmd/generate/main.go -config config.json -out .out -basepath $(PWD)/.out -hashfile .hashes -addedfile .added
 
 .phony: checklinks
 checklinks:

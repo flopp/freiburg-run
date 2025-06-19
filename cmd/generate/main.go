@@ -26,6 +26,7 @@ type CommandLineOptions struct {
 	hashFile   string
 	addedFile  string
 	checkLinks bool
+	basePath   string
 }
 
 func parseCommandLine() CommandLineOptions {
@@ -34,6 +35,7 @@ func parseCommandLine() CommandLineOptions {
 	hashFile := flag.String("hashfile", ".hashes", "file storing file hashes (for sitemap)")
 	addedFile := flag.String("addedfile", ".added", "file storing event addition dates")
 	checkLinks := flag.Bool("checklinks", false, "check links in the generated files")
+	basePath := flag.String("basepath", "", "base path")
 
 	flag.Usage = func() {
 		fmt.Fprintf(flag.CommandLine.Output(), usage, os.Args[0])
@@ -51,6 +53,7 @@ func parseCommandLine() CommandLineOptions {
 		*hashFile,
 		*addedFile,
 		*checkLinks,
+		*basePath,
 	}
 }
 
@@ -99,6 +102,7 @@ func main() {
 	// configuration
 	out := utils.NewPath(options.outDir)
 	baseUrl := utils.Url("https://freiburg.run")
+	basePath := options.basePath
 	sheetUrl := fmt.Sprintf("https://docs.google.com/spreadsheets/d/%s", config_data.SheetId)
 	umamiId := "6609164f-5e79-4041-b1ed-f37da10a84d2"
 
@@ -147,7 +151,8 @@ func main() {
 	}
 
 	gen := generator.NewGenerator(
-		out, baseUrl,
+		out,
+		baseUrl, basePath,
 		now,
 		resourceManager.JsFiles, resourceManager.CssFiles,
 		resourceManager.UmamiScript, umamiId,
