@@ -552,8 +552,7 @@ var main = () => {
             class: "is-warning",
         };
 
-        const current_date_str = new Date().toISOString().split('T')[0];
-        if (!notificationGuard(current_date_str)) {
+        if (!notificationGuard(`${notification.id}`)) {
             setTimeout(() => {
                 showNotification(notification);
             }, 2000);
