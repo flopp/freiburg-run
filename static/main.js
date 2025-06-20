@@ -534,14 +534,29 @@ var main = () => {
 
     // NOTIFICATIONS
     function notificationGuard(id) {
-        const lastNotificationShown = localStorage.getItem("last-notification-shown");
-        if (lastNotificationShown !== null) {
-            if (lastNotificationShown === id) {
-                console.log("Notification already shown, skipping.");
-                return true;
-            }
+        // don't show notifications if an element with id "embed-list" exists
+        if (document.getElementById("embed-list") !== null) {
+            console.log("Embed list detected, skipping notification.");
+            return true;
         }
-        localStorage.setItem("last-notification-shown", id);
+
+        // check if the notification has already been shown
+        try {
+            if (typeof localStorage !== "undefined") {
+                const lastNotificationShown = localStorage.getItem("last-notification-shown");
+                if (lastNotificationShown !== null) {
+                    if (lastNotificationShown === id) {
+                        console.log("Notification already shown, skipping.");
+                        return true;
+                    }
+                }
+                localStorage.setItem("last-notification-shown", id);
+            }
+        } catch (e) {
+            console.error("LocalStorage not available, cannot store notification state.", e);
+        }
+
+        // if localStorage is not available, assume notification has not been shown
         return false;
     }
 
