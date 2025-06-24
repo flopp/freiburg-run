@@ -3,7 +3,7 @@
 <section class="section">
     <div class="container is-max-desktop">
         <a id="back" href="{{.Main}}">Zurück zur Liste</a>
-        <h1 class="title">{{.Event.Name.Orig}}</h1>
+        <h1 class="title">{{if .Event.Meta.SeoTitle}}{{.Event.Meta.SeoTitle}}{{else}}{{.Event.Name.Orig}}{{end}}</h1>
         <div class="columns">
             <div class="column is-two-thirds">
                 {{if .Event.Cancelled}}

@@ -437,7 +437,11 @@ func (g Generator) Generate(eventsData events.Data) error {
 			eventdata.Description = event.GenerateDescription()
 			slug := event.Slug()
 			fileSlug := event.SlugFile()
-			eventdata.SetNameLink(event.Name.Orig, slug, breadcrumbs, g.baseUrl)
+			name := event.Name.Orig
+			if event.Meta.SeoTitle != "" {
+				name = event.Meta.SeoTitle
+			}
+			eventdata.SetNameLink(name, slug, breadcrumbs, g.baseUrl)
 			utils.ExecuteTemplate("event", g.out.Join(fileSlug), eventdata)
 			sitemap.Add(slug, fileSlug, event.Name.Orig, sitemapCategory)
 		}

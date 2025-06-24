@@ -15,6 +15,7 @@ import (
 type EventMeta struct {
 	Current  bool
 	BaseName utils.Name
+	SeoTitle string
 	Siblings []*Event
 }
 

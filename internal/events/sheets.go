@@ -244,6 +244,10 @@ func fetchEvents(config SheetsConfigData, srv *sheets.Service, today time.Time, 
 	if err != nil {
 		return nil, err
 	}
+	colSeo, err := getCol("SEO")
+	if err != nil {
+		return nil, err
+	}
 	colStatus, err := getCol("STATUS")
 	if err != nil {
 		return nil, err
@@ -278,6 +282,7 @@ func fetchEvents(config SheetsConfigData, srv *sheets.Service, today time.Time, 
 		dateS := cols.getValue(colDate, row)
 		nameS := cols.getValue(colName, row)
 		name2S := cols.getValue(colName2, row)
+		seoS := cols.getValue(colSeo, row)
 		statusS := cols.getValue(colStatus, row)
 		cancelled := strings.HasPrefix(statusS, "abgesagt")
 		if cancelled && statusS == "abgesagt" {
@@ -375,6 +380,7 @@ func fetchEvents(config SheetsConfigData, srv *sheets.Service, today time.Time, 
 			EventMeta{
 				false,
 				utils.NewName(name2S),
+				seoS,
 				nil,
 			},
 		})
