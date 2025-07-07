@@ -30,7 +30,7 @@ type Event struct {
 	Obsolete       bool
 	Special        bool
 	Location       Location
-	Details        string
+	Details        template.HTML
 	Details2       template.HTML
 	Url            string
 	RawTags        []string

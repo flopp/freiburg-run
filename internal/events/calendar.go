@@ -50,7 +50,7 @@ func CreateCalendar(eventsList []*Event, now time.Time, baseUrl utils.Url, calen
 		calEvent.SetDtStampTime(now)
 		calEvent.SetSummary(e.Name.Orig)
 		calEvent.SetLocation(e.Location.NameNoFlag())
-		calEvent.SetDescription(e.Details)
+		calEvent.SetDescription(string(e.Details))
 		calEvent.SetProperty(componentPropertyDtStart, e.Time.From.Format(dateFormatUtc))
 		// end + 1 day; Outlook seems to like it this way
 		endPlusOneDay := e.Time.To.AddDate(0, 0, 1)
