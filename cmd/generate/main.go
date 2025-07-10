@@ -105,6 +105,7 @@ func main() {
 	basePath := options.basePath
 	sheetUrl := fmt.Sprintf("https://docs.google.com/spreadsheets/d/%s", config_data.SheetId)
 	umamiId := "6609164f-5e79-4041-b1ed-f37da10a84d2"
+	feedbackFormUrl := "https://docs.google.com/forms/d/e/1FAIpQLScJlPFYKgT5WxDaH9FDJzha5hQ2cBsqALLrVjGp7bgB-ssubA/viewform?usp=sf_link"
 
 	now := time.Now()
 	today := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
@@ -156,7 +157,7 @@ func main() {
 		now,
 		resourceManager.JsFiles, resourceManager.CssFiles,
 		resourceManager.UmamiScript, umamiId,
-		sheetUrl,
+		feedbackFormUrl, sheetUrl,
 		options.hashFile)
 	if err := gen.Generate(eventsData); err != nil {
 		log.Fatalf("failed to generate: %v", err)

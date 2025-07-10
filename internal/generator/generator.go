@@ -17,15 +17,16 @@ type UmamiData struct {
 }
 
 type CommonData struct {
-	Timestamp     string
-	TimestampFull string
-	BaseUrl       string
-	BasePath      string
-	SheetUrl      string
-	Data          *events.Data
-	JsFiles       []string
-	CssFiles      []string
-	Umami         UmamiData
+	Timestamp       string
+	TimestampFull   string
+	BaseUrl         string
+	BasePath        string
+	FeedbackFormUrl string // URL for feedback form
+	SheetUrl        string
+	Data            *events.Data
+	JsFiles         []string
+	CssFiles        []string
+	Umami           UmamiData
 }
 
 type TemplateData struct {
@@ -221,18 +222,19 @@ func renderEmbedList(baseUrl utils.Url, out utils.Path, data TemplateData, tag *
 }
 
 type Generator struct {
-	out           utils.Path
-	baseUrl       utils.Url
-	basePath      string
-	now           time.Time
-	timestamp     string
-	timestampFull string
-	jsFiles       []string
-	cssFiles      []string
-	umamiScript   string
-	umamiId       string
-	sheetUrl      string
-	hashFile      string
+	out             utils.Path
+	baseUrl         utils.Url
+	basePath        string
+	now             time.Time
+	timestamp       string
+	timestampFull   string
+	jsFiles         []string
+	cssFiles        []string
+	umamiScript     string
+	umamiId         string
+	feedbackFormUrl string
+	sheetUrl        string
+	hashFile        string
 }
 
 func NewGenerator(
@@ -241,22 +243,23 @@ func NewGenerator(
 	now time.Time,
 	jsFiles []string, cssFiles []string,
 	umamiScript string, umamiId string,
-	sheetUrl string,
+	feedbackFormUrl string, sheetUrl string,
 	hashFile string,
 ) Generator {
 	return Generator{
-		out:           out,
-		baseUrl:       baseUrl,
-		basePath:      basePath,
-		now:           now,
-		timestamp:     now.Format("2006-01-02"),
-		timestampFull: now.Format("2006-01-02 15:04:05"),
-		jsFiles:       jsFiles,
-		cssFiles:      cssFiles,
-		umamiScript:   umamiScript,
-		umamiId:       umamiId,
-		sheetUrl:      sheetUrl,
-		hashFile:      hashFile,
+		out:             out,
+		baseUrl:         baseUrl,
+		basePath:        basePath,
+		now:             now,
+		timestamp:       now.Format("2006-01-02"),
+		timestampFull:   now.Format("2006-01-02 15:04:05"),
+		jsFiles:         jsFiles,
+		cssFiles:        cssFiles,
+		umamiScript:     umamiScript,
+		umamiId:         umamiId,
+		feedbackFormUrl: feedbackFormUrl,
+		sheetUrl:        sheetUrl,
+		hashFile:        hashFile,
 	}
 }
 
@@ -315,6 +318,7 @@ func (g Generator) Generate(eventsData events.Data) error {
 		g.timestampFull,
 		string(g.baseUrl),
 		g.basePath,
+		g.feedbackFormUrl,
 		g.sheetUrl,
 		&eventsData,
 		resourceManager.JsFiles,
