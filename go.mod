@@ -12,7 +12,7 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/tdewolff/minify/v2 v2.23.8
 	golang.org/x/text v0.27.0
-	google.golang.org/api v0.241.0
+	google.golang.org/api v0.242.0
 )
 
 require (
