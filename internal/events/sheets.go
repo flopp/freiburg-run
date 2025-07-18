@@ -168,15 +168,15 @@ func (cols Columns) getIndex(title string) int {
 	return col
 }
 
-func getIndexValue(index int, row []interface{}) string {
-	if index >= len(row) {
-		return ""
+func (cols *Columns) getVal(col string, row []interface{}) (string, error) {
+	colIndex := cols.getIndex(col)
+	if colIndex < 0 {
+		return "", fmt.Errorf("missing column '%s'", col)
 	}
-	return fmt.Sprintf("%v", row[index])
-}
-
-func (cols *Columns) getValue(col int, row []interface{}) string {
-	return getIndexValue(col, row)
+	if colIndex >= len(row) {
+		return "", nil
+	}
+	return fmt.Sprintf("%v", row[colIndex]), nil
 }
 
 func fetchTable(config SheetsConfigData, srv *sheets.Service, table string) (Columns, [][]interface{}, error) {
@@ -206,138 +206,153 @@ func getLinks(cols Columns, row []interface{}) []string {
 	links := make([]string, 0)
 
 	for i := 1; true; i += 1 {
-		index := cols.getIndex(fmt.Sprintf("LINK%d", i))
-		if index < 0 {
+		link, err := cols.getVal(fmt.Sprintf("LINK%d", i), row)
+		if err != nil {
 			break
 		}
-		link := getIndexValue(index, row)
-		if link != "" {
-			links = append(links, link)
-		}
+		links = append(links, link)
 	}
 
 	return links
 }
 
+type EventData struct {
+	Date         string
+	Name         string
+	Name2        string
+	Seo          string
+	Status       string
+	Url          string
+	Description  string
+	Location     string
+	Coordinates  string
+	Registration string
+	Tags         string
+	Links        []string
+}
+
+func getEventData(cols Columns, row []interface{}) (EventData, error) {
+	var data EventData
+
+	var err error
+	data.Date, err = cols.getVal("DATE", row)
+	if err != nil {
+		return EventData{}, err
+	}
+
+	data.Name, err = cols.getVal("NAME", row)
+	if err != nil {
+		return EventData{}, err
+	}
+
+	data.Name2, err = cols.getVal("NAME2", row)
+	if err != nil {
+		return EventData{}, err
+	}
+
+	data.Seo, err = cols.getVal("SEO", row)
+	if err != nil {
+		return EventData{}, err
+	}
+
+	data.Status, err = cols.getVal("STATUS", row)
+	if err != nil {
+		return EventData{}, err
+	}
+
+	data.Url, err = cols.getVal("URL", row)
+	if err != nil {
+		return EventData{}, err
+	}
+
+	data.Description, err = cols.getVal("DESCRIPTION", row)
+	if err != nil {
+		return EventData{}, err
+	}
+
+	data.Location, err = cols.getVal("LOCATION", row)
+	if err != nil {
+		return EventData{}, err
+	}
+
+	data.Coordinates, err = cols.getVal("COORDINATES", row)
+	if err != nil {
+		return EventData{}, err
+	}
+
+	data.Registration, err = cols.getVal("REGISTRATION", row)
+	if err != nil {
+		return EventData{}, err
+	}
+
+	data.Tags, err = cols.getVal("TAGS", row)
+	if err != nil {
+		return EventData{}, err
+	}
+
+	data.Links = getLinks(cols, row)
+
+	return data, nil
+}
+
 func fetchEvents(config SheetsConfigData, srv *sheets.Service, today time.Time, eventType string, table string) ([]*Event, error) {
-	// determine required columns
 	cols, rows, err := fetchTable(config, srv, table)
-	if err != nil {
-		return nil, err
-	}
-	getCol := func(name string) (int, error) {
-		col := cols.getIndex(name)
-		if col < 0 {
-			return -1, fmt.Errorf("table '%s': missing column '%s'", table, name)
-		}
-		return col, nil
-	}
-	colDate, err := getCol("DATE")
-	if err != nil {
-		return nil, err
-	}
-	colName, err := getCol("NAME")
-	if err != nil {
-		return nil, err
-	}
-	colName2, err := getCol("NAME2")
-	if err != nil {
-		return nil, err
-	}
-	colSeo, err := getCol("SEO")
-	if err != nil {
-		return nil, err
-	}
-	colStatus, err := getCol("STATUS")
-	if err != nil {
-		return nil, err
-	}
-	colUrl, err := getCol("URL")
-	if err != nil {
-		return nil, err
-	}
-	colDescription, err := getCol("DESCRIPTION")
-	if err != nil {
-		return nil, err
-	}
-	colLocation, err := getCol("LOCATION")
-	if err != nil {
-		return nil, err
-	}
-	colCoordinates, err := getCol("COORDINATES")
-	if err != nil {
-		return nil, err
-	}
-	colRegistration, err := getCol("REGISTRATION")
-	if err != nil {
-		return nil, err
-	}
-	colTags, err := getCol("TAGS")
 	if err != nil {
 		return nil, err
 	}
 
 	eventsList := make([]*Event, 0)
 	for line, row := range rows {
-		dateS := cols.getValue(colDate, row)
-		nameS := cols.getValue(colName, row)
-		name2S := cols.getValue(colName2, row)
-		seoS := cols.getValue(colSeo, row)
-		statusS := cols.getValue(colStatus, row)
-		cancelled := strings.HasPrefix(statusS, "abgesagt")
-		if cancelled && statusS == "abgesagt" {
-			statusS = ""
+		data, err := getEventData(cols, row)
+		if err != nil {
+			return nil, fmt.Errorf("table '%s', line '%d': %v", table, line, err)
 		}
-		special := statusS == "spezial"
-		obsolete := statusS == "obsolete"
+		cancelled := strings.HasPrefix(data.Status, "abgesagt")
+		if cancelled && data.Status == "abgesagt" {
+			data.Status = ""
+		}
+		special := data.Status == "spezial"
+		obsolete := data.Status == "obsolete"
 		if special || obsolete {
-			statusS = ""
+			data.Status = ""
 		}
-		urlS := cols.getValue(colUrl, row)
-		if statusS == "temp" {
+		if data.Status == "temp" {
 			log.Printf("table '%s', line '%d': skipping row with temp status", table, line)
 			continue
 		}
 		if eventType == "event" {
-			if dateS == "" {
+			if data.Date == "" {
 				log.Printf("table '%s', line '%d': skipping row with empty date", table, line)
 				continue
 			}
 		}
-		if nameS == "" {
+		if data.Name == "" {
 			log.Printf("table '%s', line '%d': skipping row with empty name", table, line)
 			continue
 		}
-		if !strings.Contains(nameS, name2S) {
-			log.Printf("table '%s', line '%d': name '%s' does not contain name2 '%s'", table, line, nameS, name2S)
+		if !strings.Contains(data.Name, data.Name2) {
+			log.Printf("table '%s', line '%d': name '%s' does not contain name2 '%s'", table, line, data.Name, data.Name2)
 		}
-		if urlS == "" {
+		if data.Url == "" {
 			log.Printf("table '%s', line '%d': skipping row with empty url", table, line)
 			continue
 		}
 
-		descriptionS := cols.getValue(colDescription, row)
-		locationS := cols.getValue(colLocation, row)
-		coordinatesS := cols.getValue(colCoordinates, row)
-		registration := cols.getValue(colRegistration, row)
-		tagsS := cols.getValue(colTags, row)
-		linksS := getLinks(cols, row)
-
-		name, nameOld := utils.SplitPair(nameS)
-		url := urlS
-		description1, description2 := utils.SplitPair(descriptionS)
+		name, nameOld := utils.SplitPair(data.Name)
+		url := data.Url
+		description1, description2 := utils.SplitPair(data.Description)
 		tags := make([]string, 0)
 		series := make([]string, 0)
-		for _, t := range utils.SplitList(tagsS) {
+		for _, t := range utils.SplitList(data.Tags) {
 			if strings.HasPrefix(t, "serie") {
 				series = append(series, t[6:])
 			} else {
 				tags = append(tags, utils.SanitizeName(t))
 			}
 		}
-		location := CreateLocation(locationS, coordinatesS)
+		location := CreateLocation(data.Location, data.Coordinates)
 		tags = append(tags, location.Tags()...)
-		timeRange, err := utils.CreateTimeRange(dateS)
+		timeRange, err := utils.CreateTimeRange(data.Date)
 		if err != nil {
 			log.Printf("event '%s': %v", name, err)
 		}
@@ -346,7 +361,7 @@ func fetchEvents(config SheetsConfigData, srv *sheets.Service, today time.Time, 
 		if year > 0 {
 			tags = append(tags, fmt.Sprintf("%d", year))
 		}
-		links, err := parseLinks(linksS, registration)
+		links, err := parseLinks(data.Links, data.Registration)
 		if err != nil {
 			return nil, fmt.Errorf("parsing links of event '%s': %w", name, err)
 		}
@@ -357,7 +372,7 @@ func fetchEvents(config SheetsConfigData, srv *sheets.Service, today time.Time, 
 			utils.NewName(nameOld),
 			timeRange,
 			isOld,
-			statusS,
+			data.Status,
 			cancelled,
 			obsolete,
 			special,
@@ -379,8 +394,8 @@ func fetchEvents(config SheetsConfigData, srv *sheets.Service, today time.Time, 
 			nil,
 			EventMeta{
 				false,
-				utils.NewName(name2S),
-				seoS,
+				utils.NewName(data.Name2),
+				data.Seo,
 				nil,
 			},
 		})
@@ -389,85 +404,92 @@ func fetchEvents(config SheetsConfigData, srv *sheets.Service, today time.Time, 
 	return eventsList, nil
 }
 
+type ParkrunEventData struct {
+	Index   string
+	Date    string
+	Runners string
+	Temp    string
+	Special string
+	Cafe    string
+	Results string
+	Report  string
+	Author  string
+	Photos  string
+}
+
+func getParkrunEventData(cols Columns, row []interface{}) (ParkrunEventData, error) {
+	var data ParkrunEventData
+
+	var err error
+	data.Date, err = cols.getVal("DATE", row)
+	if err != nil {
+		return ParkrunEventData{}, err
+	}
+	data.Index, err = cols.getVal("INDEX", row)
+	if err != nil {
+		return ParkrunEventData{}, err
+	}
+	data.Runners, err = cols.getVal("RUNNERS", row)
+	if err != nil {
+		return ParkrunEventData{}, err
+	}
+	data.Temp, err = cols.getVal("TEMP", row)
+	if err != nil {
+		return ParkrunEventData{}, err
+	}
+	data.Special, err = cols.getVal("SPECIAL", row)
+	if err != nil {
+		return ParkrunEventData{}, err
+	}
+	data.Cafe, err = cols.getVal("CAFE", row)
+	if err != nil {
+		return ParkrunEventData{}, err
+	}
+	data.Results, err = cols.getVal("RESULTS", row)
+	if err != nil {
+		return ParkrunEventData{}, err
+	}
+	data.Report, err = cols.getVal("REPORT", row)
+	if err != nil {
+		return ParkrunEventData{}, err
+	}
+	data.Author, err = cols.getVal("AUTHOR", row)
+	if err != nil {
+		return ParkrunEventData{}, err
+	}
+	data.Photos, err = cols.getVal("PHOTOS", row)
+	if err != nil {
+		return ParkrunEventData{}, err
+	}
+
+	return data, nil
+}
+
 func fetchParkrunEvents(config SheetsConfigData, srv *sheets.Service, today time.Time, table string) ([]*ParkrunEvent, error) {
-	// determine required columns
 	cols, rows, err := fetchTable(config, srv, table)
-	if err != nil {
-		return nil, err
-	}
-	getCol := func(name string) (int, error) {
-		col := cols.getIndex(name)
-		if col < 0 {
-			return -1, fmt.Errorf("table '%s': missing column '%s'", table, name)
-		}
-		return col, nil
-	}
-	colIndex, err := getCol("INDEX")
-	if err != nil {
-		return nil, err
-	}
-	colDate, err := getCol("DATE")
-	if err != nil {
-		return nil, err
-	}
-	colRunners, err := getCol("RUNNERS")
-	if err != nil {
-		return nil, err
-	}
-	colTemp, err := getCol("TEMP")
-	if err != nil {
-		return nil, err
-	}
-	colSpecial, err := getCol("SPECIAL")
-	if err != nil {
-		return nil, err
-	}
-	colCafe, err := getCol("CAFE")
-	if err != nil {
-		return nil, err
-	}
-	colResults, err := getCol("RESULTS")
-	if err != nil {
-		return nil, err
-	}
-	colReport, err := getCol("REPORT")
-	if err != nil {
-		return nil, err
-	}
-	colAuthor, err := getCol("AUTHOR")
-	if err != nil {
-		return nil, err
-	}
-	colPhotos, err := getCol("PHOTOS")
 	if err != nil {
 		return nil, err
 	}
 
 	eventsList := make([]*ParkrunEvent, 0)
 	for _, row := range rows {
-		index := cols.getValue(colIndex, row)
-		date := cols.getValue(colDate, row)
-		runners := cols.getValue(colRunners, row)
-		temp := cols.getValue(colTemp, row)
-		special := cols.getValue(colSpecial, row)
-		cafe := cols.getValue(colCafe, row)
-		results := cols.getValue(colResults, row)
-		report := cols.getValue(colReport, row)
-		author := cols.getValue(colAuthor, row)
-		photos := cols.getValue(colPhotos, row)
-
-		if temp != "" {
-			temp = fmt.Sprintf("%s°C", temp)
+		data, err := getParkrunEventData(cols, row)
+		if err != nil {
+			return nil, fmt.Errorf("table '%s': %v", table, err)
 		}
 
-		if results != "" {
-			results = fmt.Sprintf("https://www.parkrun.com.de/dietenbach/results/%s", results)
+		if data.Temp != "" {
+			data.Temp = fmt.Sprintf("%s°C", data.Temp)
+		}
+
+		if data.Results != "" {
+			data.Results = fmt.Sprintf("https://www.parkrun.com.de/dietenbach/results/%s", data.Results)
 		}
 
 		// determine is this is for the current week (but only for "real" parkrun events with index)
 		currentWeek := false
-		if index != "" {
-			d, err := utils.ParseDate(date)
+		if data.Index != "" {
+			d, err := utils.ParseDate(data.Date)
 			if err == nil {
 				today_y, today_m, today_d := today.Date()
 				d_y, d_m, d_d := d.Date()
@@ -477,59 +499,66 @@ func fetchParkrunEvents(config SheetsConfigData, srv *sheets.Service, today time
 
 		eventsList = append(eventsList, &ParkrunEvent{
 			currentWeek,
-			index,
-			date,
-			runners,
-			temp,
-			special,
-			cafe,
-			results,
-			report,
-			author,
-			photos,
+			data.Index,
+			data.Date,
+			data.Runners,
+			data.Temp,
+			data.Special,
+			data.Cafe,
+			data.Results,
+			data.Report,
+			data.Author,
+			data.Photos,
 		})
 	}
 
 	return eventsList, nil
 }
 
+type TagData struct {
+	Tag         string
+	Name        string
+	Description string
+}
+
+func getTagData(cols Columns, row []interface{}) (TagData, error) {
+	var data TagData
+
+	var err error
+	data.Tag, err = cols.getVal("TAG", row)
+	if err != nil {
+		return TagData{}, err
+	}
+	data.Name, err = cols.getVal("NAME", row)
+	if err != nil {
+		return TagData{}, err
+	}
+	data.Description, err = cols.getVal("DESCRIPTION", row)
+	if err != nil {
+		return TagData{}, err
+	}
+
+	return data, nil
+}
+
 func fetchTags(config SheetsConfigData, srv *sheets.Service, table string) ([]*Tag, error) {
-	// determine required columns
 	cols, rows, err := fetchTable(config, srv, table)
-	if err != nil {
-		return nil, err
-	}
-	getCol := func(name string) (int, error) {
-		col := cols.getIndex(name)
-		if col < 0 {
-			return -1, fmt.Errorf("table '%s': missing column '%s'", table, name)
-		}
-		return col, nil
-	}
-	colTag, err := getCol("TAG")
-	if err != nil {
-		return nil, err
-	}
-	colName, err := getCol("NAME")
-	if err != nil {
-		return nil, err
-	}
-	colDescription, err := getCol("DESCRIPTION")
 	if err != nil {
 		return nil, err
 	}
 
 	tags := make([]*Tag, 0)
 	for _, row := range rows {
-		tagS := cols.getValue(colTag, row)
-		nameS := cols.getValue(colName, row)
-		descriptionS := cols.getValue(colDescription, row)
+		data, err := getTagData(cols, row)
+		if err != nil {
+			return nil, fmt.Errorf("table '%s': %v", table, err)
+		}
 
-		tag := utils.SanitizeName(tagS)
-		if tag != "" && (nameS != "" || descriptionS != "") {
+		tag := utils.SanitizeName(data.Tag)
+		if tag != "" && (data.Name != "" || data.Description != "") {
 			t := CreateTag(tag)
-			t.Name.Orig = nameS
-			t.Description = descriptionS
+			t.Name.Orig = data.Name
+			t.Description = data.Description
 			tags = append(tags, t)
 		}
 	}
@@ -537,38 +566,47 @@ func fetchTags(config SheetsConfigData, srv *sheets.Service, table string) ([]*T
 	return tags, nil
 }
 
+type SerieData struct {
+	Tag         string
+	Name        string
+	Description string
+	Links       []string
+}
+
+func getSerieData(cols Columns, row []interface{}) (SerieData, error) {
+	var data SerieData
+
+	var err error
+	data.Name, err = cols.getVal("NAME", row)
+	if err != nil {
+		return SerieData{}, err
+	}
+	data.Description, err = cols.getVal("DESCRIPTION", row)
+	if err != nil {
+		return SerieData{}, err
+	}
+	data.Links = getLinks(cols, row)
+
+	return data, nil
+}
+
 func fetchSeries(config SheetsConfigData, srv *sheets.Service, table string) ([]*Serie, error) {
-	// determine required columns
 	cols, rows, err := fetchTable(config, srv, table)
-	if err != nil {
-		return nil, err
-	}
-	getCol := func(name string) (int, error) {
-		col := cols.getIndex(name)
-		if col < 0 {
-			return -1, fmt.Errorf("table '%s': missing column '%s'", table, name)
-		}
-		return col, nil
-	}
-	colName, err := getCol("NAME")
-	if err != nil {
-		return nil, err
-	}
-	colDescription, err := getCol("DESCRIPTION")
 	if err != nil {
 		return nil, err
 	}
 
 	series := make([]*Serie, 0)
 	for _, row := range rows {
-		nameS := cols.getValue(colName, row)
-		descriptionS := cols.getValue(colDescription, row)
-		linksS := getLinks(cols, row)
-		links, err := parseLinks(linksS, "")
+		data, err := getSerieData(cols, row)
 		if err != nil {
-			return nil, fmt.Errorf("parsing links of series '%s': %w", nameS, err)
+			return nil, fmt.Errorf("table '%s': %v", table, err)
 		}
-		series = append(series, &Serie{utils.NewName(nameS), template.HTML(descriptionS), links, make([]*Event, 0), make([]*Event, 0), make([]*Event, 0), make([]*Event, 0)})
+		links, err := parseLinks(data.Links, "")
+		if err != nil {
+			return nil, fmt.Errorf("parsing links of series '%s': %w", data.Name, err)
+		}
+		series = append(series, &Serie{utils.NewName(data.Name), template.HTML(data.Description), links, make([]*Event, 0), make([]*Event, 0), make([]*Event, 0), make([]*Event, 0)})
 	}
 
 	return series, nil
