@@ -34,98 +34,119 @@ func LoadSheetsConfig(path string) (SheetsConfigData, error) {
 	return config, nil
 }
 
-func LoadSheets(config SheetsConfigData, today time.Time) ([]*Event, []*Event, []*Event, []*ParkrunEvent, []*Tag, []*Serie, error) {
-	ctx := context.Background()
+type SheetsData struct {
+	Events  []*Event
+	Groups  []*Event
+	Shops   []*Event
+	Parkrun []*ParkrunEvent
+	Tags    []*Tag
+	Series  []*Serie
+}
 
+func LoadSheets(config SheetsConfigData, today time.Time) (SheetsData, error) {
+	ctx := context.Background()
 	srv, err := sheets.NewService(ctx, option.WithAPIKey(config.ApiKey))
 	if err != nil {
-		return nil, nil, nil, nil, nil, nil, fmt.Errorf("creating sheets service: %w", err)
+		return SheetsData{}, fmt.Errorf("creating sheets service: %w", err)
 	}
 
 	sheets, err := getAllSheets(config, srv)
 	if err != nil {
-		return nil, nil, nil, nil, nil, nil, fmt.Errorf("fetching all sheets: %w", err)
+		return SheetsData{}, fmt.Errorf("fetching all sheets: %w", err)
 	}
 
-	eventSheets := make([]string, 0)
-	groupsSheet := ""
-	shopsSheet := ""
-	parkrunSheet := ""
-	tagsSheet := ""
-	seriesSheet := ""
+	eventSheets, groupsSheet, shopsSheet, parkrunSheet, tagsSheet, seriesSheet, err := findSheetNames(sheets)
+	if err != nil {
+		return SheetsData{}, err
+	}
+
+	events, err := loadEvents(config, srv, today, eventSheets)
+	if err != nil {
+		return SheetsData{}, fmt.Errorf("fetching events: %w", err)
+	}
+	groups, err := fetchEvents(config, srv, today, "group", groupsSheet)
+	if err != nil {
+		return SheetsData{}, fmt.Errorf("fetching groups: %w", err)
+	}
+	shops, err := fetchEvents(config, srv, today, "shop", shopsSheet)
+	if err != nil {
+		return SheetsData{}, fmt.Errorf("fetching shops: %w", err)
+	}
+	parkrun, err := fetchParkrunEvents(config, srv, today, parkrunSheet)
+	if err != nil {
+		return SheetsData{}, fmt.Errorf("fetching parkrun events: %w", err)
+	}
+	tags, err := fetchTags(config, srv, tagsSheet)
+	if err != nil {
+		return SheetsData{}, fmt.Errorf("fetching tags: %w", err)
+	}
+	series, err := fetchSeries(config, srv, seriesSheet)
+	if err != nil {
+		return SheetsData{}, fmt.Errorf("fetching series: %w", err)
+	}
+
+	return SheetsData{
+		Events:  events,
+		Groups:  groups,
+		Shops:   shops,
+		Parkrun: parkrun,
+		Tags:    tags,
+		Series:  series,
+	}, nil
+}
+
+func findSheetNames(sheets []string) (eventSheets []string, groupsSheet, shopsSheet, parkrunSheet, tagsSheet, seriesSheet string, err error) {
 	for _, sheet := range sheets {
-		if strings.HasPrefix(sheet, "Events") {
+		switch {
+		case strings.HasPrefix(sheet, "Events"):
 			eventSheets = append(eventSheets, sheet)
-		} else if sheet == "Groups" {
+		case sheet == "Groups":
 			groupsSheet = sheet
-		} else if sheet == "Shops" {
+		case sheet == "Shops":
 			shopsSheet = sheet
-		} else if sheet == "Parkrun" {
+		case sheet == "Parkrun":
 			parkrunSheet = sheet
-		} else if sheet == "Tags" {
+		case sheet == "Tags":
 			tagsSheet = sheet
-		} else if sheet == "Series" {
+		case sheet == "Series":
 			seriesSheet = sheet
-		} else if strings.Contains(sheet, "ignore") {
+		case strings.Contains(sheet, "ignore"):
 			// ignore
-		} else {
+		default:
 			log.Printf("ignoring unknown sheet: '%s'", sheet)
 		}
 	}
 	if len(eventSheets) < 2 {
-		return nil, nil, nil, nil, nil, nil, fmt.Errorf("fetching sheets: unable to find enough 'Events' sheets")
+		return nil, "", "", "", "", "", fmt.Errorf("fetching sheets: unable to find enough 'Events' sheets")
 	}
 	if groupsSheet == "" {
-		return nil, nil, nil, nil, nil, nil, fmt.Errorf("fetching sheets: unable to find 'Groups' sheet")
+		return nil, "", "", "", "", "", fmt.Errorf("fetching sheets: unable to find 'Groups' sheet")
 	}
 	if shopsSheet == "" {
-		return nil, nil, nil, nil, nil, nil, fmt.Errorf("fetching sheets: unable to find 'Shops' sheet")
+		return nil, "", "", "", "", "", fmt.Errorf("fetching sheets: unable to find 'Shops' sheet")
 	}
 	if parkrunSheet == "" {
-		return nil, nil, nil, nil, nil, nil, fmt.Errorf("fetching sheets: unable to find 'Parkrun' sheet")
+		return nil, "", "", "", "", "", fmt.Errorf("fetching sheets: unable to find 'Parkrun' sheet")
 	}
 	if tagsSheet == "" {
-		return nil, nil, nil, nil, nil, nil, fmt.Errorf("fetching sheets: unable to find 'Tags' sheet")
+		return nil, "", "", "", "", "", fmt.Errorf("fetching sheets: unable to find 'Tags' sheet")
 	}
 	if seriesSheet == "" {
-		return nil, nil, nil, nil, nil, nil, fmt.Errorf("fetching sheets: unable to find 'Series' sheet")
+		return nil, "", "", "", "", "", fmt.Errorf("fetching sheets: unable to find 'Series' sheet")
 	}
+	return eventSheets, groupsSheet, shopsSheet, parkrunSheet, tagsSheet, seriesSheet, nil
+}
 
+func loadEvents(config SheetsConfigData, srv *sheets.Service, today time.Time, eventSheets []string) ([]*Event, error) {
 	eventList := make([]*Event, 0)
 	for _, sheet := range eventSheets {
 		yearList, err := fetchEvents(config, srv, today, "event", sheet)
 		if err != nil {
-			return nil, nil, nil, nil, nil, nil, fmt.Errorf("fetching events: %w", err)
+			return nil, err
 		}
 		eventList = append(eventList, yearList...)
 	}
-
-	groups, err := fetchEvents(config, srv, today, "group", groupsSheet)
-	if err != nil {
-		return nil, nil, nil, nil, nil, nil, fmt.Errorf("fetching groups: %w", err)
-	}
-
-	shops, err := fetchEvents(config, srv, today, "shop", shopsSheet)
-	if err != nil {
-		return nil, nil, nil, nil, nil, nil, fmt.Errorf("fetching shops: %w", err)
-	}
-
-	parkrun, err := fetchParkrunEvents(config, srv, today, parkrunSheet)
-	if err != nil {
-		return nil, nil, nil, nil, nil, nil, fmt.Errorf("fetching parkrun events: %w", err)
-	}
-
-	tags, err := fetchTags(config, srv, tagsSheet)
-	if err != nil {
-		return nil, nil, nil, nil, nil, nil, fmt.Errorf("fetching tags: %w", err)
-	}
-
-	series, err := fetchSeries(config, srv, seriesSheet)
-	if err != nil {
-		return nil, nil, nil, nil, nil, nil, fmt.Errorf("fetching series: %w", err)
-	}
-
-	return eventList, groups, shops, parkrun, tags, series, nil
+	return eventList, nil
 }
 
 func getAllSheets(config SheetsConfigData, srv *sheets.Service) ([]string, error) {

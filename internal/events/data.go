@@ -86,21 +86,21 @@ func (data *Data) CheckLinks() {
 func FetchData(config SheetsConfigData, today time.Time) (Data, error) {
 	var data Data
 
-	eventList, groupList, shopList, parkrunList, tagList, seriesList, err := LoadSheets(config, today)
+	sheetsData, err := LoadSheets(config, today)
 	if err != nil {
 		return data, err
 	}
 
-	ValidateDateOrder(eventList)
-	ValidateNameOrder(groupList)
-	ValidateNameOrder(shopList)
+	ValidateDateOrder(sheetsData.Events)
+	ValidateNameOrder(sheetsData.Groups)
+	ValidateNameOrder(sheetsData.Shops)
 
-	data.Events, data.EventsObsolete = SplitObsolete(eventList)
-	data.Groups, data.GroupsObsolete = SplitObsolete(groupList)
-	data.Shops, data.ShopsObsolete = SplitObsolete(shopList)
-	data.Tags = tagList
-	data.Series = seriesList
-	data.ParkrunEvents = parkrunList
+	data.Events, data.EventsObsolete = SplitObsolete(sheetsData.Events)
+	data.Groups, data.GroupsObsolete = SplitObsolete(sheetsData.Groups)
+	data.Shops, data.ShopsObsolete = SplitObsolete(sheetsData.Shops)
+	data.Tags = sheetsData.Tags
+	data.Series = sheetsData.Series
+	data.ParkrunEvents = sheetsData.Parkrun
 
 	FindPrevNextEvents(data.Events)
 	FindSiblings(data.Events, today)
@@ -146,23 +146,23 @@ func collectEventTags(tags map[string]*Tag, eventList []*Event) error {
 	return nil
 }
 
-func (data *Data) collectTags() {
+func (data *Data) collectTags() error {
 	tags := make(map[string]*Tag)
 	for _, tag := range data.Tags {
 		tags[tag.Name.Sanitized] = tag
 	}
 
 	if err := collectEventTags(tags, data.Events); err != nil {
-		panic(fmt.Errorf("collectEventTags for events: %w", err))
+		return fmt.Errorf("collectEventTags for events: %w", err)
 	}
 	if err := collectEventTags(tags, data.EventsOld); err != nil {
-		panic(fmt.Errorf("collectEventTags for eventsOld: %w", err))
+		return fmt.Errorf("collectEventTags for eventsOld: %w", err)
 	}
 	if err := collectEventTags(tags, data.Groups); err != nil {
-		panic(fmt.Errorf("collectEventTags for groups: %w", err))
+		return fmt.Errorf("collectEventTags for groups: %w", err)
 	}
 	if err := collectEventTags(tags, data.Shops); err != nil {
-		panic(fmt.Errorf("collectEventTags for shops: %w", err))
+		return fmt.Errorf("collectEventTags for shops: %w", err)
 	}
 
 	tagsList := make([]*Tag, 0, len(tags))
@@ -173,6 +173,7 @@ func (data *Data) collectTags() {
 	}
 	sort.Slice(tagsList, func(i, j int) bool { return tagsList[i].Name.Sanitized < tagsList[j].Name.Sanitized })
 	data.Tags = tagsList
+	return nil
 }
 
 func collectEventSeries(seriesMap map[string]*Serie, eventList []*Event) error {
@@ -222,7 +223,6 @@ func (data *Data) collectSeries() error {
 	if err := collectEventSeries(seriesMap, data.Shops); err != nil {
 		return err
 	}
-
 	var seriesList, seriesListOld []*Serie
 	for _, s := range data.Series {
 		s.Events = AddMonthSeparators(s.Events)
