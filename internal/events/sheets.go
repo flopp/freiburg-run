@@ -233,65 +233,30 @@ type EventData struct {
 
 func getEventData(cols Columns, row []interface{}) (EventData, error) {
 	var data EventData
-
 	var err error
-	data.Date, err = cols.getVal("DATE", row)
-	if err != nil {
-		return EventData{}, err
+	fields := []struct {
+		name string
+		dest *string
+	}{
+		{"DATE", &data.Date},
+		{"NAME", &data.Name},
+		{"NAME2", &data.Name2},
+		{"SEO", &data.Seo},
+		{"STATUS", &data.Status},
+		{"URL", &data.Url},
+		{"DESCRIPTION", &data.Description},
+		{"LOCATION", &data.Location},
+		{"COORDINATES", &data.Coordinates},
+		{"REGISTRATION", &data.Registration},
+		{"TAGS", &data.Tags},
 	}
-
-	data.Name, err = cols.getVal("NAME", row)
-	if err != nil {
-		return EventData{}, err
+	for _, f := range fields {
+		*f.dest, err = cols.getVal(f.name, row)
+		if err != nil {
+			return EventData{}, err
+		}
 	}
-
-	data.Name2, err = cols.getVal("NAME2", row)
-	if err != nil {
-		return EventData{}, err
-	}
-
-	data.Seo, err = cols.getVal("SEO", row)
-	if err != nil {
-		return EventData{}, err
-	}
-
-	data.Status, err = cols.getVal("STATUS", row)
-	if err != nil {
-		return EventData{}, err
-	}
-
-	data.Url, err = cols.getVal("URL", row)
-	if err != nil {
-		return EventData{}, err
-	}
-
-	data.Description, err = cols.getVal("DESCRIPTION", row)
-	if err != nil {
-		return EventData{}, err
-	}
-
-	data.Location, err = cols.getVal("LOCATION", row)
-	if err != nil {
-		return EventData{}, err
-	}
-
-	data.Coordinates, err = cols.getVal("COORDINATES", row)
-	if err != nil {
-		return EventData{}, err
-	}
-
-	data.Registration, err = cols.getVal("REGISTRATION", row)
-	if err != nil {
-		return EventData{}, err
-	}
-
-	data.Tags, err = cols.getVal("TAGS", row)
-	if err != nil {
-		return EventData{}, err
-	}
-
 	data.Links = getLinks(cols, row)
-
 	return data, nil
 }
 
@@ -419,49 +384,28 @@ type ParkrunEventData struct {
 
 func getParkrunEventData(cols Columns, row []interface{}) (ParkrunEventData, error) {
 	var data ParkrunEventData
-
 	var err error
-	data.Date, err = cols.getVal("DATE", row)
-	if err != nil {
-		return ParkrunEventData{}, err
+	fields := []struct {
+		name string
+		dest *string
+	}{
+		{"DATE", &data.Date},
+		{"INDEX", &data.Index},
+		{"RUNNERS", &data.Runners},
+		{"TEMP", &data.Temp},
+		{"SPECIAL", &data.Special},
+		{"CAFE", &data.Cafe},
+		{"RESULTS", &data.Results},
+		{"REPORT", &data.Report},
+		{"AUTHOR", &data.Author},
+		{"PHOTOS", &data.Photos},
 	}
-	data.Index, err = cols.getVal("INDEX", row)
-	if err != nil {
-		return ParkrunEventData{}, err
+	for _, f := range fields {
+		*f.dest, err = cols.getVal(f.name, row)
+		if err != nil {
+			return ParkrunEventData{}, err
+		}
 	}
-	data.Runners, err = cols.getVal("RUNNERS", row)
-	if err != nil {
-		return ParkrunEventData{}, err
-	}
-	data.Temp, err = cols.getVal("TEMP", row)
-	if err != nil {
-		return ParkrunEventData{}, err
-	}
-	data.Special, err = cols.getVal("SPECIAL", row)
-	if err != nil {
-		return ParkrunEventData{}, err
-	}
-	data.Cafe, err = cols.getVal("CAFE", row)
-	if err != nil {
-		return ParkrunEventData{}, err
-	}
-	data.Results, err = cols.getVal("RESULTS", row)
-	if err != nil {
-		return ParkrunEventData{}, err
-	}
-	data.Report, err = cols.getVal("REPORT", row)
-	if err != nil {
-		return ParkrunEventData{}, err
-	}
-	data.Author, err = cols.getVal("AUTHOR", row)
-	if err != nil {
-		return ParkrunEventData{}, err
-	}
-	data.Photos, err = cols.getVal("PHOTOS", row)
-	if err != nil {
-		return ParkrunEventData{}, err
-	}
-
 	return data, nil
 }
 
@@ -523,21 +467,21 @@ type TagData struct {
 
 func getTagData(cols Columns, row []interface{}) (TagData, error) {
 	var data TagData
-
 	var err error
-	data.Tag, err = cols.getVal("TAG", row)
-	if err != nil {
-		return TagData{}, err
+	fields := []struct {
+		name string
+		dest *string
+	}{
+		{"TAG", &data.Tag},
+		{"NAME", &data.Name},
+		{"DESCRIPTION", &data.Description},
 	}
-	data.Name, err = cols.getVal("NAME", row)
-	if err != nil {
-		return TagData{}, err
+	for _, f := range fields {
+		*f.dest, err = cols.getVal(f.name, row)
+		if err != nil {
+			return TagData{}, err
+		}
 	}
-	data.Description, err = cols.getVal("DESCRIPTION", row)
-	if err != nil {
-		return TagData{}, err
-	}
-
 	return data, nil
 }
 
@@ -575,18 +519,21 @@ type SerieData struct {
 
 func getSerieData(cols Columns, row []interface{}) (SerieData, error) {
 	var data SerieData
-
 	var err error
-	data.Name, err = cols.getVal("NAME", row)
-	if err != nil {
-		return SerieData{}, err
+	fields := []struct {
+		name string
+		dest *string
+	}{
+		{"NAME", &data.Name},
+		{"DESCRIPTION", &data.Description},
 	}
-	data.Description, err = cols.getVal("DESCRIPTION", row)
-	if err != nil {
-		return SerieData{}, err
+	for _, f := range fields {
+		*f.dest, err = cols.getVal(f.name, row)
+		if err != nil {
+			return SerieData{}, err
+		}
 	}
 	data.Links = getLinks(cols, row)
-
 	return data, nil
 }
 
