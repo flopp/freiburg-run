@@ -18,15 +18,6 @@
             <a class="button is-danger has-text-white is-small is-fullwidth is-radiusless" href="/{{.Slug}}">
                 <span>(abgesagt)</span>
             </a>
-            {{else if .New}}
-            <!--<a class="button is-success has-text-white is-fullwidth is-radiusless button-wrap" href="/{{.Slug}}" itemprop="item">-->
-            <a class="button is-link is-fullwidth is-radiusless button-wrap" href="/{{.Slug}}" itemprop="item">
-                <span class="icon"><i class="info-icon"></i></span>
-                <span itemprop="name">{{.Name.Orig}}</span>
-            </a>
-            <!--<a class="button is-success has-text-white is-small is-fullwidth is-radiusless" href="/{{.Slug}}">
-                <span>(neu hinzugefügt)</span>
-            </a>-->
             {{else}}
             <a class="button is-link is-fullwidth is-radiusless button-wrap" href="/{{.Slug}}" itemprop="item">
                 <span class="icon"><i class="info-icon"></i></span>

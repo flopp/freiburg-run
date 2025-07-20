@@ -21,12 +21,12 @@ update-vendor:
 .phony: build
 build:
 	rm -rf .out
-	go run cmd/generate/main.go -config config.json -out .out -basepath $(PWD)/.out -hashfile .hashes -addedfile .added
+	go run cmd/generate/main.go -config config.json -out .out -basepath $(PWD)/.out -hashfile .hashes
 
 .phony: checklinks
 checklinks:
 	rm -rf .out
-	go run cmd/generate/main.go -config config.json -out .out -hashfile .hashes -addedfile .added -checklinks
+	go run cmd/generate/main.go -config config.json -out .out -hashfile .hashes -checklinks
 
 .repo/.git/config:
 	git clone https://github.com/flopp/freiburg-run.git .repo

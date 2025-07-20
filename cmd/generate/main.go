@@ -24,7 +24,6 @@ type CommandLineOptions struct {
 	configFile string
 	outDir     string
 	hashFile   string
-	addedFile  string
 	checkLinks bool
 	basePath   string
 }
@@ -33,7 +32,6 @@ func parseCommandLine() CommandLineOptions {
 	configFile := flag.String("config", "", "select config file")
 	outDir := flag.String("out", ".out", "output directory")
 	hashFile := flag.String("hashfile", ".hashes", "file storing file hashes (for sitemap)")
-	addedFile := flag.String("addedfile", ".added", "file storing event addition dates")
 	checkLinks := flag.Bool("checklinks", false, "check links in the generated files")
 	basePath := flag.String("basepath", "", "base path")
 
@@ -51,43 +49,14 @@ func parseCommandLine() CommandLineOptions {
 		*configFile,
 		*outDir,
 		*hashFile,
-		*addedFile,
 		*checkLinks,
 		*basePath,
 	}
 }
 
-func IsNew(s string, now time.Time) bool {
-	days := 14
-
-	d, err := utils.ParseDate(s)
-	if err == nil {
-		return d.AddDate(0, 0, days).After(now)
-	}
-
-	return false
-}
-
 type ConfigData struct {
 	ApiKey  string `json:"api_key"`
 	SheetId string `json:"sheet_id"`
-}
-
-func updateAddedDates(events []*events.Event, added *utils.Added, eventType string, timestamp string, now time.Time) {
-	for _, event := range events {
-		fromFile := added.GetAdded(eventType, event.Slug())
-		if fromFile == "" {
-			if event.Added == "" {
-				event.Added = timestamp
-			}
-			added.SetAdded(eventType, event.Slug(), event.Added)
-		} else {
-			if event.Added == "" {
-				event.Added = fromFile
-			}
-		}
-		event.New = IsNew(event.Added, now)
-	}
 }
 
 func main() {
@@ -109,7 +78,6 @@ func main() {
 
 	now := time.Now()
 	today := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
-	timestamp := now.Format("2006-01-02")
 
 	// try 3 times to fetch data with increasing timeouts (sometimes the google api is not available)
 	eventsData, err := utils.Retry(3, 8*time.Second, func() (events.Data, error) {
@@ -123,22 +91,6 @@ func main() {
 	if options.checkLinks {
 		eventsData.CheckLinks()
 		return
-	}
-
-	if options.addedFile != "" {
-		added, err := utils.ReadAdded(options.addedFile)
-		if err != nil {
-			log.Printf("failed to parse added file: '%s' - %v", options.addedFile, err)
-		}
-
-		updateAddedDates(eventsData.Events, added, "event", timestamp, now)
-		updateAddedDates(eventsData.EventsOld, added, "event", timestamp, now)
-		updateAddedDates(eventsData.Groups, added, "group", timestamp, now)
-		updateAddedDates(eventsData.Shops, added, "shop", timestamp, now)
-
-		if err = added.Write(options.addedFile); err != nil {
-			log.Printf("failed to write added file: '%s' - %v", options.addedFile, err)
-		}
 	}
 
 	resourceManager := resources.NewResourceManager(".", string(out))
