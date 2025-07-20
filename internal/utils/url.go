@@ -1,6 +1,9 @@
 package utils
 
-import "fmt"
+import (
+	"path"
+	"strings"
+)
 
 type Url string
 
@@ -8,7 +11,7 @@ func (u Url) Join(s string) string {
 	if len(s) == 0 {
 		return string(u)
 	}
-	return fmt.Sprintf("%s/%s", string(u), s)
+	return path.Join(string(u), s)
 }
 
 func ExtractDomain(url string) string {
@@ -17,19 +20,15 @@ func ExtractDomain(url string) string {
 	}
 
 	// Remove the scheme (http:// or https://) if present
-	if len(url) > 7 && url[:7] == "http://" {
+	if strings.HasPrefix(url, "http://") {
 		url = url[7:]
-	} else if len(url) > 8 && url[:8] == "https://" {
+	} else if strings.HasPrefix(url, "https://") {
 		url = url[8:]
 	}
 
-	// find the first slash or question mark or hash
-	// and remove everything after it
-	for idx := 0; idx < len(url); idx++ {
-		if url[idx] == '/' || url[idx] == '?' || url[idx] == '#' {
-			url = url[:idx]
-			break
-		}
+	// Find the first slash, question mark, or hash and truncate
+	if idx := strings.IndexAny(url, "/?#"); idx != -1 {
+		url = url[:idx]
 	}
 
 	return url
