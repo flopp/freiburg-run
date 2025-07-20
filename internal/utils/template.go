@@ -69,12 +69,16 @@ func prepareOutputFile(fileName string) (*os.File, error) {
 	return out, nil
 }
 
-func ExecuteTemplate(templateName string, fileName string, data any) {
+func ExecuteTemplate(templateName string, fileName string, data any) error {
 	buffer, err := executeTemplateToBuffer(templateName, data)
-	Check(err)
+	if err != nil {
+		return fmt.Errorf("render template: %w", err)
+	}
 
 	out, err := prepareOutputFile(fileName)
-	Check(err)
+	if err != nil {
+		return fmt.Errorf("prepare output file: %w", err)
+	}
 	defer out.Close()
 
 	// minify buffer to output file
@@ -82,18 +86,30 @@ func ExecuteTemplate(templateName string, fileName string, data any) {
 	m.AddFunc("text/css", html.Minify)
 	m.Add("text/html", &html.Minifier{KeepQuotes: true})
 	err = m.Minify("text/html", out, buffer)
-	Check(err)
+	if err != nil {
+		return fmt.Errorf("minifying html output: %w", err)
+	}
+
+	return nil
 }
 
-func ExecuteTemplateNoMinify(templateName string, fileName string, data any) {
+func ExecuteTemplateNoMinify(templateName string, fileName string, data any) error {
 	buffer, err := executeTemplateToBuffer(templateName, data)
-	Check(err)
+	if err != nil {
+		return fmt.Errorf("render template: %w", err)
+	}
 
 	out, err := prepareOutputFile(fileName)
-	Check(err)
+	if err != nil {
+		return fmt.Errorf("prepare output file: %w", err)
+	}
 	defer out.Close()
 
 	// write buffer to output file
 	_, err = out.Write(buffer.Bytes())
-	Check(err)
+	if err != nil {
+		return fmt.Errorf("write buffer to output file: %w", err)
+	}
+
+	return nil
 }
