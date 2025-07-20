@@ -152,17 +152,19 @@ func (data *Data) collectTags() error {
 		tags[tag.Name.Sanitized] = tag
 	}
 
-	if err := collectEventTags(tags, data.Events); err != nil {
-		return fmt.Errorf("collectEventTags for events: %w", err)
+	lists := []struct {
+		name string
+		list []*Event
+	}{
+		{"Events", data.Events},
+		{"EventsOld", data.EventsOld},
+		{"Groups", data.Groups},
+		{"Shops", data.Shops},
 	}
-	if err := collectEventTags(tags, data.EventsOld); err != nil {
-		return fmt.Errorf("collectEventTags for eventsOld: %w", err)
-	}
-	if err := collectEventTags(tags, data.Groups); err != nil {
-		return fmt.Errorf("collectEventTags for groups: %w", err)
-	}
-	if err := collectEventTags(tags, data.Shops); err != nil {
-		return fmt.Errorf("collectEventTags for shops: %w", err)
+	for _, l := range lists {
+		if err := collectEventTags(tags, l.list); err != nil {
+			return fmt.Errorf("collectEventTags for %s: %w", l.name, err)
+		}
 	}
 
 	tagsList := make([]*Tag, 0, len(tags))
@@ -211,18 +213,21 @@ func (data *Data) collectSeries() error {
 		seriesMap[series.Name.Sanitized] = series
 	}
 
-	if err := collectEventSeries(seriesMap, data.Events); err != nil {
-		return err
+	lists := []struct {
+		name string
+		list []*Event
+	}{
+		{"Events", data.Events},
+		{"EventsOld", data.EventsOld},
+		{"Groups", data.Groups},
+		{"Shops", data.Shops},
 	}
-	if err := collectEventSeries(seriesMap, data.EventsOld); err != nil {
-		return err
+	for _, l := range lists {
+		if err := collectEventSeries(seriesMap, l.list); err != nil {
+			return fmt.Errorf("collectEventSeries for %s: %w", l.name, err)
+		}
 	}
-	if err := collectEventSeries(seriesMap, data.Groups); err != nil {
-		return err
-	}
-	if err := collectEventSeries(seriesMap, data.Shops); err != nil {
-		return err
-	}
+
 	var seriesList, seriesListOld []*Serie
 	for _, s := range data.Series {
 		s.Events = AddMonthSeparators(s.Events)

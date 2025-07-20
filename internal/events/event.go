@@ -40,7 +40,6 @@ type Event struct {
 	Links          []*utils.Link
 	Calendar       string
 	CalendarGoogle string
-	Added          string
 	New            bool
 	Prev           *Event
 	Next           *Event
@@ -149,7 +148,6 @@ func createSeparatorEvent(t time.Time) *Event {
 		nil,
 		nil,
 		nil,
-		"",
 		"",
 		"",
 		true,
