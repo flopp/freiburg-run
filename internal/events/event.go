@@ -211,38 +211,38 @@ func (event *Event) CalendarSlug() string {
 }
 
 func (event *Event) LinkTitle() string {
-	if event.Type == "event" {
+	switch event.Type {
+	case "event":
 		if strings.HasPrefix(event.Url, "mailto:") {
 			return "Mail an Veranstalter"
 		}
 		return "Zur Veranstaltung"
-	}
-	if event.Type == "group" {
+	case "group":
 		if strings.HasPrefix(event.Url, "mailto:") {
 			return "Mail an Organisator"
 		}
 		return "Zum Lauftreff"
-	}
-	if event.Type == "shop" {
+	case "shop":
 		return "Zum Lauf-Shop"
+	default:
+		return "Zur Veranstaltung"
 	}
-	return "Zur Veranstaltung"
 }
 
 func (event *Event) NiceType() string {
 	if event.Old {
 		return "vergangene Veranstaltung"
 	}
-	if event.Type == "event" {
+	switch event.Type {
+	case "event":
+		return "Veranstaltung"
+	case "group":
+		return "Lauftreff"
+	case "shop":
+		return "Lauf-Shop"
+	default:
 		return "Veranstaltung"
 	}
-	if event.Type == "group" {
-		return "Lauftreff"
-	}
-	if event.Type == "shop" {
-		return "Lauf-Shop"
-	}
-	return "Veranstaltung"
 }
 
 func SplitEvents(eventList []*Event) ([]*Event, []*Event) {

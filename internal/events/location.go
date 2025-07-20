@@ -53,26 +53,28 @@ func (loc Location) Name() string {
 	if loc.City == "" {
 		return ""
 	}
-	if loc.Country == "Frankreich" {
+	switch loc.Country {
+	case "Frankreich":
 		return fmt.Sprintf(`%s, FR 🇫🇷`, loc.City)
-	}
-	if loc.Country == "Schweiz" {
+	case "Schweiz":
 		return fmt.Sprintf(`%s, CH 🇨🇭`, loc.City)
+	default:
+		return loc.City
 	}
-	return loc.City
 }
 
 func (loc Location) NameNoFlag() string {
 	if loc.City == "" {
 		return ""
 	}
-	if loc.Country == "Frankreich" {
+	switch loc.Country {
+	case "Frankreich":
 		return fmt.Sprintf(`%s, FR`, loc.City)
-	}
-	if loc.Country == "Schweiz" {
+	case "Schweiz":
 		return fmt.Sprintf(`%s, CH`, loc.City)
+	default:
+		return loc.City
 	}
-	return loc.City
 }
 
 func (loc Location) HasGeo() bool {

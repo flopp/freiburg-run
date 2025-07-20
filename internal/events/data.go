@@ -127,17 +127,18 @@ func collectEventTags(tags map[string]*Tag, eventList []*Event) error {
 		for _, t := range event.RawTags {
 			tag := GetTag(tags, t)
 			event.Tags = append(event.Tags, tag)
-			if event.Type == "event" {
+			switch event.Type {
+			case "event":
 				if event.Old {
 					tag.EventsOld = append(tag.EventsOld, event)
 				} else {
 					tag.Events = append(tag.Events, event)
 				}
-			} else if event.Type == "group" {
+			case "group":
 				tag.Groups = append(tag.Groups, event)
-			} else if event.Type == "shop" {
+			case "shop":
 				tag.Shops = append(tag.Shops, event)
-			} else {
+			default:
 				return fmt.Errorf("unexpected event.Type for '%s': %s", event.Name.Orig, event.Type)
 			}
 		}
@@ -184,17 +185,18 @@ func collectEventSeries(seriesMap map[string]*Serie, eventList []*Event) error {
 		for _, s := range event.RawSeries {
 			serie := GetSerie(seriesMap, s)
 			event.Series = append(event.Series, serie)
-			if event.Type == "event" {
+			switch event.Type {
+			case "event":
 				if event.Old {
 					serie.EventsOld = append(serie.EventsOld, event)
 				} else {
 					serie.Events = append(serie.Events, event)
 				}
-			} else if event.Type == "group" {
+			case "group":
 				serie.Groups = append(serie.Groups, event)
-			} else if event.Type == "shop" {
+			case "shop":
 				serie.Shops = append(serie.Shops, event)
-			} else {
+			default:
 				return fmt.Errorf("unexpected event.Type for '%s': %s", event.Name.Orig, event.Type)
 			}
 		}
