@@ -56,11 +56,6 @@ func Download(url string, dst string) error {
 	return nil
 }
 
-func MustDownload(url string, dst string) {
-	err := Download(url, dst)
-	Check(err)
-}
-
 func DownloadHash(url string, dst string) (string, error) {
 	if strings.Contains(dst, "HASH") {
 		tmpfile, err := os.CreateTemp("", "")
@@ -78,10 +73,4 @@ func DownloadHash(url string, dst string) (string, error) {
 	} else {
 		return dst, Download(url, dst)
 	}
-}
-
-func MustDownloadHash(url string, dst string) string {
-	res, err := DownloadHash(url, dst)
-	Check(err)
-	return res
 }

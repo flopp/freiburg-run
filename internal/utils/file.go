@@ -51,11 +51,6 @@ func Copy(sourceFileName, targetFileName string) error {
 	return nil
 }
 
-func MustCopy(sourceFileName, targetFileName string) {
-	err := Copy(sourceFileName, targetFileName)
-	Check(err)
-}
-
 func CopyHash(src, dst string) (string, error) {
 	return filehash.Copy(src, dst, "HASH")
 }
