@@ -25,3 +25,25 @@ func TestExtractDomain(t *testing.T) {
 		}
 	}
 }
+
+func TestUrlJoin(t *testing.T) {
+	cases := []struct {
+		base     string
+		part     string
+		expected string
+	}{
+		{"https://freiburg.run", "tags.html", "https://freiburg.run/tags.html"},
+		{"https://freiburg.run/", "tags.html", "https://freiburg.run//tags.html"},
+		{"https://freiburg.run", "/tags.html", "https://freiburg.run//tags.html"},
+		{"https://freiburg.run", "", "https://freiburg.run"},
+		{"https://freiburg.run", "/", "https://freiburg.run//"},
+		{"http://example.com", "foo/bar", "http://example.com/foo/bar"},
+		{"http://example.com/", "foo/bar", "http://example.com//foo/bar"},
+	}
+	for _, tc := range cases {
+		got := Url(tc.base).Join(tc.part)
+		if got != tc.expected {
+			t.Errorf("Url(%q).Join(%q) = %q; want %q", tc.base, tc.part, got, tc.expected)
+		}
+	}
+}

@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"path"
+	"fmt"
 	"strings"
 )
 
@@ -11,7 +11,7 @@ func (u Url) Join(s string) string {
 	if len(s) == 0 {
 		return string(u)
 	}
-	return path.Join(string(u), s)
+	return fmt.Sprintf("%s/%s", string(u), s)
 }
 
 func ExtractDomain(url string) string {
