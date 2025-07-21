@@ -22,9 +22,42 @@ const (
 )
 
 func CreateEventCalendar(event *Event, now time.Time, baseUrl utils.Url, calendarUrl string, path string) error {
-	eventsList := make([]*Event, 1)
-	eventsList[0] = event
-	return CreateCalendar(eventsList, now, baseUrl, calendarUrl, path)
+	infoUrl := baseUrl.Join(event.Slug())
+	endPlusOneDay := event.Time.To.AddDate(0, 0, 1)
+
+	// ical/ics data
+	cal := ical.NewCalendar()
+	cal.SetProductId("Laufevents - freiburg.run")
+	cal.SetMethod(ical.MethodPublish)
+	cal.SetDescription("Liste aller Laufevents im Raum Freiburg (50km Umkreis)")
+	///cal.SetUrl(calendarUrl)
+	uid, err := event.GetUUID()
+	if err != nil {
+		return fmt.Errorf("create UUID for '%s': %w", event.Name.Orig, err)
+	}
+	calEvent := cal.AddEvent(uid.String())
+	calEvent.SetDtStampTime(now)
+	calEvent.SetSummary(event.Name.Orig)
+	calEvent.SetLocation(event.Location.NameNoFlag())
+	calEvent.SetDescription(string(event.Details))
+	calEvent.SetProperty(componentPropertyDtStart, event.Time.From.Format(dateFormatUtc))
+	calEvent.SetProperty(componentPropertyDtEnd, endPlusOneDay.Format(dateFormatUtc))
+	calEvent.SetURL(infoUrl)
+	serialized := cal.Serialize()
+	// Encode as data URL for download
+	encoded := url.QueryEscape(serialized)
+	event.CalendarDataICS = "data:text/calendar;charset=utf-8," + encoded
+
+	// Google Calendar link
+	event.CalendarGoogle = fmt.Sprintf("https://calendar.google.com/calendar/u/0/r/eventedit?text=%s&dates=%s/%s&details=%s&location=%s",
+		url.QueryEscape(event.Name.Orig),
+		event.Time.From.Format(dateFormatUtc),
+		endPlusOneDay.Format(dateFormatUtc),
+		url.QueryEscape(fmt.Sprintf(`%s<br>Infos: <a href="%s">freiburg.run</a>`, event.Details, infoUrl)),
+		url.QueryEscape(event.Location.NameNoFlag()),
+	)
+
+	return nil
 }
 
 func CreateCalendar(eventsList []*Event, now time.Time, baseUrl utils.Url, calendarUrl string, path string) error {
@@ -56,15 +89,6 @@ func CreateCalendar(eventsList []*Event, now time.Time, baseUrl utils.Url, calen
 		endPlusOneDay := e.Time.To.AddDate(0, 0, 1)
 		calEvent.SetProperty(componentPropertyDtEnd, endPlusOneDay.Format(dateFormatUtc))
 		calEvent.SetURL(infoUrl)
-
-		// Google Calendar link
-		e.CalendarGoogle = fmt.Sprintf("https://calendar.google.com/calendar/u/0/r/eventedit?text=%s&dates=%s/%s&details=%s&location=%s",
-			url.QueryEscape(e.Name.Orig),
-			e.Time.From.Format(dateFormatUtc),
-			endPlusOneDay.Format(dateFormatUtc),
-			url.QueryEscape(fmt.Sprintf(`%s<br>Infos: <a href="%s">freiburg.run</a>`, e.Details, infoUrl)),
-			url.QueryEscape(e.Location.NameNoFlag()),
-		)
 	}
 
 	serialized := cal.Serialize()

@@ -379,6 +379,7 @@ var main = () => {
 
         const ics = createEl("a", "dropdown-item");
         ics.setAttribute("href", dropdown.dataset.calendar);
+        ics.setAttribute("download", dropdown.dataset.calendarfile);
         ics.setAttribute("data-umami-event", "calendar-click");
         ics.setAttribute("rel", "nofollow");
         ics.setAttribute("target", "_blank");

@@ -29,7 +29,7 @@
             <div class="content">
                 <table class="table is-narrow is-fullwidth">
                     {{if .Status}}<tr class="has-background-warning-light"><th class="w-2em no-border" title="Status">⚠️</th><td class="no-border">{{.Status}}</td></tr>{{end}}
-                    {{if .Time.Formatted}}<tr><th class="w-2em no-border" title="Datum">📅</th><td class="no-border">{{.Time.Formatted}}{{if .Old}} <span class="has-text-danger">(Vergangenes Event)</span>{{end}}{{if .Calendar}} <div class="calendar-button" data-calendar="{{.Calendar}}" data-googlecal="{{.CalendarGoogle}}"></div>{{end}}</td></tr>{{end}}
+                    {{if .Time.Formatted}}<tr><th class="w-2em no-border" title="Datum">📅</th><td class="no-border">{{.Time.Formatted}}{{if .Old}} <span class="has-text-danger">(Vergangenes Event)</span>{{else}}{{if .Calendar}} <div class="calendar-button" data-calendarfile="{{.Calendar}}" data-calendar="{{.CalendarDataICS}}" data-googlecal="{{.CalendarGoogle}}"></div>{{end}}{{end}}</td></tr>{{end}}
                     <tr>
                         <th class="w-2em no-border" title="Ort">🗺</th>
                         <td class="no-border">

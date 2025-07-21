@@ -30,7 +30,7 @@
                         {{if .Event.Time.Formatted}}
                         <tr>
                             <th>Datum</th>
-                            <td class="is-w100">{{.Event.Time.Formatted}}{{if .Event.Old}} <span class="has-text-danger">(Vergangenes Event)</span>{{end}}{{if .Event.Calendar}} <div class="calendar-button" data-calendar="{{.Event.Calendar}}" data-googlecal="{{.Event.CalendarGoogle}}"></div>{{end}}</td>
+                            <td class="is-w100">{{.Event.Time.Formatted}}{{if .Event.Old}} <span class="has-text-danger">(Vergangenes Event)</span>{{else}}{{if .Event.Calendar}} <div class="calendar-button" data-calendarfile="{{.Event.Calendar}}" data-calendar="{{.Event.CalendarDataICS}}" data-googlecal="{{.Event.CalendarGoogle}}"></div>{{end}}{{end}}</td>
                         </tr>
                         {{end}}
                         <tr>

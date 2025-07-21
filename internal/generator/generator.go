@@ -327,7 +327,7 @@ func (g Generator) Generate(eventsData events.Data) error {
 		resourceManager.CssFiles,
 		UmamiData{
 			resourceManager.UmamiScript,
-			"6609164f-5e79-4041-b1ed-f37da10a84d2",
+			g.umamiId,
 		},
 	}
 
