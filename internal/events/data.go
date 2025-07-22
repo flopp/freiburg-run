@@ -8,9 +8,15 @@ import (
 	"github.com/flopp/freiburg-run/internal/utils"
 )
 
+type OldEvents struct {
+	Year   string
+	Events []*Event
+}
+
 type Data struct {
 	Events         []*Event
 	EventsOld      []*Event
+	OldEvents      []OldEvents // Old events grouped by year
 	EventsObsolete []*Event
 	Groups         []*Event
 	GroupsObsolete []*Event
@@ -114,6 +120,38 @@ func FetchData(config SheetsConfigData, today time.Time) (Data, error) {
 	data.collectTags()
 	data.collectSeries()
 
+	// Collect old events by year
+	maxYear := 0
+	minYear := 0
+	oldEventsMap := make(map[int][]*Event)
+	for _, e := range data.EventsOld {
+		if e.IsSeparator() {
+			continue
+		}
+		year := e.Time.From.Year()
+		oldEvents, ok := oldEventsMap[year]
+		if !ok {
+			oldEvents = make([]*Event, 0)
+			oldEvents = append(oldEvents, e)
+			oldEventsMap[year] = oldEvents
+			if maxYear == 0 || year > maxYear {
+				maxYear = year
+			}
+			if minYear == 0 || year < minYear {
+				minYear = year
+			}
+		} else {
+			oldEvents = append(oldEvents, e)
+			oldEventsMap[year] = oldEvents
+		}
+	}
+	data.OldEvents = make([]OldEvents, 0, maxYear-minYear+1)
+	for year := maxYear; year >= minYear; year-- {
+		if oldEvents, ok := oldEventsMap[year]; ok {
+			oldEvents = AddMonthSeparatorsDescending(oldEvents)
+			data.OldEvents = append(data.OldEvents, OldEvents{Year: fmt.Sprintf("%d", year), Events: oldEvents})
+		}
+	}
 	return data, nil
 }
 

@@ -66,6 +66,13 @@ func (t TemplateData) CountEvents() int {
 	return count
 }
 
+type OldEventsTemplateData struct {
+	TemplateData
+	Year   string
+	Years  []*utils.Link
+	Events []*events.Event
+}
+
 type EventTemplateData struct {
 	TemplateData
 	Event *events.Event
@@ -288,9 +295,11 @@ func (g Generator) Generate(eventsData events.Data) error {
 	if err := createCalendarsForEvents(eventsData.Events); err != nil {
 		return err
 	}
-	if err := createCalendarsForEvents(eventsData.EventsOld); err != nil {
-		return err
-	}
+	/*
+		if err := createCalendarsForEvents(eventsData.EventsOld); err != nil {
+			return err
+		}
+	*/
 
 	// Create calendar files for all upcoming events
 	if err := events.CreateCalendar(eventsData.Events, g.now, g.baseUrl, g.baseUrl.Join("events.ics"), g.out.Join("events.ics")); err != nil {
@@ -308,7 +317,6 @@ func (g Generator) Generate(eventsData events.Data) error {
 
 	breadcrumbsBase := utils.InitBreadcrumbs(utils.CreateLink("freiburg.run", "/"))
 	breadcrumbsEvents := breadcrumbsBase.Push(utils.CreateLink("Laufveranstaltungen", "/"))
-	breadcrumbsEventsOld := breadcrumbsEvents.Push(utils.CreateLink("Archiv", "/events-old.html"))
 	breadcrumbsTags := breadcrumbsEvents.Push(utils.CreateLink("Kategorien", "/tags.html"))
 	breadcrumbsSeries := breadcrumbsEvents.Push(utils.CreateLink("Serien", "/series.html"))
 	breadcrumbsGroups := breadcrumbsBase.Push(utils.CreateLink("Lauftreffs", "/lauftreffs.html"))
@@ -360,13 +368,6 @@ func (g Generator) Generate(eventsData events.Data) error {
 		"Liste von Laufveranstaltungen, Lauf-Wettkämpfen, Volksläufen im Raum Freiburg",
 		breadcrumbsEvents); err != nil {
 		return fmt.Errorf("render index page: %w", err)
-	}
-
-	if err := renderPage("events-old.html", "events-old.html", "events-old", "events", "Vergangene Laufveranstaltungen",
-		"Vergangene Laufveranstaltungen im Raum Freiburg",
-		"Liste von vergangenen Laufveranstaltungen, Lauf-Wettkämpfen, Volksläufen im Raum Freiburg",
-		breadcrumbsEventsOld); err != nil {
-		return fmt.Errorf("render old events page: %w", err)
 	}
 
 	if err := renderPage("tags.html", "tags.html", "tags", "tags", "Kategorien",
@@ -452,6 +453,51 @@ func (g Generator) Generate(eventsData events.Data) error {
 		return fmt.Errorf("render wordpress template: %w", err)
 	}
 
+	// Render old events lists
+	oldYearsLinks := make(map[string]*utils.Link)
+	oldYears := make([]*utils.Link, 0, len(eventsData.OldEvents))
+	for index, oldEvents := range eventsData.OldEvents {
+		url := "/events-old.html"
+		if index != 0 {
+			url = fmt.Sprintf("/events-old-%s.html", oldEvents.Year)
+		}
+		oldYearsLinks[oldEvents.Year] = utils.CreateLink(
+			fmt.Sprintf("Vergangene Laufveranstaltungen (%s)", oldEvents.Year),
+			url,
+		)
+		oldYears = append(oldYears, utils.CreateLink(
+			oldEvents.Year,
+			url,
+		))
+	}
+	for index, oldEvents := range eventsData.OldEvents {
+		name := fmt.Sprintf("Vergangene Laufveranstaltungen (%s)", oldEvents.Year)
+		fname := "events-old.html"
+		if index != 0 {
+			fname = fmt.Sprintf("events-old-%s.html", oldEvents.Year)
+		}
+		data := OldEventsTemplateData{
+			TemplateData: TemplateData{
+				commondata,
+				name,
+				"BLUBB",
+				"events",
+				"",
+				breadcrumbsEvents,
+				"/",
+			},
+			Year:   oldEvents.Year,
+			Years:  oldYears,
+			Events: oldEvents.Events,
+		}
+		data.SetNameLink(name, fname, breadcrumbsEvents, g.baseUrl)
+
+		if err := utils.ExecuteTemplate("events-old", g.out.Join(fname), data); err != nil {
+			return fmt.Errorf("render old events template for %q: %w", oldEvents.Year, err)
+		}
+		sitemap.Add(fname, fname, name, "Vergangene Laufveranstaltungen")
+	}
+
 	// Render events, groups, shops lists
 	renderEventList := func(eventList []*events.Event, nav, main, sitemapCategory string, breadcrumbs utils.Breadcrumbs) error {
 		eventdata := EventTemplateData{
@@ -470,6 +516,16 @@ func (g Generator) Generate(eventsData events.Data) error {
 			if event.IsSeparator() {
 				continue
 			}
+
+			eventdata.Main = main
+			parentBreadcrumbs := breadcrumbs
+			if event.Old {
+				if link, ok := oldYearsLinks[fmt.Sprintf("%d", event.Time.Year())]; ok {
+					eventdata.Main = link.Url
+					parentBreadcrumbs = parentBreadcrumbs.Push(link)
+				}
+			}
+
 			eventdata.Event = event
 			eventdata.Description = event.GenerateDescription()
 			slug := event.Slug()
@@ -478,7 +534,7 @@ func (g Generator) Generate(eventsData events.Data) error {
 			if event.Meta.SeoTitle != "" {
 				name = event.Meta.SeoTitle
 			}
-			eventdata.SetNameLink(name, slug, breadcrumbs, g.baseUrl)
+			eventdata.SetNameLink(name, slug, parentBreadcrumbs, g.baseUrl)
 			if err := utils.ExecuteTemplate("event", g.out.Join(fileSlug), eventdata); err != nil {
 				return fmt.Errorf("render event template to %q: %w", g.out.Join(fileSlug), err)
 			}
@@ -489,7 +545,7 @@ func (g Generator) Generate(eventsData events.Data) error {
 	if err := renderEventList(eventsData.Events, "events", "/", "Laufveranstaltungen", breadcrumbsEvents); err != nil {
 		return fmt.Errorf("render event list: %w", err)
 	}
-	if err := renderEventList(eventsData.EventsOld, "events", "/events-old.html", "Vergangene Laufveranstaltungen", breadcrumbsEventsOld); err != nil {
+	if err := renderEventList(eventsData.EventsOld, "events", "/events-old.html", "Vergangene Laufveranstaltungen", breadcrumbsEvents); err != nil {
 		return fmt.Errorf("render old event list: %w", err)
 	}
 	if err := renderEventList(eventsData.Groups, "groups", "/lauftreffs.html", "Lauftreffs", breadcrumbsGroups); err != nil {

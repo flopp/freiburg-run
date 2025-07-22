@@ -4,17 +4,20 @@
     <div class="container is-max-desktop" itemscope itemtype="https://schema.org/ItemList">
         <h1 class="title" itemprop="name">{{.Title}}</h1>
 
-        <div class="notification is-danger">
+        <div class="notification is-light is-danger">
             Achtung: Dies ist eine Liste von <b>vergangenen</b> Laufveranstaltungen, Wettkämpfen, Volksläufen im Raum Freiburg (~50km Umkreis), umgekehrt sortiert nach Datum.
             <br />
             <br />
-            <a href="/">Hier geht's zur Liste der aktuellen Veranstaltungen.</a> 
+            <a class="button is-light" href="/">Aktuelle Veranstaltungen</a>
+            {{range .Years}}
+            <a class="button is-light" href="{{.Url}}">{{.Name}}</a>
+            {{end}}
         </div>
 
         {{template "controls.html" .}}
 
         <div class="columns is-multiline">   
-            {{range .Data.EventsOld}}
+            {{range .Events}}
             {{template "card.html" .}}
             {{end}}
         </div>
