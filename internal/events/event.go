@@ -32,7 +32,7 @@ type Event struct {
 	Location        Location
 	Details         template.HTML
 	Details2        template.HTML
-	Url             string
+	MainLink        *utils.Link
 	RawTags         []string
 	Tags            []*Tag
 	RawSeries       []string
@@ -143,7 +143,7 @@ func createSeparatorEvent(t time.Time) *Event {
 		Location{},
 		"",
 		"",
-		"",
+		nil,
 		nil,
 		nil,
 		nil,
@@ -213,12 +213,12 @@ func (event *Event) CalendarSlug() string {
 func (event *Event) LinkTitle() string {
 	switch event.Type {
 	case "event":
-		if strings.HasPrefix(event.Url, "mailto:") {
+		if strings.HasPrefix(event.MainLink.Url, "mailto:") {
 			return "Mail an Veranstalter"
 		}
 		return "Zur Veranstaltung"
 	case "group":
-		if strings.HasPrefix(event.Url, "mailto:") {
+		if strings.HasPrefix(event.MainLink.Url, "mailto:") {
 			return "Mail an Organisator"
 		}
 		return "Zum Lauftreff"

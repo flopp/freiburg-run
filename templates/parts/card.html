@@ -39,7 +39,7 @@
                     <tr>
                         <th class="w-2em no-border" title="Webseite">👉</th>
                         <td class="no-border">
-                        <a href="{{.Url}}" title="{{.Name.Orig}}: {{.LinkTitle}}" target="_blank">{{.Url}}</a>
+                        <a href="{{.MainLink.Url}}" title="{{.Name.Orig}}: {{.LinkTitle}}" target="_blank">{{.MainLink.Name}}</a>
                         </td>
                     </tr>
                     {{if .Details}}<tr><th class="w-2em no-border" title="Details">ℹ️</th><td class="no-border">{{.Details}}</td></tr>{{end}}

@@ -41,7 +41,7 @@ func (data *Data) CheckLinks() {
 		if event.IsSeparator() {
 			continue
 		}
-		urls = append(urls, CheckUrl{Url: event.Url, Event: event, Name: "main"})
+		urls = append(urls, CheckUrl{Url: event.MainLink.Url, Event: event, Name: "main"})
 		for _, link := range event.Links {
 			if link.IsExternal() {
 				urls = append(urls, CheckUrl{Url: link.Url, Event: event, Name: "link"})

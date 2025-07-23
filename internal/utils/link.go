@@ -14,6 +14,45 @@ func CreateLink(name string, url string) *Link {
 	}
 }
 
+func stripUrl(url string) string {
+	if len(url) == 0 {
+		return ""
+	}
+
+	// Remove the scheme (http:// or https://)
+	url = strings.TrimPrefix(url, "http://")
+	url = strings.TrimPrefix(url, "https://")
+
+	// Remove the "www." prefix unconditionally
+	url = strings.TrimPrefix(url, "www.")
+
+	// remove trailing hash
+	if idx := strings.Index(url, "#"); idx != -1 {
+		url = url[:idx]
+	}
+	// remove trailing query parameters
+	if idx := strings.Index(url, "?"); idx != -1 {
+		url = url[:idx]
+	}
+
+	// remove trailing index.html/htm/php
+	url = strings.TrimSuffix(url, "index.html")
+	url = strings.TrimSuffix(url, "index.htm")
+	url = strings.TrimSuffix(url, "index.php")
+
+	// Remove trailing "/" if it exists
+	url = strings.TrimSuffix(url, "/")
+
+	return url
+}
+
+func CreateUnnamedLink(url string) *Link {
+	return &Link{
+		Name: stripUrl(url),
+		Url:  url,
+	}
+}
+
 func (link Link) IsExternal() bool {
 	return strings.HasPrefix(link.Url, "http:") || strings.HasPrefix(link.Url, "https:")
 }
