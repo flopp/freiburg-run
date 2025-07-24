@@ -443,6 +443,12 @@ func FindSiblings(eventList []*Event, today time.Time) {
 			collected[event] = struct{}{}
 			siblings = append(siblings, event)
 		}
+
+		// reverse siblings to have the most recent first
+		for i, j := 0, len(siblings)-1; i < j; i, j = i+1, j-1 {
+			siblings[i], siblings[j] = siblings[j], siblings[i]
+		}
+
 		for _, event := range siblings {
 			event.Meta.Siblings = siblings
 			event.Meta.Current = false
@@ -450,14 +456,13 @@ func FindSiblings(eventList []*Event, today time.Time) {
 
 		limitBefore := today.AddDate(0, 0, -7)
 		var current *Event
-		for i := len(siblings) - 1; i >= 0; i -= 1 {
-			event := siblings[i]
+		for _, sibling := range siblings {
 			if current == nil {
-				current = event
-			} else if event.Time.Before(limitBefore) {
+				current = sibling
+			} else if sibling.Time.Before(limitBefore) {
 				break
 			} else {
-				current = event
+				current = sibling
 			}
 		}
 		current.Meta.Current = true
