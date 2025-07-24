@@ -293,7 +293,7 @@ func fetchEvents(config SheetsConfigData, srv *sheets.Service, today time.Time, 
 		if err != nil {
 			return nil, fmt.Errorf("table '%s', line '%d': %v", table, line, err)
 		}
-		cancelled := strings.HasPrefix(data.Status, "abgesagt")
+		cancelled := strings.Contains(data.Status, "abgesagt") || strings.Contains(data.Status, "geschlossen")
 		if cancelled && data.Status == "abgesagt" {
 			data.Status = ""
 		}
