@@ -5,9 +5,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
         <title>{{.NiceTitle}}</title>
         <meta name="description" content="{{.Description}}" />
-        <link rel="icon" type="image/png" href="{{.BasePath}}/favicon.png" />
+        <link rel="icon" type="image/png" href="{{BasePath "/favicon.png"}}" />
         <link rel="canonical" href="{{.Canonical}}" />
-        <link rel="manifest" href="{{.BasePath}}/manifest.json" />
+        <link rel="manifest" href="{{BasePath "/manifest.json"}}" />
         <meta name="theme-color" content="#4455F6">
 
         {{if eq .Nav "parkrun"}}
@@ -31,16 +31,16 @@
         <meta property="twitter:image" content="{{.Image}}">
 
         {{range .CssFiles}}
-        <link rel="stylesheet" href="{{$.BasePath}}/{{.}}"/>
+        <link rel="stylesheet" href="{{BasePath .}}"/>
         {{end}}
 
-        {{if .BasePath}}{{else}}<script defer src="{{.BasePath}}/{{.Umami.Url}}" data-website-id="{{.Umami.Id}}"></script>{{end}}
+        {{if .BasePath}}{{else}}<script defer src="{{BasePath .Umami.Url}}" data-website-id="{{.Umami.Id}}"></script>{{end}}
     </head>
     <body class="has-navbar-fixed-top has-pushed-down-footer-child">
 <nav class="navbar is-fixed-top is-link">
     <div class="navbar-brand">
         <a class="navbar-item" style="padding-left:1px; padding-top: 1px; padding-bottom: 1px;" href="/">
-            <img style="height: 48px; max-height:48px" src="{{.BasePath}}/images/freiburg-run-new.svg" alt="freiburg.run logo">
+            <img style="height: 48px; max-height:48px" src="{{BasePath "images/freiburg-run-new.svg"}}" alt="freiburg.run logo">
         </a>
         <a class="navbar-item is-size-4 is-uppercase has-text-weight-bold" href="/">
             freiburg.run
@@ -68,20 +68,20 @@
     <div id="navbarMain" class="navbar-menu">
         <div class="navbar-start">
             <div class="navbar-item has-dropdown is-hoverable">
-                <a class="navbar-link {{if eq .Nav "events"}}is-active{{end}}" href="{{.BasePath}}/">
+                <a class="navbar-link {{if eq .Nav "events"}}is-active{{end}}" href="{{BasePath "/"}}">
                     Veranstaltungen
                 </a>
                 <div class="navbar-dropdown has-background-link has-text-white is-boxed">
-                    <a class="navbar-item has-background-link has-text-white {{if eq .Nav "tags"}}is-active{{end}}" href="{{.BasePath}}/tags.html" title="Kategorien">
+                    <a class="navbar-item has-background-link has-text-white {{if eq .Nav "tags"}}is-active{{end}}" href="{{BasePath "tags.html"}}" title="Kategorien">
                         Kategorien
                     </a>
-                    <a class="navbar-item has-background-link has-text-white {{if eq .Nav "series"}}is-active{{end}}" href="{{.BasePath}}/series.html">
+                    <a class="navbar-item has-background-link has-text-white {{if eq .Nav "series"}}is-active{{end}}" href="{{BasePath "series.html"}}">
                         Laufserien
                     </a>
-                    <a class="navbar-item has-background-link has-text-white {{if eq .Nav "events-old"}}is-active{{end}}" href="{{.BasePath}}/events-old.html">
+                    <a class="navbar-item has-background-link has-text-white {{if eq .Nav "events-old"}}is-active{{end}}" href="{{BasePath "events-old.html"}}">
                         Archiv
                     </a>
-                    <a class="navbar-item has-background-link has-text-white {{if eq .Nav "map"}}is-active{{end}}" href="{{.BasePath}}/map.html">
+                    <a class="navbar-item has-background-link has-text-white {{if eq .Nav "map"}}is-active{{end}}" href="{{BasePath "map.html"}}">
                         Karte
                     </a>
                     <hr class="navbar-divider has-background-link has-text-white">
@@ -91,30 +91,30 @@
                 </div>
             </div>
 
-            <a class="navbar-item {{if eq .Nav "groups"}}is-active{{end}}" href="{{.BasePath}}/lauftreffs.html">
+            <a class="navbar-item {{if eq .Nav "groups"}}is-active{{end}}" href="{{BasePath "lauftreffs.html"}}">
                 Lauftreffs
             </a>
 
-            <a class="navbar-item {{if eq .Nav "shops"}}is-active{{end}}" href="{{.BasePath}}/shops.html">
+            <a class="navbar-item {{if eq .Nav "shops"}}is-active{{end}}" href="{{BasePath "shops.html"}}">
                 Shops
             </a>
 
-            <a class="navbar-item {{if eq .Nav "parkrun"}}is-active{{end}}" href="{{.BasePath}}/dietenbach-parkrun.html">
+            <a class="navbar-item {{if eq .Nav "parkrun"}}is-active{{end}}" href="{{BasePath "dietenbach-parkrun.html"}}">
                 Dietenbach parkrun
             </a>
 
             <div class="navbar-item has-dropdown is-hoverable">
-                <a class="navbar-link {{if eq .Nav "info"}}is-active{{end}}" href="{{.BasePath}}/info.html">
+                <a class="navbar-link {{if eq .Nav "info"}}is-active{{end}}" href="{{BasePath "info.html"}}">
                     Infos
                 </a>
                 <div class="navbar-dropdown has-background-link has-text-white  is-boxed">
-                    <a class="navbar-item has-background-link has-text-white {{if eq .Nav "support"}}is-active{{end}}" href="{{.BasePath}}/support.html">
+                    <a class="navbar-item has-background-link has-text-white {{if eq .Nav "support"}}is-active{{end}}" href="{{BasePath "support.html"}}">
                         Unterstützen
                     </a>
-                    <a class="navbar-item has-background-link has-text-white {{if eq .Nav "support"}}is-active{{end}}" href="{{.BasePath}}/impressum.html">
+                    <a class="navbar-item has-background-link has-text-white {{if eq .Nav "support"}}is-active{{end}}" href="{{BasePath "impressum.html"}}">
                         Impressum
                     </a>
-                    <a class="navbar-item has-background-link has-text-white {{if eq .Nav "support"}}is-active{{end}}" href="{{.BasePath}}/datenschutz.html">
+                    <a class="navbar-item has-background-link has-text-white {{if eq .Nav "support"}}is-active{{end}}" href="{{BasePath "datenschutz.html"}}">
                         Datenschutz
                     </a>
                 </div>
@@ -139,7 +139,7 @@
                     <ul itemscope itemtype="https://schema.org/BreadcrumbList">
                         {{range .Breadcrumbs}}
                         <li {{if .IsLast}}class="is-active"{{end}} itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-                            <a href="{{$.BasePath}}{{.Link.Url}}" itemprop="item">
+                            <a href="{{BasePath .Link.Url}}" itemprop="item">
                                 <span itemprop="name">{{.Link.Name}}</span>
                             </a>
                             <meta itemprop="position" content="{{.Position}}" />

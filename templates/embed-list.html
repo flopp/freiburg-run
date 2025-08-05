@@ -7,7 +7,7 @@
         <link rel="canonical" href="{{.Canonical}}" />
 
         {{range .CssFiles}}
-        <link rel="stylesheet" href="/{{.}}"/>
+        <link rel="stylesheet" href="{{BasePath .}}"/>
         {{end}}
 
         <script defer src="/{{.Umami.Url}}" data-website-id="{{.Umami.Id}}"></script>
@@ -34,7 +34,7 @@ Letzte Aktualisierung: <span class="timestamp">{{.TimestampFull}}</span>
 </table>
 
 {{range .JsFiles}}
-<script src="/{{.}}"></script>
+<script src="{{BasePath .}}"></script>
 {{end}}
    </body>
 </html>

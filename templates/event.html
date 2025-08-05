@@ -74,7 +74,7 @@
                             <th>Serien</th>
                             <td class="is-w100">
                                 {{range .Event.Series}}
-                                    <a class="tag is-link is-light" title="Serie: {{.Name.Orig}}" href="/{{.Slug}}">{{.Name.Orig}}</a>
+                                    <a class="tag is-link is-light" title="Serie: {{.Name.Orig}}" href="{{BasePath .Slug}}">{{.Name.Orig}}</a>
                                 {{end}}
                             </td>
                         </tr>
@@ -84,7 +84,7 @@
                             <th>Kategorien</th>
                             <td class="is-w100">
                                 {{range .Event.Tags}}
-                                    <a class="tag is-link is-light" title="Kategorie: {{.Name.Orig}}" href="/{{.Slug}}">{{.Name.Orig}}</a>
+                                    <a class="tag is-link is-light" title="Kategorie: {{.Name.Orig}}" href="{{BasePath .Slug}}">{{.Name.Orig}}</a>
                                 {{end}}
                             </td>
                         </tr>
@@ -94,7 +94,7 @@
                                 <th>Historie</th>
                                 <td class="is-w100">
                                     <ul>
-                                        {{range .Event.Meta.Siblings}}<li {{if .Meta.Current}} class="has-text-weight-bold"{{end}}><a href="/{{.Slug}}">{{.Name.Orig}} ({{.Time.Formatted}})</a></li>{{end}}
+                                        {{range .Event.Meta.Siblings}}<li {{if .Meta.Current}} class="has-text-weight-bold"{{end}}><a href="{{BasePath .Slug}}">{{.Name.Orig}} ({{.Time.Formatted}})</a></li>{{end}}
                                     </ul>
                                 </td>
                             </tr>
@@ -103,7 +103,7 @@
                             <tr>
                                 <th>Voriger</th>
                                 <td class="is-w100">
-                                    <a href="/{{.Event.Prev.Slug}}">{{.Event.Prev.Name.Orig}} ({{.Event.Prev.Time.Formatted}})</a>
+                                    <a href="{{BasePath .Event.Prev.Slug}}">{{.Event.Prev.Name.Orig}} ({{.Event.Prev.Time.Formatted}})</a>
                                 </td>
                             </tr>
                             {{end}}
@@ -111,7 +111,7 @@
                             <tr>
                                 <th>Nächster</th>
                                 <td class="is-w100">
-                                    <a href="/{{.Event.Next.Slug}}">{{.Event.Next.Name.Orig}} ({{.Event.Next.Time.Formatted}})</a>
+                                    <a href="{{BasePath .Event.Next.Slug}}">{{.Event.Next.Name.Orig}} ({{.Event.Next.Time.Formatted}})</a>
                                 </td>
                             </tr>
                             {{end}}
@@ -121,7 +121,7 @@
                             <th>In der Nähe (5km)</th>
                             <td class="is-w100">
                                 <ul>
-                                    {{range .Event.UpcomingNear}}<li><a href="/{{.Slug}}">{{.Name.Orig}} <span class="is-size-7">({{.Time.Formatted}}; {{.Location.Name}})</span></a></li>{{end}}
+                                    {{range .Event.UpcomingNear}}<li><a href="{{BasePath .Slug}}">{{.Name.Orig}} <span class="is-size-7">({{.Time.Formatted}}; {{.Location.Name}})</span></a></li>{{end}}
                                 </ul>
                             </td>
                         </tr>

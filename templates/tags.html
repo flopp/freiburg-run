@@ -25,7 +25,7 @@
                         {{range .Data.Tags}}
                         <tr>
                             <td>
-                                <a href="/{{.Slug}}">{{.Name.Orig}}</a>
+                                <a href="{{BasePath .Slug}}">{{.Name.Orig}}</a>
                             </td>
                             <td>
                                 <input type="checkbox" data-tag="{{.Name.Sanitized}}">

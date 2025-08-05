@@ -35,7 +35,7 @@ func loadTemplate(name string, basePath string) (*template.Template, error) {
 				res += "/"
 			}
 			res += p
-			if strings.HasPrefix(basePath, "file:") && strings.HasSuffix(p, "/") {
+			if strings.HasPrefix(basePath, "/Users/") && strings.HasSuffix(p, "/") {
 				res += "index.html"
 			}
 			return res
