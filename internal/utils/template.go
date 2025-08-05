@@ -30,13 +30,15 @@ func loadTemplate(name string, basePath string) (*template.Template, error) {
 	files = append(files, parts...)
 	t, err := template.New(name + ".html").Funcs(template.FuncMap{
 		"BasePath": func(p string) string {
-			if basePath == "" {
-				return p
+			res := basePath
+			if !strings.HasPrefix(p, "/") {
+				res += "/"
 			}
-			if strings.HasPrefix(p, "/") {
-				return basePath + p
+			res += p
+			if strings.HasPrefix(basePath, "file:") && strings.HasSuffix(p, "/") {
+				res += "index.html"
 			}
-			return basePath + "/" + p
+			return res
 		},
 	}).ParseFiles(files...)
 	if err != nil {

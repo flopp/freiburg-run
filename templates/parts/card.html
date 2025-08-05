@@ -11,15 +11,15 @@
     {{end}}
         <header class="card-header is-flex-direction-column">
             {{if .Cancelled}}
-            <a class="button is-danger has-text-white is-fullwidth is-radiusless button-wrap" href="/{{.Slug}}" itemprop="item">
+            <a class="button is-danger has-text-white is-fullwidth is-radiusless button-wrap" href="{{BasePath .Slug}}" itemprop="item">
                 <span class="icon"><i class="info-icon"></i></span>
                 <span itemprop="name">{{.Name.Orig}}</span>
             </a>
-            <a class="button is-danger has-text-white is-small is-fullwidth is-radiusless" href="/{{.Slug}}">
+            <a class="button is-danger has-text-white is-small is-fullwidth is-radiusless" href="{{BasePath .Slug}}">
                 <span>(abgesagt)</span>
             </a>
             {{else}}
-            <a class="button is-link is-fullwidth is-radiusless button-wrap" href="/{{.Slug}}" itemprop="item">
+            <a class="button is-link is-fullwidth is-radiusless button-wrap" href="{{BasePath .Slug}}" itemprop="item">
                 <span class="icon"><i class="info-icon"></i></span>
                 <span itemprop="name">{{.Name.Orig}}</span>
             </a>
@@ -58,13 +58,13 @@
                     {{if .Series}}<tr>
                         <th class="w-2em no-border" title="Serien">🔢</th>
                         <td class="no-border">
-                        {{range .Series}}<a class="tag is-link is-light mr-2" href="/{{.Slug}}">{{.Name.Orig}}</a>{{end}}
+                        {{range .Series}}<a class="tag is-link is-light mr-2" href="{{BasePath .Slug}}">{{.Name.Orig}}</a>{{end}}
                         </td>
                     </tr>{{end}}
                     {{if .Tags}}<tr>
                         <th class="w-2em no-border" title="Kategorien">🏷</th>
                         <td class="no-border">
-                        {{range .Tags}}<a class="tag is-link is-light mr-2" href="/{{.Slug}}" data-tag="{{.Name.Sanitized}}">{{.Name.Orig}}</a>{{end}}
+                        {{range .Tags}}<a class="tag is-link is-light mr-2" href="{{BasePath .Slug}}" data-tag="{{.Name.Sanitized}}">{{.Name.Orig}}</a>{{end}}
                         </td>
                     </tr>{{end}}
                 </table>
