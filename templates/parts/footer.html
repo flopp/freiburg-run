@@ -1,7 +1,7 @@
 <footer class="footer">
     <div class="content has-text-centered">
         <p id="footer-content">
-            <strong>freiburg.run</strong> von <a href="https://florian-pigorsch.de/" target="_blank">Florian Pigorsch</a>. <a href="/info.html">Info/Kontakt</a> - <a href="/support.html">Unterstützen</a> - <a href="/impressum.html">Impressum</a> - <a href="/datenschutz.html">Datenschutz</a> - <a href="/sitemap.html">Sitemap</a>
+            <strong>freiburg.run</strong> von <a href="https://florian-pigorsch.de/" target="_blank">Florian Pigorsch</a>. <a href="{{.BasePath}}/info.html">Info/Kontakt</a> - <a href="{{.BasePath}}/support.html">Unterstützen</a> - <a href="{{.BasePath}}/impressum.html">Impressum</a> - <a href="{{.BasePath}}/datenschutz.html">Datenschutz</a> - <a href="{{.BasePath}}/sitemap.html">Sitemap</a>
             <br />
             {{if .SheetUrl}}Datenquelle: <a href="{{.SheetUrl}}" target="_blank">Google Sheets</a>.{{end}}
             Letzte Aktualisierung: <span class="timestamp">{{.TimestampFull}}</span>
