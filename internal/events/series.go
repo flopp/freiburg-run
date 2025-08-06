@@ -33,12 +33,12 @@ func (serie *Serie) Slug() string {
 	return fmt.Sprintf("serie/%s.html", serie.Name.Sanitized)
 }
 
-func GetSerie(series map[string]*Serie, name string) *Serie {
+func GetSerie(series map[string]*Serie, name string) (*Serie, bool) {
 	id := utils.SanitizeName(name)
 	if s, found := series[id]; found {
-		return s
+		return s, true
 	}
 	serie := CreateSerie(id, name)
 	series[id] = serie
-	return serie
+	return serie, false
 }

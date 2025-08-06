@@ -2,6 +2,7 @@ package events
 
 import (
 	"fmt"
+	"log"
 	"sort"
 	"time"
 
@@ -224,7 +225,10 @@ func collectEventSeries(seriesMap map[string]*Serie, eventList []*Event) error {
 
 		event.Series = make([]*Serie, 0, len(event.RawSeries))
 		for _, s := range event.RawSeries {
-			serie := GetSerie(seriesMap, s)
+			serie, already_existed := GetSerie(seriesMap, s)
+			if !already_existed {
+				log.Printf("Event: %s has unknown series tag: %s", event.Name.Orig, s)
+			}
 			event.Series = append(event.Series, serie)
 			switch event.Type {
 			case "event":
