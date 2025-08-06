@@ -343,10 +343,6 @@ func fetchEvents(config SheetsConfigData, srv *sheets.Service, today time.Time, 
 			log.Printf("event '%s': %v", name, err)
 		}
 		isOld := timeRange.Before(today)
-		year := timeRange.Year()
-		if year > 0 {
-			tags = append(tags, fmt.Sprintf("%d", year))
-		}
 		links, err := parseLinks(data.Links, data.Registration)
 		if err != nil {
 			return nil, fmt.Errorf("parsing links of event '%s': %w", name, err)

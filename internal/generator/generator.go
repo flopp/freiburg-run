@@ -148,6 +148,10 @@ func createHtaccess(data events.Data, outDir utils.Path) error {
 	destination.WriteString("Redirect /event/dreilaendergarten-parkrun.html /group/dreilaendergarten-parkrun.html\n")
 	destination.WriteString("Redirect /tag/serie-intersport-denzer-cup-2024.html /serie/intersport-denzer-cup-2024.html\n")
 	destination.WriteString("Redirect /event/2023-4-crosslauf-am-opfinger-see.html /event/2024-4-crosslauf-am-opfinger-see.html\n")
+	destination.WriteString("Redirect /tag/2023.html /events-old-2023.html\n")
+	destination.WriteString("Redirect /tag/2024.html /events-old-2024.html\n")
+	destination.WriteString("Redirect /tag/2025.html /events-old.html\n")
+	destination.WriteString("Redirect /tag/2026.html /\n")
 
 	for _, e := range data.Events {
 		slug := e.Slug()
