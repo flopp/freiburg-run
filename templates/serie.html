@@ -17,14 +17,10 @@
 {{if .Serie.Links}}
             <p class="block">
                 {{range .Serie.Links}}
-                    <a class="tag is-white" href="{{.Url}}" title="{{$.Serie.Name.Orig}}: {{.Name}}" target="_blank">{{.Name}}</a>
+                <a class="tag is-white" href="{{.Url}}" title="{{$.Serie.Name.Orig}}: {{.Name}}" target="_blank">{{.Name}}</a>
                 {{end}}
             </p>
 {{end}}
-
-            <p class="block">
-                <a class="button is-light" href="{{.FeedbackFormUrl}}" target="_blank">Fehler melden</a>
-            </p>
         </div>
 
         {{template "controls.html" .}}
