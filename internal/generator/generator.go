@@ -451,6 +451,13 @@ func (g Generator) Generate(eventsData events.Data) error {
 		return fmt.Errorf("render subpage %q: %w", "404.html", err)
 	}
 
+	if err := renderSubPage("club/", "club/index.html", "club", "club", "Allgemein",
+		"freiburg.run Club",
+		"freiburg.run Club",
+		breadcrumbsBase); err != nil {
+		return fmt.Errorf("render subpage %q: %w", "club.html", err)
+	}
+
 	// Special rendering of parkrun page for wordpress
 	data := TemplateData{commondata, "", "", "", "", breadcrumbsBase, "/"}
 	if err := utils.ExecuteTemplateNoMinify("dietenbach-parkrun-wordpress", g.out.Join("dietenbach-parkrun-wordpress.html"), data.BasePath, data); err != nil {
