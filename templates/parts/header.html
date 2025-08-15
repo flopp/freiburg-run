@@ -42,7 +42,7 @@
         <a class="navbar-item" style="padding-left:1px; padding-top: 1px; padding-bottom: 1px;" href="/">
             <img style="height: 48px; max-height:48px" src="{{BasePath "images/freiburg-run-new.svg"}}" alt="freiburg.run logo">
         </a>
-        <a class="navbar-item is-size-4 is-uppercase has-text-weight-bold" href="/">
+        <a class="navbar-item is-size-4 is-uppercase has-text-weight-bold" href="{{BasePath "/"}}">
             freiburg.run
         </a>
 
@@ -67,6 +67,9 @@
     </div>
     <div id="navbarMain" class="navbar-menu">
         <div class="navbar-start">
+            <a class="navbar-item {{if eq .Nav "club"}}is-active{{end}}" href="{{BasePath "/club/"}}">
+                Club
+            </a>
             <div class="navbar-item has-dropdown is-hoverable">
                 <a class="navbar-link {{if eq .Nav "events"}}is-active{{end}}" href="{{BasePath "/"}}">
                     Veranstaltungen
@@ -100,7 +103,7 @@
             </a>
 
             <a class="navbar-item {{if eq .Nav "parkrun"}}is-active{{end}}" href="{{BasePath "dietenbach-parkrun.html"}}">
-                Dietenbach parkrun
+                parkrun
             </a>
 
             <div class="navbar-item has-dropdown is-hoverable">

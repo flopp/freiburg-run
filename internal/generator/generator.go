@@ -312,6 +312,7 @@ func (g Generator) Generate(eventsData events.Data) error {
 
 	sitemap := utils.CreateSitemap(g.baseUrl)
 	sitemap.AddCategory("Allgemein")
+	sitemap.AddCategory("Club")
 	sitemap.AddCategory("Laufveranstaltungen")
 	sitemap.AddCategory("Vergangene Laufveranstaltungen")
 	sitemap.AddCategory("Kategorien")
@@ -451,9 +452,9 @@ func (g Generator) Generate(eventsData events.Data) error {
 		return fmt.Errorf("render subpage %q: %w", "404.html", err)
 	}
 
-	if err := renderSubPage("club/", "club/index.html", "club", "club", "Allgemein",
+	if err := renderSubPage("club/", "club/index.html", "club", "club", "Club",
 		"freiburg.run Club",
-		"freiburg.run Club",
+		"freiburg.run Club - die Lauf-Community",
 		breadcrumbsBase); err != nil {
 		return fmt.Errorf("render subpage %q: %w", "club.html", err)
 	}
