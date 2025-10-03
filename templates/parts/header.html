@@ -14,7 +14,7 @@
         <link rel="me" href="https://freiburg.social/@dietenbachparkrun" />
         {{else}}
         <link rel="me" href="https://freiburg.social/@flopp" />
-        <link rel="me" href="https://freiburg.social/@freiburg_run"/>
+        {{if Config.Contact.Mastodon}}<link rel="me" href="{{Config.Contact.Mastodon}}"/>{{end}}
         {{end}}
 
         <!-- Open Graph / Facebook -->
@@ -48,12 +48,12 @@
         </a>
 
         <span class="is-flex is-flex-grow-1 is-flex-direction-row-reverse p-0 is-hidden-desktop">
-            <a class="navbar-item no-external" href="https://freiburg.social/@freiburg_run" target="_blank">
+            {{if Config.Contact.Mastodon}}<a class="navbar-item no-external" href="{{Config.Contact.Mastodon}}" target="_blank">
                 <span class="icon"><i class="mastodon-icon"></i></span>
-            </a>
-            <a class="navbar-item no-external" href="https://www.instagram.com/freiburg.run/" target="_blank">
+            </a>{{end}}
+            {{if Config.Contact.Instagram}}<a class="navbar-item no-external" href="{{Config.Contact.Instagram}}" target="_blank">
                 <span class="icon"><i class="insta-icon"></i></span>
-            </a>
+            </a>{{end}}
             <a class="navbar-item no-external" href="{{.FeedbackFormUrl}}" target="_blank">
                 <span class="icon"><i class="feedback-icon"></i></span>
             </a>
@@ -126,12 +126,12 @@
             <a class="navbar-item is-hidden-touch no-external" href="{{.FeedbackFormUrl}}" target="_blank">
                 <span class="icon"><i class="feedback-icon"></i></span>
             </a>
-            <a class="navbar-item is-hidden-touch no-external" href="https://www.instagram.com/freiburg.run/" target="_blank">
+            {{if Config.Contact.Instagram}}<a class="navbar-item is-hidden-touch no-external" href="{{Config.Contact.Instagram}}" target="_blank">
                 <span class="icon"><i class="insta-icon"></i></span>
-            </a>
-            <a class="navbar-item is-hidden-touch no-external" href="https://freiburg.social/@freiburg_run" target="_blank">
+            </a>{{end}}
+            {{if Config.Contact.Mastodon}}<a class="navbar-item is-hidden-touch no-external" href="{{Config.Contact.Mastodon}}" target="_blank">
                 <span class="icon"><i class="mastodon-icon"></i></span>
-            </a>
+            </a>{{end}}
         </div>
     </div>
 </nav>
