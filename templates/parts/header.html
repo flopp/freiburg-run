@@ -20,14 +20,14 @@
         <!-- Open Graph / Facebook -->
         <meta property="og:type" content="website">
         <meta property="og:url" content="{{.Canonical}}">
-        <meta property="og:title" content="{{.NiceTitle}} - freiburg.run">
+        <meta property="og:title" content="{{.NiceTitle}} - {{.Config.Website.Name}}">
         <meta property="og:description" content="{{.Description}}">
         <meta property="og:image" content="{{.Image}}">
 
         <!-- Twitter -->
         <meta property="twitter:card" content="summary_large_image">
         <meta property="twitter:url" content="{{.Canonical}}">
-        <meta property="twitter:title" content="{{.NiceTitle}} - freiburg.run">
+        <meta property="twitter:title" content="{{.NiceTitle}} - {{.Config.Website.Name}}">
         <meta property="twitter:description" content="{{.Description}}">
         <meta property="twitter:image" content="{{.Image}}">
 
@@ -41,10 +41,10 @@
 <nav class="navbar is-fixed-top is-link">
     <div class="navbar-brand">
         <a class="navbar-item" style="padding-left:1px; padding-top: 1px; padding-bottom: 1px;" href="/">
-            <img style="height: 48px; max-height:48px" src="{{BasePath "images/freiburg-run-new.svg"}}" alt="freiburg.run logo">
+            <img style="height: 48px; max-height:48px" src="{{BasePath "images/freiburg-run-new.svg"}}" alt="{{.Config.Website.Name}} logo">
         </a>
         <a class="navbar-item is-size-4 is-uppercase has-text-weight-bold" href="{{BasePath "/"}}">
-            freiburg.run
+            {{.Config.Website.Name}}
         </a>
 
         <span class="is-flex is-flex-grow-1 is-flex-direction-row-reverse p-0 is-hidden-desktop">

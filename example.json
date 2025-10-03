@@ -1,0 +1,9 @@
+{
+    "website": {
+        "name": "freiburg.run"
+    },
+    "google": {
+        "api_key": "YOUR_API_KEY_HERE",
+        "sheet_id": "YOUR_SHEET_ID_HERE"
+    }
+}

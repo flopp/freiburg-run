@@ -5,6 +5,7 @@
 .out
 .DS_Store
 config.json
+local.json
 *.csv
 backup-data
 scripts

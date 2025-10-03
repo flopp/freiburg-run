@@ -291,7 +291,7 @@ func (g Generator) Generate(eventsData events.Data) error {
 				continue
 			}
 			calendar := event.CalendarSlug()
-			if err := events.CreateEventCalendar(event, g.now, g.baseUrl, g.baseUrl.Join(calendar), g.out.Join(calendar)); err != nil {
+			if err := events.CreateEventCalendar(g.config, event, g.now, g.baseUrl, g.baseUrl.Join(calendar), g.out.Join(calendar)); err != nil {
 				return fmt.Errorf("create event calendar: %v", err)
 			}
 			event.Calendar = "/" + calendar
@@ -308,7 +308,7 @@ func (g Generator) Generate(eventsData events.Data) error {
 	*/
 
 	// Create calendar files for all upcoming events
-	if err := events.CreateCalendar(eventsData.Events, g.now, g.baseUrl, g.baseUrl.Join("events.ics"), g.out.Join("events.ics")); err != nil {
+	if err := events.CreateCalendar(g.config, eventsData.Events, g.now, g.baseUrl, g.baseUrl.Join("events.ics"), g.out.Join("events.ics")); err != nil {
 		return fmt.Errorf("create events.ics: %v", err)
 	}
 
@@ -322,7 +322,7 @@ func (g Generator) Generate(eventsData events.Data) error {
 	sitemap.AddCategory("Lauftreffs")
 	sitemap.AddCategory("Lauf-Shops")
 
-	breadcrumbsBase := utils.InitBreadcrumbs(utils.CreateLink("freiburg.run", "/"))
+	breadcrumbsBase := utils.InitBreadcrumbs(utils.CreateLink(g.config.Website.Name, "/"))
 	breadcrumbsEvents := breadcrumbsBase.Push(utils.CreateLink("Laufveranstaltungen", "/"))
 	breadcrumbsTags := breadcrumbsEvents.Push(utils.CreateLink("Kategorien", "/tags.html"))
 	breadcrumbsSeries := breadcrumbsEvents.Push(utils.CreateLink("Serien", "/series.html"))
@@ -421,42 +421,42 @@ func (g Generator) Generate(eventsData events.Data) error {
 
 	if err := renderPage("info.html", "info.html", "info", "info", "Allgemein",
 		"Info",
-		"Kontaktmöglichkeiten, allgemeine & technische Informationen über freiburg.run",
+		fmt.Sprintf("Kontaktmöglichkeiten, allgemeine & technische Informationen über %s", g.config.Website.Name),
 		breadcrumbsInfo); err != nil {
 		return fmt.Errorf("render info page: %w", err)
 	}
 
 	if err := renderSubPage("datenschutz.html", "datenschutz.html", "datenschutz", "datenschutz", "Allgemein",
 		"Datenschutz",
-		"Datenschutzerklärung von freiburg.run",
+		fmt.Sprintf("Datenschutzerklärung von %s", g.config.Website.Name),
 		breadcrumbsInfo); err != nil {
 		return fmt.Errorf("render subpage %q: %w", "datenschutz.html", err)
 	}
 
 	if err := renderSubPage("impressum.html", "impressum.html", "impressum", "impressum", "Allgemein",
 		"Impressum",
-		"Impressum von freiburg.run",
+		fmt.Sprintf("Impressum von %s", g.config.Website.Name),
 		breadcrumbsInfo); err != nil {
 		return fmt.Errorf("render subpage %q: %w", "impressum.html", err)
 	}
 
 	if err := renderSubPage("support.html", "support.html", "support", "support", "Allgemein",
-		"freiburg.run unterstützen",
-		"Möglichkeiten freiburg.run zu unterstützen",
+		fmt.Sprintf("%s unterstützen", g.config.Website.Name),
+		fmt.Sprintf("Möglichkeiten %s zu unterstützen", g.config.Website.Name),
 		breadcrumbsInfo); err != nil {
 		return fmt.Errorf("render subpage %q: %w", "support.html", err)
 	}
 
 	if err := renderSubPage("404.html", "404.html", "404", "404", "",
 		"404 - Seite nicht gefunden :(",
-		"Fehlerseite von freiburg.run",
+		fmt.Sprintf("Fehlerseite von %s", g.config.Website.Name),
 		breadcrumbsBase); err != nil {
 		return fmt.Errorf("render subpage %q: %w", "404.html", err)
 	}
 
 	if err := renderSubPage("club/", "club/index.html", "club", "club", "Club",
-		"freiburg.run Club",
-		"freiburg.run Club - die Lauf-Community",
+		fmt.Sprintf("%s Club", g.config.Website.Name),
+		fmt.Sprintf("%s Club - die Lauf-Community", g.config.Website.Name),
 		breadcrumbsBase); err != nil {
 		return fmt.Errorf("render subpage %q: %w", "club.html", err)
 	}
@@ -642,8 +642,8 @@ func (g Generator) Generate(eventsData events.Data) error {
 	sitemapTemplate := SitemapTemplateData{
 		TemplateData{
 			commondata,
-			"Sitemap von freiburg.run",
-			"Sitemap von freiburg.run",
+			fmt.Sprintf("Sitemap von %s", g.config.Website.Name),
+			fmt.Sprintf("Sitemap von %s", g.config.Website.Name),
 			"",
 			fmt.Sprintf("%s/sitemap.html", g.baseUrl),
 			breadcrumbsBase.Push(utils.CreateLink("Sitemap", "/sitemap.html")),
