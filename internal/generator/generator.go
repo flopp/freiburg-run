@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/flopp/freiburg-run/internal/config"
 	"github.com/flopp/freiburg-run/internal/events"
 	"github.com/flopp/freiburg-run/internal/resources"
 	"github.com/flopp/freiburg-run/internal/utils"
@@ -17,12 +18,12 @@ type UmamiData struct {
 }
 
 type CommonData struct {
+	Config          config.Config
 	Timestamp       string
 	TimestampFull   string
 	BaseUrl         string
 	BasePath        string
 	FeedbackFormUrl string // URL for feedback form
-	SheetUrl        string
 	Data            *events.Data
 	JsFiles         []string
 	CssFiles        []string
@@ -235,6 +236,7 @@ func renderEmbedList(baseUrl utils.Url, out utils.Path, data TemplateData, tag *
 }
 
 type Generator struct {
+	config          config.Config
 	out             utils.Path
 	baseUrl         utils.Url
 	basePath        string
@@ -246,20 +248,21 @@ type Generator struct {
 	umamiScript     string
 	umamiId         string
 	feedbackFormUrl string
-	sheetUrl        string
 	hashFile        string
 }
 
 func NewGenerator(
+	config config.Config,
 	out utils.Path,
 	baseUrl utils.Url, basePath string,
 	now time.Time,
 	jsFiles []string, cssFiles []string,
 	umamiScript string, umamiId string,
-	feedbackFormUrl string, sheetUrl string,
+	feedbackFormUrl string,
 	hashFile string,
 ) Generator {
 	return Generator{
+		config:          config,
 		out:             out,
 		baseUrl:         baseUrl,
 		basePath:        basePath,
@@ -271,7 +274,6 @@ func NewGenerator(
 		umamiScript:     umamiScript,
 		umamiId:         umamiId,
 		feedbackFormUrl: feedbackFormUrl,
-		sheetUrl:        sheetUrl,
 		hashFile:        hashFile,
 	}
 }
@@ -329,12 +331,12 @@ func (g Generator) Generate(eventsData events.Data) error {
 	breadcrumbsInfo := breadcrumbsBase.Push(utils.CreateLink("Info", "/info.html"))
 
 	commondata := CommonData{
+		g.config,
 		g.timestamp,
 		g.timestampFull,
 		string(g.baseUrl),
 		g.basePath,
 		g.feedbackFormUrl,
-		g.sheetUrl,
 		&eventsData,
 		resourceManager.JsFiles,
 		resourceManager.CssFiles,

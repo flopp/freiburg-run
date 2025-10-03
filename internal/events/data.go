@@ -6,6 +6,7 @@ import (
 	"sort"
 	"time"
 
+	"github.com/flopp/freiburg-run/internal/config"
 	"github.com/flopp/freiburg-run/internal/utils"
 )
 
@@ -90,7 +91,7 @@ func (data *Data) CheckLinks() {
 	}
 }
 
-func FetchData(config SheetsConfigData, today time.Time) (Data, error) {
+func FetchData(config config.Config, today time.Time) (Data, error) {
 	var data Data
 
 	sheetsData, err := LoadSheets(config, today)

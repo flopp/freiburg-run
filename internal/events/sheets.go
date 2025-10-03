@@ -2,37 +2,17 @@ package events
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"html/template"
 	"log"
-	"os"
 	"strings"
 	"time"
 
+	"github.com/flopp/freiburg-run/internal/config"
 	"github.com/flopp/freiburg-run/internal/utils"
 	"google.golang.org/api/option"
 	"google.golang.org/api/sheets/v4"
 )
-
-type SheetsConfigData struct {
-	ApiKey  string `json:"api_key"`
-	SheetId string `json:"sheet_id"`
-}
-
-func LoadSheetsConfig(path string) (SheetsConfigData, error) {
-	config_data, err := os.ReadFile(path)
-	if err != nil {
-		return SheetsConfigData{}, fmt.Errorf("load sheets config file '%s': %w", path, err)
-	}
-	var config SheetsConfigData
-	err = json.Unmarshal(config_data, &config)
-	if err != nil {
-		return SheetsConfigData{}, fmt.Errorf("unmarshall sheets config data: %w", err)
-	}
-
-	return config, nil
-}
 
 type SheetsData struct {
 	Events  []*Event
@@ -43,9 +23,9 @@ type SheetsData struct {
 	Series  []*Serie
 }
 
-func LoadSheets(config SheetsConfigData, today time.Time) (SheetsData, error) {
+func LoadSheets(config config.Config, today time.Time) (SheetsData, error) {
 	ctx := context.Background()
-	srv, err := sheets.NewService(ctx, option.WithAPIKey(config.ApiKey))
+	srv, err := sheets.NewService(ctx, option.WithAPIKey(config.Google.ApiKey))
 	if err != nil {
 		return SheetsData{}, fmt.Errorf("creating sheets service: %w", err)
 	}
@@ -137,7 +117,7 @@ func findSheetNames(sheets []string) (eventSheets []string, groupsSheet, shopsSh
 	return eventSheets, groupsSheet, shopsSheet, parkrunSheet, tagsSheet, seriesSheet, nil
 }
 
-func loadEvents(config SheetsConfigData, srv *sheets.Service, today time.Time, eventSheets []string) ([]*Event, error) {
+func loadEvents(config config.Config, srv *sheets.Service, today time.Time, eventSheets []string) ([]*Event, error) {
 	eventList := make([]*Event, 0)
 	for _, sheet := range eventSheets {
 		yearList, err := fetchEvents(config, srv, today, "event", sheet)
@@ -149,8 +129,8 @@ func loadEvents(config SheetsConfigData, srv *sheets.Service, today time.Time, e
 	return eventList, nil
 }
 
-func getAllSheets(config SheetsConfigData, srv *sheets.Service) ([]string, error) {
-	response, err := srv.Spreadsheets.Get(config.SheetId).Fields("sheets(properties(sheetId,title))").Do()
+func getAllSheets(config config.Config, srv *sheets.Service) ([]string, error) {
+	response, err := srv.Spreadsheets.Get(config.Google.SheetId).Fields("sheets(properties(sheetId,title))").Do()
 	if err != nil {
 		return nil, err
 	}
@@ -200,8 +180,8 @@ func (cols *Columns) getVal(col string, row []interface{}) (string, error) {
 	return fmt.Sprintf("%v", row[colIndex]), nil
 }
 
-func fetchTable(config SheetsConfigData, srv *sheets.Service, table string) (Columns, [][]interface{}, error) {
-	resp, err := srv.Spreadsheets.Values.Get(config.SheetId, fmt.Sprintf("%s!A1:Z", table)).Do()
+func fetchTable(config config.Config, srv *sheets.Service, table string) (Columns, [][]interface{}, error) {
+	resp, err := srv.Spreadsheets.Values.Get(config.Google.SheetId, fmt.Sprintf("%s!A1:Z", table)).Do()
 	if err != nil {
 		return Columns{}, nil, fmt.Errorf("cannot fetch table '%s': %v", table, err)
 	}
@@ -281,7 +261,7 @@ func getEventData(cols Columns, row []interface{}) (EventData, error) {
 	return data, nil
 }
 
-func fetchEvents(config SheetsConfigData, srv *sheets.Service, today time.Time, eventType string, table string) ([]*Event, error) {
+func fetchEvents(config config.Config, srv *sheets.Service, today time.Time, eventType string, table string) ([]*Event, error) {
 	cols, rows, err := fetchTable(config, srv, table)
 	if err != nil {
 		return nil, err
@@ -426,7 +406,7 @@ func getParkrunEventData(cols Columns, row []interface{}) (ParkrunEventData, err
 	return data, nil
 }
 
-func fetchParkrunEvents(config SheetsConfigData, srv *sheets.Service, today time.Time, table string) ([]*ParkrunEvent, error) {
+func fetchParkrunEvents(config config.Config, srv *sheets.Service, today time.Time, table string) ([]*ParkrunEvent, error) {
 	cols, rows, err := fetchTable(config, srv, table)
 	if err != nil {
 		return nil, err
@@ -502,7 +482,7 @@ func getTagData(cols Columns, row []interface{}) (TagData, error) {
 	return data, nil
 }
 
-func fetchTags(config SheetsConfigData, srv *sheets.Service, table string) ([]*Tag, error) {
+func fetchTags(config config.Config, srv *sheets.Service, table string) ([]*Tag, error) {
 	cols, rows, err := fetchTable(config, srv, table)
 	if err != nil {
 		return nil, err
@@ -554,7 +534,7 @@ func getSerieData(cols Columns, row []interface{}) (SerieData, error) {
 	return data, nil
 }
 
-func fetchSeries(config SheetsConfigData, srv *sheets.Service, table string) ([]*Serie, error) {
+func fetchSeries(config config.Config, srv *sheets.Service, table string) ([]*Serie, error) {
 	cols, rows, err := fetchTable(config, srv, table)
 	if err != nil {
 		return nil, err

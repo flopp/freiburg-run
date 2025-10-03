@@ -2,12 +2,12 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"flag"
 	"fmt"
 	"io"
 	"os"
 
+	"github.com/flopp/freiburg-run/internal/config"
 	"google.golang.org/api/drive/v3"
 	"google.golang.org/api/option"
 )
@@ -47,29 +47,10 @@ func parseCommandLine() CommandLineOptions {
 	}
 }
 
-type ConfigData struct {
-	ApiKey  string `json:"api_key"`
-	SheetId string `json:"sheet_id"`
-}
-
-func UnmarshalConfigData(path string) (ConfigData, error) {
-	buf, err := os.ReadFile(path)
-	if err != nil {
-		return ConfigData{}, fmt.Errorf("read config file '%s': %w", path, err)
-	}
-	var data ConfigData
-	err = json.Unmarshal(buf, &data)
-	if err != nil {
-		return ConfigData{}, fmt.Errorf("unmarshall data: %w", err)
-	}
-
-	return data, nil
-}
-
 func main() {
 	options := parseCommandLine()
 
-	config, err := UnmarshalConfigData(options.configFile)
+	config, err := config.LoadConfig(options.configFile)
 	if err != nil {
 		fmt.Printf("Unable to read config file: %v\n", err)
 		return
@@ -77,14 +58,14 @@ func main() {
 
 	fmt.Println("-- connecting to Google Drive service...")
 	ctx := context.Background()
-	service, err := drive.NewService(ctx, option.WithAPIKey(config.ApiKey))
+	service, err := drive.NewService(ctx, option.WithAPIKey(config.Google.ApiKey))
 	if err != nil {
 		fmt.Printf("Unable to connect to Google Drive: %v\n", err)
 		return
 	}
 
-	fmt.Printf("-- requesting file %s...\n", config.SheetId)
-	response, err := service.Files.Export(config.SheetId, "application/vnd.oasis.opendocument.spreadsheet").Download()
+	fmt.Printf("-- requesting file %s...\n", config.Google.SheetId)
+	response, err := service.Files.Export(config.Google.SheetId, "application/vnd.oasis.opendocument.spreadsheet").Download()
 	if err != nil {
 		fmt.Printf("Unable to download file: %v\n", err)
 		return

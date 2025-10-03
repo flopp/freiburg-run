@@ -34,7 +34,7 @@ checklinks:
 .phony: sync
 sync: .repo/.git/config .bin/generate-linux
 	(cd .repo && git pull --quiet)
-	rsync -a scripts/cronjob.sh .bin/generate-linux echeclus.uberspace.de:packages/freiburg.run/
+	rsync -a config.json scripts/cronjob.sh .bin/generate-linux echeclus.uberspace.de:packages/freiburg.run/
 	rsync -a .repo/ echeclus.uberspace.de:packages/freiburg.run/repo
 	ssh echeclus.uberspace.de chmod +x packages/freiburg.run/cronjob.sh packages/freiburg.run/generate-linux
 

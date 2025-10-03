@@ -7,6 +7,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/flopp/freiburg-run/internal/config"
 	"github.com/flopp/freiburg-run/internal/events"
 	"github.com/flopp/freiburg-run/internal/generator"
 	"github.com/flopp/freiburg-run/internal/resources"
@@ -62,7 +63,7 @@ type ConfigData struct {
 func main() {
 	options := parseCommandLine()
 
-	config_data, err := events.LoadSheetsConfig(options.configFile)
+	config_data, err := config.LoadConfig(options.configFile)
 	if err != nil {
 		log.Fatalf("failed to load config file: %v", err)
 		return
@@ -72,7 +73,6 @@ func main() {
 	out := utils.NewPath(options.outDir)
 	baseUrl := utils.Url("https://freiburg.run")
 	basePath := options.basePath
-	sheetUrl := fmt.Sprintf("https://docs.google.com/spreadsheets/d/%s", config_data.SheetId)
 	umamiId := "6609164f-5e79-4041-b1ed-f37da10a84d2"
 	feedbackFormUrl := "https://docs.google.com/forms/d/e/1FAIpQLScJlPFYKgT5WxDaH9FDJzha5hQ2cBsqALLrVjGp7bgB-ssubA/viewform?usp=sf_link"
 
@@ -104,12 +104,13 @@ func main() {
 	}
 
 	gen := generator.NewGenerator(
+		config_data,
 		out,
 		baseUrl, basePath,
 		now,
 		resourceManager.JsFiles, resourceManager.CssFiles,
 		resourceManager.UmamiScript, umamiId,
-		feedbackFormUrl, sheetUrl,
+		feedbackFormUrl,
 		options.hashFile)
 	if err := gen.Generate(eventsData); err != nil {
 		log.Fatalf("failed to generate: %v", err)
