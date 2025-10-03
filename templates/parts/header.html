@@ -54,7 +54,7 @@
             {{if Config.Contact.Instagram}}<a class="navbar-item no-external" href="{{Config.Contact.Instagram}}" target="_blank">
                 <span class="icon"><i class="insta-icon"></i></span>
             </a>{{end}}
-            <a class="navbar-item no-external" href="{{.FeedbackFormUrl}}" target="_blank">
+            <a class="navbar-item no-external" href="{{Config.Contact.FeedbackForm}}" target="_blank">
                 <span class="icon"><i class="feedback-icon"></i></span>
             </a>
         </span>
@@ -89,7 +89,7 @@
                         Karte
                     </a>
                     <hr class="navbar-divider has-background-link has-text-white">
-                    <a class="navbar-item has-background-link has-text-white" href="{{.FeedbackFormUrl}}" target="_blank">
+                    <a class="navbar-item has-background-link has-text-white" href="{{Config.Contact.FeedbackForm}}" target="_blank">
                         Neue Veranstaltung melden
                     </a>
                 </div>
@@ -123,7 +123,7 @@
                     </a>
                 </div>
             </div>
-            <a class="navbar-item is-hidden-touch no-external" href="{{.FeedbackFormUrl}}" target="_blank">
+            <a class="navbar-item is-hidden-touch no-external" href="{{Config.Contact.FeedbackForm}}" target="_blank">
                 <span class="icon"><i class="feedback-icon"></i></span>
             </a>
             {{if Config.Contact.Instagram}}<a class="navbar-item is-hidden-touch no-external" href="{{Config.Contact.Instagram}}" target="_blank">

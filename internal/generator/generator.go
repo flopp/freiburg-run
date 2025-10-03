@@ -18,16 +18,15 @@ type UmamiData struct {
 }
 
 type CommonData struct {
-	Config          config.Config
-	Timestamp       string
-	TimestampFull   string
-	BaseUrl         string
-	BasePath        string
-	FeedbackFormUrl string // URL for feedback form
-	Data            *events.Data
-	JsFiles         []string
-	CssFiles        []string
-	Umami           UmamiData
+	Config        config.Config
+	Timestamp     string
+	TimestampFull string
+	BaseUrl       string
+	BasePath      string
+	Data          *events.Data
+	JsFiles       []string
+	CssFiles      []string
+	Umami         UmamiData
 }
 
 type TemplateData struct {
@@ -336,7 +335,6 @@ func (g Generator) Generate(eventsData events.Data) error {
 		g.timestampFull,
 		string(g.baseUrl),
 		g.basePath,
-		g.feedbackFormUrl,
 		&eventsData,
 		resourceManager.JsFiles,
 		resourceManager.CssFiles,
