@@ -1,6 +1,6 @@
 module github.com/flopp/freiburg-run
 
-go 1.23.0
+go 1.24.0
 
 toolchain go1.25.1
 
@@ -11,7 +11,7 @@ require (
 	github.com/flopp/go-filehash v0.0.0-20250313113005-e3e8650a2258
 	github.com/google/uuid v1.6.0
 	github.com/tdewolff/minify/v2 v2.24.3
-	golang.org/x/text v0.28.0
+	golang.org/x/text v0.29.0
 	google.golang.org/api v0.248.0
 )
 
