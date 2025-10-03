@@ -10,7 +10,9 @@
         <link rel="stylesheet" href="{{BasePath .}}"/>
         {{end}}
 
-        <script defer src="/{{.Umami.Url}}" data-website-id="{{.Umami.Id}}"></script>
+        {{if Config.Umami.WebsiteId}}
+        <script defer src="/{{.UmamiScript}}" data-website-id="{{Config.Umami.WebsiteId}}"></script>
+        {{end}}
     </head>
     <body>
 

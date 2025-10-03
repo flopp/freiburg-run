@@ -14,5 +14,8 @@
     "google": {
         "api_key": "YOUR_API_KEY_HERE",
         "sheet_id": "YOUR_SHEET_ID_HERE"
+    },
+    "umami": {
+        "website_id": "YOUR_UMAMI_WEBSITE_ID (OPTIONAL)"
     }
 }

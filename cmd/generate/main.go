@@ -73,8 +73,6 @@ func main() {
 	out := utils.NewPath(options.outDir)
 	baseUrl := utils.Url("https://freiburg.run")
 	basePath := options.basePath
-	umamiId := "6609164f-5e79-4041-b1ed-f37da10a84d2"
-	feedbackFormUrl := "https://docs.google.com/forms/d/e/1FAIpQLScJlPFYKgT5WxDaH9FDJzha5hQ2cBsqALLrVjGp7bgB-ssubA/viewform?usp=sf_link"
 
 	now := time.Now()
 	today := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
@@ -109,8 +107,7 @@ func main() {
 		baseUrl, basePath,
 		now,
 		resourceManager.JsFiles, resourceManager.CssFiles,
-		resourceManager.UmamiScript, umamiId,
-		feedbackFormUrl,
+		resourceManager.UmamiScript,
 		options.hashFile)
 	if err := gen.Generate(eventsData); err != nil {
 		log.Fatalf("failed to generate: %v", err)

@@ -12,11 +12,6 @@ import (
 	"github.com/flopp/freiburg-run/internal/utils"
 )
 
-type UmamiData struct {
-	Url string
-	Id  string
-}
-
 type CommonData struct {
 	Config        config.Config
 	Timestamp     string
@@ -26,7 +21,7 @@ type CommonData struct {
 	Data          *events.Data
 	JsFiles       []string
 	CssFiles      []string
-	Umami         UmamiData
+	UmamiScript   string
 }
 
 type TemplateData struct {
@@ -235,19 +230,17 @@ func renderEmbedList(config config.Config, baseUrl utils.Url, out utils.Path, da
 }
 
 type Generator struct {
-	config          config.Config
-	out             utils.Path
-	baseUrl         utils.Url
-	basePath        string
-	now             time.Time
-	timestamp       string
-	timestampFull   string
-	jsFiles         []string
-	cssFiles        []string
-	umamiScript     string
-	umamiId         string
-	feedbackFormUrl string
-	hashFile        string
+	config        config.Config
+	out           utils.Path
+	baseUrl       utils.Url
+	basePath      string
+	now           time.Time
+	timestamp     string
+	timestampFull string
+	jsFiles       []string
+	cssFiles      []string
+	umamiScript   string
+	hashFile      string
 }
 
 func NewGenerator(
@@ -256,24 +249,21 @@ func NewGenerator(
 	baseUrl utils.Url, basePath string,
 	now time.Time,
 	jsFiles []string, cssFiles []string,
-	umamiScript string, umamiId string,
-	feedbackFormUrl string,
+	umamiScript string,
 	hashFile string,
 ) Generator {
 	return Generator{
-		config:          config,
-		out:             out,
-		baseUrl:         baseUrl,
-		basePath:        basePath,
-		now:             now,
-		timestamp:       now.Format("2006-01-02"),
-		timestampFull:   now.Format("2006-01-02 15:04:05"),
-		jsFiles:         jsFiles,
-		cssFiles:        cssFiles,
-		umamiScript:     umamiScript,
-		umamiId:         umamiId,
-		feedbackFormUrl: feedbackFormUrl,
-		hashFile:        hashFile,
+		config:        config,
+		out:           out,
+		baseUrl:       baseUrl,
+		basePath:      basePath,
+		now:           now,
+		timestamp:     now.Format("2006-01-02"),
+		timestampFull: now.Format("2006-01-02 15:04:05"),
+		jsFiles:       jsFiles,
+		cssFiles:      cssFiles,
+		umamiScript:   umamiScript,
+		hashFile:      hashFile,
 	}
 }
 
@@ -338,10 +328,7 @@ func (g Generator) Generate(eventsData events.Data) error {
 		&eventsData,
 		resourceManager.JsFiles,
 		resourceManager.CssFiles,
-		UmamiData{
-			resourceManager.UmamiScript,
-			g.umamiId,
-		},
+		resourceManager.UmamiScript,
 	}
 
 	// Render general pages

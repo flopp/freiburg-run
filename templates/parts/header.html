@@ -35,7 +35,9 @@
         <link rel="stylesheet" href="{{BasePath .}}"/>
         {{end}}
 
-        {{if .BasePath}}{{else}}<script defer src="{{BasePath .Umami.Url}}" data-website-id="{{.Umami.Id}}"></script>{{end}}
+        {{if Config.Umami.WebsiteId}}
+        <script defer src="/{{.UmamiScript}}" data-website-id="{{Config.Umami.WebsiteId}}"></script>
+        {{end}}
     </head>
     <body class="has-navbar-fixed-top has-pushed-down-footer-child">
 <nav class="navbar is-fixed-top is-link">
