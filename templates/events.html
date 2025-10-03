@@ -6,9 +6,9 @@
         
         
         <div class="notification is-link is-light is-flex">
-            <img class="is-hidden-mobile mr-4" style="width:128px; max-width:128px; height:128px" src="{{BasePath "/images/freiburg-run-new.svg"}}" alt="{{.Config.Website.Name}} Logo">
+            <img class="is-hidden-mobile mr-4" style="width:128px; max-width:128px; height:128px" src="{{BasePath "/images/freiburg-run-new.svg"}}" alt="{{Config.Website.Name}} Logo">
             <div>
-                Liste von {{.CountEvents}} <b>aktuellen und zukünftigen</b> Laufveranstaltungen, Wettkämpfen, Volksläufen im Raum Freiburg (~50km Umkreis), sortiert nach Datum.
+                Liste von {{.CountEvents}} <b>aktuellen und zukünftigen</b> Laufveranstaltungen, Wettkämpfen, Volksläufen im Raum {{Config.City.Name}} (~50km Umkreis), sortiert nach Datum.
                 <br />
                 <br />
                 <a href="{{BasePath "/events-old.html"}}">Hier geht's zur Liste der vergangenen Veranstaltungen.</a>

@@ -1,12 +1,12 @@
 <footer class="footer">
     <div class="content has-text-centered">
         <p id="footer-content">
-            <strong>{{.Config.Website.Name}}</strong> von <a href="https://florian-pigorsch.de/" target="_blank">Florian Pigorsch</a>. <a href="{{BasePath "/info.html"}}">Info/Kontakt</a> - <a href="{{BasePath "/support.html"}}">Unterstützen</a> - <a href="{{BasePath "/impressum.html"}}">Impressum</a> - <a href="{{BasePath "/datenschutz.html"}}">Datenschutz</a> - <a href="{{BasePath "/sitemap.html"}}">Sitemap</a>
+            <strong>{{Config.Website.Name}}</strong> von <a href="https://florian-pigorsch.de/" target="_blank">Florian Pigorsch</a>. <a href="{{BasePath "/info.html"}}">Info/Kontakt</a> - <a href="{{BasePath "/support.html"}}">Unterstützen</a> - <a href="{{BasePath "/impressum.html"}}">Impressum</a> - <a href="{{BasePath "/datenschutz.html"}}">Datenschutz</a> - <a href="{{BasePath "/sitemap.html"}}">Sitemap</a>
             <br />
             <a href="https://freiburg.fit" target="_blank">Fitness-Locations in Freiburg</a><br>
             <a href="https://socialrunclubs.de" target="_blank">Social Run Clubs in Deutschland</a>
             <br />
-            {{if .Config.DataSheetUrl}}Datenquelle: <a href="{{.Config.DataSheetUrl}}" target="_blank">Google Sheets</a>.{{end}}
+            {{if Config.DataSheetUrl}}Datenquelle: <a href="{{Config.DataSheetUrl}}" target="_blank">Google Sheets</a>.{{end}}
             Letzte Aktualisierung: <span class="timestamp">{{.TimestampFull}}</span>
         </p>
     </div>

@@ -38,7 +38,7 @@
                             <td class="is-w100">
                                 {{if .Event.Location.HasGeo}}
                                 <a href="{{.Event.Location.GoogleMaps}}" title="{{.Event.Name.Orig}}: {{.Event.Location.Name}}" target="_blank">{{.Event.Location.Name}}</a>
-                                ({{.Event.Location.DirLong}})
+                                ({{.Event.Location.DistDirFancy}})
                                 {{else}}
                                 {{.Event.Location.Name}}
                                 {{end}}

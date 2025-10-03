@@ -316,7 +316,7 @@ func fetchEvents(config config.Config, srv *sheets.Service, today time.Time, eve
 				tags = append(tags, utils.SanitizeName(t))
 			}
 		}
-		location := CreateLocation(data.Location, data.Coordinates)
+		location := CreateLocation(config, data.Location, data.Coordinates)
 		tags = append(tags, location.Tags()...)
 		timeRange, err := utils.CreateTimeRange(data.Date)
 		if err != nil {

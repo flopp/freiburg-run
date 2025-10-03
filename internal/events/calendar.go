@@ -30,7 +30,7 @@ func CreateEventCalendar(config config.Config, event *Event, now time.Time, base
 	cal := ical.NewCalendar()
 	cal.SetProductId(fmt.Sprintf("Laufevents - %s", config.Website.Name))
 	cal.SetMethod(ical.MethodPublish)
-	cal.SetDescription("Liste aller Laufevents im Raum Freiburg (50km Umkreis)")
+	cal.SetDescription(fmt.Sprintf("Liste aller Laufevents im Raum %s (50km Umkreis)", config.City.Name))
 	///cal.SetUrl(calendarUrl)
 	uid, err := event.GetUUID()
 	if err != nil {
@@ -65,7 +65,7 @@ func CreateCalendar(config config.Config, eventsList []*Event, now time.Time, ba
 	cal := ical.NewCalendar()
 	cal.SetProductId(fmt.Sprintf("Laufevents - %s", config.Website.Name))
 	cal.SetMethod(ical.MethodPublish)
-	cal.SetDescription("Liste aller Laufevents im Raum Freiburg (50km Umkreis)")
+	cal.SetDescription(fmt.Sprintf("Liste aller Laufevents im Raum %s (50km Umkreis)", config.City.Name))
 	cal.SetUrl(calendarUrl)
 
 	for _, e := range eventsList {

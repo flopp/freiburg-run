@@ -17,7 +17,7 @@
                 <br /><br />
                 Ich habe dies zum Anlass genommen, zuerst in <a href="https://running.flopp.net/" target="_blank">meinem Laufblog</a> und jetzt hier auf einer dedizierten Webseite eine solche Liste von lokalen Veranstaltungen zu führen, diese aktuell zu halten und somit die Laufcommunity zu bereichern. 
                 <br /><br />
-                Ich hoffe diese Seite ist hilfreich für Euch! Teilt die Seite gerne oder verlinkt {{.Config.Website.Name}} auf euren Webseiten.                
+                Ich hoffe diese Seite ist hilfreich für Euch! Teilt die Seite gerne oder verlinkt {{Config.Website.Name}} auf euren Webseiten.                
                 <br /><br />
                 Grüße<br />
                 Florian
@@ -32,7 +32,7 @@
             <ul>
                 <li><a href="{{.FeedbackFormUrl}}" target="_blank">Kontaktformular</a></li>
                 <li>per Email: <a href="mailto:mail@florian-pigorsch.de">mail@florian-pigorsch.de</a></li>
-                <li>{{.Config.Website.Name}} bei <a href="https://www.instagram.com/freiburg.run/">Instagram</a></li>
+                <li>{{Config.Website.Name}} bei <a href="https://www.instagram.com/freiburg.run/">Instagram</a></li>
                 <li>auf Mastodon: <a href="https://freiburg.social/@flopp" target="_blank">@flopp@freiburg.social</a></li>
                 <li>bei Strava: <a href="https://www.strava.com/athletes/11565561" target="_blank">strava.com/athletes/11565561</a></li>
                 <li>fast jeden Samstag in "real life" beim <a href="{{BasePath "group/dietenbach-parkrun.html"}}">Dietenbach parkrun</a></li>
@@ -78,12 +78,12 @@
                 <li>2023-10-13: Neben Laufveranstaltungen werden jetzt auch Lauftreffs und Lauf-Shops kategorisiert, z.B. mit dem <a href="{{BasePath "tag/ryzon.html"}}">Ryzon</a>-Tag.</li>
                 <li>2023-09-21: Markierung von vergangenen Events mit <span class="has-text-danger">(Vergangenes Event!)</span>, z.B. beim <a href="{{BasePath "event/rosskopflauf/"}}">17. Rosskopflauf (2023)</a>.</li>
                 <li>2023-09-18: Pulsierender Rahmen für besondere Events, z.B. beim <a href="{{BasePath "event/2023-100-dietenbach-parkrun.html"}}">100. Dietenbach parkrun</a>.</li>
-                <li>2023-08-28: Anzeige von Distanz und Richtung (vom Stadtzentrum von Freiburg aus gesehen) bei jedem Event</li>
+                <li>2023-08-28: Anzeige von Distanz und Richtung (vom Stadtzentrum von {{Config.City.Name}} aus gesehen) bei jedem Event</li>
             </ul>
 
             <h2>Technisches</h2>
             <p>
-                <strong>{{.Config.Website.Name}}</strong> ist eine einfache, statische Webseite - nothing fancy; sie benutzt folgende Technologien:
+                <strong>{{Config.Website.Name}}</strong> ist eine einfache, statische Webseite - nothing fancy; sie benutzt folgende Technologien:
             </p>
             <ul>
                 <li>Das CSS-Framework <a href="https://bulma.io/" target="_blank">Bulma</a>,</li>

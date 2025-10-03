@@ -4,24 +4,26 @@ import (
 	"fmt"
 	"regexp"
 
+	"github.com/flopp/freiburg-run/internal/config"
 	"github.com/flopp/freiburg-run/internal/utils"
 	"github.com/flopp/go-coordsparser"
 )
 
 type Location struct {
-	City      string
-	Country   string
-	Geo       string
-	Lat       float64
-	Lon       float64
-	Distance  string
-	Direction string
+	City         string
+	Country      string
+	Geo          string
+	Lat          float64
+	Lon          float64
+	Distance     string
+	Direction    string
+	DistDirFancy string
 }
 
 var reFr = regexp.MustCompile(`\s*^(.*)\s*,\s*FR\s*(🇫🇷)?\s*$`)
 var reCh = regexp.MustCompile(`\s*^(.*)\s*,\s*CH\s*(🇨🇭)?\s*$`)
 
-func CreateLocation(locationS, coordinatesS string) Location {
+func CreateLocation(config config.Config, locationS, coordinatesS string) Location {
 	country := ""
 	if m := reFr.FindStringSubmatch(locationS); m != nil {
 		country = "Frankreich"
@@ -35,18 +37,17 @@ func CreateLocation(locationS, coordinatesS string) Location {
 	coordinates := ""
 	distance := ""
 	direction := ""
+	distDirFancy := ""
 	if err == nil {
 		coordinates = fmt.Sprintf("%.6f,%.6f", lat, lon)
-
-		// Freiburg
-		lat0 := 47.996090
-		lon0 := 7.849400
-		d, b := utils.DistanceBearing(lat0, lon0, lat, lon)
+		d, b := utils.DistanceBearing(config.City.Lat, config.City.Lon, lat, lon)
 		distance = fmt.Sprintf("%.1fkm", d)
 		direction = utils.ApproxDirection(b)
+
+		distDirFancy = fmt.Sprintf("%s %s von %s", distance, direction, config.City.Name)
 	}
 
-	return Location{locationS, country, coordinates, lat, lon, distance, direction}
+	return Location{locationS, country, coordinates, lat, lon, distance, direction, distDirFancy}
 }
 
 func (loc Location) Name() string {
@@ -79,14 +80,6 @@ func (loc Location) NameNoFlag() string {
 
 func (loc Location) HasGeo() bool {
 	return loc.Geo != ""
-}
-
-func (loc Location) Dir() string {
-	return fmt.Sprintf(`%s %s von Freiburg`, loc.Distance, loc.Direction)
-}
-
-func (loc Location) DirLong() string {
-	return fmt.Sprintf(`%s %s von Freiburg Zentrum`, loc.Distance, loc.Direction)
 }
 
 func (loc Location) GoogleMaps() string {

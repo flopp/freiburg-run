@@ -1,6 +1,11 @@
 {
     "website": {
-        "name": "freiburg.run"
+        "name": "berlin.run"
+    },
+    "city": {
+        "name": "Berlin",
+        "lat": 52.520008,
+        "lon": 13.404954
     },
     "google": {
         "api_key": "YOUR_API_KEY_HERE",
