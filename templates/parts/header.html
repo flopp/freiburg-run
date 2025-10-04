@@ -49,18 +49,6 @@
             {{Config.Website.Name}}
         </a>
 
-        <span class="is-flex is-flex-grow-1 is-flex-direction-row-reverse p-0 is-hidden-desktop">
-            {{if Config.Contact.Mastodon}}<a class="navbar-item no-external" href="{{Config.Contact.Mastodon}}" target="_blank">
-                <span class="icon"><i class="mastodon-icon"></i></span>
-            </a>{{end}}
-            {{if Config.Contact.Instagram}}<a class="navbar-item no-external" href="{{Config.Contact.Instagram}}" target="_blank">
-                <span class="icon"><i class="insta-icon"></i></span>
-            </a>{{end}}
-            <a class="navbar-item no-external" href="{{Config.Contact.FeedbackForm}}" target="_blank">
-                <span class="icon"><i class="feedback-icon"></i></span>
-            </a>
-        </span>
-
         <a role="button" class="navbar-burger has-text-white" data-target="navbarMain">
             <span aria-hidden="true"></span>
             <span aria-hidden="true"></span>
@@ -125,13 +113,13 @@
                     </a>
                 </div>
             </div>
-            <a class="navbar-item is-hidden-touch no-external" href="{{Config.Contact.FeedbackForm}}" target="_blank">
+            <a class="navbar-item no-external" href="{{Config.Contact.FeedbackForm}}" target="_blank">
                 <span class="icon"><i class="feedback-icon"></i></span>
             </a>
-            {{if Config.Contact.Instagram}}<a class="navbar-item is-hidden-touch no-external" href="{{Config.Contact.Instagram}}" target="_blank">
+            {{if Config.Contact.Instagram}}<a class="navbar-item no-external" href="{{Config.Contact.Instagram}}" target="_blank">
                 <span class="icon"><i class="insta-icon"></i></span>
             </a>{{end}}
-            {{if Config.Contact.Mastodon}}<a class="navbar-item is-hidden-touch no-external" href="{{Config.Contact.Mastodon}}" target="_blank">
+            {{if Config.Contact.Mastodon}}<a class="navbar-item no-external" href="{{Config.Contact.Mastodon}}" target="_blank">
                 <span class="icon"><i class="mastodon-icon"></i></span>
             </a>{{end}}
         </div>
