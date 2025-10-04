@@ -19,6 +19,10 @@ type Config struct {
 		Instagram    string `json:"instagram"`
 		Mastodon     string `json:"mastodon"`
 	} `json:"contact"`
+	FooterLinks []struct {
+		Name string `json:"name"`
+		Url  string `json:"url"`
+	} `json:"footer_links"`
 	Google struct {
 		ApiKey  string `json:"api_key"`
 		SheetId string `json:"sheet_id"`

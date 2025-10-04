@@ -11,6 +11,16 @@
         "instagram": "YOUR_INSTAGRAM_HERE (OPTIONAL)",
         "mastodon": "YOUR_MASTODON_HERE (OPTIONAL)"
     },
+    "footer_links": [
+        {
+            "name": "Laufveranstaltungen in Freiburg",
+            "url": "https://freiburg.run/"
+        },
+        {
+            "name": "Laufveranstaltungen in Heidelberg",
+            "url": "https://heidelberg.run"
+        }
+    ],
     "google": {
         "api_key": "YOUR_API_KEY_HERE",
         "sheet_id": "YOUR_SHEET_ID_HERE"
