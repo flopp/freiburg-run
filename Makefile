@@ -1,7 +1,10 @@
 all:
-	@echo "make backup     -> download data to backup folder"
-	@echo "make sync       -> build and upload to freiburg.run"
-	@echo "make run-script -> sync & run remote script"
+	@echo "make build         -> build site to .out folder"
+	@echo "make checklinks    -> build site and check for broken links"
+	@echo "make update-vendor -> download vendor files (bulma, leaflet, etc.)"
+	@echo "make backup        -> download Google Sheets data to backup folder"
+	@echo "make sync          -> build and upload to freiburg.run"
+	@echo "make run-script    -> sync & run remote script"
 
 .phony: backup
 backup:
