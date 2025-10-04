@@ -8,9 +8,9 @@
             Achtung: Dies ist eine Liste von <b>vergangenen</b> Laufveranstaltungen, Wettkämpfen, Volksläufen im Raum {{Config.City.Name}} (~50km Umkreis), umgekehrt sortiert nach Datum.
             <br />
             <br />
-            <a class="button is-light" href="/">Aktuelle Veranstaltungen</a>
+            <a class="button is-light" href="{{BasePath "/"}}">Aktuelle Veranstaltungen</a>
             {{range .Years}}
-            <a class="button is-light" href="{{.Url}}">{{.Name}}</a>
+            <a class="button is-light" href="{{BasePath .Url}}">{{.Name}}</a>
             {{end}}
         </div>
 
