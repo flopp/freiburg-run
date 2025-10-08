@@ -562,12 +562,12 @@ var main = () => {
     }
 
     function triggerNotificationOnce() {
-        return; // disable notifications for now
+        //return; // disable notifications for now
         
         const notification = {
-            id: 3,
-            content: "<b>Gewinnspiel zum \"Tote Mann Berglauf 2025\"</b><br>Auf der <a href=\"/event/tote-mann-berglauf/\">Detailseite zum \"Tote Mann Berglauf\"</a> sind Instruktionen für das Gewinnspiel versteckt - finde sie bis zum 30.06.2025 und nimm an der Verlosung eines Startplatzes für den <b>Tote Mann Berglauf 2025</b> teil!",
-            class: "is-warning",
+            id: 4,
+            content: "Es gibt jetzt ein 'Schwesterprojekt' für Heidelberg: <a href=\"https://heidelberg.run\" target=\"_blank\">heidelberg.run</a>!",
+            class: "is-success",
         };
 
         if (!notificationGuard(`${notification.id}`)) {
