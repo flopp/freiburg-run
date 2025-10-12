@@ -18,6 +18,7 @@ type Config struct {
 		FeedbackForm string `json:"feedback_form"`
 		Instagram    string `json:"instagram"`
 		Mastodon     string `json:"mastodon"`
+		Whatsapp     string `json:"whatsapp"`
 	} `json:"contact"`
 	FooterLinks []struct {
 		Name string `json:"name"`

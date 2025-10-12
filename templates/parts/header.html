@@ -101,7 +101,7 @@
                 <a class="navbar-link {{if eq .Nav "info"}}is-active{{end}}" href="{{BasePath "info.html"}}">
                     Infos
                 </a>
-                <div class="navbar-dropdown has-background-link has-text-white  is-boxed">
+                <div class="navbar-dropdown has-background-link has-text-white is-boxed">
                     <a class="navbar-item has-background-link has-text-white {{if eq .Nav "support"}}is-active{{end}}" href="{{BasePath "support.html"}}">
                         Unterstützen
                     </a>
@@ -113,15 +113,20 @@
                     </a>
                 </div>
             </div>
-            <a class="navbar-item no-external" href="{{Config.Contact.FeedbackForm}}" target="_blank">
-                <span class="icon"><i class="feedback-icon"></i></span>
-            </a>
-            {{if Config.Contact.Instagram}}<a class="navbar-item no-external" href="{{Config.Contact.Instagram}}" target="_blank">
-                <span class="icon"><i class="insta-icon"></i></span>
-            </a>{{end}}
-            {{if Config.Contact.Mastodon}}<a class="navbar-item no-external" href="{{Config.Contact.Mastodon}}" target="_blank">
-                <span class="icon"><i class="mastodon-icon"></i></span>
-            </a>{{end}}
+            <div class="navbar-icons">
+                <a class="navbar-item no-external" href="{{Config.Contact.FeedbackForm}}" target="_blank" title="Feedback-Formular geben">
+                    <span class="icon"><i class="feedback-icon"></i></span>
+                </a>
+                {{if Config.Contact.Whatsapp}}<a class="navbar-item no-external" href="{{Config.Contact.Whatsapp}}" target="_blank" title="WhatsApp-Community beitreten">
+                    <span class="icon"><i class="whatsapp-icon"></i></span>
+                </a>{{end}}
+                {{if Config.Contact.Instagram}}<a class="navbar-item no-external" href="{{Config.Contact.Instagram}}" target="_blank" title="Instagram-Community beitreten">
+                    <span class="icon"><i class="insta-icon"></i></span>
+                </a>{{end}}
+                {{if Config.Contact.Mastodon}}<a class="navbar-item no-external" href="{{Config.Contact.Mastodon}}" target="_blank" title="Mastodon-Community beitreten">
+                    <span class="icon"><i class="mastodon-icon"></i></span>
+                </a>{{end}}
+            </div>  
         </div>
     </div>
 </nav>
