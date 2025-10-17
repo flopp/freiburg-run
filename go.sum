@@ -87,6 +87,8 @@ github.com/tdewolff/minify/v2 v2.24.0 h1:m6j8VXvgUtmkavubzHbaNTXi9tw3hjIMZbdc57S
 github.com/tdewolff/minify/v2 v2.24.0/go.mod h1:uqtSu3w0+anqk4ofcsuLPZ8tV8yAZL1r/ILWYYl2j3c=
 github.com/tdewolff/minify/v2 v2.24.3 h1:BaKgWSFLKbKDiUskbeRgbe2n5d1Ci1x3cN/eXna8zOA=
 github.com/tdewolff/minify/v2 v2.24.3/go.mod h1:1JrCtoZXaDbqioQZfk3Jdmr0GPJKiU7c1Apmb+7tCeE=
+github.com/tdewolff/minify/v2 v2.24.4 h1:pQyr6eWDa+RXtAoZg+6wurh0jB9ojqw/qc5LlU7/z6c=
+github.com/tdewolff/minify/v2 v2.24.4/go.mod h1:iD9Qn7/brhKY9d0KLKMkZrqS8/bqxSxRKruBi7V6m+w=
 github.com/tdewolff/parse/v2 v2.7.21 h1:OCuPFtGr4mXdnfKikQlUb0n654ROJANhBqCk+wioJ/A=
 github.com/tdewolff/parse/v2 v2.7.21/go.mod h1:I7TXO37t3aSG9SlPUBefAhgIF8nt7yYUwVGgETIoBcA=
 github.com/tdewolff/parse/v2 v2.7.23 h1:sCW2PNTCM1yVldh5YK/8wrpRI9rSbloUZWjAydlN2IA=
@@ -97,6 +99,8 @@ github.com/tdewolff/parse/v2 v2.8.1 h1:J5GSHru6o3jF1uLlEKVXkDxxcVx6yzOlIVIotK4w2
 github.com/tdewolff/parse/v2 v2.8.1/go.mod h1:Hwlni2tiVNKyzR1o6nUs4FOF07URA+JLBLd6dlIXYqo=
 github.com/tdewolff/parse/v2 v2.8.3 h1:5VbvtJ83cfb289A1HzRA9sf02iT8YyUwN84ezjkdY1I=
 github.com/tdewolff/parse/v2 v2.8.3/go.mod h1:Hwlni2tiVNKyzR1o6nUs4FOF07URA+JLBLd6dlIXYqo=
+github.com/tdewolff/parse/v2 v2.8.4 h1:A6slgBLGGDPBMGA28KQZfHpaKffuNvhOe7zSag+x/rw=
+github.com/tdewolff/parse/v2 v2.8.4/go.mod h1:Hwlni2tiVNKyzR1o6nUs4FOF07URA+JLBLd6dlIXYqo=
 github.com/tdewolff/test v1.0.11 h1:FdLbwQVHxqG16SlkGveC0JVyrJN62COWTRyUFzfbtBE=
 github.com/tdewolff/test v1.0.11/go.mod h1:XPuWBzvdUzhCuxWO1ojpXsyzsA5bFoS3tO/Q3kFuTG8=
 go.opentelemetry.io/auto/sdk v1.1.0 h1:cH53jehLUN6UFLY71z+NDOiNJqDdPRaXzTel0sJySYA=
