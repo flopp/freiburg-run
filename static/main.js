@@ -350,7 +350,7 @@ var main = () => {
     document.querySelectorAll("[data-share]").forEach(shareButton => {
         const shareData = {
             title: shareButton.dataset.name,
-            url: shareButton.dataset.url,
+            url: shareButton.dataset.url + "&utm_source=share_button",
         };
 
         if (navigator.canShare === undefined || !navigator.canShare(shareData)) {
