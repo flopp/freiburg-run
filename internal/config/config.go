@@ -2,6 +2,7 @@ package config
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 )
 
@@ -41,7 +42,15 @@ func LoadConfig(filename string) (Config, error) {
 		return config, err
 	}
 	err = json.Unmarshal(data, &config)
-	return config, err
+	if err != nil {
+		return config, err
+	}
+
+	if config.Website.Url == "" {
+		return config, fmt.Errorf("website/url is empty in config file %s", filename)
+	}
+
+	return config, nil
 }
 
 func (c Config) DataSheetUrl() string {
