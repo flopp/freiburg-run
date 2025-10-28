@@ -41,6 +41,17 @@ func loadTemplate(conf config.Config, name string, basePath string) (*template.T
 			}
 			return res
 		},
+		"FullPath": func(p string) string {
+			res := conf.Website.Url
+			if !strings.HasPrefix(p, "/") {
+				res += "/"
+			}
+			res += p
+			if strings.HasPrefix(basePath, "/Users/") && strings.HasSuffix(p, "/") {
+				res += "index.html"
+			}
+			return res
+		},
 		"Config": func() config.Config {
 			return conf
 		},

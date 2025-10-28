@@ -7,6 +7,7 @@ import (
 
 type Config struct {
 	Website struct {
+		Url  string `json:"url"`
 		Name string `json:"name"`
 	} `json:"website"`
 	City struct {

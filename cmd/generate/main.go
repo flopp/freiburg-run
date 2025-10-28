@@ -71,8 +71,9 @@ func main() {
 
 	// configuration
 	out := utils.NewPath(options.outDir)
-	baseUrl := utils.Url("https://freiburg.run")
 	basePath := options.basePath
+	baseUrl := utils.Url("https://freiburg.run")
+	config_data.Website.Url = baseUrl.Join("")
 
 	now := time.Now()
 	today := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())

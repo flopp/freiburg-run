@@ -346,6 +346,28 @@ var main = () => {
         filter("", hiddenTags);
     }
 
+    // SHARE BUTTONS
+    document.querySelectorAll("[data-share]").forEach(shareButton => {
+        const shareData = {
+            title: shareButton.dataset.name,
+            url: shareButton.dataset.url,
+        };
+
+        if (navigator.canShare === undefined || !navigator.canShare(shareData)) {
+            shareButton.classList.add("is-hidden");
+            return;
+        }
+        
+        shareButton.addEventListener('click', async (e) => {
+            e.preventDefault();
+            try {
+                await navigator.share(shareData);
+            } catch (error) {
+                console.error("Error sharing:", error);
+            }
+        });
+    });
+
     // CALENDARS
     document.querySelectorAll(".calendar-button").forEach(dropdown => {
         dropdown.classList.add("dropdown");

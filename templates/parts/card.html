@@ -71,11 +71,8 @@
             </div>
         </div>
         <footer class="card-footer">
-            <p class="card-footer-item">
-                <span>
-                    <a href="{{BasePath .Slug}}" title="{{.Name.Orig}}: {{.LinkTitle}}">Weitere Informationen</a>
-                </span>
-            </p>
+            <a class="card-footer-item" href="{{BasePath .Slug}}" title="{{.Name.Orig}}: {{.LinkTitle}}">Weitere Informationen</a>
+            <a class="card-footer-item is-flex-grow-0" style="flex-basis: auto" data-share data-url="{{FullPath .Slug}}" data-name="{{.Name.Orig}}">Teilen</a>
         </footer>
     </div>
 </div>
