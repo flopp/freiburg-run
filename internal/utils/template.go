@@ -52,6 +52,12 @@ func loadTemplate(conf config.Config, name string, basePath string) (*template.T
 			}
 			return res
 		},
+		"ReportFormUrl": func(name string, url string) string {
+			formUrl := conf.Contact.ReportFormTemplate
+			formUrl = strings.ReplaceAll(formUrl, "NAME", template.URLQueryEscaper(name))
+			formUrl = strings.ReplaceAll(formUrl, "URL", template.HTMLEscaper(url))
+			return formUrl
+		},
 		"Config": func() config.Config {
 			return conf
 		},

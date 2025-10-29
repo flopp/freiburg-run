@@ -9,6 +9,8 @@
         "lon": 13.404954
     },
     "contact": {
+        "feedback_form": "YOUR_FEEDBACK_FORM_URL_HERE",
+        "report_form_template": "YOUR_REPORT_FORM_TEMPLATE_URL_HERE, SUBSTRINGS 'NAME' AND 'URL' WILL BE REPLACED",
         "instagram": "YOUR_INSTAGRAM_HERE (OPTIONAL)",
         "mastodon": "YOUR_MASTODON_HERE (OPTIONAL)",
         "whatsapp": "YOUR_WHATSAPP_HERE (OPTIONAL)"

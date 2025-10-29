@@ -15,7 +15,7 @@
             <tbody>
                 <tr><td colspan=2>
                     <a class="button" data-share data-url="{{FullPath .Event.Slug}}" data-name="{{.Event.Name.Orig}}">Teilen</a>
-                    <a class="button" href="https://docs.google.com/forms/d/e/1FAIpQLSdpk9_fSrvOD4aCnKauigno7T5m_o2RXGghop_y3zw9q_Ov7g/viewform?usp=pp_url&entry.500601071={{.Event.Name.Orig}}%20%2F%20{{.Canonical}}" target="_blank">Fehler melden</a>
+                    <a class="button" href="{{ReportFormUrl .Event.Name.Orig .Canonical}}" target="_blank">Fehler melden</a>
                 </td></tr>
                 {{if .Event.Status}}
                 <tr class="has-text-danger">

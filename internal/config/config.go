@@ -17,10 +17,11 @@ type Config struct {
 		Lon  float64 `json:"lon"`
 	} `json:"city"`
 	Contact struct {
-		FeedbackForm string `json:"feedback_form"`
-		Instagram    string `json:"instagram"`
-		Mastodon     string `json:"mastodon"`
-		Whatsapp     string `json:"whatsapp"`
+		FeedbackForm       string `json:"feedback_form"`
+		ReportFormTemplate string `json:"report_form_template"`
+		Instagram          string `json:"instagram"`
+		Mastodon           string `json:"mastodon"`
+		Whatsapp           string `json:"whatsapp"`
 	} `json:"contact"`
 	FooterLinks []struct {
 		Name string `json:"name"`
