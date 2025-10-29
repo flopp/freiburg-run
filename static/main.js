@@ -357,7 +357,9 @@ var main = () => {
             shareButton.classList.add("is-hidden");
             return;
         }
-        
+
+        shareButton.setAttribute('data-umami-event', 'share-click');
+        shareButton.setAttribute('data-umami-event-url', shareData.url);
         shareButton.addEventListener('click', async (e) => {
             e.preventDefault();
             try {
