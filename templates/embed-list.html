@@ -20,7 +20,7 @@
 {{if .Events}}
 {{range .Events}}
 <tr><td>
-    <a class="has-text-weight-bold" href="https://freiburg.run/{{.Slug}}" target="_blank">{{.Name.Orig}}</a><br>
+    <a class="has-text-weight-bold" href="https://freiburg.run/{{.Slug}}?utm_source=embed_list" target="_blank">{{.Name.Orig}}</a><br>
     {{if .Cancelled}}<span style="color: red;">{{.Status}}</span><br>{{end}}
     {{.Time.Formatted}}<br>
     {{.Location.Name}}
@@ -30,7 +30,7 @@
 <tr><td>Keine passenden Veranstaltungen gefunden</td></tr>
 {{end}}
 <tr><td class="is-italic">
-Bereitgestellt durch <a href="https://freiburg.run" target="_blank">{{Config.Website.Name}}</a><br>
+Bereitgestellt durch <a href="https://freiburg.run?utm_source=embed_list" target="_blank">{{Config.Website.Name}}</a><br>
 Letzte Aktualisierung: <span class="timestamp">{{.TimestampFull}}</span>
 </td></tr>
 </table>
