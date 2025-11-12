@@ -579,9 +579,9 @@ func (g Generator) Generate(eventsData events.Data) error {
 		sitemap.Add(slug, slug, tag.Name.Orig, "Kategorien")
 	}
 
-	// Special rendering of the "traillauf" tag
+	// Special rendering of the "traillauf" (+ related) tag
 	for _, tag := range eventsData.Tags {
-		if tag.Name.Sanitized == "traillauf" {
+		if tag.Name.Sanitized == "traillauf" || tag.Name.Sanitized == "berglauf" || tag.Name.Sanitized == "crosslauf" || tag.Name.Sanitized == "orientierungslauf" {
 			if err := renderEmbedList(g.config, g.baseUrl, g.out, data, tag); err != nil {
 				return fmt.Errorf("create embed lists: %v", err)
 			}
