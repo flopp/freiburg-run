@@ -195,18 +195,34 @@ type CountryData struct {
 	events []*events.Event
 }
 
-func renderEmbedList(config config.Config, baseUrl utils.Url, out utils.Path, data TemplateData, tag *events.Tag) error {
+func renderEmbedList(config config.Config, baseUrl utils.Url, out utils.Path, data TemplateData, tags []string) error {
 	countryData := map[string]*CountryData{
 		"":           {"embed/trailrun-de.html", make([]*events.Event, 0)}, // Default (Germany)
 		"Frankreich": {"embed/trailrun-fr.html", make([]*events.Event, 0)},
 		"Schweiz":    {"embed/trailrun-ch.html", make([]*events.Event, 0)},
 	}
 
+	hasAnyTag := func(event *events.Event, tags []string) bool {
+		for _, tag := range tags {
+			for _, eventTag := range event.Tags {
+				if eventTag.Name.Sanitized == tag {
+					return true
+				}
+			}
+		}
+		return false
+	}
+
 	// Distribute events into the appropriate country-specific data
-	for _, event := range tag.Events {
+	for _, event := range data.Data.Events {
 		if event.IsSeparator() {
 			continue
 		}
+
+		if !hasAnyTag(event, tags) {
+			continue
+		}
+
 		if d, ok := countryData[event.Location.Country]; ok {
 			d.events = append(d.events, event)
 		} else {
@@ -580,13 +596,10 @@ func (g Generator) Generate(eventsData events.Data) error {
 	}
 
 	// Special rendering of the "traillauf" (+ related) tag
-	for _, tag := range eventsData.Tags {
-		if tag.Name.Sanitized == "traillauf" || tag.Name.Sanitized == "berglauf" || tag.Name.Sanitized == "crosslauf" || tag.Name.Sanitized == "orientierungslauf" {
-			if err := renderEmbedList(g.config, g.baseUrl, g.out, data, tag); err != nil {
-				return fmt.Errorf("create embed lists: %v", err)
-			}
-			break
-		}
+	var tags []string
+	tags = append(tags, "traillauf", "berglauf", "crosslauf", "orientierungslauf")
+	if err := renderEmbedList(g.config, g.baseUrl, g.out, data, tags); err != nil {
+		return fmt.Errorf("create embed lists: %v", err)
 	}
 
 	// Render series
