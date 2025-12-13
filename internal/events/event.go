@@ -273,7 +273,7 @@ func SplitObsolete(eventList []*Event) ([]*Event, []*Event) {
 	return currentEvents, obsoleteEvents
 }
 
-func AddMonthSeparators(eventList []*Event) []*Event {
+func AddMonthSeparators(eventList []*Event, today time.Time) []*Event {
 	result := make([]*Event, 0, len(eventList))
 	var last time.Time
 
@@ -283,7 +283,11 @@ func AddMonthSeparators(eventList []*Event) []*Event {
 			// no label
 		} else if last.IsZero() {
 			// initial label
-			last = d
+			if d.Before(today) {
+				last = today
+			} else {
+				last = d
+			}
 			result = append(result, createSeparatorEvent(last))
 		} else if d.After(last) {
 			if last.Year() == d.Year() && last.Month() == d.Month() {

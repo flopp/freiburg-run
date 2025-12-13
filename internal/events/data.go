@@ -113,14 +113,14 @@ func FetchData(config config.Config, today time.Time) (Data, error) {
 	FindPrevNextEvents(data.Events)
 	FindSiblings(data.Events, today)
 	data.Events, data.EventsOld = SplitEvents(data.Events)
-	data.Events = AddMonthSeparators(data.Events)
+	data.Events = AddMonthSeparators(data.Events, today)
 	FindUpcomingNearEvents(data.Events, data.Events, 5.0, 3)
 	FindUpcomingNearEvents(data.EventsOld, data.Events, 5.0, 3)
 	data.EventsOld = Reverse(data.EventsOld)
 	data.EventsOld = AddMonthSeparatorsDescending(data.EventsOld)
 	ChangeRegistrationLinks(data.EventsOld)
-	data.collectTags()
-	data.collectSeries()
+	data.collectTags(today)
+	data.collectSeries(today)
 
 	// Collect old events by year
 	maxYear := 0
@@ -186,7 +186,7 @@ func collectEventTags(tags map[string]*Tag, eventList []*Event) error {
 	return nil
 }
 
-func (data *Data) collectTags() error {
+func (data *Data) collectTags(today time.Time) error {
 	tags := make(map[string]*Tag)
 	for _, tag := range data.Tags {
 		tags[tag.Name.Sanitized] = tag
@@ -209,7 +209,7 @@ func (data *Data) collectTags() error {
 
 	tagsList := make([]*Tag, 0, len(tags))
 	for _, tag := range tags {
-		tag.Events = AddMonthSeparators(tag.Events)
+		tag.Events = AddMonthSeparators(tag.Events, today)
 		tag.EventsOld = AddMonthSeparatorsDescending(tag.EventsOld)
 		tagsList = append(tagsList, tag)
 	}
@@ -250,7 +250,7 @@ func collectEventSeries(seriesMap map[string]*Serie, eventList []*Event) error {
 	return nil
 }
 
-func (data *Data) collectSeries() error {
+func (data *Data) collectSeries(today time.Time) error {
 	seriesMap := make(map[string]*Serie)
 	for _, series := range data.Series {
 		seriesMap[series.Name.Sanitized] = series
@@ -273,7 +273,7 @@ func (data *Data) collectSeries() error {
 
 	var seriesList, seriesListOld []*Serie
 	for _, s := range data.Series {
-		s.Events = AddMonthSeparators(s.Events)
+		s.Events = AddMonthSeparators(s.Events, today)
 		s.EventsOld = AddMonthSeparatorsDescending(s.EventsOld)
 
 		if s.IsOld() {
