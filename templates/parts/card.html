@@ -1,6 +1,6 @@
 {{if .IsSeparator}}
 <div class="column is-full event-separator">
-    <div class="notification is-link is-light pt-2 pb-2 pl-4">{{.Name.Orig}}</div>
+    <div class="notification is-link is-light is-size-4 pt-2 pb-2 pl-4">{{.Name.Orig}}</div>
 </div>
 {{else}}
 <div class="column is-half event" data-type="{{.NiceType}}" data-name="{{.Name.Orig}}" data-time="{{.Time.Formatted}}" data-geo="{{.Location.Geo}}" data-location="{{.Location.Name}}" data-slug="{{.Slug}}" data-ics="{{.Calendar}}" data-googlecal="{{.CalendarGoogle}}">
