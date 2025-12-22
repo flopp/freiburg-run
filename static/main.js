@@ -376,47 +376,21 @@ var main = () => {
     });
 
     // CALENDARS
-    document.querySelectorAll(".calendar-button").forEach(dropdown => {
-        dropdown.classList.add("dropdown");
-
-        const dropdownTrigger = createEl("div", "dropdown-trigger");
-        const dropdownTriggerButton = createEl("button", "button is-text is-small py-1 ml-1");
-        dropdownTriggerButton.innerHTML = "Zum Kalender hinzufügen";
-        dropdownTrigger.appendChild(dropdownTriggerButton);
-        dropdown.appendChild(dropdownTrigger);
-
-        const dropdownMenu = createEl("div", "dropdown-menu");
-        const dropdownContent = createEl("div", "dropdown-content");
-
-        const hint = createEl("p", "dropdown-item is-italic");
-        hint.innerHTML = "Da genaue Start- & End-Zeiten unbekannt sind, werden Events als Ganztages-Einträge angelegt.";
-        dropdownContent.appendChild(hint);
-
-        const div1 = createEl("hr", "dropdown-divider");
-        dropdownContent.appendChild(div1);
-
-        const googlecal = createEl("a", "dropdown-item");
-        googlecal.setAttribute("href", dropdown.dataset.googlecal);
-        googlecal.setAttribute("data-umami-event", "calendar-click");
-        googlecal.setAttribute("rel", "nofollow");
-        googlecal.setAttribute("target", "_blank");
-        googlecal.innerHTML = "Google Calendar";
-        dropdownContent.appendChild(googlecal);
-
-        const div2 = createEl("hr", "dropdown-divider");
-        dropdownContent.appendChild(div2);
-
-        const ics = createEl("a", "dropdown-item");
-        ics.setAttribute("href", dropdown.dataset.calendar);
-        ics.setAttribute("download", dropdown.dataset.calendarfile);
-        ics.setAttribute("data-umami-event", "calendar-click");
-        ics.setAttribute("rel", "nofollow");
-        ics.setAttribute("target", "_blank");
-        ics.innerHTML = "Outlook, Apple Calendar & andere (.ics)";
-        dropdownContent.appendChild(ics);
-
-        dropdownMenu.appendChild(dropdownContent);
-        dropdown.appendChild(dropdownMenu);
+    document.querySelectorAll(".calendar-button").forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const modal = document.getElementById("calendar-modal");
+            modal.querySelector(".event-name").innerText = btn.dataset.name;
+            const googlecal = modal.querySelector(".calendar-google");
+            googlecal.setAttribute("href", btn.dataset.googlecal);
+            googlecal.setAttribute("data-umami-event", "calendar-click");
+            const ics = modal.querySelector(".calendar-ics");
+            ics.setAttribute("href", btn.dataset.calendar);
+            ics.setAttribute("download", btn.dataset.calendarfile);
+            ics.setAttribute("data-umami-event", "calendar-click");
+            modal.classList.add("is-active");
+            umami_track_event('calendar-click', {event: btn.dataset.name});
+        });
     });
 
     // MAPS

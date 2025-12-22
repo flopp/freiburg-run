@@ -3,7 +3,7 @@
     <div class="notification is-link is-light is-size-4 pt-2 pb-2 pl-4">{{.Name.Orig}}</div>
 </div>
 {{else}}
-<div class="column is-half event" data-type="{{.NiceType}}" data-name="{{.Name.Orig}}" data-time="{{.Time.Formatted}}" data-geo="{{.Location.Geo}}" data-location="{{.Location.Name}}" data-slug="{{.Slug}}" data-ics="{{.Calendar}}" data-googlecal="{{.CalendarGoogle}}">
+<div class="column is-half event" data-type="{{.NiceType}}" data-name="{{.Name.Orig}}" data-time="{{.Time.Formatted}}" data-geo="{{.Location.Geo}}" data-location="{{.Location.Name}}" data-slug="{{.Slug}}">
     {{if .Special}}
     <div class="card pulsating-border" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
     {{else}}
@@ -29,7 +29,7 @@
             <div class="content">
                 <table class="table is-narrow is-fullwidth">
                     {{if .Status}}<tr class="has-background-warning-light"><th class="w-2em no-border" title="Status">⚠️</th><td class="no-border">{{.Status}}</td></tr>{{end}}
-                    {{if .Time.Formatted}}<tr><th class="w-2em no-border" title="Datum">📅</th><td class="no-border">{{.Time.Formatted}}{{if .Old}} <span class="has-text-danger">(Vergangenes Event)</span>{{else}}{{if .Calendar}} <div class="calendar-button" data-calendarfile="{{.Calendar}}" data-calendar="{{.CalendarDataICS}}" data-googlecal="{{.CalendarGoogle}}"></div>{{end}}{{end}}</td></tr>{{end}}
+                    {{if .Time.Formatted}}<tr><th class="w-2em no-border" title="Datum">📅</th><td class="no-border">{{.Time.Formatted}}{{if .Old}} <span class="has-text-danger">(Vergangenes Event)</span>{{end}}</td></tr>{{end}}
                     <tr>
                         <th class="w-2em no-border" title="Ort">🗺</th>
                         <td class="no-border">
@@ -73,6 +73,7 @@
         <footer class="card-footer">
             <a class="card-footer-item" href="{{BasePath .Slug}}" title="{{.Name.Orig}}: {{.LinkTitle}}">Weitere Informationen</a>
             <a class="card-footer-item is-flex-grow-0" style="flex-basis: auto" data-share data-url="{{FullPath .Slug}}" data-name="{{.Name.Orig}}"><span class="share-icon has-background-link mr-1"></span> Teilen</a>
+            {{if .Calendar}}<a class="card-footer-item calendar-button is-flex-grow-0" style="flex-basis: auto" data-name="{{.Name.Orig}}"data-calendarfile="{{.Calendar}}" data-calendar="{{.CalendarDataICS}}" data-googlecal="{{.CalendarGoogle}}"><span class="calendar-icon has-background-link mr-1"></span> Kalender</a>{{end}}
         </footer>
     </div>
 </div>
