@@ -17,6 +17,12 @@ var toggle_menuitem = function (id) {
     }
 };
 
+var umami_track_event = function (name, data) {
+    if (window.umami !== undefined) {
+        window.umami.track(name, data);
+    }
+}
+
 const parseGeo = function (s) {
     const re1 = /\s*N\s*(?<lat>\d+\.\d+)\s+E\s*(?<lng>\d+\.\d+)\s*$/gm;
     const match1 = re1.exec(s);
@@ -360,9 +366,7 @@ var main = () => {
         
         shareButton.addEventListener('click', async (e) => {
             e.preventDefault();
-            if (window.umami !== undefined) {
-                window.umami.track('share-click', {url: shareData.url});
-            }
+            umami_track_event('share-click', {url: shareData.url});
             try {
                 await navigator.share(shareData);
             } catch (error) {
@@ -482,8 +486,10 @@ var main = () => {
     });
     burgersByTarget.forEach((burgers, target) => {
         burgers.forEach(el => {
-            el.setAttribute('data-umami-event', 'burger-click');
             el.addEventListener('click', () => {
+                if (!el.classList.contains('is-active')) {
+                    umami_track_event('menu-open', {url: document.location.href});
+                }
                 burgers.forEach(be => {
                     be.classList.toggle('is-active');
                 });
