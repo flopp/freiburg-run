@@ -71,7 +71,7 @@
             </div>
         </div>
         <footer class="card-footer">
-            <a class="card-footer-item" href="{{BasePath .Slug}}" title="{{.Name.Orig}}: {{.LinkTitle}}">Weitere Informationen</a>
+            <a class="card-footer-item" href="{{BasePath .Slug}}" title="{{.Name.Orig}}: {{.LinkTitle}}">Weitere Infos</a>
             <a class="card-footer-item is-flex-grow-0" style="flex-basis: auto" data-share data-url="{{FullPath .Slug}}" data-name="{{.Name.Orig}}"><span class="share-icon has-background-link mr-1"></span> Teilen</a>
             {{if .Calendar}}<a class="card-footer-item calendar-button is-flex-grow-0" style="flex-basis: auto" data-name="{{.Name.Orig}}"data-calendarfile="{{.Calendar}}" data-calendar="{{.CalendarDataICS}}" data-googlecal="{{.CalendarGoogle}}"><span class="calendar-icon has-background-link mr-1"></span> Kalender</a>{{end}}
         </footer>
