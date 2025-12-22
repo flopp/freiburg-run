@@ -482,6 +482,7 @@ var main = () => {
     });
     burgersByTarget.forEach((burgers, target) => {
         burgers.forEach(el => {
+            el.setAttribute('data-umami-event', 'burger-click');
             el.addEventListener('click', () => {
                 burgers.forEach(be => {
                     be.classList.toggle('is-active');
