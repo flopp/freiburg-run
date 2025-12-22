@@ -1,0 +1,32 @@
+<div id="calendar-modal" class="modal">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">Event zum Kalender hinzufügen</p>
+            <button class="delete" aria-label="close"></button>
+        </header>
+        <section class="modal-card-body">
+            <div class="content">
+                <p>
+                    Hier kannst du "<span class="event-name">das Event</span>" zum deinem Kalender hinzufügen.
+                </p>
+                <p>
+                    Da genaue Start- & End-Zeiten unbekannt sind, werden Events als Ganztages-Einträge angelegt.
+                </p>
+                <p>
+                    Es werden sowohl "Google Kalender" als auch andere Kalender wie "Outlook" und "Apple Calendar" unterstützt (via ".ics" Datei):
+                </p>
+                <div class="buttons mt-4">
+                    <a class="button is-link calendar-google" href="#" target="_blank">
+                        Google Kalender
+                    </a>
+                    <a class="button is-link calendar-ics">
+                        Outlook, Apple Calendar & andere (.ics Datei)
+                    </a>
+            </div>
+        </section>
+        <footer class="modal-card-foot">
+            <button class="button">Schließen</button>
+        </footer>
+    </div>
+</div>
