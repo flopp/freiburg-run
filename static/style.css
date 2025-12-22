@@ -7,6 +7,15 @@
     display: flex;
 }
 
+.navbar-burger-menu {
+    cursor: pointer;
+    flex-grow: 1;
+}
+.navbar-burger-menu span {
+    margin-left: auto;
+    margin-right: 0;
+}
+
 #map-container {
     margin-bottom: 1.5rem;
 }

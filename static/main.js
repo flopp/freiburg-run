@@ -467,11 +467,27 @@ var main = () => {
     }
 
     // NAVBAR
+    var burgersByTarget = new Map();
+    const collectBurger = (burger, target) => {
+        if (!burgersByTarget.has(target)) {
+            burgersByTarget.set(target, []);
+        }
+        burgersByTarget.get(target).push(burger);
+    }
     document.querySelectorAll('.navbar-burger').forEach(el => {
-        el.addEventListener('click', () => {
-            const target = el.dataset.target;
-            el.classList.toggle('is-active');
-            document.getElementById(target).classList.toggle('is-active'); 
+        collectBurger(el, el.dataset.target);
+    });
+    document.querySelectorAll('.navbar-burger-menu').forEach(el => {
+        collectBurger(el, el.dataset.target);
+    });
+    burgersByTarget.forEach((burgers, target) => {
+        burgers.forEach(el => {
+            el.addEventListener('click', () => {
+                burgers.forEach(be => {
+                    be.classList.toggle('is-active');
+                });
+                document.getElementById(target).classList.toggle('is-active'); 
+            });
         });
     });
     
