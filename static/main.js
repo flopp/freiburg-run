@@ -591,7 +591,7 @@ var main = () => {
         
         const notification = {
             id: 5,
-            content: "<div class='is-size-5'>🎄🎁☃️🎄🎁☃️🎄🎁☃️🎄🎁☃️🎄🎁☃️🎄🎁☃️🎄🎁☃️🎄🎁<br><b>freiburg.run</b> wünscht frohe Weihnachten und geruhsame Feiertage!<br>🎄🎁☃️🎄🎁☃️🎄🎁☃️🎄🎁☃️🎄🎁☃️🎄🎁☃️🎄🎁☃️🎄🎁</div>",
+            content: "<div class='is-size-5'>🎄🎁☃️ 🎄🎁☃️ 🎄🎁☃️<br><b>freiburg.run</b> wünscht frohe Weihnachten und geruhsame Feiertage!<br>- Florian<br>🎄🎁☃️ 🎄🎁☃️ 🎄🎁☃️</div>",
             class: "is-success",
         };
 
