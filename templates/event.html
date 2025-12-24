@@ -15,6 +15,7 @@
             <tbody>
                 <tr><td colspan=2>
                     <a class="button" data-share data-url="{{FullPath .Event.Slug}}" data-name="{{.Event.Name.Orig}}"><span class="share-icon has-background-link mr-1"></span> Teilen</a>
+                    {{if .Event.Calendar}}<a class="button calendar-button" data-name="{{.Event.Name.Orig}}" data-calendarfile="{{.Event.Calendar}}" data-calendar="{{.Event.CalendarDataICS}}" data-googlecal="{{.Event.CalendarGoogle}}"><span class="calendar-icon has-background-link mr-1"></span> Kalender</a>{{end}}
                     <a class="button" href="{{ReportFormUrl .Event.Name.Orig .Canonical}}" target="_blank"><span class="warning-icon has-background-link mr-1"></span> Fehler melden</a>
                 </td></tr>
                 {{if .Event.Status}}
