@@ -1,3 +1,6 @@
+body {
+    background-color: #eeeeff;
+}
 .navbar {
     --bulma-navbar-z: 1100 !important;
     --bulma-navbar-fixed-z: 1100 !important;
@@ -294,4 +297,24 @@ a.no-external::after
 }
 .has-pushed-down-footer-child > section:last-of-type {
     flex-grow: 1;
+}
+
+#snow {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 9999;
+}
+.snowflake {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: linear-gradient(white, white);
+  /* Workaround for Chromium's selective color inversion */
+  border-radius: 50%;
+  filter: drop-shadow(0 0 10px white);
 }
