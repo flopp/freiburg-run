@@ -50,32 +50,38 @@ func CreateLocation(config config.Config, locationS, coordinatesS string) Locati
 	return Location{locationS, country, coordinates, lat, lon, distance, direction, distDirFancy}
 }
 
+func (loc Location) IsFrance() bool {
+	return loc.Country == "Frankreich"
+}
+
+func (loc Location) IsSwitzerland() bool {
+	return loc.Country == "Schweiz"
+}
+
 func (loc Location) Name() string {
 	if loc.City == "" {
 		return ""
 	}
-	switch loc.Country {
-	case "Frankreich":
+	if loc.IsFrance() {
 		return fmt.Sprintf(`%s, FR 🇫🇷`, loc.City)
-	case "Schweiz":
-		return fmt.Sprintf(`%s, CH 🇨🇭`, loc.City)
-	default:
-		return loc.City
 	}
+	if loc.IsSwitzerland() {
+		return fmt.Sprintf(`%s, CH 🇨🇭`, loc.City)
+	}
+	return loc.City
 }
 
 func (loc Location) NameNoFlag() string {
 	if loc.City == "" {
 		return ""
 	}
-	switch loc.Country {
-	case "Frankreich":
+	if loc.IsFrance() {
 		return fmt.Sprintf(`%s, FR`, loc.City)
-	case "Schweiz":
-		return fmt.Sprintf(`%s, CH`, loc.City)
-	default:
-		return loc.City
 	}
+	if loc.IsSwitzerland() {
+		return fmt.Sprintf(`%s, CH`, loc.City)
+	}
+	return loc.City
 }
 
 func (loc Location) HasGeo() bool {
