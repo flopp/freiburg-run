@@ -47,25 +47,31 @@
                     {{if .Links}}<tr>
                         <th class="w-2em no-border" title="Infos">🔗</th>
                         <td class="no-border">
+                            <div class="tags">
                             {{range .Links}}
-                            {{if .IsRegistration}}
-                            <a class="tag is-primary mr-2" href="{{.Url}}" title="{{$.Name.Orig}}: {{.Name}}" target="_blank">{{.Name}}</a>
-                            {{else}}
-                            <a class="tag is-link is-light mr-2" href="{{.Url}}" title="{{$.Name.Orig}}: {{.Name}}" target="_blank">{{.Name}}</a>
+                                {{if .IsRegistration}}
+                                <a class="tag is-primary" href="{{.Url}}" title="{{$.Name.Orig}}: {{.Name}}" target="_blank">{{.Name}}</a>
+                                {{else}}
+                                <a class="tag is-link is-light" href="{{.Url}}" title="{{$.Name.Orig}}: {{.Name}}" target="_blank">{{.Name}}</a>
+                                {{end}}
                             {{end}}
-                            {{end}}
+                            </div>
                         </td>
                     </tr>{{end}}
                     {{if .Series}}<tr>
                         <th class="w-2em no-border" title="Serien">🔢</th>
                         <td class="no-border">
-                        {{range .Series}}<a class="tag is-link is-light mr-2" href="{{BasePath .Slug}}">{{.Name.Orig}}</a>{{end}}
+                            <div class="tags">
+                            {{range .Series}}<a class="tag is-link is-light" href="{{BasePath .Slug}}">{{.Name.Orig}}</a>{{end}}
+                            </div>
                         </td>
                     </tr>{{end}}
                     {{if .Tags}}<tr>
                         <th class="w-2em no-border" title="Kategorien">🏷</th>
                         <td class="no-border">
-                        {{range .Tags}}<a class="tag is-link is-light mr-2" href="{{BasePath .Slug}}" data-tag="{{.Name.Sanitized}}">{{.Name.Orig}}</a>{{end}}
+                            <div class="tags">
+                                {{range .Tags}}<a class="tag is-link is-light" href="{{BasePath .Slug}}" data-tag="{{.Name.Sanitized}}">{{.Name.Orig}}</a>{{end}}
+                            </div>
                         </td>
                     </tr>{{end}}
                 </table>
