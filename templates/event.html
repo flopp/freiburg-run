@@ -16,130 +16,132 @@
             {{if .Event.Calendar}}<a class="button is-link calendar-button" data-name="{{.Event.Name.Orig}}" data-calendarfile="{{.Event.Calendar}}" data-calendar="{{.Event.CalendarDataICS}}" data-googlecal="{{.Event.CalendarGoogle}}"><span class="calendar-icon has-background-white mr-1"></span> Kalender</a>{{end}}
             <a class="button is-link" href="{{ReportFormUrl .Event.Name.Orig .Canonical}}" target="_blank"><span class="warning-icon has-background-white mr-1"></span> Fehler melden</a>
         </div>
-        
-        <table class="table is-fullwidth is-narrow">
-            <tbody>
-                {{if .Event.Status}}
-                <tr class="has-text-danger">
-                    <th>Hinweis</th>
-                    <td class="is-w100">
-                        {{.Event.Status}}
-                    </td>
-                </tr>
-                {{end}}
-                <tr>
-                    <th>Link</th>
-                    <td class="is-w100">
-                        <a href="{{.Event.MainLink.Url}}" target="_blank">{{.Event.MainLink.Name}}</a>
-                    </td>
-                </tr>
-                {{if .Event.Time.Formatted}}
-                <tr>
-                    <th>Datum</th>
-                    <td class="is-w100">{{.Event.Time.Formatted}}{{if .Event.Old}} <span class="has-text-danger">(Vergangenes Event)</span>{{else}}{{if .Event.Calendar}} <div class="calendar-button" data-calendarfile="{{.Event.Calendar}}" data-calendar="{{.Event.CalendarDataICS}}" data-googlecal="{{.Event.CalendarGoogle}}"></div>{{end}}{{end}}</td>
-                </tr>
-                {{end}}
-                <tr>
-                    <th>Ort</th>
-                    <td class="is-w100">
-                        {{if .Event.Location.HasGeo}}
-                        <a href="{{.Event.Location.GoogleMaps}}" title="{{.Event.Name.Orig}}: {{.Event.Location.Name}}" target="_blank">{{.Event.Location.Name}}</a>
-                        ({{.Event.Location.DistDirFancy}})
-                        {{else}}
-                        {{.Event.Location.Name}}
-                        {{end}}
-                    </td>
-                </tr>
-                {{if .Event.Details}}
-                <tr>
-                    <th>Details</th>
-                    <td class="is-w100">
-                        {{.Event.Details}}
-                        {{if .Event.Details2}}
-                        <br>{{.Event.Details2}}
-                        {{end}}
-                    </td>
-                </tr>
-                {{end}}
-                {{if .Event.Links}}
-                <tr>
-                    <th>Infos</th>
-                    <td class="is-w100">
-                        <div class="tags">
-                        {{range .Event.Links}}
-                        {{if .IsRegistration}}
-                            <a class="tag is-primary" href="{{.Url}}" title="{{$.Event.Name.Orig}}: {{.Name}}" target="_blank">{{.Name}}</a>
-                        {{else}}
-                            <a class="tag is-link is-light" href="{{.Url}}" title="{{$.Event.Name.Orig}}: {{.Name}}" target="_blank">{{.Name}}</a>
-                        {{end}}
-                        {{end}}
-                        </div>
-                    </td>
-                </tr>
-                {{end}}
-                {{if .Event.Series}}
-                <tr>
-                    <th>Serien</th>
-                    <td class="is-w100">
-                        <div class="tags">
-                        {{range .Event.Series}}
-                            <a class="tag is-link is-light" title="Serie: {{.Name.Orig}}" href="{{BasePath .Slug}}">{{.Name.Orig}}</a>
-                        {{end}}
-                        </div>
-                    </td>
-                </tr>
-                {{end}}
-                {{if .Event.Tags}}
-                <tr>
-                    <th>Kategorien</th>
-                    <td class="is-w100">
-                        <div class="tags">
-                        {{range .Event.Tags}}
-                            <a class="tag is-link is-light" title="Kategorie: {{.Name.Orig}}" href="{{BasePath .Slug}}">{{.Name.Orig}}</a>
-                        {{end}}
-                        </div>
-                    </td>
-                </tr>
-                {{end}}
-                {{if .Event.Meta.Siblings}}
+
+        <div class="box">
+            <table class="table is-fullwidth is-narrow">
+                <tbody>
+                    {{if .Event.Status}}
+                    <tr class="has-text-danger">
+                        <th>Hinweis</th>
+                        <td class="is-w100">
+                            {{.Event.Status}}
+                        </td>
+                    </tr>
+                    {{end}}
                     <tr>
-                        <th>Historie</th>
+                        <th>Link</th>
+                        <td class="is-w100">
+                            <a href="{{.Event.MainLink.Url}}" target="_blank">{{.Event.MainLink.Name}}</a>
+                        </td>
+                    </tr>
+                    {{if .Event.Time.Formatted}}
+                    <tr>
+                        <th>Datum</th>
+                        <td class="is-w100">{{.Event.Time.Formatted}}{{if .Event.Old}} <span class="has-text-danger">(Vergangenes Event)</span>{{else}}{{if .Event.Calendar}} <div class="calendar-button" data-calendarfile="{{.Event.Calendar}}" data-calendar="{{.Event.CalendarDataICS}}" data-googlecal="{{.Event.CalendarGoogle}}"></div>{{end}}{{end}}</td>
+                    </tr>
+                    {{end}}
+                    <tr>
+                        <th>Ort</th>
+                        <td class="is-w100">
+                            {{if .Event.Location.HasGeo}}
+                            <a href="{{.Event.Location.GoogleMaps}}" title="{{.Event.Name.Orig}}: {{.Event.Location.Name}}" target="_blank">{{.Event.Location.Name}}</a>
+                            ({{.Event.Location.DistDirFancy}})
+                            {{else}}
+                            {{.Event.Location.Name}}
+                            {{end}}
+                        </td>
+                    </tr>
+                    {{if .Event.Details}}
+                    <tr>
+                        <th>Details</th>
+                        <td class="is-w100">
+                            {{.Event.Details}}
+                            {{if .Event.Details2}}
+                            <br>{{.Event.Details2}}
+                            {{end}}
+                        </td>
+                    </tr>
+                    {{end}}
+                    {{if .Event.Links}}
+                    <tr>
+                        <th>Infos</th>
+                        <td class="is-w100">
+                            <div class="tags">
+                            {{range .Event.Links}}
+                            {{if .IsRegistration}}
+                                <a class="tag is-primary" href="{{.Url}}" title="{{$.Event.Name.Orig}}: {{.Name}}" target="_blank">{{.Name}}</a>
+                            {{else}}
+                                <a class="tag is-link is-light" href="{{.Url}}" title="{{$.Event.Name.Orig}}: {{.Name}}" target="_blank">{{.Name}}</a>
+                            {{end}}
+                            {{end}}
+                            </div>
+                        </td>
+                    </tr>
+                    {{end}}
+                    {{if .Event.Series}}
+                    <tr>
+                        <th>Serien</th>
+                        <td class="is-w100">
+                            <div class="tags">
+                            {{range .Event.Series}}
+                                <a class="tag is-link is-light" title="Serie: {{.Name.Orig}}" href="{{BasePath .Slug}}">{{.Name.Orig}}</a>
+                            {{end}}
+                            </div>
+                        </td>
+                    </tr>
+                    {{end}}
+                    {{if .Event.Tags}}
+                    <tr>
+                        <th>Kategorien</th>
+                        <td class="is-w100">
+                            <div class="tags">
+                            {{range .Event.Tags}}
+                                <a class="tag is-link is-light" title="Kategorie: {{.Name.Orig}}" href="{{BasePath .Slug}}">{{.Name.Orig}}</a>
+                            {{end}}
+                            </div>
+                        </td>
+                    </tr>
+                    {{end}}
+                    {{if .Event.Meta.Siblings}}
+                        <tr>
+                            <th>Historie</th>
+                            <td class="is-w100">
+                                <ul>
+                                    {{range .Event.Meta.Siblings}}<li {{if .Meta.Current}} class="has-text-weight-bold"{{end}}><a href="{{BasePath .Slug}}">{{.Name.Orig}} ({{.Time.Formatted}})</a></li>{{end}}
+                                </ul>
+                            </td>
+                        </tr>
+                    {{else }}
+                        {{if .Event.Prev}}
+                        <tr>
+                            <th>Voriger</th>
+                            <td class="is-w100">
+                                <a href="{{BasePath .Event.Prev.Slug}}">{{.Event.Prev.Name.Orig}} ({{.Event.Prev.Time.Formatted}})</a>
+                            </td>
+                        </tr>
+                        {{end}}
+                        {{if .Event.Next}}
+                        <tr>
+                            <th>Nächster</th>
+                            <td class="is-w100">
+                                <a href="{{BasePath .Event.Next.Slug}}">{{.Event.Next.Name.Orig}} ({{.Event.Next.Time.Formatted}})</a>
+                            </td>
+                        </tr>
+                        {{end}}
+                    {{end}}
+                    {{if .Event.UpcomingNear}}
+                    <tr>
+                        <th>In der Nähe (5km)</th>
                         <td class="is-w100">
                             <ul>
-                                {{range .Event.Meta.Siblings}}<li {{if .Meta.Current}} class="has-text-weight-bold"{{end}}><a href="{{BasePath .Slug}}">{{.Name.Orig}} ({{.Time.Formatted}})</a></li>{{end}}
+                                {{range .Event.UpcomingNear}}<li><a href="{{BasePath .Slug}}">{{.Name.Orig}} <span class="is-size-7">({{.Time.Formatted}}; {{.Location.Name}})</span></a></li>{{end}}
                             </ul>
                         </td>
                     </tr>
-                {{else }}
-                    {{if .Event.Prev}}
-                    <tr>
-                        <th>Voriger</th>
-                        <td class="is-w100">
-                            <a href="{{BasePath .Event.Prev.Slug}}">{{.Event.Prev.Name.Orig}} ({{.Event.Prev.Time.Formatted}})</a>
-                        </td>
-                    </tr>
                     {{end}}
-                    {{if .Event.Next}}
-                    <tr>
-                        <th>Nächster</th>
-                        <td class="is-w100">
-                            <a href="{{BasePath .Event.Next.Slug}}">{{.Event.Next.Name.Orig}} ({{.Event.Next.Time.Formatted}})</a>
-                        </td>
-                    </tr>
-                    {{end}}
-                {{end}}
-                {{if .Event.UpcomingNear}}
-                <tr>
-                    <th>In der Nähe (5km)</th>
-                    <td class="is-w100">
-                        <ul>
-                            {{range .Event.UpcomingNear}}<li><a href="{{BasePath .Slug}}">{{.Name.Orig}} <span class="is-size-7">({{.Time.Formatted}}; {{.Location.Name}})</span></a></li>{{end}}
-                        </ul>
-                    </td>
-                </tr>
-                {{end}}
-            </tbody>
-        </table>
+                </tbody>
+            </table>
+        </div>
         {{if .Event.Location.HasGeo}}
         <div id="event-map" data-geo="{{.Event.Location.Geo}}" data-name="{{.Event.Name.Orig}}"></div>
         {{end}}
