@@ -2,34 +2,36 @@
 
 <section class="section">
     <div class="container is-max-desktop">
-        <h1 class="title">{{.Title}}</h1>
-        
-        <div class="notification is-link is-light">
-            Liste aller Lauf-Serien auf {{Config.Website.Name}}.
-        </div>
+        <div class="box">
+            <h1 class="title">{{.Title}}</h1>
+            
+            <div class="notification is-link is-light">
+                Liste aller Lauf-Serien auf {{Config.Website.Name}}.
+            </div>
 
-        <div class="b-table">
-            <div class="table-wrapper">
-                <table class="table is-fullwidth is-narrow">
-                    <thead>
-                        <tr>
-                            <th>Serie</th>
-                            <th># Veranstaltungen</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {{range .Data.Series}}
-                        <tr>
-                            <td>
-                                <a href="{{BasePath .Slug}}">{{.Name.Orig}}</a>
-                            </td>
-                            <td>
-                                {{.Num}}
-                            </td>
-                        </tr>
-                        {{end}}
-                    </tbody>
-                </table>
+            <div class="b-table">
+                <div class="table-wrapper">
+                    <table class="table is-fullwidth is-narrow">
+                        <thead>
+                            <tr>
+                                <th>Serie</th>
+                                <th># Veranstaltungen</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{range .Data.Series}}
+                            <tr>
+                                <td>
+                                    <a href="{{BasePath .Slug}}">{{.Name.Orig}}</a>
+                                </td>
+                                <td>
+                                    {{.Num}}
+                                </td>
+                            </tr>
+                            {{end}}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -38,30 +40,32 @@
 {{if .Data.SeriesOld}}
 <section class="section">
     <div class="container is-max-desktop">
-        <h2 class="title">Vergangene Serien</h1>
+        <div class="box">
+            <h2 class="title">Vergangene Serien</h1>
 
-        <div class="b-table">
-            <div class="table-wrapper">
-                <table class="table is-fullwidth is-narrow">
-                    <thead>
-                        <tr>
-                            <th>Serie</th>
-                            <th># Veranstaltungen</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {{range .Data.SeriesOld}}
-                        <tr>
-                            <td>
-                                <a href="{{BasePath .Slug}}">{{.Name.Orig}}</a>
-                            </td>
-                            <td>
-                                {{.Num}}
-                            </td>
-                        </tr>
-                        {{end}}
-                    </tbody>
-                </table>
+            <div class="b-table">
+                <div class="table-wrapper">
+                    <table class="table is-fullwidth is-narrow">
+                        <thead>
+                            <tr>
+                                <th>Serie</th>
+                                <th># Veranstaltungen</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{range .Data.SeriesOld}}
+                            <tr>
+                                <td>
+                                    <a href="{{BasePath .Slug}}">{{.Name.Orig}}</a>
+                                </td>
+                                <td>
+                                    {{.Num}}
+                                </td>
+                            </tr>
+                            {{end}}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

@@ -2,107 +2,109 @@
 
 <section class="section">
     <div class="container is-max-desktop">
-        <div class="content">
-            <figure class="image is-square" style="width: 20em">
-                <img src="{{BasePath "images/freiburg-run-new-blue.svg"}}" />
-            </figure>
+        <div class="box">
+            <div class="content">
+                <figure class="image is-square" style="width: 20em">
+                    <img src="{{BasePath "images/freiburg-run-new-blue.svg"}}" />
+                </figure>
 
-            <h1>Warum diese Webseite?</h1>
-            <p>
-                Bei verschiedenen Gelegenheiten (beim <a href="https://www.fitmitkim.com/running-unit" target="_blank">Lauftreff</a>,
-                beim <a href="https://www.parkrun.com.de/dietenbach/" target="_blank">samstäglichen parkrun</a>, usw.) ist mir aufgefallen, dass viele Leute nicht über lokale Laufveranstaltungen informiert sind.
-                Meist sind nur die ganz großen Events, wie z.B. der <a href="{{BasePath "event/freiburg-marathon/"}}">Freiburg Marathon</a>, bekannt.
-                Dabei gibt es ein vielfältiges Angebot von ganz unterschiedlichen Veranstaltungen: kleine Dorfläufe, <a href="{{BasePath "tag/traillauf.html"}}">naturnahe Trail-Running-Events</a>, kompetitive Cross-Läufe - für jeden ist etwas Passendes dabei. 
-                Leider listen die großen Laufkalender-Plattformen (runme & co.) nur wenige dieser lokalen Veranstaltungen, oder die Informationen sind unvollständig oder veraltet.
-                <br /><br />
-                Ich habe dies zum Anlass genommen, zuerst in <a href="https://running.flopp.net/" target="_blank">meinem Laufblog</a> und jetzt hier auf einer dedizierten Webseite eine solche Liste von lokalen Veranstaltungen zu führen, diese aktuell zu halten und somit die Laufcommunity zu bereichern. 
-                <br /><br />
-                Ich hoffe diese Seite ist hilfreich für Euch! Teilt die Seite gerne oder verlinkt {{Config.Website.Name}} auf euren Webseiten.                
-                <br /><br />
-                Grüße<br />
-                Florian
-            </p>
+                <h1>Warum diese Webseite?</h1>
+                <p>
+                    Bei verschiedenen Gelegenheiten (beim <a href="https://www.fitmitkim.com/running-unit" target="_blank">Lauftreff</a>,
+                    beim <a href="https://www.parkrun.com.de/dietenbach/" target="_blank">samstäglichen parkrun</a>, usw.) ist mir aufgefallen, dass viele Leute nicht über lokale Laufveranstaltungen informiert sind.
+                    Meist sind nur die ganz großen Events, wie z.B. der <a href="{{BasePath "event/freiburg-marathon/"}}">Freiburg Marathon</a>, bekannt.
+                    Dabei gibt es ein vielfältiges Angebot von ganz unterschiedlichen Veranstaltungen: kleine Dorfläufe, <a href="{{BasePath "tag/traillauf.html"}}">naturnahe Trail-Running-Events</a>, kompetitive Cross-Läufe - für jeden ist etwas Passendes dabei. 
+                    Leider listen die großen Laufkalender-Plattformen (runme & co.) nur wenige dieser lokalen Veranstaltungen, oder die Informationen sind unvollständig oder veraltet.
+                    <br /><br />
+                    Ich habe dies zum Anlass genommen, zuerst in <a href="https://running.flopp.net/" target="_blank">meinem Laufblog</a> und jetzt hier auf einer dedizierten Webseite eine solche Liste von lokalen Veranstaltungen zu führen, diese aktuell zu halten und somit die Laufcommunity zu bereichern. 
+                    <br /><br />
+                    Ich hoffe diese Seite ist hilfreich für Euch! Teilt die Seite gerne oder verlinkt {{Config.Website.Name}} auf euren Webseiten.                
+                    <br /><br />
+                    Grüße<br />
+                    Florian
+                </p>
 
-            <!-- fake "kontakt" header to accomodate for fixed nav -->
-            <h2 id="kontakt" style="display: block; position: relative; top: -120px; visibility: hidden;"></h2>
-            <h2 id="kontakt2">Kontaktmöglichkeiten</h2>
-            <p>
-                Feedback, Fehlermeldungen, Verbesserungsvorschläge bitte direkt an mich schicken; ich bin vielfältig erreichbar, z.B.
-            </p>
-            <ul>
-                <li><a href="{{Config.Contact.FeedbackForm}}" target="_blank">Kontaktformular</a></li>
-                <li>per Email: <a href="mailto:mail@florian-pigorsch.de">mail@florian-pigorsch.de</a></li>
-                {{if Config.Contact.Instagram}}<li>bei <a href="{{Config.Contact.Instagram}}">Instagram</a></li>{{end}}
-                {{if Config.Contact.Whatsapp}}<li>bei <a href="{{Config.Contact.Whatsapp}}">WhatsApp</a></li>{{end}}
-                {{if Config.Contact.Mastodon}}<li>auf Mastodon: <a href="{{Config.Contact.Mastodon}}" target="_blank">{{Config.Contact.Mastodon}}</a></li>{{end}}
-                <li>bei Strava: <a href="https://www.strava.com/athletes/11565561" target="_blank">strava.com/athletes/11565561</a></li>
-                <li>fast jeden Samstag in "real life" beim <a href="{{BasePath "group/dietenbach-parkrun.html"}}">Dietenbach parkrun</a></li>
-            </ul>
-            <p>
-                Zum Auslegen bei Laufveranstaltungen habe ich jetzt auch einen <a href="{{BasePath "freiburg-run-flyer.pdf"}}">Flyer</a>.
-            </p>
+                <!-- fake "kontakt" header to accomodate for fixed nav -->
+                <h2 id="kontakt" style="display: block; position: relative; top: -120px; visibility: hidden;"></h2>
+                <h2 id="kontakt2">Kontaktmöglichkeiten</h2>
+                <p>
+                    Feedback, Fehlermeldungen, Verbesserungsvorschläge bitte direkt an mich schicken; ich bin vielfältig erreichbar, z.B.
+                </p>
+                <ul>
+                    <li><a href="{{Config.Contact.FeedbackForm}}" target="_blank">Kontaktformular</a></li>
+                    <li>per Email: <a href="mailto:mail@florian-pigorsch.de">mail@florian-pigorsch.de</a></li>
+                    {{if Config.Contact.Instagram}}<li>bei <a href="{{Config.Contact.Instagram}}">Instagram</a></li>{{end}}
+                    {{if Config.Contact.Whatsapp}}<li>bei <a href="{{Config.Contact.Whatsapp}}">WhatsApp</a></li>{{end}}
+                    {{if Config.Contact.Mastodon}}<li>auf Mastodon: <a href="{{Config.Contact.Mastodon}}" target="_blank">{{Config.Contact.Mastodon}}</a></li>{{end}}
+                    <li>bei Strava: <a href="https://www.strava.com/athletes/11565561" target="_blank">strava.com/athletes/11565561</a></li>
+                    <li>fast jeden Samstag in "real life" beim <a href="{{BasePath "group/dietenbach-parkrun.html"}}">Dietenbach parkrun</a></li>
+                </ul>
+                <p>
+                    Zum Auslegen bei Laufveranstaltungen habe ich jetzt auch einen <a href="{{BasePath "freiburg-run-flyer.pdf"}}">Flyer</a>.
+                </p>
 
-            <!-- fake "links" header to accomodate for fixed nav -->
-            <h2 id="links" style="display: block; position: relative; top: -120px; visibility: hidden;"></h2>
-            <h2 id="links2">Links</h2>
-            <p>
-                Links zu Webseiten der Region
-            </p>
-            <ul>
-                <li><a href="https://heidelberg.run/" target="_blank">heidelberg.run - das "Schesterprojekt" für Heidelberg (von Sven)</a></li>
-                <li><a href="https://freiburg-trailrun.de" target="_blank">Freiburg Trailrun</a></li>
-                <li><a href="https://leichtathletik.athletics-web.info/" target="_blank">BLV Kreis Freiburg</a></li>
-                <li><a href="https://ladv.de/baden/ausschreibungen" target="_blank">Ausschreibungen des Landesverbands Baden</a></li>
-                <li><a href="https://gotrail.run/de/kalender/frankreich/grand-est" target="_blank">Trailrunning-Kalender Frankreich</a></li>
-                <li><a href="https://pandarennt.wordpress.com/" target="_blank>">pandarennt - Laufblog von Andreas</a></li>
-            </ul>
+                <!-- fake "links" header to accomodate for fixed nav -->
+                <h2 id="links" style="display: block; position: relative; top: -120px; visibility: hidden;"></h2>
+                <h2 id="links2">Links</h2>
+                <p>
+                    Links zu Webseiten der Region
+                </p>
+                <ul>
+                    <li><a href="https://heidelberg.run/" target="_blank">heidelberg.run - das "Schesterprojekt" für Heidelberg (von Sven)</a></li>
+                    <li><a href="https://freiburg-trailrun.de" target="_blank">Freiburg Trailrun</a></li>
+                    <li><a href="https://leichtathletik.athletics-web.info/" target="_blank">BLV Kreis Freiburg</a></li>
+                    <li><a href="https://ladv.de/baden/ausschreibungen" target="_blank">Ausschreibungen des Landesverbands Baden</a></li>
+                    <li><a href="https://gotrail.run/de/kalender/frankreich/grand-est" target="_blank">Trailrunning-Kalender Frankreich</a></li>
+                    <li><a href="https://pandarennt.wordpress.com/" target="_blank>">pandarennt - Laufblog von Andreas</a></li>
+                </ul>
 
-            <h2>Letzte Änderungen</h2>
-            <ul>
-                <li>2025-12-22: "Kalender"-Buttons zum Hinzufügen von Events zum eigenen Kalender</li>
-                <li>2025-10-28: "Teilen"-Buttons zum Teilen von Events, z.B. bei WhatsApp</li>
-                <li>2025-03-09: <a href="{{BasePath "tags.html"}}">Kategorien-Filter</a></li>
-                <li>2025-03-02: "zum Kalender hinzufügen"</li>
-                <li>2025-02-26: Alle Events im <a href="https://freiburg.run/events.ics">Kalender-Export</a></li>
-                <li>2025-02-03: Filterfunktion</li>
-                <li>2024-10-08: Sektion "Links" auf der Info-Seite</li>
-                <li>2024-04-17: Auf jeder Event-Seite: Hinweis auf zukünftige Laufevents in der Nähe</li>
-                <li>2024-03-25: Aktualisierung auf <a href="https://bulma.io/" target="_blank">Bulma 1.0.0</a></li>
-                <li>2024-01-19: <a class="modal-trigger" data-target="support-modal">Support-Dialog</a> hinzugefügt</li>
-                <li>2024-01-16: privacy-freundliche Webstatistik via <a href="https://www.goatcounter.com/" target="_blank">GoatCounter</a>; keine Cookies, kein Tracking, völlig anonym, DSGVO-konform</li>
-                <li>2024-01-08: Monatsseparatoren in Tags und Serien</li>
-                <li>2023-12-29: "Zwei-Finger-Verschieben" von Karten</li>
-                <li>2023-12-28: Einblendbare Karte auf jeder Seite mit Event-Liste</li>
-                <li>2023-12-26: Lauf-Serien, z.B. <a href="{{BasePath "serie/schwarzwald-berglauf-pokal-2024.html"}}">Schwarzwald Berglauf Pokal 2024</a></li>
-                <li>2023-11-05: Anzeige von Wochentagen.</li>
-                <li>2023-10-29: <a href="{{BasePath "map.html"}}">Karte</a> und <a href="{{BasePath "tags.html"}}">Kategorien</a> im Mobil-Menü.</li>
-                <li>2023-10-27: Anzeige von Lauftreffs und Lauf-Shops auf der <a href="{{BasePath "map.html"}}">Karte</a></li>
-                <li>2023-10-22: Automatische Jahreskategorisierung, z.B. <a href="{{BasePath "tag/2024.html"}}">2024</a></li>
-                <li>2023-10-14: Zwei Navigationsleisten in der Mobil-Ansicht.</li>
-                <li>2023-10-13: Neben Laufveranstaltungen werden jetzt auch Lauftreffs und Lauf-Shops kategorisiert, z.B. mit dem <a href="{{BasePath "tag/ryzon.html"}}">Ryzon</a>-Tag.</li>
-                <li>2023-09-21: Markierung von vergangenen Events mit <span class="has-text-danger">(Vergangenes Event!)</span>, z.B. beim <a href="{{BasePath "event/rosskopflauf/"}}">17. Rosskopflauf (2023)</a>.</li>
-                <li>2023-09-18: Pulsierender Rahmen für besondere Events, z.B. beim <a href="{{BasePath "event/2023-100-dietenbach-parkrun.html"}}">100. Dietenbach parkrun</a>.</li>
-                <li>2023-08-28: Anzeige von Distanz und Richtung (vom Stadtzentrum von {{Config.City.Name}} aus gesehen) bei jedem Event</li>
-            </ul>
+                <h2>Letzte Änderungen</h2>
+                <ul>
+                    <li>2025-12-22: "Kalender"-Buttons zum Hinzufügen von Events zum eigenen Kalender</li>
+                    <li>2025-10-28: "Teilen"-Buttons zum Teilen von Events, z.B. bei WhatsApp</li>
+                    <li>2025-03-09: <a href="{{BasePath "tags.html"}}">Kategorien-Filter</a></li>
+                    <li>2025-03-02: "zum Kalender hinzufügen"</li>
+                    <li>2025-02-26: Alle Events im <a href="https://freiburg.run/events.ics">Kalender-Export</a></li>
+                    <li>2025-02-03: Filterfunktion</li>
+                    <li>2024-10-08: Sektion "Links" auf der Info-Seite</li>
+                    <li>2024-04-17: Auf jeder Event-Seite: Hinweis auf zukünftige Laufevents in der Nähe</li>
+                    <li>2024-03-25: Aktualisierung auf <a href="https://bulma.io/" target="_blank">Bulma 1.0.0</a></li>
+                    <li>2024-01-19: <a class="modal-trigger" data-target="support-modal">Support-Dialog</a> hinzugefügt</li>
+                    <li>2024-01-16: privacy-freundliche Webstatistik via <a href="https://www.goatcounter.com/" target="_blank">GoatCounter</a>; keine Cookies, kein Tracking, völlig anonym, DSGVO-konform</li>
+                    <li>2024-01-08: Monatsseparatoren in Tags und Serien</li>
+                    <li>2023-12-29: "Zwei-Finger-Verschieben" von Karten</li>
+                    <li>2023-12-28: Einblendbare Karte auf jeder Seite mit Event-Liste</li>
+                    <li>2023-12-26: Lauf-Serien, z.B. <a href="{{BasePath "serie/schwarzwald-berglauf-pokal-2024.html"}}">Schwarzwald Berglauf Pokal 2024</a></li>
+                    <li>2023-11-05: Anzeige von Wochentagen.</li>
+                    <li>2023-10-29: <a href="{{BasePath "map.html"}}">Karte</a> und <a href="{{BasePath "tags.html"}}">Kategorien</a> im Mobil-Menü.</li>
+                    <li>2023-10-27: Anzeige von Lauftreffs und Lauf-Shops auf der <a href="{{BasePath "map.html"}}">Karte</a></li>
+                    <li>2023-10-22: Automatische Jahreskategorisierung, z.B. <a href="{{BasePath "tag/2024.html"}}">2024</a></li>
+                    <li>2023-10-14: Zwei Navigationsleisten in der Mobil-Ansicht.</li>
+                    <li>2023-10-13: Neben Laufveranstaltungen werden jetzt auch Lauftreffs und Lauf-Shops kategorisiert, z.B. mit dem <a href="{{BasePath "tag/ryzon.html"}}">Ryzon</a>-Tag.</li>
+                    <li>2023-09-21: Markierung von vergangenen Events mit <span class="has-text-danger">(Vergangenes Event!)</span>, z.B. beim <a href="{{BasePath "event/rosskopflauf/"}}">17. Rosskopflauf (2023)</a>.</li>
+                    <li>2023-09-18: Pulsierender Rahmen für besondere Events, z.B. beim <a href="{{BasePath "event/2023-100-dietenbach-parkrun.html"}}">100. Dietenbach parkrun</a>.</li>
+                    <li>2023-08-28: Anzeige von Distanz und Richtung (vom Stadtzentrum von {{Config.City.Name}} aus gesehen) bei jedem Event</li>
+                </ul>
 
-            <h2>Technisches</h2>
-            <p>
-                <strong>{{Config.Website.Name}}</strong> ist eine einfache, statische Webseite - nothing fancy; sie benutzt folgende Technologien:
-            </p>
-            <ul>
-                <li>Das CSS-Framework <a href="https://bulma.io/" target="_blank">Bulma</a>,</li>
-                <li><a href="https://leafletjs.com/">Leaflet</a> zur Kartendarstellung,</li>
-                <li><a href="https://github.com/ptma/Leaflet.Legend">Leaflet Legend</a> für eine Kartenlegende,</li>
-                <li>Kartenkacheln von <a href="https://www.openstreetmap.org/" target="_blank">OpenStreetMap</a>.
-            </ul>
+                <h2>Technisches</h2>
+                <p>
+                    <strong>{{Config.Website.Name}}</strong> ist eine einfache, statische Webseite - nothing fancy; sie benutzt folgende Technologien:
+                </p>
+                <ul>
+                    <li>Das CSS-Framework <a href="https://bulma.io/" target="_blank">Bulma</a>,</li>
+                    <li><a href="https://leafletjs.com/">Leaflet</a> zur Kartendarstellung,</li>
+                    <li><a href="https://github.com/ptma/Leaflet.Legend">Leaflet Legend</a> für eine Kartenlegende,</li>
+                    <li>Kartenkacheln von <a href="https://www.openstreetmap.org/" target="_blank">OpenStreetMap</a>.
+                </ul>
 
-            <p>
-                Der Quellcode (insbesondere der Seitengenerator auf Basis von Go-Templates) ist bei Github zu finden: <a href="https://github.com/flopp/freiburg-run" target="_blank">github.com/flopp/freiburg-run</a>.
-            </p>
+                <p>
+                    Der Quellcode (insbesondere der Seitengenerator auf Basis von Go-Templates) ist bei Github zu finden: <a href="https://github.com/flopp/freiburg-run" target="_blank">github.com/flopp/freiburg-run</a>.
+                </p>
 
-            <p>
-                Die Webseite ist bei <a href="https://uberspace.de/" target="_blank">Uberspace</a> gehostet, der Domainname kommt von <a href="https://namecheap.com" target="_blank">Namecheap</a>.
-            </p>
+                <p>
+                    Die Webseite ist bei <a href="https://uberspace.de/" target="_blank">Uberspace</a> gehostet, der Domainname kommt von <a href="https://namecheap.com" target="_blank">Namecheap</a>.
+                </p>
+            </div>
         </div>
     </div>
 </section>

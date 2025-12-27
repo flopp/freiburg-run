@@ -2,50 +2,52 @@
 
 <section class="section">
     <div class="container is-max-desktop">
-        <h1 class="title">{{.Title}}</h1>
-        
-        <div class="notification is-link is-light">
-            Liste aller Kategorien von aktuellen und vergangenen Laufveranstaltungen, Lauftreffs und Lauf-Shops auf {{Config.Website.Name}}.
-        </div>
+        <div class="box">
+            <h1 class="title">{{.Title}}</h1>
+            
+            <div class="notification is-link is-light">
+                Liste aller Kategorien von aktuellen und vergangenen Laufveranstaltungen, Lauftreffs und Lauf-Shops auf {{Config.Website.Name}}.
+            </div>
 
-        <div class="b-table">
-            <div class="table-wrapper">
-                <table class="table is-fullwidth is-narrow" id="tag-table">
-                    <thead>
-                        <tr>
-                            <th>Kategorie</th>
-                            <th>versteckt</th>
-                            <th># aktuelle</th>
-                            <th># vergangene</th>
-                            <th># Lauftreffs</th>
-                            <th># Shops</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {{range .Data.Tags}}
-                        <tr>
-                            <td>
-                                <a href="{{BasePath .Slug}}">{{.Name.Orig}}</a>
-                            </td>
-                            <td>
-                                <input type="checkbox" data-tag="{{.Name.Sanitized}}">
-                            </td>
-                            <td>
-                                {{.NumEvents}}
-                            </td>
-                            <td>
-                                {{.NumOldEvents}}
-                            </td>
-                            <td>
-                                {{.NumGroups}}
-                            </td>
-                            <td>
-                                {{.NumShops}}
-                            </td>
-                        </tr>
-                        {{end}}
-                    </tbody>
-                </table>
+            <div class="b-table">
+                <div class="table-wrapper">
+                    <table class="table is-fullwidth is-narrow" id="tag-table">
+                        <thead>
+                            <tr>
+                                <th>Kategorie</th>
+                                <th>versteckt</th>
+                                <th># aktuelle</th>
+                                <th># vergangene</th>
+                                <th># Lauftreffs</th>
+                                <th># Shops</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{range .Data.Tags}}
+                            <tr>
+                                <td>
+                                    <a href="{{BasePath .Slug}}">{{.Name.Orig}}</a>
+                                </td>
+                                <td>
+                                    <input type="checkbox" data-tag="{{.Name.Sanitized}}">
+                                </td>
+                                <td>
+                                    {{.NumEvents}}
+                                </td>
+                                <td>
+                                    {{.NumOldEvents}}
+                                </td>
+                                <td>
+                                    {{.NumGroups}}
+                                </td>
+                                <td>
+                                    {{.NumShops}}
+                                </td>
+                            </tr>
+                            {{end}}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

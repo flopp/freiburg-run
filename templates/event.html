@@ -3,21 +3,22 @@
 <section class="section">
     <div class="container is-max-desktop">
         <a id="back" href="{{BasePath .Main}}">Zurück zur Liste</a>
-        <h1 class="title">{{if .Event.Meta.SeoTitle}}{{.Event.Meta.SeoTitle}}{{else}}{{.Event.Name.Orig}}{{end}}</h1>
-        
-        {{if .Event.Cancelled}}
-        <div class="notification is-danger">
-            Achtung: diese Veranstaltung wurde abgesagt!
-        </div>
-        {{end}}
-
-        <div class="buttons">
-            <a class="button is-link" data-share data-url="{{FullPath .Event.Slug}}" data-name="{{.Event.Name.Orig}}"><span class="share-icon has-background-white mr-1"></span> Teilen</a>
-            {{if .Event.Calendar}}<a class="button is-link calendar-button" data-name="{{.Event.Name.Orig}}" data-calendarfile="{{.Event.Calendar}}" data-calendar="{{.Event.CalendarDataICS}}" data-googlecal="{{.Event.CalendarGoogle}}"><span class="calendar-icon has-background-white mr-1"></span> Kalender</a>{{end}}
-            <a class="button is-link" href="{{ReportFormUrl .Event.Name.Orig .Canonical}}" target="_blank"><span class="warning-icon has-background-white mr-1"></span> Fehler melden</a>
-        </div>
 
         <div class="box">
+            <h1 class="title">{{if .Event.Meta.SeoTitle}}{{.Event.Meta.SeoTitle}}{{else}}{{.Event.Name.Orig}}{{end}}</h1>
+            
+            {{if .Event.Cancelled}}
+            <div class="notification is-danger">
+                Achtung: diese Veranstaltung wurde abgesagt!
+            </div>
+            {{end}}
+
+            <div class="buttons">
+                <a class="button is-link" data-share data-url="{{FullPath .Event.Slug}}" data-name="{{.Event.Name.Orig}}"><span class="share-icon has-background-white mr-1"></span> Teilen</a>
+                {{if .Event.Calendar}}<a class="button is-link calendar-button" data-name="{{.Event.Name.Orig}}" data-calendarfile="{{.Event.Calendar}}" data-calendar="{{.Event.CalendarDataICS}}" data-googlecal="{{.Event.CalendarGoogle}}"><span class="calendar-icon has-background-white mr-1"></span> Kalender</a>{{end}}
+                <a class="button is-link" href="{{ReportFormUrl .Event.Name.Orig .Canonical}}" target="_blank"><span class="warning-icon has-background-white mr-1"></span> Fehler melden</a>
+            </div>
+
             <table class="table is-fullwidth is-narrow">
                 <tbody>
                     {{if .Event.Status}}

@@ -4,20 +4,25 @@
         <button id="map-hide-btn" class="button is-danger is-hidden">Karte</button>
     </p>
     <p class="control">
-        <a class="button is-link" href="{{Config.Contact.FeedbackForm}}" target="_blank"><span class="warning-icon has-background-white mr-1"></span> Feedback / Fehler melden</a>
+        <a class="button is-link" href="{{Config.Contact.FeedbackForm}}" target="_blank"><span class="warning-icon has-background-white mr-1"></span> <span class="is-hidden-touch">Feedback / Fehler melden</span><span class="is-hidden-desktop">Feedback / Melden</span></a>
     </p>
 </div>
 
 <div id="map-container" data-type="map"></div>
 
 <div id="filter-form" class="mb-5">
-    <div class="field">
-        <div class="control has-icons-right">
+    <div class="field has-addons">
+        <p class="control">
+            <a class="button is-static">
+                Filtern
+            </a>
+        </p>
+        <div class="control is-expanded has-icons-right">
             <input id="filter-input" class="input" type="text" placeholder="Einträge filtern...">
             <span class="icon is-right">
                 <button id="filter-button-cancel" class="delete"></button>
             </span>
         </div>
-        <p id="filter-info" class="help is-hidden"></p>
     </div>
+    <p id="filter-info" class="help is-hidden"></p>
 </div>

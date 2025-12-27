@@ -2,14 +2,16 @@
 
 <section class="section">
     <div class="container is-max-desktop" itemscope itemtype="https://schema.org/ItemList">
-        <h1 class="title" itemprop="name">{{.Title}}</h1>
+        <div class="box">
+            <h1 class="title" itemprop="name">{{.Title}}</h1>
 
-        <div class="notification is-link is-light">
-            Liste von {{.CountEvents}} <b>aktuellen und zukünftigen</b> Laufveranstaltungen, Wettkämpfen, Volksläufen im Raum {{Config.City.Name}} (~50km Umkreis), sortiert nach Datum.
+            <div class="notification is-link is-light">
+                Liste von {{.CountEvents}} <b>aktuellen und zukünftigen</b> Laufveranstaltungen, Wettkämpfen, Volksläufen im Raum {{Config.City.Name}} (~50km Umkreis), sortiert nach Datum.
+            </div>
+
+            {{template "controls.html" .}}
         </div>
-
-        {{template "controls.html" .}}
-
+        
         <div class="columns is-multiline">
             {{range .Data.Events}}
             {{template "card.html" .}}

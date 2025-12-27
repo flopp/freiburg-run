@@ -2,24 +2,25 @@
 
 <section class="section">
     <div class="container is-max-desktop" itemscope itemtype="https://schema.org/ItemList">
-        <h1 class="title" itemprop="name">{{.Title}}</h1>
+        <div class="box">
+            <h1 class="title" itemprop="name">{{.Title}}</h1>
 
-        <div class="notification is-link is-light">
-            <p class="block">
-                Liste von Laufveranstaltungen, Lauf-Wettkämpfen, Volksläufen im Raum {{Config.City.Name}}, die in die <b>Kategorie '{{.Tag.Name.Orig}}'</b> einsortiert sind.
-            </p>
-{{if .Tag.Description}}
-            <p class="block is-italic">
-                {{.Tag.Description}}
-            </p>
-{{end}}
-            <p class="block">
-                <a href="{{BasePath "/tags.html"}}">Hier geht's zur Liste <b>aller</b> Kategorien.</a>
-            </p>
+            <div class="notification is-link is-light">
+                <p class="block">
+                    Liste von Laufveranstaltungen, Lauf-Wettkämpfen, Volksläufen im Raum {{Config.City.Name}}, die in die <b>Kategorie '{{.Tag.Name.Orig}}'</b> einsortiert sind.
+                </p>
+    {{if .Tag.Description}}
+                <p class="block is-italic">
+                    {{.Tag.Description}}
+                </p>
+    {{end}}
+                <p class="block">
+                    <a href="{{BasePath "/tags.html"}}">Hier geht's zur Liste <b>aller</b> Kategorien.</a>
+                </p>
+            </div>
+
+            {{template "controls.html" .}}
         </div>
-
-        {{template "controls.html" .}}
-
 {{if .Tag.Events}}
         <div class="columns is-multiline">
             {{range .Tag.Events}}
