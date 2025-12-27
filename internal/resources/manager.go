@@ -1,7 +1,10 @@
 package resources
 
 import (
+	"log"
+	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/flopp/freiburg-run/internal/utils"
 )
@@ -48,6 +51,30 @@ func (r *ResourceManager) CopyHashErr(sourcePath, targetFile string) string {
 	return rel
 }
 
+func patchLeafletGestureHandling(TargetDir, fileName string) string {
+	targetFile := utils.Path(TargetDir).Join(fileName)
+	contents, err := os.ReadFile(targetFile)
+	if err != nil {
+		log.Printf("while trying to patch file '%s': %v", targetFile, err)
+		return fileName
+	}
+
+	// Patch German language translation, see https://github.com/elmarquis/Leaflet.GestureHandling/pull/97/files
+	//
+	// scrollMac:"⌘"
+	// ->
+	// scrollMac:"Verwende \u2318 + Scrollen zum Zoomen der Karte"
+	contents = []byte(strings.ReplaceAll(string(contents), "scrollMac:\"⌘\"", "scrollMac:\"Verwende \\u2318 + Scrollen zum Zoomen der Karte\""))
+
+	err = os.WriteFile(targetFile, contents, 0644)
+	if err != nil {
+		log.Printf("while trying to patch file '%s': %v", targetFile, err)
+		return fileName
+	}
+
+	return fileName
+}
+
 func (r *ResourceManager) CopyExternalAssets() {
 	source := utils.Path(r.SourceDir)
 	static := utils.Path(source.Join("static"))
@@ -56,7 +83,7 @@ func (r *ResourceManager) CopyExternalAssets() {
 	// JS files
 	r.JsFiles = append(r.JsFiles, r.CopyHashErr(vendor.Join("leaflet", "leaflet.js"), "leaflet-HASH.js"))
 	r.JsFiles = append(r.JsFiles, r.CopyHashErr(vendor.Join("leaflet-legend", "leaflet-legend.js"), "leaflet-legend-HASH.js"))
-	r.JsFiles = append(r.JsFiles, r.CopyHashErr(vendor.Join("leaflet-gesture-handling", "leaflet-gesture-handling.js"), "leaflet-gesture-handling-HASH.js"))
+	r.JsFiles = append(r.JsFiles, patchLeafletGestureHandling(r.TargetDir, r.CopyHashErr(vendor.Join("leaflet-gesture-handling", "leaflet-gesture-handling.js"), "leaflet-gesture-handling-HASH.js")))
 	r.JsFiles = append(r.JsFiles, r.CopyHashErr(static.Join("parkrun-track.js"), "parkrun-track-HASH.js"))
 	r.JsFiles = append(r.JsFiles, r.CopyHashErr(static.Join("main.js"), "main-HASH.js"))
 
