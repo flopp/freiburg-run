@@ -26,6 +26,11 @@ build:
 	rm -rf .out
 	go run cmd/generate/main.go -config local.json -out .out -basepath $(PWD)/.out -hashfile .hashes
 
+.phony: run-local
+run-local:
+	rm -rf .out
+	go run cmd/generate/main.go -config local.json -out .out -basepath $(PWD)/.out -hashfile .hashes
+
 .phony: checklinks
 checklinks:
 	rm -rf .out
@@ -43,6 +48,10 @@ sync: .repo/.git/config .bin/generate-linux
 
 .phony: run-script
 run-script: sync
+	ssh echeclus.uberspace.de packages/freiburg.run/cronjob.sh
+
+.phony: run-remote
+run-remote: sync
 	ssh echeclus.uberspace.de packages/freiburg.run/cronjob.sh
 
 .phony: lint

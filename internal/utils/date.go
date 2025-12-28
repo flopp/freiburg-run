@@ -3,6 +3,7 @@ package utils
 import (
 	"fmt"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -63,8 +64,27 @@ func (tr TimeRange) Before(t time.Time) bool {
 }
 
 var dateRe = regexp.MustCompile(`\b(\d\d\.\d\d\.\d\d\d\d)\b`)
+var monthRe = regexp.MustCompile(`^\s*(\d\d)\.(\d\d\d\d)\s*$`)
 
 func CreateTimeRange(original string) (TimeRange, error) {
+	// special case: month only
+	if m := monthRe.FindStringSubmatch(original); m != nil {
+		monthNum := m[1]
+		yearNum := m[2]
+		monthInt, err := strconv.Atoi(monthNum)
+		if err != nil || monthInt < 1 || monthInt > 12 {
+			return TimeRange{}, fmt.Errorf("cannot parse month '%s' from '%s'", monthNum, original)
+		}
+		yearInt, err := strconv.Atoi(yearNum)
+		if err != nil {
+			return TimeRange{}, fmt.Errorf("cannot parse year '%s' from '%s'", yearNum, original)
+		}
+		loc, _ := time.LoadLocation("Europe/Berlin")
+		from := time.Date(yearInt, time.Month(monthInt), 1, 0, 0, 0, 0, loc)
+		to := from.AddDate(0, 1, -1) // last day of month
+		return TimeRange{original, fmt.Sprintf("%s %d", MonthStr(time.Month(monthInt)), yearInt), from, to}, nil
+	}
+
 	dates := dateRe.FindAllStringSubmatch(original, -1)
 	if dates == nil {
 		// no dates found, just return as is
