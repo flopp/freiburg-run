@@ -17,6 +17,11 @@ type Config struct {
 		Lat  float64 `json:"lat"`
 		Lon  float64 `json:"lon"`
 	} `json:"city"`
+	Pages struct {
+		Club    bool `json:"club"`
+		Parkrun bool `json:"parkrun"`
+		Support bool `json:"support"`
+	}
 	Contact struct {
 		FeedbackForm       string `json:"feedback_form"`
 		ReportFormTemplate string `json:"report_form_template"`

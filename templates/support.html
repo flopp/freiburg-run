@@ -5,29 +5,7 @@
         <div class="content">
             <div class="box">
                 <h1>{{Config.Website.Name}} unterstützen?</h1>
-                <p>
-                    Wenn dir <i>{{Config.Website.Name}}</i> gefällt und von Nutzen ist, kannst du die Webseite auf verschiedene Arten unterstützen:
-                </p>
-                <b>Spread the Word!</b>
-                <p>
-                    Weise deine Freunde und Lauf-Kollegen auf <i>{{Config.Website.Name}}</i> hin, teile Links zu <i>{{Config.Website.Name}}</i> auf Social Media oder verlinke die Seite auf deiner Webseite oder in deinem Blog. 
-                </p>
-                <b>Melde neue Events und Korrekturen</b>
-                <p>
-                    Hast du von einer neuen Laufveranstaltung oder Lauftreff erfahren, oder hast du einen Fehler auf <i>{{Config.Website.Name}}</i> gefunden? Melde dich bei mir - hier sind einige <a class="close" href="{{BasePath "/info.html#kontakt"}}">Kontaktmöglichkeiten</a>.
-                </p>
-                <b>Mach Verbesserungsvorschläge</b>
-                <p>
-                    Du hast einen Verbesserungsvorschlag oder eine Idee für ein neues Feature für <i>{{Config.Website.Name}}</i>? <a class="close" href="{{BasePath "/info.html#kontakt"}}">Melde dich bei mir</a>, dann schaue ich, ob es umzusetzen ist.
-                </p>
-                <b>Werfe mir ein paar Euros in den Hut</b>
-                <p>
-                    Du kannst dich natürlich auch finanziell am Betrieb beteiligen - Hosting und Domain werfen regelmäßige Kosten auf. Am einfachsten geht das per Paypal <a href="https://paypal.me/FPigorsch" target="_blank">paypal.me/FPigorsch</a>.
-                </p>
-                <p>
-                    Danke & Grüße<br>
-                    <i>Florian</i>
-                </p>
+                {{template "support-content.html" .}}
             </div>
             <div class="box">
                 <h2 class="title">Sponsoren</h2>
@@ -35,7 +13,7 @@
                     Ich freue mich sehr, dass folgende Sponsoren den Betrieb der Seite unterstützen:
                 </p>
                 <ul>
-                    <li><em>COMING SOON...</em>
+                    <li><em>COMING SOON...</em></li> 
                 </ul>
             </div>
         </div>

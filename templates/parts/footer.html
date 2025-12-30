@@ -1,7 +1,7 @@
 <footer class="footer">
     <div class="content has-text-centered">
         <p id="footer-content">
-            <strong>{{Config.Website.Name}}</strong> von <a href="https://florian-pigorsch.de/" target="_blank">Florian Pigorsch</a>. <a href="{{BasePath "/info.html"}}">Info/Kontakt</a> - <a href="{{BasePath "/support.html"}}">Unterstützen</a> - <a href="{{BasePath "/impressum.html"}}">Impressum</a> - <a href="{{BasePath "/datenschutz.html"}}">Datenschutz</a> - <a href="{{BasePath "/sitemap.html"}}">Sitemap</a>
+            <strong>{{Config.Website.Name}}</strong> von <a href="https://florian-pigorsch.de/" target="_blank">Florian Pigorsch</a>. <a href="{{BasePath "/info.html"}}">Info/Kontakt</a> {{if Config.Pages.Support}} - <a href="{{BasePath "/support.html"}}">Unterstützen</a>{{end}}- <a href="{{BasePath "/impressum.html"}}">Impressum</a> - <a href="{{BasePath "/datenschutz.html"}}">Datenschutz</a> - <a href="{{BasePath "/sitemap.html"}}">Sitemap</a>
             {{if .Config.FooterLinks}}
             <br />
             {{range .Config.FooterLinks}}

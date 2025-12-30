@@ -442,11 +442,13 @@ func (g Generator) Generate(eventsData events.Data) error {
 		return fmt.Errorf("render shops page: %w", err)
 	}
 
-	if err := renderSubPage("dietenbach-parkrun.html", "dietenbach-parkrun.html", "dietenbach-parkrun", "parkrun", "Allgemein",
-		"Dietenbach parkrun",
-		"Vollständige Liste aller Ergebnisse, Laufberichte und Fotogalerien des 'Dietenbach parkrun' im Freiburger Dietenbachpark.",
-		breadcrumbsBase); err != nil {
-		return fmt.Errorf("render subpage %q: %w", "dietenbach-parkrun.html", err)
+	if g.config.Pages.Parkrun {
+		if err := renderSubPage("dietenbach-parkrun.html", "dietenbach-parkrun.html", "dietenbach-parkrun", "parkrun", "Allgemein",
+			"Dietenbach parkrun",
+			"Vollständige Liste aller Ergebnisse, Laufberichte und Fotogalerien des 'Dietenbach parkrun' im Freiburger Dietenbachpark.",
+			breadcrumbsBase); err != nil {
+			return fmt.Errorf("render subpage %q: %w", "dietenbach-parkrun.html", err)
+		}
 	}
 
 	if err := renderPage("series.html", "series.html", "series", "series", "Serien",
@@ -484,11 +486,13 @@ func (g Generator) Generate(eventsData events.Data) error {
 		return fmt.Errorf("render subpage %q: %w", "impressum.html", err)
 	}
 
-	if err := renderSubPage("support.html", "support.html", "support", "support", "Allgemein",
-		fmt.Sprintf("%s unterstützen", g.config.Website.Name),
-		fmt.Sprintf("Möglichkeiten %s zu unterstützen", g.config.Website.Name),
-		breadcrumbsInfo); err != nil {
-		return fmt.Errorf("render subpage %q: %w", "support.html", err)
+	if g.config.Pages.Support {
+		if err := renderSubPage("support.html", "support.html", "support", "support", "Allgemein",
+			fmt.Sprintf("%s unterstützen", g.config.Website.Name),
+			fmt.Sprintf("Möglichkeiten %s zu unterstützen", g.config.Website.Name),
+			breadcrumbsInfo); err != nil {
+			return fmt.Errorf("render subpage %q: %w", "support.html", err)
+		}
 	}
 
 	if err := renderSubPage("404.html", "404.html", "404", "404", "",
@@ -498,11 +502,13 @@ func (g Generator) Generate(eventsData events.Data) error {
 		return fmt.Errorf("render subpage %q: %w", "404.html", err)
 	}
 
-	if err := renderSubPage("club/", "club/index.html", "club", "club", "Club",
-		fmt.Sprintf("%s Club", g.config.Website.Name),
-		fmt.Sprintf("%s Club - die Lauf-Community", g.config.Website.Name),
-		breadcrumbsBase); err != nil {
-		return fmt.Errorf("render subpage %q: %w", "club.html", err)
+	if g.config.Pages.Club {
+		if err := renderSubPage("club/", "club/index.html", "club", "club", "Club",
+			fmt.Sprintf("%s Club", g.config.Website.Name),
+			fmt.Sprintf("%s Club - die Lauf-Community", g.config.Website.Name),
+			breadcrumbsBase); err != nil {
+			return fmt.Errorf("render subpage %q: %w", "club.html", err)
+		}
 	}
 
 	// Special rendering of parkrun page for wordpress

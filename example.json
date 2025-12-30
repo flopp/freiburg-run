@@ -9,6 +9,11 @@
         "lat": 52.520008,
         "lon": 13.404954
     },
+    "pages": {
+        "club": false,
+        "parkrun": false,
+        "support": true
+    },
     "contact": {
         "feedback_form": "YOUR_FEEDBACK_FORM_URL_HERE",
         "report_form_template": "YOUR_REPORT_FORM_TEMPLATE_URL_HERE, SUBSTRINGS 'NAME' AND 'URL' WILL BE REPLACED",

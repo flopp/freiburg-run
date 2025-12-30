@@ -34,7 +34,7 @@ func LoadSheets(config utils.Config, today time.Time) (SheetsData, error) {
 		return SheetsData{}, fmt.Errorf("fetching all sheets: %w", err)
 	}
 
-	eventSheets, groupsSheet, shopsSheet, parkrunSheet, tagsSheet, seriesSheet, err := findSheetNames(sheets)
+	eventSheets, groupsSheet, shopsSheet, parkrunSheet, tagsSheet, seriesSheet, err := findSheetNames(config, sheets)
 	if err != nil {
 		return SheetsData{}, err
 	}
@@ -51,9 +51,12 @@ func LoadSheets(config utils.Config, today time.Time) (SheetsData, error) {
 	if err != nil {
 		return SheetsData{}, fmt.Errorf("fetching shops: %w", err)
 	}
-	parkrun, err := fetchParkrunEvents(config, srv, today, parkrunSheet)
-	if err != nil {
-		return SheetsData{}, fmt.Errorf("fetching parkrun events: %w", err)
+	var parkrun []*ParkrunEvent
+	if config.Pages.Parkrun {
+		parkrun, err = fetchParkrunEvents(config, srv, today, parkrunSheet)
+		if err != nil {
+			return SheetsData{}, fmt.Errorf("fetching parkrun events: %w", err)
+		}
 	}
 	tags, err := fetchTags(config, srv, tagsSheet)
 	if err != nil {
@@ -74,7 +77,7 @@ func LoadSheets(config utils.Config, today time.Time) (SheetsData, error) {
 	}, nil
 }
 
-func findSheetNames(sheets []string) (eventSheets []string, groupsSheet, shopsSheet, parkrunSheet, tagsSheet, seriesSheet string, err error) {
+func findSheetNames(config utils.Config, sheets []string) (eventSheets []string, groupsSheet, shopsSheet, parkrunSheet, tagsSheet, seriesSheet string, err error) {
 	for _, sheet := range sheets {
 		switch {
 		case strings.HasPrefix(sheet, "Events"):
@@ -104,7 +107,7 @@ func findSheetNames(sheets []string) (eventSheets []string, groupsSheet, shopsSh
 	if shopsSheet == "" {
 		return nil, "", "", "", "", "", fmt.Errorf("fetching sheets: unable to find 'Shops' sheet")
 	}
-	if parkrunSheet == "" {
+	if config.Pages.Parkrun && parkrunSheet == "" {
 		return nil, "", "", "", "", "", fmt.Errorf("fetching sheets: unable to find 'Parkrun' sheet")
 	}
 	if tagsSheet == "" {

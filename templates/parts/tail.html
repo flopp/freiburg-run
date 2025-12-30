@@ -1,4 +1,4 @@
-{{template "support-modal.html" .}}
+{{if Config.Pages.Support}}{{template "support-modal.html" .}}{{end}}
 {{template "calendar-modal.html" .}}
 {{range .JsFiles}}
 <script src="{{BasePath .}}"></script>
