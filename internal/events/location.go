@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"regexp"
 
-	"github.com/flopp/freiburg-run/internal/config"
 	"github.com/flopp/freiburg-run/internal/utils"
 	"github.com/flopp/go-coordsparser"
 )
@@ -23,7 +22,7 @@ type Location struct {
 var reFr = regexp.MustCompile(`\s*^(.*)\s*,\s*FR\s*(🇫🇷)?\s*$`)
 var reCh = regexp.MustCompile(`\s*^(.*)\s*,\s*CH\s*(🇨🇭)?\s*$`)
 
-func CreateLocation(config config.Config, locationS, coordinatesS string) Location {
+func CreateLocation(config utils.Config, locationS, coordinatesS string) Location {
 	country := ""
 	if m := reFr.FindStringSubmatch(locationS); m != nil {
 		country = "Frankreich"

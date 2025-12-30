@@ -8,14 +8,13 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/flopp/freiburg-run/internal/config"
 	"github.com/tdewolff/minify/v2"
 	"github.com/tdewolff/minify/v2/html"
 )
 
 var templates = make(map[string]*template.Template)
 
-func loadTemplate(conf config.Config, name string, basePath string) (*template.Template, error) {
+func loadTemplate(conf Config, name string, basePath string) (*template.Template, error) {
 	if t, ok := templates[name]; ok {
 		return t, nil
 	}
@@ -58,7 +57,7 @@ func loadTemplate(conf config.Config, name string, basePath string) (*template.T
 			formUrl = strings.ReplaceAll(formUrl, "URL", template.HTMLEscaper(url))
 			return formUrl
 		},
-		"Config": func() config.Config {
+		"Config": func() Config {
 			return conf
 		},
 	}).ParseFiles(files...)
@@ -70,7 +69,7 @@ func loadTemplate(conf config.Config, name string, basePath string) (*template.T
 	return t, nil
 }
 
-func executeTemplateToBuffer(conf config.Config, templateName string, basePath string, data any) (*bytes.Buffer, error) {
+func executeTemplateToBuffer(conf Config, templateName string, basePath string, data any) (*bytes.Buffer, error) {
 	// load template
 	templ, err := loadTemplate(conf, templateName, basePath)
 	if err != nil {
@@ -103,7 +102,7 @@ func prepareOutputFile(fileName string) (*os.File, error) {
 	return out, nil
 }
 
-func ExecuteTemplate(conf config.Config, templateName string, fileName string, basePath string, data any) error {
+func ExecuteTemplate(conf Config, templateName string, fileName string, basePath string, data any) error {
 	buffer, err := executeTemplateToBuffer(conf, templateName, basePath, data)
 	if err != nil {
 		return fmt.Errorf("render template: %w", err)
@@ -127,7 +126,7 @@ func ExecuteTemplate(conf config.Config, templateName string, fileName string, b
 	return nil
 }
 
-func ExecuteTemplateNoMinify(conf config.Config, templateName string, fileName string, basePath string, data any) error {
+func ExecuteTemplateNoMinify(conf Config, templateName string, fileName string, basePath string, data any) error {
 	buffer, err := executeTemplateToBuffer(conf, templateName, basePath, data)
 	if err != nil {
 		return fmt.Errorf("render template: %w", err)

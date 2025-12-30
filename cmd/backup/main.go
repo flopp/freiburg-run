@@ -7,7 +7,7 @@ import (
 	"io"
 	"os"
 
-	"github.com/flopp/freiburg-run/internal/config"
+	"github.com/flopp/freiburg-run/internal/utils"
 	"google.golang.org/api/drive/v3"
 	"google.golang.org/api/option"
 )
@@ -50,7 +50,7 @@ func parseCommandLine() CommandLineOptions {
 func main() {
 	options := parseCommandLine()
 
-	config, err := config.LoadConfig(options.configFile)
+	config, err := utils.LoadConfig(options.configFile)
 	if err != nil {
 		fmt.Printf("Unable to read config file: %v\n", err)
 		return

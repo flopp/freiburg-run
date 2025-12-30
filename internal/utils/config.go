@@ -1,4 +1,4 @@
-package config
+package utils
 
 import (
 	"encoding/json"
@@ -60,4 +60,8 @@ func LoadConfig(filename string) (Config, error) {
 
 func (c Config) DataSheetUrl() string {
 	return "https://docs.google.com/spreadsheets/d/" + c.Google.SheetId
+}
+
+func (c Config) BaseUrl() Url {
+	return Url(c.Website.Url)
 }

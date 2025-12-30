@@ -8,7 +8,6 @@ import (
 	"time"
 
 	ical "github.com/arran4/golang-ical"
-	"github.com/flopp/freiburg-run/internal/config"
 	"github.com/flopp/freiburg-run/internal/utils"
 )
 
@@ -22,8 +21,8 @@ const (
 	componentPropertyDtEnd   = ical.ComponentProperty(propertyDtEnd)
 )
 
-func CreateEventCalendar(config config.Config, event *Event, now time.Time, baseUrl utils.Url, calendarUrl string, path string) error {
-	infoUrl := baseUrl.Join(event.Slug())
+func CreateEventCalendar(config utils.Config, event *Event, now time.Time, calendarUrl string, path string) error {
+	infoUrl := config.BaseUrl().Join(event.Slug())
 	endPlusOneDay := event.Time.To.AddDate(0, 0, 1)
 
 	// ical/ics data
@@ -61,7 +60,7 @@ func CreateEventCalendar(config config.Config, event *Event, now time.Time, base
 	return nil
 }
 
-func CreateCalendar(config config.Config, eventsList []*Event, now time.Time, baseUrl utils.Url, calendarUrl string, path string) error {
+func CreateCalendar(config utils.Config, eventsList []*Event, now time.Time, calendarUrl string, path string) error {
 	cal := ical.NewCalendar()
 	cal.SetProductId(fmt.Sprintf("Laufevents - %s", config.Website.Name))
 	cal.SetMethod(ical.MethodPublish)
@@ -78,7 +77,7 @@ func CreateCalendar(config config.Config, eventsList []*Event, now time.Time, ba
 			return fmt.Errorf("create UUID for '%s': %w", e.Name.Orig, err)
 		}
 
-		infoUrl := baseUrl.Join(e.Slug())
+		infoUrl := config.BaseUrl().Join(e.Slug())
 
 		calEvent := cal.AddEvent(uid.String())
 		calEvent.SetDtStampTime(now)

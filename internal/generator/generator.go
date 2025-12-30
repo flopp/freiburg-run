@@ -6,14 +6,13 @@ import (
 	"strings"
 	"time"
 
-	"github.com/flopp/freiburg-run/internal/config"
 	"github.com/flopp/freiburg-run/internal/events"
 	"github.com/flopp/freiburg-run/internal/resources"
 	"github.com/flopp/freiburg-run/internal/utils"
 )
 
 type CommonData struct {
-	Config        config.Config
+	Config        utils.Config
 	Timestamp     string
 	TimestampFull string
 	BaseUrl       string
@@ -42,9 +41,9 @@ func (t *TemplateData) SetNameLink(name, link string, baseBreakcrumbs utils.Brea
 
 func (t TemplateData) Image() string {
 	if t.Nav == "parkrun" {
-		return "https://freiburg.run/images/parkrun.png"
+		return t.Config.BaseUrl().Join("images/parkrun.png")
 	}
-	return "https://freiburg.run/images/512.png"
+	return t.Config.BaseUrl().Join("images/512.png")
 }
 
 func (t TemplateData) NiceTitle() string {
@@ -122,7 +121,7 @@ func (d SitemapTemplateData) NiceTitle() string {
 	return d.Title
 }
 
-func createHtaccess(config config.Config, data events.Data, outDir utils.Path) error {
+func createHtaccess(config utils.Config, data events.Data, outDir utils.Path) error {
 	if err := utils.MakeDir(outDir.String()); err != nil {
 		return err
 	}
@@ -197,7 +196,7 @@ func createHtaccess(config config.Config, data events.Data, outDir utils.Path) e
 	return nil
 }
 
-func createManifestJSON(config config.Config, outDir utils.Path) error {
+func createManifestJSON(config utils.Config, outDir utils.Path) error {
 	if err := utils.MakeDir(outDir.String()); err != nil {
 		return err
 	}
@@ -239,7 +238,7 @@ type CountryData struct {
 	events []*events.Event
 }
 
-func renderEmbedList(config config.Config, baseUrl utils.Url, out utils.Path, data TemplateData, tags []string) error {
+func renderEmbedList(config utils.Config, baseUrl utils.Url, out utils.Path, data TemplateData, tags []string) error {
 	countryData := map[string]*CountryData{
 		"":           {"embed/trailrun-de.html", make([]*events.Event, 0)}, // Default (Germany)
 		"Frankreich": {"embed/trailrun-fr.html", make([]*events.Event, 0)},
@@ -290,7 +289,7 @@ func renderEmbedList(config config.Config, baseUrl utils.Url, out utils.Path, da
 }
 
 type Generator struct {
-	config        config.Config
+	config        utils.Config
 	out           utils.Path
 	baseUrl       utils.Url
 	basePath      string
@@ -304,9 +303,9 @@ type Generator struct {
 }
 
 func NewGenerator(
-	config config.Config,
+	config utils.Config,
 	out utils.Path,
-	baseUrl utils.Url, basePath string,
+	basePath string,
 	now time.Time,
 	jsFiles []string, cssFiles []string,
 	umamiScript string,
@@ -315,7 +314,7 @@ func NewGenerator(
 	return Generator{
 		config:        config,
 		out:           out,
-		baseUrl:       baseUrl,
+		baseUrl:       utils.Url(config.Website.Url),
 		basePath:      basePath,
 		now:           now,
 		timestamp:     now.Format("2006-01-02"),
@@ -340,7 +339,7 @@ func (g Generator) Generate(eventsData events.Data) error {
 				continue
 			}
 			calendar := event.CalendarSlug()
-			if err := events.CreateEventCalendar(g.config, event, g.now, g.baseUrl, g.baseUrl.Join(calendar), g.out.Join(calendar)); err != nil {
+			if err := events.CreateEventCalendar(g.config, event, g.now, g.baseUrl.Join(calendar), g.out.Join(calendar)); err != nil {
 				return fmt.Errorf("create event calendar: %v", err)
 			}
 			event.Calendar = "/" + calendar
@@ -357,7 +356,7 @@ func (g Generator) Generate(eventsData events.Data) error {
 	*/
 
 	// Create calendar files for all upcoming events
-	if err := events.CreateCalendar(g.config, eventsData.Events, g.now, g.baseUrl, g.baseUrl.Join("events.ics"), g.out.Join("events.ics")); err != nil {
+	if err := events.CreateCalendar(g.config, eventsData.Events, g.now, g.baseUrl.Join("events.ics"), g.out.Join("events.ics")); err != nil {
 		return fmt.Errorf("create events.ics: %v", err)
 	}
 

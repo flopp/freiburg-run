@@ -7,7 +7,6 @@ import (
 	"os"
 	"time"
 
-	"github.com/flopp/freiburg-run/internal/config"
 	"github.com/flopp/freiburg-run/internal/events"
 	"github.com/flopp/freiburg-run/internal/generator"
 	"github.com/flopp/freiburg-run/internal/resources"
@@ -63,7 +62,7 @@ type ConfigData struct {
 func main() {
 	options := parseCommandLine()
 
-	config_data, err := config.LoadConfig(options.configFile)
+	config_data, err := utils.LoadConfig(options.configFile)
 	if err != nil {
 		log.Fatalf("failed to load config file: %v", err)
 		return
@@ -72,7 +71,6 @@ func main() {
 	// configuration
 	out := utils.NewPath(options.outDir)
 	basePath := options.basePath
-	baseUrl := utils.Url(config_data.Website.Url)
 
 	now := time.Now()
 	today := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
@@ -104,7 +102,7 @@ func main() {
 	gen := generator.NewGenerator(
 		config_data,
 		out,
-		baseUrl, basePath,
+		basePath,
 		now,
 		resourceManager.JsFiles, resourceManager.CssFiles,
 		resourceManager.UmamiScript,
