@@ -197,6 +197,43 @@ func createHtaccess(config config.Config, data events.Data, outDir utils.Path) e
 	return nil
 }
 
+func createManifestJSON(config config.Config, outDir utils.Path) error {
+	if err := utils.MakeDir(outDir.String()); err != nil {
+		return err
+	}
+
+	fileName := outDir.Join("manifest.json")
+
+	destination, err := os.Create(fileName)
+	if err != nil {
+		return err
+	}
+	defer destination.Close()
+
+	destination.WriteString("{\n")
+	destination.WriteString("    \"name\": \"" + config.Website.Name + "\",\n")
+	destination.WriteString("    \"short_name\": \"" + config.Website.Name + "\",\n")
+	destination.WriteString("    \"icons\": [\n")
+	destination.WriteString("        {\n")
+	destination.WriteString("            \"src\": \"/android-chrome-192x192.png\",\n")
+	destination.WriteString("            \"sizes\": \"192x192\",\n")
+	destination.WriteString("            \"type\": \"image/png\"\n")
+	destination.WriteString("        },\n")
+	destination.WriteString("        {\n")
+	destination.WriteString("            \"src\": \"/android-chrome-512x512.png\",\n")
+	destination.WriteString("            \"sizes\": \"512x512\",\n")
+	destination.WriteString("            \"type\": \"image/png\"\n")
+	destination.WriteString("        }\n")
+	destination.WriteString("    ],\n")
+	destination.WriteString("    \"theme_color\": \"#4455F6\",\n")
+	destination.WriteString("    \"background_color\": \"#4455F6\",\n")
+	destination.WriteString("    \"start_url\": \"" + config.Website.Url + "\",\n")
+	destination.WriteString("    \"display\": \"standalone\"\n")
+	destination.WriteString("}\n")
+
+	return nil
+}
+
 type CountryData struct {
 	slug   string
 	events []*events.Event
@@ -663,6 +700,11 @@ func (g Generator) Generate(eventsData events.Data) error {
 	// Render .htaccess
 	if err := createHtaccess(g.config, eventsData, g.out); err != nil {
 		return fmt.Errorf("create .htaccess: %v", err)
+	}
+
+	// Render manifest.json
+	if err := createManifestJSON(g.config, g.out); err != nil {
+		return fmt.Errorf("create manifest.json: %v", err)
 	}
 
 	return nil
