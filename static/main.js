@@ -590,7 +590,7 @@ var main = () => {
     }
 
     function triggerNotificationOnce() {
-        //return; // disable notifications for now
+        return; // disable notifications for now
         
         const notification = {
             id: 5,
