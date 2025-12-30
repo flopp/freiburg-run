@@ -1,6 +1,7 @@
 {
     "website": {
         "url": "https://berlin.run",
+        "domain": "berlin.run",
         "name": "berlin.run"
     },
     "city": {

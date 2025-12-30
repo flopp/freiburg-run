@@ -8,8 +8,9 @@ import (
 
 type Config struct {
 	Website struct {
-		Url  string `json:"url"`
-		Name string `json:"name"`
+		Url    string `json:"url"`
+		Domain string `json:"domain"`
+		Name   string `json:"name"`
 	} `json:"website"`
 	City struct {
 		Name string  `json:"name"`
@@ -49,6 +50,9 @@ func LoadConfig(filename string) (Config, error) {
 
 	if config.Website.Url == "" {
 		return config, fmt.Errorf("website/url is empty in config file %s", filename)
+	}
+	if config.Website.Domain == "" {
+		return config, fmt.Errorf("website/domain is empty in config file %s", filename)
 	}
 
 	return config, nil

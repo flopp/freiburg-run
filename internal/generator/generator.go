@@ -122,7 +122,7 @@ func (d SitemapTemplateData) NiceTitle() string {
 	return d.Title
 }
 
-func createHtaccess(data events.Data, outDir utils.Path) error {
+func createHtaccess(config config.Config, data events.Data, outDir utils.Path) error {
 	if err := utils.MakeDir(outDir.String()); err != nil {
 		return err
 	}
@@ -135,9 +135,16 @@ func createHtaccess(data events.Data, outDir utils.Path) error {
 	}
 	defer destination.Close()
 
+	// redirect www to non-www
+	destination.WriteString("RewriteEngine On\n")
+	destination.WriteString("RewriteCond %{HTTP_HOST} !^" + config.Website.Domain + "$ [NC]\n")
+	destination.WriteString("RewriteRule ^(.*)$ http://" + config.Website.Domain + "/$1 [L,R=301]\n")
+
 	destination.WriteString("ErrorDocument 404 /404.html\n")
 	destination.WriteString("Redirect /parkrun /dietenbach-parkrun.html\n")
 	destination.WriteString("Redirect /groups.html /lauftreffs.html\n")
+
+	// fix some past issues
 	destination.WriteString("Redirect /event/2024-32-teninger-allmendlauf.html?back=event /event/2024-32-teninger-allmendlauf.html\n")
 	destination.WriteString("Redirect /event/dietenbach-parkrun.html /group/dietenbach-parkrun.html\n")
 	destination.WriteString("Redirect /event/dreilaendergarten-parkrun.html /group/dreilaendergarten-parkrun.html\n")
@@ -654,7 +661,7 @@ func (g Generator) Generate(eventsData events.Data) error {
 	}
 
 	// Render .htaccess
-	if err := createHtaccess(eventsData, g.out); err != nil {
+	if err := createHtaccess(g.config, eventsData, g.out); err != nil {
 		return fmt.Errorf("create .htaccess: %v", err)
 	}
 
