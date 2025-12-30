@@ -17,7 +17,7 @@ update-vendor:
 	@git status external-files
 	@echo "Don't forget to commit if there are changes"
 
-.bin/generate-linux: cmd/generate/main.go internal/events/*.go internal/generator/*.go internal/resources/*.go internal/config/*.go internal/utils/*.go go.mod
+.bin/generate-linux: cmd/generate/main.go internal/events/*.go internal/generator/*.go internal/resources/*.go internal/utils/*.go go.mod
 	mkdir -p .bin
 	GOOS=linux GOARCH=amd64 go build -o .bin/generate-linux cmd/generate/main.go
 
