@@ -44,25 +44,30 @@ const parseGeo = function (s) {
 };
 
 const loadMap = function (id) {
-    var map = L.map(id, {gestureHandling: true}).setView([48.000548, 7.804842], 15);
+    const mapEl = document.getElementById(id);
+    const cityName = mapEl.dataset.cityName || "Freiburg";
+    const cityLat = parseFloat(mapEl.dataset.cityLat) || 47.996090;
+    const cityLon = parseFloat(mapEl.dataset.cityLon) || 7.849400;
+
+    var center = [cityLat, cityLon];
+    var map = L.map(id, {gestureHandling: true}).setView(center, 15);
 
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
 
-    var freiburg = [47.996090, 7.849400];
-    L.circle(freiburg, {
+    L.circle(center, {
         color: '#3e8ed0',
         fill: false,
         weight: 1,
         radius: 25000
-    }).addTo(map).bindPopup("Freiburg, 25km");
-    L.circle(freiburg, {
+    }).addTo(map).bindPopup(`${cityName}, 25km`);
+    L.circle(center, {
         color: '#3e8ed0',
         fill: false,
         weight: 1,
         radius: 50000
-    }).addTo(map).bindPopup("Freiburg, 50km")
+    }).addTo(map).bindPopup(`${cityName}, 50km`)
 
     let blueIcon = load_marker("");
     let greyIcon = load_marker("grey");
@@ -397,8 +402,6 @@ var main = () => {
     var bigMapId = "";
     if (document.querySelector("#big-map") !== null) {
         bigMapId = "big-map";
-    } else if (document.querySelector("#serie-map") !== null) {
-        bigMapId = "serie-map";
     }
     if (bigMapId !== "") {
         loadMap(bigMapId);

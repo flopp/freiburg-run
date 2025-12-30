@@ -1,5 +1,5 @@
 {{template "header.html" .}}
-<div id="big-map"></div>
+<div id="big-map" data-city-name="{{Config.City.Name}}" data-city-lat="{{Config.City.Lat}}" data-city-lon="{{Config.City.Lon}}"></div>
 
 <div class="is-hidden">
     {{range .Data.Events}}
