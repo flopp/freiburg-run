@@ -37,5 +37,11 @@
     },
     "umami": {
         "website_id": "YOUR_UMAMI_WEBSITE_ID (OPTIONAL)"
+    },
+    "notification": {
+        "enabled": true,
+        "id": 1,
+        "content": "This is a <b>notification</b> message.",
+        "class": "is-info"
     }
 }

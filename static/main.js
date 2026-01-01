@@ -590,12 +590,15 @@ var main = () => {
     }
 
     function triggerNotificationOnce() {
-        return; // disable notifications for now
-        
+        const notificationDataEl = document.getElementById("notification-data");
+        if (notificationDataEl === null) {
+            return;
+        }
+
         const notification = {
-            id: 5,
-            content: "<div class='is-size-5 has-text-white'>🎄🎁☃️ 🎄🎁☃️ 🎄🎁☃️ 🎄🎁☃️ 🎄🎁☃️ 🎄🎁☃️<br><b>freiburg.run</b> wünscht frohe Weihnachten und geruhsame Feiertage!<br><i>- Florian</i></div>",
-            class: "is-success",
+            id: parseInt(notificationDataEl.getAttribute("data-id")),
+            content: notificationDataEl.getAttribute("data-content"),
+            class: notificationDataEl.getAttribute("data-class"),
         };
 
         if (!notificationGuard(`${notification.id}`)) {

@@ -40,6 +40,12 @@ type Config struct {
 	Umami struct {
 		WebsiteId string `json:"website_id"`
 	} `json:"umami"`
+	Notification struct {
+		Enabled bool   `json:"enabled"`
+		Id      int    `json:"id"`
+		Content string `json:"content"`
+		Class   string `json:"class"`
+	} `json:"notification"`
 }
 
 func LoadConfig(filename string) (Config, error) {
