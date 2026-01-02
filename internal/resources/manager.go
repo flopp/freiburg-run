@@ -129,6 +129,8 @@ func (r *ResourceManager) CopyStaticAssets() {
 		{"static/circle-small.png", "images/circle-small.png"},
 		{"static/circle-big.png", "images/circle-big.png"},
 		{"static/freiburg-run-flyer.pdf", "freiburg-run-flyer.pdf"},
+		{"static/images/placeholder.png", "images/placeholder.png"},
+		{"static/images/totemann-logo.png", "images/totemann-logo.png"},
 	}
 
 	source := utils.Path(r.SourceDir)
