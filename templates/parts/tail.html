@@ -1,4 +1,8 @@
-{{if Config.Pages.Support}}{{template "support-modal.html" .}}{{end}}
+{{if Config.Pages.Support}}<div id="fab-wrapper">
+    <a id="fab" data-umami-event="heart-button" href="{{BasePath "support.html"}}">
+        <span class="icon" style="width: 24px; height: 24px;"><i class="heart-icon-big"></i></span>    
+    </a>
+</div>{{end}}
 {{template "calendar-modal.html" .}}
 {{if Config.Notification.Enabled}}<div id="notification-data" class="is-hidden" data-id="{{Config.Notification.Id}}" data-class="{{Config.Notification.Class}}" data-content="{{Config.Notification.Content}}"></div>{{end}}
 {{range .JsFiles}}
