@@ -28,6 +28,7 @@ type Config struct {
 		Instagram          string `json:"instagram"`
 		Mastodon           string `json:"mastodon"`
 		Whatsapp           string `json:"whatsapp"`
+		Strava             string `json:"strava"`
 	} `json:"contact"`
 	FooterLinks []struct {
 		Name string `json:"name"`

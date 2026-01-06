@@ -121,14 +121,17 @@
                 </div>
             </div>
             <div class="navbar-icons">
-                <a class="navbar-item no-external" href="{{Config.Contact.FeedbackForm}}" target="_blank" title="Feedback-Formular geben">
+                <a class="navbar-item no-external" href="{{Config.Contact.FeedbackForm}}" target="_blank" title="Feedback-Formular">
                     <span class="icon"><i class="feedback-icon"></i></span>
                 </a>
-                {{if Config.Contact.Whatsapp}}<a class="navbar-item no-external" href="{{Config.Contact.Whatsapp}}" target="_blank" title="WhatsApp-Community beitreten">
+                {{if Config.Contact.Whatsapp}}<a class="navbar-item no-external" href="{{Config.Contact.Whatsapp}}" target="_blank" title="WhatsApp-Community">
                     <span class="icon"><i class="whatsapp-icon"></i></span>
                 </a>{{end}}
-                {{if Config.Contact.Instagram}}<a class="navbar-item no-external" href="{{Config.Contact.Instagram}}" target="_blank" title="Instagram-Community beitreten">
+                {{if Config.Contact.Instagram}}<a class="navbar-item no-external" href="{{Config.Contact.Instagram}}" target="_blank" title="Instagram">
                     <span class="icon"><i class="insta-icon"></i></span>
+                </a>{{end}}
+                {{if Config.Contact.Strava}}<a class="navbar-item no-external" href="{{Config.Contact.Strava}}" target="_blank" title="Strava-Club">
+                    <span class="icon"><i class="strava-icon"></i></span>
                 </a>{{end}}
             </div>  
         </div>
