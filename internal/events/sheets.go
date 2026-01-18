@@ -464,7 +464,7 @@ type TagData struct {
 	Description string
 }
 
-func getTagData(cols Columns, row []interface{}) (TagData, error) {
+func getTagData(cols Columns, row []any) (TagData, error) {
 	var data TagData
 	var err error
 	fields := []struct {
@@ -501,7 +501,7 @@ func fetchTags(config utils.Config, srv *sheets.Service, table string) ([]*Tag, 
 		if tag != "" && (data.Name != "" || data.Description != "") {
 			t := CreateTag(tag)
 			t.Name.Orig = data.Name
-			t.Description = data.Description
+			t.Description = template.HTML(data.Description)
 			tags = append(tags, t)
 		}
 	}
@@ -516,7 +516,7 @@ type SerieData struct {
 	Links       []string
 }
 
-func getSerieData(cols Columns, row []interface{}) (SerieData, error) {
+func getSerieData(cols Columns, row []any) (SerieData, error) {
 	var data SerieData
 	var err error
 	fields := []struct {

@@ -2,13 +2,14 @@ package events
 
 import (
 	"fmt"
+	"html/template"
 
 	"github.com/flopp/freiburg-run/internal/utils"
 )
 
 type Tag struct {
 	Name        utils.Name
-	Description string
+	Description template.HTML
 	Events      []*Event
 	EventsOld   []*Event
 	Groups      []*Event
