@@ -84,7 +84,6 @@ func (r *ResourceManager) CopyExternalAssets() {
 	r.JsFiles = append(r.JsFiles, r.CopyHashErr(vendor.Join("leaflet", "leaflet.js"), "leaflet-HASH.js"))
 	r.JsFiles = append(r.JsFiles, r.CopyHashErr(vendor.Join("leaflet-legend", "leaflet-legend.js"), "leaflet-legend-HASH.js"))
 	r.JsFiles = append(r.JsFiles, patchLeafletGestureHandling(r.TargetDir, r.CopyHashErr(vendor.Join("leaflet-gesture-handling", "leaflet-gesture-handling.js"), "leaflet-gesture-handling-HASH.js")))
-	r.JsFiles = append(r.JsFiles, r.CopyHashErr(static.Join("parkrun-track.js"), "parkrun-track-HASH.js"))
 	r.JsFiles = append(r.JsFiles, r.CopyHashErr(static.Join("main.js"), "main-HASH.js"))
 
 	r.UmamiScript = r.CopyHashErr(vendor.Join("umami", "umami.js"), "umami-HASH.js")
@@ -131,6 +130,7 @@ func (r *ResourceManager) CopyStaticAssets() {
 		{"static/freiburg-run-flyer.pdf", "freiburg-run-flyer.pdf"},
 		{"static/images/placeholder.png", "images/placeholder.png"},
 		{"static/images/totemann-logo.png", "images/totemann-logo.png"},
+		{"static/images/community-run.jpg", "images/community-run.jpg"},
 	}
 
 	source := utils.Path(r.SourceDir)

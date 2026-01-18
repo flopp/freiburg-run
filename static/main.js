@@ -43,6 +43,62 @@ const parseGeo = function (s) {
     return null;
 };
 
+const decodeUnsignedIntegers = function (encoded) {
+    var numbers = [];
+    var index = 0;
+    var len = encoded.length;
+    while (index < len) {
+        var num = 0;
+        var shift = 0;
+        while (true) {
+            var b = encoded.charCodeAt(index++) - 63;
+            num |= (b & 0x1f) << shift;
+            if ((b & 0x20) === 0) break;
+            shift += 5;
+        }
+        numbers.push(num);
+    }
+    return numbers;
+};
+
+const decodeSignedIntegers = function (encoded) {
+    return decodeUnsignedIntegers(encoded).map(num => (num & 1) ? ~(num >> 1) : (num >> 1));
+};
+
+const decodeFloats = function (encoded) {
+    const factor = 1e5;
+    return decodeSignedIntegers(encoded).map(num => num / factor);
+};
+
+const decodeDeltas = function (encoded) {
+    const dimension = 2;
+    var lastNumbers = [];
+    var numbers = decodeFloats(encoded);
+    for (var i = 0, len = numbers.length; i < len;) {
+        for (var d = 0; d < dimension; ++d, ++i) {
+            numbers[i] = Math.round((lastNumbers[d] = numbers[i] + (lastNumbers[d] || 0)) * 100000) / 100000;
+        }
+    }
+    return numbers;
+};
+
+const parsePolyline = function (encoded) {
+    if (encoded === undefined || encoded.trim() === "") {
+        return null;
+    }
+    const dimension = 2;
+    var flatPoints = decodeDeltas(encoded);
+    var points = [];
+    for (var i = 0, len = flatPoints.length; i + (dimension -1) < len;) {
+        var point = [];
+        for (var dim = 0; dim < dimension; ++dim) {
+            point.push(flatPoints[i++]);
+        }
+        points.push(point);
+    }
+    return points;
+};
+
 const loadMap = function (id) {
     const mapEl = document.getElementById(id);
     const cityName = mapEl.dataset.cityName || "Freiburg";
@@ -154,14 +210,14 @@ const loadMap = function (id) {
     map.fitBounds(group.getBounds(), {padding: L.point(40, 40)});
 };
 
-const loadParkrunMap = function (id) {
+const loadParkrunMap = function (id, encodedTrack) {
     var map = L.map(id, {gestureHandling: true}).setView([48.000548, 7.804842], 15);
 
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
 
-    var course = L.polyline(parkrunTrack);
+    var course = L.polyline(parsePolyline(encodedTrack));
     course.addTo(map);
 
     let blueIcon = load_marker("");
@@ -418,7 +474,7 @@ var main = () => {
             mapDiv.id = "small-map";
             container.appendChild(mapDiv);
             if (container.dataset.type === "parkrun") {
-                loadParkrunMap("small-map");
+                loadParkrunMap("small-map", container.dataset.track);
             } else {
                 loadMap("small-map");
             }
@@ -434,6 +490,8 @@ var main = () => {
     let eventMap = document.querySelector("#event-map");
     if (eventMap !== null) {
         let geo = parseGeo(eventMap.dataset.geo);
+        let track = parsePolyline(eventMap.dataset.track);
+
         if (geo !== null) {
             var map = L.map('event-map', {gestureHandling: true}).setView(geo, 15);
 
@@ -444,6 +502,10 @@ var main = () => {
             let marker = L.marker(geo, {icon: load_marker("")});
             marker.addTo(map);
             marker.bindPopup(eventMap.dataset.name);
+            if (track !== null) {
+                const polyline = L.polyline(track, {color: '#3273dc'}).addTo(map);
+                map.fitBounds(polyline.getBounds());
+            }   
         }
     }
 

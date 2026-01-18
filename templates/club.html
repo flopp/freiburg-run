@@ -3,7 +3,7 @@
 <section class="section">
     <div class="container is-max-desktop">
         <div class="box">
-            <h1 class="title">{{Config.Website.Name}} Club</h1>
+            <h1 class="title">{{Config.Website.Name}} Run Club</h1>
             <h2 class="subtitle">Die Lauf-Community rund um {{Config.Website.Name}}</h2>
 
             <p>
@@ -16,9 +16,9 @@
             <div class="content">
                 <ul>
                     <li><a href="{{Config.Contact.Whatsapp}}" target="_blank">WhatsApp-Community</a></li>
-                    <li><a href="https://www.instagram.com/freiburg.run/" target="_blank">Instagram</a></li>
-                    <li><a href="https://www.strava.com/clubs/freiburg-run" target="_blank">Strava-Club</a></li>
-                    <li><a href="https://freiburg.social/@freiburg_run" target="_blank">Mastodon</a></li>
+                    <li><a href="{{Config.Contact.Instagram}}" target="_blank">Instagram</a></li>
+                    <li><a href="{{Config.Contact.Strava}}" target="_blank">Strava-Club</a></li>
+                    <li><a href="{{Config.Contact.Mastodon}}" target="_blank">Mastodon</a></li>
                 </ul>
             </div>
         </div>
@@ -39,18 +39,27 @@
         <div class="box">
             <h2 class="subtitle">Community-Run</h2>
 
-            <table class="table">
-                <tr><td><b>Wann?</b></td><td>Donnerstag, 18:30 Uhr</td></tr>
-                <tr><td><b>Treffpunkt?</b></td><td>Sandfangbrücke an der Dreisam (<a href="https://maps.app.goo.gl/uWuFAWQL9YSi6MMc8" target="_blank">Google Maps</a>)</td></tr>
-                <tr><td><b>Aktuelle Strecke</b></td><td>Waldsee, Littenweiler, Dreisam, ca. 8km, 100hm, Straßen, Waldwege (<a href="https://www.komoot.com/de-de/tour/2520166594" target="_blank">Strecke bei Komoot</a>, <a href="https://bkrtr.de/Dw7XW" target="_blank">Strecke bei Bikerouter</a>)</td></tr>
-                <tr><td>Alternative Strecke</td><td>St. Ottilien + Hirzberg, ca. 8km, 200hm, Waldwege & Trails (<a href="https://www.komoot.com/de-de/tour/2488345131" target="_blank">Strecke bei Komoot</a>)</td></tr>
-                <tr><td></td><td>Je nach Nachfrage kann es in Zukunft auch weitere Strecken geben.</td></tr>
-                <tr><td><b>Voraussetzungen?</b></td><td>Jeder ist willkommen mitzulaufen; gute Grundlagenausdauer (10km, 6min/km) wird vorausgesetzt.</td></tr>
-                <tr><td><b>Sonstiges</b></td><td>Nach dem Lauf Besteht die Möglichkeit bei der <a href="https://ft1844-freiburg.de/hotel-gastronomie" target="_blank">HOKK-Sportgaststätte bzw. HOKK-Kiosk</a> einzukehren; hier gibt es diverse Getränke und Snacks; Toiletten sind vorhanden.</td></tr>
-                <tr><td><b>Kontakt</b></td><td>Bei Fragen gerne per Mail <a href="mailto:info@freiburg.run">info@freiburg.run</a> oder über das <a href="{{Config.Contact.FeedbackForm}}" target="_blank">Kontaktformular</a> melden.</td></tr>
-            </table>
+            <div class="grid">
+                <div class="cell">
+                    <table class="table">
+                        <tr><td><b>Wann?</b></td><td>Donnerstag, 18:30 Uhr</td></tr>
+                        <tr><td><b>Treffpunkt?</b></td><td>Sandfangbrücke an der Dreisam (<a href="https://maps.app.goo.gl/uWuFAWQL9YSi6MMc8" target="_blank">Google Maps</a>)</td></tr>
+                        <tr><td><b>Aktuelle Strecke</b></td><td>Waldsee, Littenweiler, Dreisam, ca. 8km, 100hm, Straßen, Waldwege (<a href="https://www.komoot.com/de-de/tour/2520166594" target="_blank">Strecke bei Komoot</a>, <a href="https://bkrtr.de/Dw7XW" target="_blank">Strecke bei Bikerouter</a>)</td></tr>
+                        <tr><td>Alternative Strecke</td><td>St. Ottilien + Hirzberg, ca. 8km, 200hm, Waldwege & Trails (<a href="https://www.komoot.com/de-de/tour/2488345131" target="_blank">Strecke bei Komoot</a>)</td></tr>
+                        <tr><td></td><td>Je nach Nachfrage kann es in Zukunft auch weitere Strecken geben.</td></tr>
+                        <tr><td><b>Voraussetzungen?</b></td><td>Jeder ist willkommen mitzulaufen; gute Grundlagenausdauer (10km, 6min/km) wird vorausgesetzt.</td></tr>
+                        <tr><td><b>Sonstiges</b></td><td>Nach dem Lauf besteht die Möglichkeit bei der <a href="https://ft1844-freiburg.de/hotel-gastronomie" target="_blank">HOKK-Sportgaststätte bzw. HOKK-Kiosk</a> einzukehren; hier gibt es diverse Getränke und Snacks; Toiletten sind vorhanden.</td></tr>
+                        <tr><td><b>Kontakt</b></td><td>Bei Fragen gerne per Mail <a href="mailto:info@freiburg.run">info@freiburg.run</a> oder über das <a href="{{Config.Contact.FeedbackForm}}" target="_blank">Kontaktformular</a> melden.</td></tr>
+                    </table>
+                </div>
+                <div class="cell">
+                     <figure>
+                        <img src="{{BasePath "images/community-run.jpg"}}" alt="freiburg.run Community-Run Logo" />
+                    </figure>
+                </div>
+            </div>
 
-            <div id="event-map" data-geo="47.991659,7.879987" data-name="Treffpunkt/Sandfangbrücke"></div>
+            <div id="event-map" data-geo="47.991659,7.879987" data-track="sk|cHm`bo@NILAHCDb@Fh@BNBLf@pAn@~Ad@lALv@Rt@Bx@@bAAx@?dD@vCA|@?Z@J?BJAr@KTEbAQDAd@LTHXTrBt@f@NF@fA`@XLBFVRNN`@^DHBJ@NGjA?@?ALJh@j@p@xAVVRRh@X@IVw@CKLN@?x@^BBNFP_BBYXwCD_@JFHFTDJ@R@R@B?PAHCFCJJx@Kd@a@v@gAx@yAfA}@VUN]fAw@FWBG^J\Hp@?p@E@?n@K`@OGa@_@{@c@w@Mg@?eAHc@@CCgA?cBKiBj@iBDOp@cCRs@nAkEd@a@YI`@_@@Y@c@BaAN?@oBBKCJFeB?wA?kBPwAToACUEK`@kAZiATcAZaBNqA@]h@kKX{GBm@Bc@Fm@RqA@K@w@G{AEoAAcAEaEA{@?SB_@BWBSZwABW@UIWPO[c@^w@]e@{ByC[k@E@KE_@Q_@QFUQF[Kc@IMEECKC_@KxAiKD]hC}Ql@oEVwBXyCRgDH{AA[I@E@i@h@wAvA_@Gi@vFAPC?CAKECaA@SNwAAKc@a@GKc@i@iAwAzEeRn@kCf@mBp@yBMIg@_@AAGEIJS`AGTIRQb@M`@Ih@Ef@wChLyC~K_@tAKZGPAH]bAi@rAqAtC}AnC[h@o@jAy@tAq@jAcBlC_@j@s@z@aA|@_Ap@SLcBdAIJEBWAG?UZoB|AGFKD?QOHYh@UZWVOJeAp@QPILMXE^KhAEZMb@s@pA{@tCIZe@~AiAhD]rAD\?LEP[l@ENKVQt@Kv@KdBO|DEVo@`AMTIXOn@Ev@?`@?VDtAAt@U`Bi@pBE`@CdAAtCCl@CXQbAE`@ALEr@AhA@h@?j@Gp@QtC@x@Dr@?d@GvAAlAA~@DbBN~B?^AP?FEd@Bf@@^?@@B?D?ZFCFC" data-name="Treffpunkt/Sandfangbrücke"></div>
         </div>
         
         <div class="box">
