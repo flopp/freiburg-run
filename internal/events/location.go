@@ -3,6 +3,7 @@ package events
 import (
 	"fmt"
 	"regexp"
+	"strings"
 
 	"github.com/flopp/freiburg-run/internal/utils"
 	"github.com/flopp/go-coordsparser"
@@ -17,6 +18,7 @@ type Location struct {
 	Distance     string
 	Direction    string
 	DistDirFancy string
+	ShowDistDir  bool
 }
 
 var reFr = regexp.MustCompile(`\s*^(.*)\s*,\s*FR\s*(🇫🇷)?\s*$`)
@@ -37,6 +39,7 @@ func CreateLocation(config utils.Config, locationS, coordinatesS string) Locatio
 	distance := ""
 	direction := ""
 	distDirFancy := ""
+	showDistDir := false
 	if err == nil {
 		coordinates = fmt.Sprintf("%.6f,%.6f", lat, lon)
 		d, b := utils.DistanceBearing(config.City.Lat, config.City.Lon, lat, lon)
@@ -44,9 +47,14 @@ func CreateLocation(config utils.Config, locationS, coordinatesS string) Locatio
 		direction = utils.ApproxDirection(b)
 
 		distDirFancy = fmt.Sprintf("%s %s von %s", distance, direction, config.City.Name)
+		// Only display distance and direction if outside of city radius or if location does not contain city name
+		displayRadiusKM := 5.0
+		if d > displayRadiusKM || !strings.Contains(locationS, config.City.Name) {
+			showDistDir = true
+		}
 	}
 
-	return Location{locationS, country, coordinates, lat, lon, distance, direction, distDirFancy}
+	return Location{locationS, country, coordinates, lat, lon, distance, direction, distDirFancy, showDistDir}
 }
 
 func (loc Location) IsFrance() bool {

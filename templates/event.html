@@ -2,7 +2,7 @@
 
 <section class="section">
     <div class="container is-max-desktop">
-        <a id="back" href="{{BasePath .Main}}">Zurück zur Liste</a>
+        <a href="{{BasePath .Main}}" class="button is-small">Zurück zur Liste</a>
 
         <div class="box">
             <h1 class="title">{{.Event.Name.Orig}}</h1>
@@ -22,7 +22,7 @@
             <table class="table is-fullwidth is-narrow">
                 <tbody>
                     {{if .Event.Status}}
-                    <tr class="has-text-danger">
+                    <tr class="has-background-warning-light">
                         <th>Hinweis</th>
                         <td class="is-w100">
                             {{.Event.Status}}
@@ -46,7 +46,7 @@
                         <td class="is-w100">
                             {{if .Event.Location.HasGeo}}
                             <a href="{{.Event.Location.GoogleMaps}}" title="{{.Event.Name.Orig}}: {{.Event.Location.Name}}" target="_blank">{{.Event.Location.Name}}</a>
-                            ({{.Event.Location.DistDirFancy}})
+                            {{if .Event.Location.ShowDistDir}} ({{.Event.Location.DistDirFancy}}){{else}} (im Stadtgebiet){{end}}
                             {{else}}
                             {{.Event.Location.Name}}
                             {{end}}

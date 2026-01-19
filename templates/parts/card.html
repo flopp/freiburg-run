@@ -34,7 +34,7 @@
                     <tr>
                         <th class="w-2em no-border" title="Ort">🗺</th>
                         <td class="no-border">
-                        {{if .Location.HasGeo}}<a href="{{.Location.GoogleMaps}}" title="{{$.Name.Orig}}: {{.Location.Name}}" target="_blank">{{.Location.Name}}</a> (<span title="Distanz und Richtung von {{Config.City.Name}}">{{.Location.DistDirFancy}}</span>){{else}}{{.Location.Name}}{{end}}
+                        {{if .Location.HasGeo}}<a href="{{.Location.GoogleMaps}}" title="{{$.Name.Orig}}: {{.Location.Name}}" target="_blank">{{.Location.Name}}</a>{{if .Location.ShowDistDir}} (<span title="Distanz und Richtung von {{Config.City.Name}}">{{.Location.DistDirFancy}}</span>){{end}}{{else}}{{.Location.Name}}{{end}}
                         </td>
                     </tr>
                     <tr>
