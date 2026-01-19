@@ -40,7 +40,6 @@ type Event struct {
 	Calendar        string
 	CalendarDataICS string
 	CalendarGoogle  string
-	New             bool
 	Prev            *Event
 	Next            *Event
 	UpcomingNear    []*Event
@@ -151,7 +150,6 @@ func createSeparatorEvent(t time.Time) *Event {
 		"",
 		"",
 		"",
-		true,
 		nil,
 		nil,
 		nil,

@@ -221,6 +221,7 @@ func getLinks(cols Columns, row []interface{}) []string {
 
 type EventData struct {
 	Date         string
+	Added        string
 	Name         string
 	Name2        string
 	Status       string
@@ -241,6 +242,7 @@ func getEventData(cols Columns, row []interface{}) (EventData, error) {
 		dest *string
 	}{
 		{"DATE", &data.Date},
+		{"ADDED", &data.Added},
 		{"NAME", &data.Name},
 		{"NAME2", &data.Name2},
 		{"STATUS", &data.Status},
@@ -274,7 +276,8 @@ func fetchEvents(config utils.Config, srv *sheets.Service, today time.Time, even
 			return nil, fmt.Errorf("table '%s', line '%d': %v", table, line, err)
 		}
 		cancelled := strings.Contains(data.Status, "abgesagt") || strings.Contains(data.Status, "geschlossen")
-		if cancelled && data.Status == "abgesagt" {
+		if cancelled && (data.Status == "abgesagt" || data.Status == "geschlossen") {
+			// clear simple cancelled/closed status (other info might be present)
 			data.Status = ""
 		}
 		special := data.Status == "spezial"
@@ -350,7 +353,6 @@ func fetchEvents(config utils.Config, srv *sheets.Service, today time.Time, even
 			"",
 			"",
 			"",
-			false,
 			nil,
 			nil,
 			nil,
