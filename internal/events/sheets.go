@@ -337,6 +337,7 @@ func fetchEvents(config utils.Config, srv *sheets.Service, today time.Time, even
 			utils.NewName(nameOld),
 			timeRange,
 			isOld,
+			data.Added,
 			data.Status,
 			cancelled,
 			obsolete,

@@ -24,6 +24,7 @@ type Event struct {
 	NameOld         utils.Name
 	Time            utils.TimeRange
 	Old             bool
+	Added           string
 	Status          string
 	Cancelled       bool
 	Obsolete        bool
@@ -134,6 +135,7 @@ func createSeparatorEvent(t time.Time) *Event {
 		utils.NewName(""),
 		utils.TimeRange{},
 		false,
+		"",
 		"",
 		false,
 		false,
