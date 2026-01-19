@@ -16,18 +16,23 @@
     </head>
     <body class="has-background-white">
 
-<div id="embed-list" class="container is-fluid">
+<div id="embed-list" class="container is-fluid mt-1">
 {{if .Events}}
     {{range .Events}}<a href="https://freiburg.run/{{.Slug}}?utm_source=embed_list" target="_blank" class="box">
         <b>{{.Name.Orig}}</b><br>
         {{if .Cancelled}}<span style="color: red;">{{.Status}}</span><br>{{end}}
         {{.Time.Formatted}}<br>
-        {{.Location.Name}}
+        {{.Location.Name}}<br>
+        <br>
+        <button class="button is-link">
+            <span class="icon"><i class="info-icon"></i></span>
+            <span>Details</span>
+        </button>
     </a>{{end}}
 {{else}}
     <p>Keine passenden Veranstaltungen gefunden</p>
 {{end}}
-    <a  href="https://freiburg.run?utm_source=embed_list" target="_blank" class="box">
+    <a href="https://freiburg.run?utm_source=embed_list" target="_blank" class="box">
         <div class="media">
             <div class="media-left">
                 <figure class="image is-64x64">
