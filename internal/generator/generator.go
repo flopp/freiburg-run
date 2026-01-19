@@ -595,9 +595,6 @@ func (g Generator) Generate(eventsData events.Data) error {
 			slug := event.Slug()
 			fileSlug := event.SlugFile()
 			name := event.Name.Orig
-			if event.Meta.SeoTitle != "" {
-				name = event.Meta.SeoTitle
-			}
 			eventdata.SetNameLink(name, slug, parentBreadcrumbs, g.baseUrl)
 			if err := utils.ExecuteTemplate(g.config, "event", g.out.Join(fileSlug), eventdata.BasePath, eventdata); err != nil {
 				return fmt.Errorf("render event template to %q: %w", g.out.Join(fileSlug), err)

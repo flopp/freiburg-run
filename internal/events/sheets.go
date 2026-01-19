@@ -223,7 +223,6 @@ type EventData struct {
 	Date         string
 	Name         string
 	Name2        string
-	Seo          string
 	Status       string
 	Url          string
 	Description  string
@@ -244,7 +243,6 @@ func getEventData(cols Columns, row []interface{}) (EventData, error) {
 		{"DATE", &data.Date},
 		{"NAME", &data.Name},
 		{"NAME2", &data.Name2},
-		{"SEO", &data.Seo},
 		{"STATUS", &data.Status},
 		{"URL", &data.Url},
 		{"DESCRIPTION", &data.Description},
@@ -359,7 +357,6 @@ func fetchEvents(config utils.Config, srv *sheets.Service, today time.Time, even
 			EventMeta{
 				false,
 				utils.NewName(data.Name2),
-				data.Seo,
 				nil,
 			},
 		})

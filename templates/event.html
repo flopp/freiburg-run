@@ -5,7 +5,7 @@
         <a id="back" href="{{BasePath .Main}}">Zurück zur Liste</a>
 
         <div class="box">
-            <h1 class="title">{{if .Event.Meta.SeoTitle}}{{.Event.Meta.SeoTitle}}{{else}}{{.Event.Name.Orig}}{{end}}</h1>
+            <h1 class="title">{{.Event.Name.Orig}}</h1>
             
             {{if .Event.Cancelled}}
             <div class="notification is-danger">
