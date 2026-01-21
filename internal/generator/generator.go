@@ -137,7 +137,7 @@ func createHtaccess(config utils.Config, data events.Data, outDir utils.Path) er
 	// redirect www to non-www
 	destination.WriteString("RewriteEngine On\n")
 	destination.WriteString("RewriteCond %{HTTP_HOST} !^" + config.Website.Domain + "$ [NC]\n")
-	destination.WriteString("RewriteRule ^(.*)$ http://" + config.Website.Domain + "/$1 [L,R=301]\n")
+	destination.WriteString("RewriteRule ^(.*)$ https://" + config.Website.Domain + "/$1 [L,R=301]\n")
 
 	destination.WriteString("ErrorDocument 404 /404.html\n")
 	destination.WriteString("Redirect /parkrun /dietenbach-parkrun.html\n")
