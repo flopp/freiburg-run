@@ -244,6 +244,21 @@ func (event *Event) NiceType() string {
 	}
 }
 
+func (event *Event) TagImages() []string {
+	images := make([]string, 0)
+	for _, tag := range event.Tags {
+		if tag.Name.Sanitized == "orientierungslauf" {
+			images = append(images, "orienteering")
+		}
+	}
+	if event.Location.IsFrance() {
+		images = append(images, "fr")
+	} else if event.Location.IsSwitzerland() {
+		images = append(images, "ch")
+	}
+	return images
+}
+
 func SplitEvents(eventList []*Event) ([]*Event, []*Event) {
 	futureEvents := make([]*Event, 0)
 	pastEvents := make([]*Event, 0)

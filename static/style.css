@@ -310,6 +310,14 @@ a.no-external::after
   filter: drop-shadow(0 0 10px white);
 }
 
+.card-icons {
+    position: absolute;
+    margin-top: -1.5rem;
+    right: 0;
+    display: flex;
+    gap: 0.5rem;
+    z-index: 10;
+}
 .card-flag {
     width: 1.5em;
     height: 1.5em;
@@ -322,9 +330,21 @@ a.no-external::after
     display: inline-block;
     content: "";
 }
+.card-icon {
+    width: 1.5em;
+    height: 1.5em;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    display: inline-block;
+    content: "";
+}
 .card-fr {
     background-image: url("data:image/svg+xml,%0A%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='white' d='M0 0h512v512H0z'/%3E%3Cpath fill='%23000091' d='M0 0h170.7v512H0z'/%3E%3Cpath fill='%23e1000f' d='M341.3 0H512v512H341.3z'/%3E%3C/svg%3E");
 }
 .card-ch {
     background-image: url("data:image/svg+xml,%0A%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cg fill-rule='evenodd' stroke-width='1pt'%3E%3Cpath fill='red' d='M0 0h512v512H0z'/%3E%3Cg fill='%23fff'%3E%3Cpath d='M96 208h320v96H96z'/%3E%3Cpath d='M208 96h96v320h-96z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+.card-orienteering {
+    background-image: url("data:image/svg+xml,%0A%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 500'%3E%3Cpath d='M502,0H0V502' fill='%23FFF'/%3E%3Cpath d='M0,500H500V0' fill='%23F76D22'/%3E%3C/svg%3E");
 }
