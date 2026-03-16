@@ -3,7 +3,7 @@
     <div class="notification is-link is-light is-size-4 pt-2 pb-2 pl-4">{{.Name.Orig}}</div>
 </div>
 {{else}}
-<div class="column is-half event" data-type="{{.NiceType}}" data-name="{{.Name.Orig}}" data-time="{{.Time.Formatted}}" data-geo="{{.Location.Geo}}" data-location="{{.Location.Name}}" data-slug="{{.Slug}}">
+<div class="column is-half event" data-type="{{.NiceType}}" data-name="{{.Name.Orig}}" data-time="{{.Time.Formatted}}" data-geo="{{.Location.Geo}}" data-location="{{.Location.Name}}" data-slug="{{.Slug}}" data-distances="{{.Distances}}">
     {{if .Special}}
     <div class="card pulsating-border" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
     {{else}}

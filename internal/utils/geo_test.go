@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"sort"
 	"testing"
 )
 
@@ -27,6 +28,36 @@ func TestDistanceBearing(t *testing.T) {
 		distance, bearing := DistanceBearing(tc.lat1, tc.lng1, tc.lat2, tc.lng2)
 		if !similar(distance, tc.expectedDistance, 1.0) || !similar(bearing, tc.expectedBearing, 1.0) {
 			t.Errorf("TC=%v dist=%v bear=%v", tc, distance, bearing)
+		}
+	}
+}
+
+func TestDetectDistances(t *testing.T) {
+	testCases := []struct {
+		desc              string
+		expectedDistances []float64
+	}{
+		{"5km", []float64{5}},
+		{"5.7km", []float64{5.7}},
+		{"10 km", []float64{10}},
+		{"18,9km", []float64{18.9}},
+		{"5km and 10km", []float64{5, 10}},
+		{"trail: 12.3km,450hm", []float64{12.3}},
+	}
+
+	for _, tc := range testCases {
+		distances := DetectDistances(tc.desc)
+		sort.Float64s(distances)
+		sort.Float64s(tc.expectedDistances)
+		if len(distances) != len(tc.expectedDistances) {
+			t.Errorf("TC=%v got %v", tc, distances)
+			continue
+		}
+		for i := range distances {
+			if !similar(distances[i], tc.expectedDistances[i], 0.1) {
+				t.Errorf("TC=%v got %v", tc, distances)
+				break
+			}
 		}
 	}
 }
