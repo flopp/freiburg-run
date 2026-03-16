@@ -354,12 +354,12 @@ func fetchEvents(config utils.Config, srv *sheets.Service, today time.Time, even
 			"",
 			"",
 			"",
-			nil,
-			nil,
-			nil,
 			EventMeta{
 				false,
 				utils.NewName(data.Name2),
+				nil,
+				nil,
+				nil,
 				nil,
 			},
 		})

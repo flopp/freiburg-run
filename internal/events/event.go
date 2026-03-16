@@ -13,9 +13,12 @@ import (
 )
 
 type EventMeta struct {
-	Current  bool
-	BaseName utils.Name
-	Siblings []*Event
+	Current      bool
+	BaseName     utils.Name
+	Siblings     []*Event
+	Prev         *Event
+	Next         *Event
+	UpcomingNear []*Event
 }
 
 type Event struct {
@@ -41,9 +44,6 @@ type Event struct {
 	Calendar        string
 	CalendarDataICS string
 	CalendarGoogle  string
-	Prev            *Event
-	Next            *Event
-	UpcomingNear    []*Event
 	Meta            EventMeta
 }
 
@@ -152,9 +152,6 @@ func createSeparatorEvent(t time.Time) *Event {
 		"",
 		"",
 		"",
-		nil,
-		nil,
-		nil,
 		EventMeta{},
 	}
 }
@@ -432,8 +429,8 @@ func FindPrevNextEvents(eventList []*Event) {
 		}
 
 		if prev != nil {
-			prev.Next = event
-			event.Prev = prev
+			prev.Meta.Next = event
+			event.Meta.Prev = prev
 		}
 	}
 }
@@ -492,7 +489,7 @@ func FindUpcomingNearEvents(eventList []*Event, upcomingEvents []*Event, maxDist
 		if !event.Location.HasGeo() {
 			continue
 		}
-		event.UpcomingNear = make([]*Event, 0, count)
+		event.Meta.UpcomingNear = make([]*Event, 0, count)
 		for _, candidate := range upcomingEvents {
 			if candidate == event || candidate.Cancelled || !candidate.Location.HasGeo() {
 				continue
@@ -500,8 +497,8 @@ func FindUpcomingNearEvents(eventList []*Event, upcomingEvents []*Event, maxDist
 			if distanceKM, _ := utils.DistanceBearing(event.Location.Lat, event.Location.Lon, candidate.Location.Lat, candidate.Location.Lon); distanceKM > maxDistanceKM {
 				continue
 			}
-			event.UpcomingNear = append(event.UpcomingNear, candidate)
-			if len(event.UpcomingNear) >= count {
+			event.Meta.UpcomingNear = append(event.Meta.UpcomingNear, candidate)
+			if len(event.Meta.UpcomingNear) >= count {
 				break
 			}
 		}
