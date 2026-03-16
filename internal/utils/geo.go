@@ -2,6 +2,10 @@ package utils
 
 import (
 	"math"
+	"regexp"
+	"sort"
+	"strconv"
+	"strings"
 
 	"github.com/flopp/go-compass"
 )
@@ -62,4 +66,26 @@ func ApproxDirection(deg float64) string {
 		return result
 	}
 	return "???"
+}
+
+func DetectDistances(desc string) []float64 {
+	// Patterns: e.g. "5km", "5.7km", "10 km", "18,9km""
+	re := regexp.MustCompile(`(?i)(\d+[.,]?\d*)\s*km`)
+
+	matches := re.FindAllStringSubmatch(desc, -1)
+	var distances []float64
+	for _, match := range matches {
+		distanceStr := strings.Replace(match[1], ",", ".", 1)
+		distance, err := strconv.ParseFloat(distanceStr, 64)
+		if err == nil {
+			distances = append(distances, distance)
+		}
+	}
+
+	// sort distances in descending order
+	sort.Slice(distances, func(i, j int) bool {
+		return distances[i] > distances[j]
+	})
+
+	return distances
 }

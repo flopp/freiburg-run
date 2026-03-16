@@ -120,6 +120,12 @@ func FetchData(config utils.Config, today time.Time) (Data, error) {
 	ChangeRegistrationLinks(data.EventsOld)
 	data.collectTags(today)
 	data.collectSeries(today)
+	for _, event := range data.Events {
+		event.DetectDistances()
+	}
+	for _, event := range data.EventsOld {
+		event.DetectDistances()
+	}
 
 	// Collect old events by year
 	maxYear := 0

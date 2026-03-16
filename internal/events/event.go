@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"html/template"
 	"log"
+	"regexp"
+	"sort"
+	"strconv"
 	"strings"
 	"time"
 
@@ -38,6 +41,7 @@ type Event struct {
 	MainLink        *utils.Link
 	RawTags         []string
 	Tags            []*Tag
+	Distances       []float64
 	RawSeries       []string
 	Series          []*Serie
 	Links           []*utils.Link
@@ -143,6 +147,7 @@ func createSeparatorEvent(t time.Time) *Event {
 		Location{},
 		"",
 		"",
+		nil,
 		nil,
 		nil,
 		nil,
@@ -503,4 +508,51 @@ func FindUpcomingNearEvents(eventList []*Event, upcomingEvents []*Event, maxDist
 			}
 		}
 	}
+}
+
+func similar(x, y, factor float64) bool {
+	return x >= y*(1-factor) && x <= y*(1+factor)
+}
+
+func (event *Event) DetectDistances() {
+	event.Distances = utils.DetectDistances(string(event.Details))
+
+	re := regexp.MustCompile(`(?i)(\d+[.,]?\d*)\s*km`)
+	// also check event.Tags, e.g. for "5km", "10km", "50km", "100km", "Marathon" or "Halbmarathon"
+	for _, tag := range event.Tags {
+		d := -1.0
+		// extract distance from tag using regexp
+		if matches := re.FindStringSubmatch(tag.Name.Sanitized); len(matches) > 1 {
+			distanceStr := strings.Replace(matches[1], ",", ".", 1)
+			distance, err := strconv.ParseFloat(distanceStr, 64)
+			if err == nil {
+				d = distance
+			}
+		} else {
+			switch tag.Name.Sanitized {
+			case "marathon":
+				d = 42.195
+			case "halbmarathon":
+				d = 21.0975
+			}
+		}
+		if d > 0 {
+			// check if a similar value is already in the slice
+			found := false
+			for _, existing := range event.Distances {
+				if similar(existing, d, 0.1) {
+					found = true
+					break
+				}
+			}
+			if !found {
+				event.Distances = append(event.Distances, d)
+			}
+		}
+	}
+
+	// sort distances in descending order
+	sort.Slice(event.Distances, func(i, j int) bool {
+		return event.Distances[i] > event.Distances[j]
+	})
 }

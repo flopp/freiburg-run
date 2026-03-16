@@ -256,12 +256,26 @@ var load_marker = function (color) {
     return L.icon(options);
 }
 
+var similarDistances = function(d1, d2, factor) {
+    return ((d1 * (1.0-factor)) <= d2) && (d2 <= (d1 * (1.0+factor)));
+}
+
 var filter = (s, hiddenTags) => {
     let shown = 0;
     let hidden = 0;
     let hiddenTag = 0;
     let info = document.querySelector("#filter-info");
     let needle = s.toLowerCase().trim();
+
+    // check if needle is a number (e.g. "10", "10.5", "10,5") and if so, use it as a distance filter
+    let needleDistance = -1;
+    if (needle !== "") {
+        const re = /^(\d+[.,]?\d*)$/i;
+        const match = needle.match(re);
+        if (match) {
+            needleDistance = parseFloat(match[1].replace(',', '.'));
+        }
+    }
 
     let items = new Array();
     document.querySelectorAll(".event, .event-separator").forEach(el => {
@@ -302,9 +316,40 @@ var filter = (s, hiddenTags) => {
 
             // hide by search
             if (needle != "") {
+                let distanceMatch = false;
+                if (needleDistance > -1) {
+                    let distances = [];
+                    if (el.dataset.distancesParsed !== undefined) {
+                        distances = JSON.parse(el.dataset.distancesParsed);
+                    } else {
+                        let distancesStr = el.dataset.distances;
+                        // parse string into array "[5 10 42.3]" -> [5, 10, 42.3]
+                        if (distancesStr !== undefined && distancesStr.trim() !== "") {
+                            distancesStr = distancesStr.trim();
+                            if (distancesStr.startsWith("[") && distancesStr.endsWith("]")) {
+                                distancesStr = distancesStr.substring(1, distancesStr.length - 1);
+                                distancesStr.split(" ").forEach(d => {
+                                    let dist = parseFloat(d);
+                                    if (!isNaN(dist)) {
+                                        distances.push(dist);
+                                    }
+                                });
+                            }
+                        }
+                        // store parsed distances in dataset for future use
+                        el.dataset.distancesParsed = JSON.stringify(distances);
+                    }
+
+                    for (let d of distances) {
+                        if (similarDistances(d, needleDistance, 0.1)) {
+                            distanceMatch = true;
+                            break;
+                        }
+                    }
+                }
                 let name = el.dataset.name.toLowerCase();
                 let location = el.dataset.location.toLowerCase();
-                if (!name.includes(needle) && !location.includes(needle)) {
+                if (!distanceMatch &&!name.includes(needle) && !location.includes(needle)) {
                     hidden++;
                     el.classList.add("is-hidden");
                     return;

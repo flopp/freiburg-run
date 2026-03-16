@@ -348,6 +348,7 @@ func fetchEvents(config utils.Config, srv *sheets.Service, today time.Time, even
 			utils.CreateUnnamedLink(url),
 			utils.SortAndUniquify(tags),
 			nil,
+			nil,
 			series,
 			nil,
 			links,
