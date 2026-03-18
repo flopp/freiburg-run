@@ -142,9 +142,9 @@ func createHtaccess(config utils.Config, data events.Data, outDir utils.Path) er
 	destination.WriteString("ErrorDocument 404 /404.html\n")
 	destination.WriteString("Redirect /parkrun /dietenbach-parkrun.html\n")
 	destination.WriteString("Redirect /groups.html /lauftreffs.html\n")
-	destination.WriteString("Redirect /club /community-run/index.html\n")
-	destination.WriteString("Redirect /club/ /community-run/index.html\n")
-	destination.WriteString("Redirect /club/index.html /community-run/index.html\n")
+	destination.WriteString("Redirect /club /community-run\n")
+	destination.WriteString("Redirect /club/ /community-run\n")
+	destination.WriteString("Redirect /club/index.html /community-run\n")
 
 	// fix some past issues
 	destination.WriteString("Redirect /event/2024-32-teninger-allmendlauf.html?back=event /event/2024-32-teninger-allmendlauf.html\n")
