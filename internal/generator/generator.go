@@ -142,6 +142,8 @@ func createHtaccess(config utils.Config, data events.Data, outDir utils.Path) er
 	destination.WriteString("ErrorDocument 404 /404.html\n")
 	destination.WriteString("Redirect /parkrun /dietenbach-parkrun.html\n")
 	destination.WriteString("Redirect /groups.html /lauftreffs.html\n")
+	destination.WriteString("Redirect /club /community-run/index.html\n")
+	destination.WriteString("Redirect /club/index.html /community-run/index.html\n")
 
 	// fix some past issues
 	destination.WriteString("Redirect /event/2024-32-teninger-allmendlauf.html?back=event /event/2024-32-teninger-allmendlauf.html\n")
@@ -503,9 +505,9 @@ func (g Generator) Generate(eventsData events.Data) error {
 	}
 
 	if g.config.Pages.Club {
-		if err := renderSubPage("club/", "club/index.html", "club", "club", "Club",
-			fmt.Sprintf("%s Club", g.config.Website.Name),
-			fmt.Sprintf("%s Club - die Lauf-Community", g.config.Website.Name),
+		if err := renderSubPage("community-run/", "community-run/index.html", "club", "club", "Community Run",
+			fmt.Sprintf("%s Community Run", g.config.Website.Name),
+			fmt.Sprintf("%s Community Run", g.config.Website.Name),
 			breadcrumbsBase); err != nil {
 			return fmt.Errorf("render subpage %q: %w", "club.html", err)
 		}
