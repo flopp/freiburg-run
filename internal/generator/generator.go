@@ -506,7 +506,7 @@ func (g Generator) Generate(eventsData events.Data) error {
 	}
 
 	if g.config.Pages.Club {
-		if err := renderSubPage("community-run/", "community-run/index.html", "club", "club", "club",
+		if err := renderSubPage("community-run/", "community-run/index.html", "club", "club", "Club",
 			fmt.Sprintf("%s Community Run", g.config.Website.Name),
 			fmt.Sprintf("%s Community Run", g.config.Website.Name),
 			breadcrumbsBase); err != nil {
