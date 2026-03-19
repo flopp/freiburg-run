@@ -84,6 +84,14 @@ func main() {
 		return
 	}
 
+	weather, err := utils.Retry(3, 8*time.Second, func() (*utils.Weather, error) {
+		return utils.GetCurrentWeather(config_data.City.Lat, config_data.City.Lon)
+	})
+	if err != nil {
+		log.Printf("failed to fetch weather data: %v", err)
+		weather = nil
+	}
+
 	if options.checkLinks {
 		eventsData.CheckLinks()
 		return
@@ -107,7 +115,7 @@ func main() {
 		resourceManager.JsFiles, resourceManager.CssFiles,
 		resourceManager.UmamiScript,
 		options.hashFile)
-	if err := gen.Generate(eventsData); err != nil {
+	if err := gen.Generate(eventsData, weather); err != nil {
 		log.Fatalf("failed to generate: %v", err)
 	}
 }

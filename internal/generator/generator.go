@@ -18,6 +18,7 @@ type CommonData struct {
 	BaseUrl       string
 	BasePath      string
 	Data          *events.Data
+	Weather       *utils.Weather
 	JsFiles       []string
 	CssFiles      []string
 	UmamiScript   string
@@ -329,7 +330,7 @@ func NewGenerator(
 	}
 }
 
-func (g Generator) Generate(eventsData events.Data) error {
+func (g Generator) Generate(eventsData events.Data, weather *utils.Weather) error {
 	// Prepare assets
 	resourceManager := resources.NewResourceManager(".", string(g.out))
 	resourceManager.CopyExternalAssets()
@@ -388,6 +389,7 @@ func (g Generator) Generate(eventsData events.Data) error {
 		string(g.baseUrl),
 		g.basePath,
 		&eventsData,
+		weather,
 		resourceManager.JsFiles,
 		resourceManager.CssFiles,
 		resourceManager.UmamiScript,

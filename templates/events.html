@@ -9,6 +9,14 @@
                 Liste von {{.CountEvents}} <b>aktuellen und zukünftigen</b> Laufveranstaltungen, Wettkämpfen, Volksläufen im Raum {{Config.City.Name}} (~50km Umkreis), sortiert nach Datum.
             </div>
 
+            {{if .Weather}}
+            <div class="notification is-info is-light">
+                Laufwetter in {{Config.City.Name}} am {{.Weather.Time.Format "02.01.2006 um 15:04 Uhr"}}:<br>
+                <strong>Wetter:</strong> {{printf "%.1f" .Weather.Temperature}}°C, {{.Weather.WeatherCodeGerman}}<br>
+                <strong>Sonnenuntergang:</strong> {{.Weather.Sunset.Format "15:04 Uhr"}}
+            </div>
+            {{end}}
+
             {{template "controls.html" .}}
         </div>
         
