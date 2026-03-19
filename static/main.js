@@ -316,7 +316,6 @@ var filter = (s, hiddenTags) => {
 
             // hide by search
             if (needle != "") {
-                let distanceMatch = false;
                 if (needleDistance > -1) {
                     let distances = [];
                     if (el.dataset.distancesParsed !== undefined) {
@@ -339,20 +338,28 @@ var filter = (s, hiddenTags) => {
                         // store parsed distances in dataset for future use
                         el.dataset.distancesParsed = JSON.stringify(distances);
                     }
-
+                    
+                    let distanceMatch = false;
                     for (let d of distances) {
                         if (similarDistances(d, needleDistance, 0.1)) {
                             distanceMatch = true;
                             break;
                         }
                     }
-                }
-                let name = el.dataset.name.toLowerCase();
-                let location = el.dataset.location.toLowerCase();
-                if (!distanceMatch &&!name.includes(needle) && !location.includes(needle)) {
-                    hidden++;
-                    el.classList.add("is-hidden");
-                    return;
+
+                    if (!distanceMatch) {
+                        hidden++;
+                        el.classList.add("is-hidden");
+                        return;
+                    }
+                } else {
+                    let name = el.dataset.name.toLowerCase();
+                    let location = el.dataset.location.toLowerCase();
+                    if (!name.includes(needle) && !location.includes(needle)) {
+                        hidden++;
+                        el.classList.add("is-hidden");
+                        return;
+                    }
                 }
             }
             
@@ -379,7 +386,15 @@ var filter = (s, hiddenTags) => {
         if (hiddenTag != 0) {
             hiddenTagStr = `, ${hiddenTag} ${hiddenTag!=1 ? "Einträge" : "Eintrag"} über <a href="/tags.html">Kategorien</a> versteckt`;
         }
-        info.innerHTML = `${shown} ${shown!=1 ? "Einträge" : "Eintrag"} angezeigt${hiddenStr}${hiddenTagStr}`;
+        var filterStr = "";
+        if (needleDistance >= 0) {
+            filterStr = `Filter nach Distanz: ${needleDistance} km ±10%; `;
+        } else if (needle !== "") {
+            // sanitize needle for HTML output (e.g. if it contains "<" or ">", escape it)
+            needle = needle.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            filterStr = `Filter nach Name/Ort: "${needle}"; `;
+        }
+        info.innerHTML = `${filterStr}${shown} ${shown!=1 ? "Einträge" : "Eintrag"} angezeigt${hiddenStr}${hiddenTagStr}`;
         info.classList.remove("is-hidden");
     } else {
         info.classList.add("is-hidden");
