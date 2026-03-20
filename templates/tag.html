@@ -15,7 +15,8 @@
                 </p>
     {{end}}
                 <p class="block">
-                    <a href="{{BasePath "/tags.html"}}">Hier geht's zur Liste <b>aller</b> Kategorien.</a>
+                    <a href="{{BasePath "/tags.html"}}">Hier geht's zur Liste <b>aller</b> Kategorien.</a><br>
+                    <a href="{{BasePath .SlugOther}}">Vergangene Lauf-Events der Kategorie '{{.Tag.Name.Orig}}'</a>
                 </p>
             </div>
 
@@ -44,19 +45,6 @@
 
         <div class="columns is-multiline">
             {{range .Tag.Shops}}
-            {{template "card.html" .}}
-            {{end}}
-        </div>
-{{end}}
-
-{{if .Tag.EventsOld}}
-        <h2 class="title">Vergangene Laufveranstaltungen</h2>
-        <div class="notification is-link is-light">
-            In umgekehrt chronologischer Reihenfolge.
-        </div>
-
-        <div class="columns is-multiline">
-            {{range .Tag.EventsOld}}
             {{template "card.html" .}}
             {{end}}
         </div>

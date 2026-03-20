@@ -29,6 +29,7 @@ type TemplateData struct {
 	Description string
 	Nav         string
 	Canonical   string
+	SlugOther   string
 	Breadcrumbs utils.Breadcrumbs
 	Main        string
 }
@@ -142,6 +143,7 @@ func createHtaccess(config utils.Config, data events.Data, outDir utils.Path) er
 	destination.WriteString("ErrorDocument 404 /404.html\n")
 	destination.WriteString("Redirect /parkrun /dietenbach-parkrun.html\n")
 	destination.WriteString("Redirect /groups.html /lauftreffs.html\n")
+	destination.WriteString("Redirect /tag/socialrunclub.html /lauftreffs.html\n")
 	destination.WriteString("Redirect /club /community-run\n")
 	destination.WriteString("Redirect /club/ /community-run\n")
 	destination.WriteString("Redirect /club/index.html /community-run\n")
@@ -401,6 +403,7 @@ func (g Generator) Generate(eventsData events.Data) error {
 			description,
 			nav,
 			g.baseUrl.Join(slug),
+			slug,
 			breadcrumbs,
 			"/",
 		}
@@ -515,7 +518,7 @@ func (g Generator) Generate(eventsData events.Data) error {
 	}
 
 	// Special rendering of parkrun page for wordpress
-	data := TemplateData{commondata, "", "", "", "", breadcrumbsBase, "/"}
+	data := TemplateData{commondata, "", "", "", "", "", breadcrumbsBase, "/"}
 	if err := utils.ExecuteTemplateNoMinify(g.config, "dietenbach-parkrun-wordpress", g.out.Join("dietenbach-parkrun-wordpress.html"), data.BasePath, data); err != nil {
 		return fmt.Errorf("render wordpress template: %w", err)
 	}
@@ -550,6 +553,7 @@ func (g Generator) Generate(eventsData events.Data) error {
 				"BLUBB",
 				"events",
 				"",
+				"",
 				breadcrumbsEvents,
 				"/",
 			},
@@ -573,6 +577,7 @@ func (g Generator) Generate(eventsData events.Data) error {
 				"",
 				"",
 				nav,
+				"",
 				"",
 				breadcrumbs,
 				main,
@@ -627,6 +632,7 @@ func (g Generator) Generate(eventsData events.Data) error {
 			"",
 			"tags",
 			"",
+			"",
 			breadcrumbsTags,
 			"/tags.html",
 		},
@@ -638,10 +644,22 @@ func (g Generator) Generate(eventsData events.Data) error {
 		slug := tag.Slug()
 		tagdata.SetNameLink(tag.Name.Orig, slug, breadcrumbsTags, g.baseUrl)
 		tagdata.Title = fmt.Sprintf("Laufveranstaltungen der Kategorie '%s'", tag.Name.Orig)
+		tagdata.SlugOther = tag.SlugArchive()
 		if err := utils.ExecuteTemplate(g.config, "tag", g.out.Join(slug), tagdata.BasePath, tagdata); err != nil {
 			return fmt.Errorf("render tag template to %q: %w", g.out.Join(slug), err)
 		}
 		sitemap.Add(slug, slug, tag.Name.Orig, "Kategorien")
+
+		tagdata.Description = fmt.Sprintf("Vergangene Laufveranstaltungen der Kategorie '%s' im Raum %s; Vollständige Übersicht mit Terminen, Details und Anmeldelinks für alle Events dieser Kategorie.", tag.Name.Orig, g.config.City.Name)
+		slug = tag.SlugArchive()
+		tagdata.Canonical = g.baseUrl.Join(slug)
+		tagdata.Breadcrumbs = tagdata.Breadcrumbs.Push(utils.CreateLink("Archiv", "/"+slug))
+		tagdata.Title = fmt.Sprintf("Vergangene Laufveranstaltungen der Kategorie '%s'", tag.Name.Orig)
+		tagdata.SlugOther = tag.Slug()
+		if err := utils.ExecuteTemplate(g.config, "tag-archive", g.out.Join(slug), tagdata.BasePath, tagdata); err != nil {
+			return fmt.Errorf("render tag template to %q: %w", g.out.Join(slug), err)
+		}
+		sitemap.Add(slug, slug, tag.Name.Orig+" (Archiv)", "Kategorien")
 	}
 
 	// Special rendering of the "traillauf" (+ related) tag
@@ -659,6 +677,7 @@ func (g Generator) Generate(eventsData events.Data) error {
 				"",
 				"",
 				"series",
+				"",
 				"",
 				breadcrumbsSeries,
 				"/series.html",
@@ -693,6 +712,7 @@ func (g Generator) Generate(eventsData events.Data) error {
 			fmt.Sprintf("Sitemap von %s", g.config.Website.Name),
 			"",
 			fmt.Sprintf("%s/sitemap.html", g.baseUrl),
+			"/sitemap.html",
 			breadcrumbsBase.Push(utils.CreateLink("Sitemap", "/sitemap.html")),
 			"/",
 		},

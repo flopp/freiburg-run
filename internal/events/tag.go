@@ -24,6 +24,10 @@ func (tag *Tag) Slug() string {
 	return fmt.Sprintf("tag/%s.html", tag.Name.Sanitized)
 }
 
+func (tag *Tag) SlugArchive() string {
+	return fmt.Sprintf("tag/%s-archiv.html", tag.Name.Sanitized)
+}
+
 func (tag *Tag) NumEvents() int {
 	return NonSeparators(tag.Events)
 }

@@ -1,0 +1,41 @@
+{{template "header.html" .}}
+
+<section class="section">
+    <div class="container is-max-desktop" itemscope itemtype="https://schema.org/ItemList">
+        <div class="box">
+            <h1 class="title" itemprop="name">{{.Title}}</h1>
+
+            <div class="notification is-light is-danger">
+                <p class="block">
+                    Achtung: Dies ist eine Liste von <b>vergangenen</b> Laufveranstaltungen, Lauf-Wettkämpfen, Volksläufen im Raum {{Config.City.Name}}, die in die <b>Kategorie '{{.Tag.Name.Orig}}'</b> einsortiert sind.
+                </p>
+    {{if .Tag.Description}}
+                <p class="block is-italic">
+                    {{.Tag.Description}}
+                </p>
+    {{end}}
+                <p class="block">
+                    <a href="{{BasePath "/tags.html"}}">Hier geht's zur Liste <b>aller</b> Kategorien</a><br>
+                    <a href="{{BasePath .SlugOther}}">Aktuelle Lauf-Events der Kategorie '{{.Tag.Name.Orig}}'</a>
+                </p>
+            </div>
+
+            {{template "controls.html" .}}
+        </div>
+
+{{if .Tag.EventsOld}}
+        <h2 class="title">Vergangene Laufveranstaltungen</h2>
+        <div class="notification is-link is-light">
+            In umgekehrt chronologischer Reihenfolge.
+        </div>
+
+        <div class="columns is-multiline">
+            {{range .Tag.EventsOld}}
+            {{template "card.html" .}}
+            {{end}}
+        </div>
+{{end}}
+    </div>
+</section>
+
+{{template "footer.html" .}}
