@@ -6,7 +6,15 @@
             <h1 class="title" itemprop="name">{{.Title}}</h1>
 
             <div class="notification is-link is-light">
-                Liste von {{.CountEvents}} <b>aktuellen und zukünftigen</b> Laufveranstaltungen, Wettkämpfen, Volksläufen im Raum {{Config.City.Name}} (~50km Umkreis), sortiert nach Datum.
+                Entdecke <b>alle</b> Lauf-Events in {{Config.City.Name}} und Umgebung (~50km Umkreis).
+                Wir haben {{.CountEvents}} aktuelle Laufveranstaltungen der Region in unserer Datenbank.
+                <br><br>
+                <div class="tags">
+                    <a class="tag is-link is-light" href="{{BasePath "tag/marathon.html"}}" class="is-underlined">Marathons</a>
+                    <a class="tag is-link is-light" href="{{BasePath "tag/halbmarathon.html"}}" class="is-underlined">Halbmarathons</a>
+                    <a class="tag is-link is-light" href="{{BasePath "tag/10km.html"}}" class="is-underlined">10km Läufe</a>
+                    <a class="tag is-link is-light" href="{{BasePath "tag/traillauf.html"}}" class="is-underlined">Trailruns</a>
+                </div>
             </div>
 
             {{template "controls.html" .}}

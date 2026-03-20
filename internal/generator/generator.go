@@ -418,7 +418,7 @@ func (g Generator) Generate(eventsData events.Data) error {
 	}
 
 	if err := renderPage("", "index.html", "events", "events", "Laufveranstaltungen",
-		fmt.Sprintf("Laufveranstaltungen im Raum %s", g.config.City.Name),
+		fmt.Sprintf("Laufkalender %s", g.config.City.Name),
 		fmt.Sprintf("Liste von Laufveranstaltungen, Lauf-Wettkämpfen, Volksläufen im Raum %s", g.config.City.Name),
 		breadcrumbsEvents); err != nil {
 		return fmt.Errorf("render index page: %w", err)

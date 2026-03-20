@@ -397,7 +397,8 @@ var filter = (s, hiddenTags) => {
         info.innerHTML = `${filterStr}${shown} ${shown!=1 ? "Einträge" : "Eintrag"} angezeigt${hiddenStr}${hiddenTagStr}`;
         info.classList.remove("is-hidden");
     } else {
-        info.classList.add("is-hidden");
+        info.innerHTML = `${shown} ${shown!=1 ? "Einträge" : "Eintrag"}`;
+        info.classList.remove("is-hidden");
     }
 };
 
