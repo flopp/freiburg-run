@@ -348,3 +348,19 @@ a.no-external::after
 .card-orienteering {
     background-image: url("data:image/svg+xml,%0A%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 500'%3E%3Cpath d='M502,0H0V502' fill='%23FFF'/%3E%3Cpath d='M0,500H500V0' fill='%23F76D22'/%3E%3C/svg%3E");
 }
+
+.gradient {
+    background: linear-gradient(to right, rgb(255, 38, 108.5), rgb(66, 88, 255));
+    color: transparent;
+    background-clip: text;
+}
+
+.navbar-burger .menulabel {
+    font-size: xx-small;
+    text-transform: uppercase;
+    position: absolute;
+    bottom: 0;
+}
+.navbar-burger.is-active .menulabel {
+    display: none;
+}
