@@ -269,6 +269,7 @@ var filter = (s, hiddenTags) => {
 
     // check if needle is a number (e.g. "10", "10.5", "10,5") and if so, use it as a distance filter
     let needleDistance = -1;
+    /* TEMPORARIRLY DISABLED
     if (needle !== "") {
         const re = /^(\d+[.,]?\d*)$/i;
         const match = needle.match(re);
@@ -276,6 +277,7 @@ var filter = (s, hiddenTags) => {
             needleDistance = parseFloat(match[1].replace(',', '.'));
         }
     }
+    */
 
     let items = new Array();
     document.querySelectorAll(".event, .event-separator").forEach(el => {
