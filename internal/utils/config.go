@@ -23,6 +23,7 @@ type Config struct {
 		Support bool `json:"support"`
 	}
 	Contact struct {
+		Email              string `json:"email"`
 		FeedbackForm       string `json:"feedback_form"`
 		ReportFormTemplate string `json:"report_form_template"`
 		Instagram          string `json:"instagram"`

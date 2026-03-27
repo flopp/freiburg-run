@@ -15,6 +15,7 @@
         "support": true
     },
     "contact": {
+        "email": "YOUR_MAIL_ADDRESS_HERE",
         "feedback_form": "YOUR_FEEDBACK_FORM_URL_HERE",
         "report_form_template": "YOUR_REPORT_FORM_TEMPLATE_URL_HERE, SUBSTRINGS 'NAME' AND 'URL' WILL BE REPLACED",
         "instagram": "YOUR_INSTAGRAM_HERE (OPTIONAL)",
