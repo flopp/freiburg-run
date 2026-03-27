@@ -107,7 +107,6 @@ func (r *ResourceManager) CopyStaticAssets() {
 		Source      string
 		Destination string
 	}{
-		{"static/robots.txt", "robots.txt"},
 		{"static/5vkf9hdnfkay895vyx33zdvesnyaphgv.txt", "5vkf9hdnfkay895vyx33zdvesnyaphgv.txt"},
 		{"static/512.png", "favicon.png"},
 		{"static/favicon.ico", "favicon.ico"},

@@ -238,6 +238,26 @@ func createManifestJSON(config utils.Config, outDir utils.Path) error {
 	return nil
 }
 
+func createRobotsTxt(config utils.Config, outDir utils.Path) error {
+	if err := utils.MakeDir(outDir.String()); err != nil {
+		return err
+	}
+
+	fileName := outDir.Join("robots.txt")
+
+	destination, err := os.Create(fileName)
+	if err != nil {
+		return err
+	}
+	defer destination.Close()
+
+	destination.WriteString("User-agent: *\n")
+	destination.WriteString("Allow: /\n")
+	destination.WriteString("Sitemap: " + config.Website.Url + "/sitemap.xml\n")
+
+	return nil
+}
+
 type CountryData struct {
 	slug   string
 	events []*events.Event
@@ -730,6 +750,11 @@ func (g Generator) Generate(eventsData events.Data) error {
 	// Render manifest.json
 	if err := createManifestJSON(g.config, g.out); err != nil {
 		return fmt.Errorf("create manifest.json: %v", err)
+	}
+
+	// Render robots.txt
+	if err := createRobotsTxt(g.config, g.out); err != nil {
+		return fmt.Errorf("create robots.txt: %v", err)
 	}
 
 	return nil
