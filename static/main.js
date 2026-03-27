@@ -21,23 +21,25 @@ const umami_track_event = function (name, data) {
     if (window.umami !== undefined) {
         window.umami.track(name, data);
     }
-}
+};
 
 const parseGeo = function (s) {
+    const match2coords = (m) => {
+        const lat = parseFloat(m.groups.lat);
+        const lng = parseFloat(m.groups.lng);
+        return [lat, lng];
+    };
+
     const re1 = /\s*N\s*(?<lat>\d+\.\d+)\s+E\s*(?<lng>\d+\.\d+)\s*$/gm;
     const match1 = re1.exec(s);
     if (match1 !== null) {
-        let lat = parseFloat(match1.groups.lat);
-        let lng = parseFloat(match1.groups.lng);
-        return [lat, lng];
+        return match2coords(match1);
     }
 
     const re2 = /\s*(?<lat>\d+\.\d+)\s*,\s*(?<lng>\d+\.\d+)\s*$/gm;
     const match2 = re2.exec(s);
     if (match2 !== null) {
-        let lat = parseFloat(match2.groups.lat);
-        let lng = parseFloat(match2.groups.lng);
-        return [lat, lng];
+        return match2coords(match2);
     }
 
     return null;
@@ -133,14 +135,14 @@ const loadMap = function (id) {
         radius: 50000
     }).addTo(map).bindPopup(`${cityName}, 50km`);
 
-    let blueIcon = load_marker("");
-    let greyIcon = load_marker("grey");
-    let greenIcon = load_marker("green");
-    let redIcon = load_marker("red");
+    const blueIcon = load_marker("");
+    const greyIcon = load_marker("grey");
+    const greenIcon = load_marker("green");
+    const redIcon = load_marker("red");
 
-    let markers = [];
+    const markers = [];
     document.querySelectorAll(".event").forEach(el => {
-        let geo = parseGeo(el.dataset.geo);
+        const geo = parseGeo(el.dataset.geo);
         if (geo !== null) {
             let icon = null;
             let zOffset = 0;
@@ -164,7 +166,7 @@ const loadMap = function (id) {
                     break;
             }
 
-            let m = L.marker(geo, {icon: icon, zIndexOffset: zOffset});
+            const m = L.marker(geo, {icon: icon, zIndexOffset: zOffset});
             markers.push(m);
             m.addTo(map);
             if (el.dataset.time !== undefined) {
@@ -228,18 +230,18 @@ const loadParkrunMap = function (id, encodedTrack) {
     const course = L.polyline(parsePolyline(encodedTrack));
     course.addTo(map);
 
-    let blueIcon = load_marker("");
-    let greyIcon = load_marker("grey");
+    const blueIcon = load_marker("");
+    const greyIcon = load_marker("grey");
 
-    let parking = L.marker([48.000993,7.808887], {icon: greyIcon});
+    const parking = L.marker([48.000993,7.808887], {icon: greyIcon});
     parking.addTo(map);
     parking.bindPopup("Parkplatz");
 
-    let tram = L.marker([47.999420,7.810088], {icon: greyIcon});
+    const tram = L.marker([47.999420,7.810088], {icon: greyIcon});
     tram.addTo(map);
     tram.bindPopup("Straßenbahn (Linie 3, Rohrgraben)");
 
-    let meetingpoint = L.marker([48.001294,7.806489], {icon: blueIcon});
+    const meetingpoint = L.marker([48.001294,7.806489], {icon: blueIcon});
     meetingpoint.addTo(map);
     meetingpoint.bindPopup("Treffpunkt / Zielbereich");
 };
@@ -251,7 +253,7 @@ const load_marker = function (color) {
         url = "/images/marker-" + color + "-icon.png";
         url2x = "/images/marker-" + color + "-icon-2x.png";
     }
-    let options = {
+    const options = {
         iconAnchor: [12, 41],
         iconRetinaUrl: url2x,
         iconSize: [25, 41],
@@ -272,7 +274,7 @@ const filter = (s, hiddenTags) => {
     let shown = 0;
     let hidden = 0;
     let hiddenTag = 0;
-    let info = document.querySelector("#filter-info");
+    const info = document.querySelector("#filter-info");
     const needle = s.toLowerCase().trim();
 
     // check if needle is a number (e.g. "10", "10.5", "10,5") and if so, use it as a distance filter
@@ -285,7 +287,7 @@ const filter = (s, hiddenTags) => {
         }
     }
 
-    let items = new Array();
+    const items = new Array();
     document.querySelectorAll(".event, .event-separator").forEach(el => {
         const sep = el.previousSibling;
         if (sep === null) {
@@ -294,7 +296,7 @@ const filter = (s, hiddenTags) => {
         items.push(el);
     });
 
-    lastSep = null;
+    let lastSep = null;
     items.forEach(el => {
         if (el === null) {
             lastSep = null;
@@ -306,7 +308,7 @@ const filter = (s, hiddenTags) => {
         } else {
             // hide by tag
             if (hiddenTags.size != 0) {
-                const found = false;
+                let found = false;
                 el.querySelectorAll("[data-tag]").forEach(tagEl => {
                     if (tagEl.dataset.tag !== undefined) {
                         if (hiddenTags.has(tagEl.dataset.tag)) {
@@ -336,7 +338,7 @@ const filter = (s, hiddenTags) => {
                             if (distancesStr.startsWith("[") && distancesStr.endsWith("]")) {
                                 distancesStr = distancesStr.substring(1, distancesStr.length - 1);
                                 distancesStr.split(" ").forEach(d => {
-                                    let dist = parseFloat(d);
+                                    const dist = parseFloat(d);
                                     if (!isNaN(dist)) {
                                         distances.push(dist);
                                     }
@@ -361,8 +363,8 @@ const filter = (s, hiddenTags) => {
                         return;
                     }
                 } else {
-                    let name = el.dataset.name.toLowerCase();
-                    let location = el.dataset.location.toLowerCase();
+                    const name = el.dataset.name.toLowerCase();
+                    const location = el.dataset.location.toLowerCase();
                     if (!name.includes(needle) && !location.includes(needle)) {
                         hidden++;
                         el.classList.add("is-hidden");
@@ -386,21 +388,21 @@ const filter = (s, hiddenTags) => {
     }
 
     if (hidden != 0 || hiddenTag != 0) {
-        const hiddenStr = ""
+        let hiddenStr = ""
         if (hidden != 0) {
             hiddenStr = `, ${hidden} ${hidden!=1 ? "Einträge" : "Eintrag"} über Filter versteckt`;
         }
-        const hiddenTagStr = ""
+        let hiddenTagStr = ""
         if (hiddenTag != 0) {
             hiddenTagStr = `, ${hiddenTag} ${hiddenTag!=1 ? "Einträge" : "Eintrag"} über <a href="/tags.html">Kategorien</a> versteckt`;
         }
-        const filterStr = "";
+        let filterStr = "";
         if (needleDistance >= 0) {
             filterStr = `Filter nach Distanz: ${needleDistance} km ±10%; `;
         } else if (needle !== "") {
             // sanitize needle for HTML output (e.g. if it contains "<" or ">", escape it)
-            needle = needle.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-            filterStr = `Filter nach Name/Ort: "${needle}"; `;
+            const sanitizedNeedle = needle.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            filterStr = `Filter nach Name/Ort: "${sanitizedNeedle}"; `;
         }
         info.innerHTML = `${filterStr}${shown} ${shown!=1 ? "Einträge" : "Eintrag"} angezeigt${hiddenStr}${hiddenTagStr}`;
         info.classList.remove("is-hidden");
@@ -423,15 +425,18 @@ function getLocalStorage() {
     }
 }
 
-function createEl(tag, classes) {
+function createEl(tag, id, classes) {
     const el = document.createElement(tag);
-    if (classes !== undefined) {
+    if (id !== undefined && id !== null && id !== "") {
+        el.id = id;
+    }
+    if (classes !== undefined && classes !== null && classes !== "") {
         classes.split(" ").forEach(c => {
             el.classList.add(c);
         });
     }
     return el;
-} 
+}
 
 const main = () => {
     // TAG FILTER, LOCAL STORAGE
@@ -535,8 +540,7 @@ const main = () => {
             mapShowBtn.classList.add("is-hidden");
             mapHideBtn.classList.remove("is-hidden");
             const container = document.querySelector("#map-container");
-            const mapDiv = document.createElement("div");
-            mapDiv.id = "small-map";
+            const mapDiv = createEl("div", "small-map", "");
             container.appendChild(mapDiv);
             if (container.dataset.type === "parkrun") {
                 loadParkrunMap("small-map", container.dataset.track);
@@ -552,10 +556,10 @@ const main = () => {
 
     }
 
-    let eventMap = document.querySelector("#event-map");
+    const eventMap = document.querySelector("#event-map");
     if (eventMap !== null) {
-        let geo = parseGeo(eventMap.dataset.geo);
-        let track = parsePolyline(eventMap.dataset.track);
+        const geo = parseGeo(eventMap.dataset.geo);
+        const track = parsePolyline(eventMap.dataset.track);
 
         if (geo !== null) {
             const map = L.map('event-map', {gestureHandling: true}).setView(geo, 15);
@@ -564,7 +568,7 @@ const main = () => {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             }).addTo(map);
 
-            let marker = L.marker(geo, {icon: load_marker("")});
+            const marker = L.marker(geo, {icon: load_marker("")});
             marker.addTo(map);
             marker.bindPopup(eventMap.dataset.name);
             if (track !== null) {
@@ -746,21 +750,17 @@ const main = () => {
             existing.remove();
         }
 
-        const container = document.createElement("div");
-        container.id = "notificationDiv";
-        container.className = "container";
+        const container = createEl("div", "notificationDiv", "container");
         document.body.appendChild(container);
 
-        const div = document.createElement("div");
-        div.className = "notification is-radiusless " + notification.class;
+        const div = createEl("div", null, "notification is-radiusless " + notification.class);
         container.appendChild(div);
 
-        const closeButton = document.createElement("button");
-        closeButton.className = "delete";
+        const closeButton = createEl("button", null, "delete");
         closeButton.onclick = () => container.remove();
         div.appendChild(closeButton);
 
-        const contentDiv = document.createElement("div");
+        const contentDiv = createEl("div");
         contentDiv.innerHTML = notification.content;
         div.appendChild(contentDiv);
         
