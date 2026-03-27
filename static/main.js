@@ -745,12 +745,6 @@ const main = () => {
         const container = document.createElement("div");
         container.id = "notificationDiv";
         container.className = "container";
-        container.style.position = "fixed";
-        container.style.zIndex = "2000";
-        container.style.left = "50%";
-        container.style.bottom = "0px";
-        container.style.transform = "translate(-50%, 100%)";
-        container.style.transition = "transform 1s cubic-bezier(.4,0,.2,1)";
         document.body.appendChild(container);
 
         const div = document.createElement("div");
@@ -767,7 +761,7 @@ const main = () => {
         div.appendChild(contentDiv);
         
         setTimeout(() => {
-            container.style.transform = "translate(-50%, 0)";
+            container.classList.add("active");
         }, 10);
     }
 
