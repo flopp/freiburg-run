@@ -43,13 +43,21 @@ const parseGeo = function (s) {
     return null;
 };
 
+const onEach = (selector, callback) => {
+    document.querySelectorAll(selector).forEach(callback);
+};
+
+const on = (selector, event, callback) => {
+    document.querySelectorAll(selector).forEach(el => el.addEventListener(event, callback));
+};
+
 const decodeUnsignedIntegers = function (encoded) {
     const numbers = [];
-    const index = 0;
+    let index = 0;
     const len = encoded.length;
     while (index < len) {
-        const num = 0;
-        const shift = 0;
+        let num = 0;
+        let shift = 0;
         while (true) {
             const b = encoded.charCodeAt(index++) - 63;
             num |= (b & 0x1f) << shift;
@@ -475,7 +483,7 @@ const main = () => {
     }
 
     // SHARE BUTTONS
-    document.querySelectorAll("[data-share]").forEach(shareButton => {
+    onEach("[data-share]", shareButton => {
         const shareData = {
             title: shareButton.dataset.name,
             url: shareButton.dataset.url + "?utm_source=share_button",
@@ -485,7 +493,7 @@ const main = () => {
             shareButton.classList.add("is-hidden");
             return;
         }
-        
+
         shareButton.addEventListener('click', async (e) => {
             e.preventDefault();
             umami_track_event('share-click', {url: shareData.url});
@@ -498,7 +506,7 @@ const main = () => {
     });
 
     // CALENDARS
-    document.querySelectorAll(".calendar-button").forEach(btn => {
+    onEach(".calendar-button", btn => {
         btn.addEventListener('click', (e) => {
             e.preventDefault();
             const modal = document.getElementById("calendar-modal");
@@ -516,12 +524,8 @@ const main = () => {
     });
 
     // MAPS
-    const bigMapId = "";
     if (document.querySelector("#big-map") !== null) {
-        bigMapId = "big-map";
-    }
-    if (bigMapId !== "") {
-        loadMap(bigMapId);
+        loadMap("big-map");
     }
 
     const mapShowBtn = document.querySelector("#map-show-btn");
@@ -578,10 +582,10 @@ const main = () => {
         }
         burgersByTarget.get(target).push(burger);
     }
-    document.querySelectorAll('.navbar-burger').forEach(el => {
+    onEach('.navbar-burger', el => {
         collectBurger(el, el.dataset.target);
     });
-    document.querySelectorAll('.navbar-burger-menu').forEach(el => {
+    onEach('.navbar-burger-menu', el => {
         collectBurger(el, el.dataset.target);
     });
     burgersByTarget.forEach((burgers, target) => {
@@ -612,7 +616,7 @@ const main = () => {
     }
 
     // Add a click event on buttons to open a specific modal
-    (document.querySelectorAll('.modal-trigger') || []).forEach(($trigger) => {
+    onEach('.modal-trigger', ($trigger) => {
         const modal = $trigger.dataset.target;
         const $target = document.getElementById(modal);
 
@@ -622,7 +626,7 @@ const main = () => {
     });
 
     // Add a click event on various child elements to close the parent modal
-    (document.querySelectorAll('.modal-background, .modal-close, .modal-card-head .delete, .modal-card-foot .button, .modal-card-body .close') || []).forEach(($close) => {
+    onEach('.modal-background, .modal-close, .modal-card-head .delete, .modal-card-foot .button, .modal-card-body .close', ($close) => {
         const $target = $close.closest('.modal');
 
         $close.addEventListener('click', () => {
@@ -666,7 +670,7 @@ const main = () => {
     }
 
     // UMAMI
-    document.querySelectorAll("a[target=_blank]").forEach((a) => {
+    onEach("a[target=_blank]", (a) => {
         if (a.getAttribute("data-umami-event") === null) {
             a.setAttribute('data-umami-event', 'outbound-link-click');
         }
