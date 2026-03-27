@@ -2,16 +2,22 @@
 
 <section class="section">
     <div class="container is-max-desktop">
-        <div class="content">
-            <h1>404 - Seite nicht gefunden :(</h1>
+        <div class="box">
+            <h1 class="title gradient">404 - Seite nicht gefunden :(</h1>
             <p>
                 Die angeforderte Seite konnte leider nicht gefunden werden. Vielleicht ist der Link fehlerhaft?
                 Treten die Probleme weiterhin auf?
                 <br><br>
-                <a class="button is-light" href="{{Config.Contact.FeedbackForm}}" target="_blank">Fehler melden</a> 
+                
+                <div class="field">
+                    <p class="control">
+                        <a class="button is-link" href="{{Config.Contact.FeedbackForm}}" target="_blank"><span class="warning-icon has-background-white mr-1"></span> <span>Fehler melden</span></a>
+                    </p>
+                </div>
             </p>
+            <div class="content">
             <p>
-                Folgende Inhalte gibt es auf dieser Webseite:
+                <b>Folgende Inhalte gibt es auf dieser Webseite:</b>
             </p>
             <ul>
                 <li>
@@ -24,6 +30,7 @@
                     <a href="{{BasePath "/shops.html"}}">Eine Liste regionaler Geschäfte mit Laufsportbezug</a>
                 </li>
             </ul>
+            </div>
         </div>
     </div>
 </section>
