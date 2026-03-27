@@ -4,11 +4,7 @@
 </div>
 {{else}}
 <div class="column is-half event" data-type="{{.NiceType}}" data-name="{{.Name.Orig}}" data-time="{{.Time.Formatted}}" data-geo="{{.Location.Geo}}" data-location="{{.Location.Name}}" data-slug="{{.Slug}}" data-distances="{{.Distances}}">
-    {{if .Special}}
-    <div class="card pulsating-border" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-    {{else}}
     <div class="card" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-    {{end}}
         <header class="card-header is-flex-direction-column">
             {{if .Cancelled}}
             <a class="button is-danger has-text-white is-fullwidth is-radiusless button-wrap" href="{{BasePath .Slug}}" itemprop="item">

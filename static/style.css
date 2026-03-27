@@ -261,26 +261,6 @@ a.no-external::after
     border: 0 !important;
 }
 
-.pulsating-border {
-    border: 4px solid #3e8ed0;
-    animation: pulsating-border-animation 2s infinite;
-}
-
-@keyframes pulsating-border-animation {
-    0% {
-        border: 4px solid #3e8ed0;
-    }
-    40% {
-        border: 4px solid #f14668;
-    }
-    60% {
-        border: 4px solid #f14668;
-    }
-    100% {
-        border: 4px solid #3e8ed0;
-    }
-}
-
 .has-pushed-down-footer-child {
   height: 100vh;
   display: flex;

@@ -34,7 +34,6 @@ type Event struct {
 	Status          string
 	Cancelled       bool
 	Obsolete        bool
-	Special         bool
 	Location        Location
 	Details         template.HTML
 	Details2        template.HTML
@@ -141,7 +140,6 @@ func createSeparatorEvent(t time.Time) *Event {
 		false,
 		"",
 		"",
-		false,
 		false,
 		false,
 		Location{},

@@ -280,9 +280,8 @@ func fetchEvents(config utils.Config, srv *sheets.Service, today time.Time, even
 			// clear simple cancelled/closed status (other info might be present)
 			data.Status = ""
 		}
-		special := data.Status == "spezial"
 		obsolete := data.Status == "obsolete"
-		if special || obsolete {
+		if obsolete {
 			data.Status = ""
 		}
 		if data.Status == "temp" {
@@ -341,7 +340,6 @@ func fetchEvents(config utils.Config, srv *sheets.Service, today time.Time, even
 			data.Status,
 			cancelled,
 			obsolete,
-			special,
 			location,
 			template.HTML(description1),
 			template.HTML(description2),
