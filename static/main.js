@@ -82,8 +82,8 @@ const decodeDeltas = function (encoded) {
     const dimension = 2;
     const lastNumbers = [];
     const numbers = decodeFloats(encoded);
-    for (var i = 0, len = numbers.length; i < len;) {
-        for (var d = 0; d < dimension; ++d, ++i) {
+    for (let i = 0, len = numbers.length; i < len;) {
+        for (let d = 0; d < dimension; ++d, ++i) {
             numbers[i] = Math.round((lastNumbers[d] = numbers[i] + (lastNumbers[d] || 0)) * 100000) / 100000;
         }
     }
@@ -97,9 +97,9 @@ const parsePolyline = function (encoded) {
     const dimension = 2;
     const flatPoints = decodeDeltas(encoded);
     const points = [];
-    for (var i = 0, len = flatPoints.length; i + (dimension -1) < len;) {
+    for (let i = 0, len = flatPoints.length; i + (dimension -1) < len;) {
         const point = [];
-        for (var dim = 0; dim < dimension; ++dim) {
+        for (let dim = 0; dim < dimension; ++dim) {
             point.push(flatPoints[i++]);
         }
         points.push(point);
@@ -131,7 +131,7 @@ const loadMap = function (id) {
         fill: false,
         weight: 1,
         radius: 50000
-    }).addTo(map).bindPopup(`${cityName}, 50km`)
+    }).addTo(map).bindPopup(`${cityName}, 50km`);
 
     let blueIcon = load_marker("");
     let greyIcon = load_marker("grey");
@@ -194,11 +194,11 @@ const loadMap = function (id) {
     }];
     items.push(
         {
-            label: "25km um Freiburg",
+            label: `25km um ${cityName}`,
             type: "image",
             url: "/images/circle-small.png"
         }, {
-            label: "50km um Freiburg",
+            label: `50km um ${cityName}`,
             type: "image",
             url: "/images/circle-big.png"
         }
@@ -273,7 +273,7 @@ const filter = (s, hiddenTags) => {
     let hidden = 0;
     let hiddenTag = 0;
     let info = document.querySelector("#filter-info");
-    let needle = s.toLowerCase().trim();
+    const needle = s.toLowerCase().trim();
 
     // check if needle is a number (e.g. "10", "10.5", "10,5") and if so, use it as a distance filter
     let needleDistance = -1;
