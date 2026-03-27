@@ -6,17 +6,6 @@ const on_load = function(f) {
     }
 }
 
-const toggle_menuitem = function (id) {
-    const next = document.getElementById(id);
-    const current = document.querySelector(".navbar-item.is-active");
-    if (next != null && next !== current) {
-        if (current !== null) {
-            current.classList.remove("is-active");
-        }
-        next.classList.add("is-active");
-    }
-};
-
 const umami_track_event = function (name, data) {
     if (window.umami !== undefined) {
         window.umami.track(name, data);
