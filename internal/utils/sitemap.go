@@ -41,12 +41,8 @@ func (sitemap *Sitemap) Add(slug string, slugfile string, name string, category 
 	sitemap.Entries = append(sitemap.Entries, &SitemapEntry{slug, slugfile, name, category})
 }
 
-func genSitemapEntry(f *os.File, url string, timeStamp string) {
+func writeSitemapEntry(f *os.File, url string, timeStamp string) {
 	f.WriteString(fmt.Sprintf("<url><loc>%s</loc><lastmod>%s</lastmod></url>\n", url, timeStamp))
-}
-
-func AddSitemapEntry(entries []string, slug string) []string {
-	return append(entries, slug)
 }
 
 func readHashFile(fileName string) map[string]*FileHashDate {
@@ -93,23 +89,14 @@ var reTimestamp = regexp.MustCompile(`<span class="timestamp">[^<]*</span>`)
 var reScript = regexp.MustCompile(`<script [^>]*>`)
 var reStyle = regexp.MustCompile(`<link [^>]*>`)
 
+const dirPerms = 0770
+
 func replaceRegexp(s []byte, r regexp.Regexp) []byte {
-	for {
-		match := r.FindIndex(s)
-		if match != nil {
-			matchStart := match[0]
-			matchEnd := match[1]
-			replaced := make([]byte, 0, len(s))
-			replaced = append(replaced, s[:matchStart]...)
-			replaced = append(replaced, s[matchEnd:]...)
-			s = replaced
-		} else {
-			break
-		}
-	}
-	return s
+	return r.ReplaceAll(s, []byte{})
 }
 
+// determineHash calculates a normalized SHA256 hash of the file content,
+// ignoring timestamps and scripts/styles for consistent hashing.
 func determineHash(fileName string) (string, error) {
 	buf, err := os.ReadFile(fileName)
 	if err != nil {
@@ -135,7 +122,7 @@ func getMtimeYMD(filePath string) string {
 }
 
 func (sitemap Sitemap) Gen(fileName string, hashFileName string, outDir Path) error {
-	if err := os.MkdirAll(filepath.Dir(fileName), 0770); err != nil {
+	if err := os.MkdirAll(filepath.Dir(fileName), dirPerms); err != nil {
 		return err
 	}
 
@@ -145,8 +132,8 @@ func (sitemap Sitemap) Gen(fileName string, hashFileName string, outDir Path) er
 	}
 	defer f.Close()
 
-	m := readHashFile(hashFileName)
-	mNew := make(map[string]*FileHashDate)
+	oldHashes := readHashFile(hashFileName)
+	newHashes := make(map[string]*FileHashDate)
 
 	f.WriteString("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
 	f.WriteString("<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n")
@@ -162,7 +149,7 @@ func (sitemap Sitemap) Gen(fileName string, hashFileName string, outDir Path) er
 			log.Printf("cannot create hash for '%s': %v", fileName, err)
 		}
 
-		oldHash, ok := m[fileName]
+		oldHash, ok := oldHashes[fileName]
 		if ok {
 			if currentHash == oldHash.hash {
 				timeStamp = oldHash.date
@@ -170,14 +157,14 @@ func (sitemap Sitemap) Gen(fileName string, hashFileName string, outDir Path) er
 		} else {
 			log.Printf("initial hash for: %s", fileName)
 		}
-		mNew[fileName] = &FileHashDate{fileName, currentHash, timeStamp}
+		newHashes[fileName] = &FileHashDate{fileName, currentHash, timeStamp}
 
-		genSitemapEntry(f, sitemap.BaseUrl.Join(entry.Slug), timeStamp)
+		writeSitemapEntry(f, sitemap.BaseUrl.Join(entry.Slug), timeStamp)
 	}
 
 	f.WriteString("</urlset>")
 
-	writeHashFile(hashFileName, mNew)
+	writeHashFile(hashFileName, newHashes)
 
 	return nil
 }
@@ -189,19 +176,9 @@ type SitemapCategory struct {
 
 func (sitemap Sitemap) GenHTML() []SitemapCategory {
 	byCategory := make(map[string][]*SitemapEntry)
-	for _, c := range sitemap.Categories {
-		byCategory[c] = make([]*SitemapEntry, 0)
-	}
 
 	for _, e := range sitemap.Entries {
-		c, found := byCategory[e.Category]
-		if !found {
-			log.Printf("Sitemap: event '%s' has bad category '%s'", e.Name, e.Category)
-			continue
-		}
-
-		c = append(c, e)
-		byCategory[e.Category] = c
+		byCategory[e.Category] = append(byCategory[e.Category], e)
 	}
 
 	categories := make([]SitemapCategory, 0)
