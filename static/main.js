@@ -1,4 +1,4 @@
-var on_load = function(f) {
+const on_load = function(f) {
     if (document.body === null) {
         document.addEventListener('DOMContentLoaded', () => {f()}, false);
     } else {
@@ -6,9 +6,9 @@ var on_load = function(f) {
     }
 }
 
-var toggle_menuitem = function (id) {
-    var next = document.getElementById(id);
-    var current = document.querySelector(".navbar-item.is-active");
+const toggle_menuitem = function (id) {
+    const next = document.getElementById(id);
+    const current = document.querySelector(".navbar-item.is-active");
     if (next != null && next !== current) {
         if (current !== null) {
             current.classList.remove("is-active");
@@ -17,7 +17,7 @@ var toggle_menuitem = function (id) {
     }
 };
 
-var umami_track_event = function (name, data) {
+const umami_track_event = function (name, data) {
     if (window.umami !== undefined) {
         window.umami.track(name, data);
     }
@@ -44,14 +44,14 @@ const parseGeo = function (s) {
 };
 
 const decodeUnsignedIntegers = function (encoded) {
-    var numbers = [];
-    var index = 0;
-    var len = encoded.length;
+    const numbers = [];
+    const index = 0;
+    const len = encoded.length;
     while (index < len) {
-        var num = 0;
-        var shift = 0;
+        const num = 0;
+        const shift = 0;
         while (true) {
-            var b = encoded.charCodeAt(index++) - 63;
+            const b = encoded.charCodeAt(index++) - 63;
             num |= (b & 0x1f) << shift;
             if ((b & 0x20) === 0) break;
             shift += 5;
@@ -72,8 +72,8 @@ const decodeFloats = function (encoded) {
 
 const decodeDeltas = function (encoded) {
     const dimension = 2;
-    var lastNumbers = [];
-    var numbers = decodeFloats(encoded);
+    const lastNumbers = [];
+    const numbers = decodeFloats(encoded);
     for (var i = 0, len = numbers.length; i < len;) {
         for (var d = 0; d < dimension; ++d, ++i) {
             numbers[i] = Math.round((lastNumbers[d] = numbers[i] + (lastNumbers[d] || 0)) * 100000) / 100000;
@@ -87,10 +87,10 @@ const parsePolyline = function (encoded) {
         return null;
     }
     const dimension = 2;
-    var flatPoints = decodeDeltas(encoded);
-    var points = [];
+    const flatPoints = decodeDeltas(encoded);
+    const points = [];
     for (var i = 0, len = flatPoints.length; i + (dimension -1) < len;) {
-        var point = [];
+        const point = [];
         for (var dim = 0; dim < dimension; ++dim) {
             point.push(flatPoints[i++]);
         }
@@ -105,8 +105,8 @@ const loadMap = function (id) {
     const cityLat = parseFloat(mapEl.dataset.cityLat) || 47.996090;
     const cityLon = parseFloat(mapEl.dataset.cityLon) || 7.849400;
 
-    var center = [cityLat, cityLon];
-    var map = L.map(id, {gestureHandling: true}).setView(center, 15);
+    const center = [cityLat, cityLon];
+    const map = L.map(id, {gestureHandling: true}).setView(center, 15);
 
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -206,18 +206,18 @@ const loadMap = function (id) {
     });
     legend.addTo(map);
 
-    var group = new L.featureGroup(markers);
+    const group = new L.featureGroup(markers);
     map.fitBounds(group.getBounds(), {padding: L.point(40, 40)});
 };
 
 const loadParkrunMap = function (id, encodedTrack) {
-    var map = L.map(id, {gestureHandling: true}).setView([48.000548, 7.804842], 15);
+    const map = L.map(id, {gestureHandling: true}).setView([48.000548, 7.804842], 15);
 
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
 
-    var course = L.polyline(parsePolyline(encodedTrack));
+    const course = L.polyline(parsePolyline(encodedTrack));
     course.addTo(map);
 
     let blueIcon = load_marker("");
@@ -236,7 +236,7 @@ const loadParkrunMap = function (id, encodedTrack) {
     meetingpoint.bindPopup("Treffpunkt / Zielbereich");
 };
 
-var load_marker = function (color) {
+const load_marker = function (color) {
     let url = "/images/marker-icon.png";
     let url2x = "/images/marker-icon-2x.png";
     if (color !== "") {
@@ -256,11 +256,11 @@ var load_marker = function (color) {
     return L.icon(options);
 }
 
-var similarDistances = function(d1, d2, factor) {
+const similarDistances = function(d1, d2, factor) {
     return ((d1 * (1.0-factor)) <= d2) && (d2 <= (d1 * (1.0+factor)));
 }
 
-var filter = (s, hiddenTags) => {
+const filter = (s, hiddenTags) => {
     let shown = 0;
     let hidden = 0;
     let hiddenTag = 0;
@@ -279,7 +279,7 @@ var filter = (s, hiddenTags) => {
 
     let items = new Array();
     document.querySelectorAll(".event, .event-separator").forEach(el => {
-        var sep = el.previousSibling;
+        const sep = el.previousSibling;
         if (sep === null) {
             items.push(null);
         }
@@ -298,7 +298,7 @@ var filter = (s, hiddenTags) => {
         } else {
             // hide by tag
             if (hiddenTags.size != 0) {
-                var found = false;
+                const found = false;
                 el.querySelectorAll("[data-tag]").forEach(tagEl => {
                     if (tagEl.dataset.tag !== undefined) {
                         if (hiddenTags.has(tagEl.dataset.tag)) {
@@ -378,15 +378,15 @@ var filter = (s, hiddenTags) => {
     }
 
     if (hidden != 0 || hiddenTag != 0) {
-        var hiddenStr = ""
+        const hiddenStr = ""
         if (hidden != 0) {
             hiddenStr = `, ${hidden} ${hidden!=1 ? "Einträge" : "Eintrag"} über Filter versteckt`;
         }
-        var hiddenTagStr = ""
+        const hiddenTagStr = ""
         if (hiddenTag != 0) {
             hiddenTagStr = `, ${hiddenTag} ${hiddenTag!=1 ? "Einträge" : "Eintrag"} über <a href="/tags.html">Kategorien</a> versteckt`;
         }
-        var filterStr = "";
+        const filterStr = "";
         if (needleDistance >= 0) {
             filterStr = `Filter nach Distanz: ${needleDistance} km ±10%; `;
         } else if (needle !== "") {
@@ -425,10 +425,10 @@ function createEl(tag, classes) {
     return el;
 } 
 
-var main = () => {
+const main = () => {
     // TAG FILTER, LOCAL STORAGE
-    var storage = getLocalStorage();
-    var hiddenTags = new Set();
+    const storage = getLocalStorage();
+    const hiddenTags = new Set();
     if (storage !== null) {
         let tags = storage.getItem("hiddenTags");
         if (tags !== null) {
@@ -440,7 +440,7 @@ var main = () => {
             });
         }
     }
-    var tagTable = document.querySelector("#tag-table");
+    const tagTable = document.querySelector("#tag-table");
     if (tagTable !== null) {
         tagTable.querySelectorAll("[data-tag]").forEach(el => {
             if (storage !== null) {
@@ -452,7 +452,7 @@ var main = () => {
                     } else {
                         hiddenTags.delete(tag);
                     }
-                    var tags = Array.from(hiddenTags).join(",");
+                    const tags = Array.from(hiddenTags).join(",");
                     storage.setItem("hiddenTags", tags);
                 });
             } else {
@@ -462,7 +462,7 @@ var main = () => {
     }
 
     // FILTER
-    var filterInput = document.querySelector("#filter-input");
+    const filterInput = document.querySelector("#filter-input");
     if (filterInput !== null) {
         filterInput.addEventListener('input', (e) => {
             filter(e.target.value, hiddenTags);
@@ -516,7 +516,7 @@ var main = () => {
     });
 
     // MAPS
-    var bigMapId = "";
+    const bigMapId = "";
     if (document.querySelector("#big-map") !== null) {
         bigMapId = "big-map";
     }
@@ -554,7 +554,7 @@ var main = () => {
         let track = parsePolyline(eventMap.dataset.track);
 
         if (geo !== null) {
-            var map = L.map('event-map', {gestureHandling: true}).setView(geo, 15);
+            const map = L.map('event-map', {gestureHandling: true}).setView(geo, 15);
 
             L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -571,7 +571,7 @@ var main = () => {
     }
 
     // NAVBAR
-    var burgersByTarget = new Map();
+    const burgersByTarget = new Map();
     const collectBurger = (burger, target) => {
         if (!burgersByTarget.has(target)) {
             burgersByTarget.set(target, []);
