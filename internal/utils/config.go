@@ -42,6 +42,9 @@ type Config struct {
 	Umami struct {
 		WebsiteId string `json:"website_id"`
 	} `json:"umami"`
+	IndexNow struct {
+		Key string `json:"key"`
+	} `json:"index_now"`
 	Notification struct {
 		Enabled bool   `json:"enabled"`
 		Id      int    `json:"id"`

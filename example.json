@@ -37,6 +37,9 @@
         "api_key": "YOUR_API_KEY_HERE",
         "sheet_id": "YOUR_SHEET_ID_HERE"
     },
+    "index_now": {
+        "key": "YOUR_INDEX_NOW_KEY_HERE (OPTIONAL)"
+    },
     "umami": {
         "website_id": "YOUR_UMAMI_WEBSITE_ID (OPTIONAL)"
     },

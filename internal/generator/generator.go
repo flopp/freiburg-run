@@ -258,6 +258,28 @@ func createRobotsTxt(config utils.Config, outDir utils.Path) error {
 	return nil
 }
 
+func createIndexNowFile(config utils.Config, outDir utils.Path) error {
+	if config.IndexNow.Key == "" {
+		return nil
+	}
+
+	if err := utils.MakeDir(outDir.String()); err != nil {
+		return err
+	}
+
+	fileName := outDir.Join(config.IndexNow.Key + ".txt")
+
+	destination, err := os.Create(fileName)
+	if err != nil {
+		return err
+	}
+	defer destination.Close()
+
+	destination.WriteString(config.IndexNow.Key)
+
+	return nil
+}
+
 type CountryData struct {
 	slug   string
 	events []*events.Event
@@ -755,6 +777,11 @@ func (g Generator) Generate(eventsData events.Data) error {
 	// Render robots.txt
 	if err := createRobotsTxt(g.config, g.out); err != nil {
 		return fmt.Errorf("create robots.txt: %v", err)
+	}
+
+	// Render $indexnow.txt
+	if err := createIndexNowFile(g.config, g.out); err != nil {
+		return fmt.Errorf("create $indexnow.txt: %v", err)
 	}
 
 	return nil

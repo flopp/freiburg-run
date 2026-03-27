@@ -107,7 +107,6 @@ func (r *ResourceManager) CopyStaticAssets() {
 		Source      string
 		Destination string
 	}{
-		{"static/5vkf9hdnfkay895vyx33zdvesnyaphgv.txt", "5vkf9hdnfkay895vyx33zdvesnyaphgv.txt"},
 		{"static/512.png", "favicon.png"},
 		{"static/favicon.ico", "favicon.ico"},
 		{"static/180.png", "apple-touch-icon.png"},
