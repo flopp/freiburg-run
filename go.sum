@@ -34,6 +34,8 @@ github.com/arran4/golang-ical v0.3.3 h1:8oEhMFS8tBoXmrMf6dKVWPNB1lNfE8xGn/c5NYm3
 github.com/arran4/golang-ical v0.3.3/go.mod h1:OnguFgjN0Hmx8jzpmWcC+AkHio94ujmLHKoaef7xQh8=
 github.com/arran4/golang-ical v0.3.4 h1:Rthe8/0AD6QzF+kx6XFS0g4FZNE7UiSfsOyrJzLotBA=
 github.com/arran4/golang-ical v0.3.4/go.mod h1:OnguFgjN0Hmx8jzpmWcC+AkHio94ujmLHKoaef7xQh8=
+github.com/arran4/golang-ical v0.3.5 h1:bbz6ld4dC+MmCKiFfOd6SkmIGnhNMBACZ485ULh7p9A=
+github.com/arran4/golang-ical v0.3.5/go.mod h1:OnguFgjN0Hmx8jzpmWcC+AkHio94ujmLHKoaef7xQh8=
 github.com/cespare/xxhash/v2 v2.3.0 h1:UL815xU9SqsFlibzuggzjXhog7bL6oX9BbNZnL2UFvs=
 github.com/cespare/xxhash/v2 v2.3.0/go.mod h1:VGX0DQ3Q6kWi7AoAeZDth3/j3BFtOZR5XLFGgcrjCOs=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
