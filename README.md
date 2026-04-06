@@ -3,7 +3,35 @@ A static website listing local running events in the Freiburg region.
 
 https://freiburg.run/
 
-Workflow:
+# Design
+
+* freiburg.run uses the [Bulma CSS Framework](https://bulma.io/), with some custom modifications
+* target is to perfectly usable both on mobile and big screen devices
+* maps are implemented with [Leaflet](https://leafletjs.com)
+
+# Features:
+
+* Event detail pages with:
+  * Base event data: Description, links, tags
+  * Highlighting of registration link
+  * Highlighting of international/non-German events
+  * Map showing event location
+  * listing of all previous and next iterations of the event
+* Event list pages with:
+  * Dynamic filtering/search by name, location, run track length
+  * Map sbhowing all events of the list
+* Calendar support (for Google Calendar + .ics)
+* Special parkrun page (showing data for the local Dietenbach parkrun)
+ 
+# Technical
+
+* the software itself is a custom static site generator
+  * input data is stored in a Google Sheets table
+  * output is static html files
+* programming language: go
+
+
+# Workflow:
 
 * I manually organize all data in a [Google Spreadsheet](https://docs.google.com/spreadsheets/d/1VqYCMrkaD-mEDYWRfXPB9lRzMfKmxkS93l1eOUMThkE)
   * There are pages for running events (by year), running groups, shops, the [local parkrun](https://parkrun.com.de/dietenbach),  and special pages listing tags & running series
