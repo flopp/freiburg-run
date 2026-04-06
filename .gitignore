@@ -4,6 +4,7 @@
 .repo
 .out
 .DS_Store
+.vscode
 config.json
 local.json
 *.csv
