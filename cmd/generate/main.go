@@ -11,6 +11,7 @@ import (
 	"github.com/flopp/freiburg-run/internal/generator"
 	"github.com/flopp/freiburg-run/internal/resources"
 	"github.com/flopp/freiburg-run/internal/utils"
+	"github.com/flopp/go-googlesheetswrapper"
 )
 
 const (
@@ -77,7 +78,11 @@ func main() {
 
 	// try 3 times to fetch data with increasing timeouts (sometimes the google api is not available)
 	eventsData, err := utils.Retry(3, 8*time.Second, func() (events.Data, error) {
-		return events.FetchData(config_data, today)
+		client, err := googlesheetswrapper.New(config_data.Google.ApiKey, config_data.Google.SheetId)
+		if err != nil {
+			return events.Data{}, fmt.Errorf("creating sheets client: %w", err)
+		}
+		return events.FetchData(config_data, today, client)
 	})
 	if err != nil {
 		log.Fatalf("failed to fetch data: %v", err)

@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/flopp/freiburg-run/internal/utils"
+	"github.com/flopp/go-googlesheetswrapper"
 )
 
 type OldEvents struct {
@@ -90,10 +91,10 @@ func (data *Data) CheckLinks() {
 	}
 }
 
-func FetchData(config utils.Config, today time.Time) (Data, error) {
+func FetchData(config utils.Config, today time.Time, client googlesheetswrapper.Client) (Data, error) {
 	var data Data
 
-	sheetsData, err := LoadSheets(config, today)
+	sheetsData, err := LoadSheets(config, today, client)
 	if err != nil {
 		return data, err
 	}

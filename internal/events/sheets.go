@@ -22,13 +22,8 @@ type SheetsData struct {
 	Series  []*Serie
 }
 
-func LoadSheets(config utils.Config, today time.Time) (SheetsData, error) {
+func LoadSheets(config utils.Config, today time.Time, client googlesheetswrapper.Client) (SheetsData, error) {
 	ctx := context.Background()
-	client, err := googlesheetswrapper.New(config.Google.ApiKey, config.Google.SheetId)
-	if err != nil {
-		return SheetsData{}, fmt.Errorf("creating sheets client: %w", err)
-	}
-
 	sheets, err := client.ReadAll(ctx)
 	if err != nil {
 		return SheetsData{}, fmt.Errorf("fetching all sheets: %w", err)
