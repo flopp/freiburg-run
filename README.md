@@ -26,7 +26,7 @@ https://freiburg.run/
 # Technical
 
 * the software itself is a custom static site generator
-  * input data is stored in a Google Sheets table
+  * input data is stored in a Google Sheets table (format is documented in SHEETS-FORMAT.md)
   * output is static html files
 * programming language: go
 
