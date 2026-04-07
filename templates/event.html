@@ -63,19 +63,18 @@
                         </td>
                     </tr>
                     {{end}}
-                    {{if .Event.Links}}
+                    {{if or .Event.RegistrationLink .Event.Links}}
                     <tr>
                         <th>Infos</th>
                         <td class="is-w100">
                             <div class="tags">
+                            {{if .Event.RegistrationLink}}
+                                <a class="tag is-primary" href="{{.Event.RegistrationLink.Url}}" title="{{$.Event.Name.Orig}}: {{.Event.RegistrationLink.Name}}" target="_blank">{{.Event.RegistrationLink.Name}}</a>
+                            {{end}}
                             {{range .Event.Links}}
-                            {{if .IsRegistration}}
-                                <a class="tag is-primary" href="{{.Url}}" title="{{$.Event.Name.Orig}}: {{.Name}}" target="_blank">{{.Name}}</a>
-                            {{else}}
                                 <a class="tag is-link is-light" href="{{.Url}}" title="{{$.Event.Name.Orig}}: {{.Name}}" target="_blank">{{.Name}}</a>
                             {{end}}
-                            {{end}}
-                            </div>
+                             </div>
                         </td>
                     </tr>
                     {{end}}

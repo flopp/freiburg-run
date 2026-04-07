@@ -25,29 +25,30 @@ type EventMeta struct {
 }
 
 type Event struct {
-	Type            string
-	Name            utils.Name
-	NameOld         utils.Name
-	Time            utils.TimeRange
-	Old             bool
-	Added           string
-	Status          string
-	Cancelled       bool
-	Obsolete        bool
-	Location        Location
-	Details         template.HTML
-	Details2        template.HTML
-	MainLink        *utils.Link
-	RawTags         []string
-	Tags            []*Tag
-	Distances       []float64
-	RawSeries       []string
-	Series          []*Serie
-	Links           []*utils.Link
-	Calendar        string
-	CalendarDataICS string
-	CalendarGoogle  string
-	Meta            EventMeta
+	Type             string
+	Name             utils.Name
+	NameOld          utils.Name
+	Time             utils.TimeRange
+	Old              bool
+	Added            string
+	Status           string
+	Cancelled        bool
+	Obsolete         bool
+	Location         Location
+	Details          template.HTML
+	Details2         template.HTML
+	MainLink         *utils.Link
+	RegistrationLink *utils.Link
+	RawTags          []string
+	Tags             []*Tag
+	Distances        []float64
+	RawSeries        []string
+	Series           []*Serie
+	Links            []*utils.Link
+	Calendar         string
+	CalendarDataICS  string
+	CalendarGoogle   string
+	Meta             EventMeta
 }
 
 func (event Event) GetUUID() (uuid.UUID, error) {
@@ -145,6 +146,7 @@ func createSeparatorEvent(t time.Time) *Event {
 		Location{},
 		"",
 		"",
+		nil,
 		nil,
 		nil,
 		nil,
@@ -358,13 +360,11 @@ func AddMonthSeparatorsDescending(eventList []*Event) []*Event {
 func ChangeRegistrationLinks(events []*Event) {
 	regSitesWithResults := []string{"raceresult.com", "sporkrono.fr", "racepedia.de", "xivado.com"}
 	for _, event := range events {
-		for _, link := range event.Links {
-			if link.IsRegistration() {
-				for _, regSite := range regSitesWithResults {
-					if strings.Contains(link.Url, regSite) {
-						link.Name = "Anmeldung / Ergebnisse"
-						break
-					}
+		if event.RegistrationLink != nil {
+			for _, regSite := range regSitesWithResults {
+				if strings.Contains(event.RegistrationLink.Url, regSite) {
+					event.RegistrationLink.Name = "Anmeldung / Ergebnisse"
+					break
 				}
 			}
 		}

@@ -61,10 +61,6 @@ func (link Link) IsEmail() bool {
 	return strings.HasPrefix(link.Url, "mailto:")
 }
 
-func (link Link) IsRegistration() bool {
-	return strings.Contains(link.Name, "Anmeldung")
-}
-
 type Breadcrumb struct {
 	Link     *Link
 	IsLast   bool

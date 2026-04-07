@@ -160,6 +160,22 @@ func getVal(cols map[string]int, col string, row []string) (string, error) {
 	return row[colIndex], nil
 }
 
+// extractFields is a helper to fill struct fields from a cols map and row slice.
+// It takes a slice of field definitions (name and pointer to string) and fills them using getVal.
+func extractFields(cols map[string]int, row []string, fields []struct {
+	name string
+	dest *string
+}) error {
+	for _, f := range fields {
+		val, err := getVal(cols, f.name, row)
+		if err != nil {
+			return err
+		}
+		*f.dest = val
+	}
+	return nil
+}
+
 func getLinks(cols map[string]int, row []string) []string {
 	links := make([]string, 0)
 
@@ -191,7 +207,6 @@ type EventData struct {
 
 func getEventData(cols map[string]int, row []string) (EventData, error) {
 	var data EventData
-	var err error
 	fields := []struct {
 		name string
 		dest *string
@@ -208,11 +223,8 @@ func getEventData(cols map[string]int, row []string) (EventData, error) {
 		{"REGISTRATION", &data.Registration},
 		{"TAGS", &data.Tags},
 	}
-	for _, f := range fields {
-		*f.dest, err = getVal(cols, f.name, row)
-		if err != nil {
-			return EventData{}, err
-		}
+	if err := extractFields(cols, row, fields); err != nil {
+		return EventData{}, err
 	}
 	data.Links = getLinks(cols, row)
 	return data, nil
@@ -236,6 +248,8 @@ func fetchEvents(config utils.Config, today time.Time, eventType string, tableNa
 		if err != nil {
 			return nil, fmt.Errorf("table '%s', line '%d': %v", tableName, line+1, err)
 		}
+
+		// process status
 		cancelled := strings.Contains(data.Status, "abgesagt") || strings.Contains(data.Status, "geschlossen")
 		if cancelled && (data.Status == "abgesagt" || data.Status == "geschlossen") {
 			// clear simple cancelled/closed status (other info might be present)
@@ -249,12 +263,9 @@ func fetchEvents(config utils.Config, today time.Time, eventType string, tableNa
 			log.Printf("table '%s', line '%d': skipping row with temp status", table, line)
 			continue
 		}
-		if eventType == "event" {
-			if data.Date == "" {
-				log.Printf("table '%s', line '%d': skipping row with empty date", table, line)
-				continue
-			}
-		}
+
+		// process names
+		name, nameOld := utils.SplitPair(data.Name)
 		if data.Name == "" {
 			log.Printf("table '%s', line '%d': skipping row with empty name", table, line)
 			continue
@@ -262,14 +273,40 @@ func fetchEvents(config utils.Config, today time.Time, eventType string, tableNa
 		if !strings.Contains(data.Name, data.Name2) {
 			log.Printf("table '%s', line '%d': name '%s' does not contain name2 '%s'", table, line, data.Name, data.Name2)
 		}
+
+		// process date
+		if eventType == "event" {
+			if data.Date == "" {
+				log.Printf("table '%s', line '%d': skipping row with empty date", table, line)
+				continue
+			}
+		}
+		timeRange, err := utils.CreateTimeRange(data.Date)
+		if err != nil {
+			log.Printf("event '%s': %v", name, err)
+		}
+		isOld := timeRange.Before(today)
+
+		// process url
 		if data.Url == "" {
 			log.Printf("table '%s', line '%d': skipping row with empty url", table, line)
 			continue
 		}
-
-		name, nameOld := utils.SplitPair(data.Name)
 		url := data.Url
+
+		// process registration
+		var registrationLink *utils.Link
+		if data.Registration != "" {
+			registrationLink = utils.CreateLink("Anmeldung", data.Registration)
+		}
+
+		// process description
 		description1, description2 := utils.SplitPair(data.Description)
+
+		// process location
+		location := CreateLocation(config, data.Location, data.Coordinates)
+
+		// process tags and series
 		tags := make([]string, 0)
 		series := make([]string, 0)
 		for _, t := range utils.SplitList(data.Tags) {
@@ -279,14 +316,11 @@ func fetchEvents(config utils.Config, today time.Time, eventType string, tableNa
 				tags = append(tags, utils.SanitizeName(t))
 			}
 		}
-		location := CreateLocation(config, data.Location, data.Coordinates)
+		// add location tags to event tags
 		tags = append(tags, location.Tags()...)
-		timeRange, err := utils.CreateTimeRange(data.Date)
-		if err != nil {
-			log.Printf("event '%s': %v", name, err)
-		}
-		isOld := timeRange.Before(today)
-		links, err := parseLinks(data.Links, data.Registration)
+
+		// process links
+		links, err := parseLinks(data.Links)
 		if err != nil {
 			return nil, fmt.Errorf("parsing links of event '%s': %w", name, err)
 		}
@@ -305,6 +339,7 @@ func fetchEvents(config utils.Config, today time.Time, eventType string, tableNa
 			template.HTML(description1),
 			template.HTML(description2),
 			utils.CreateUnnamedLink(url),
+			registrationLink,
 			utils.SortAndUniquify(tags),
 			nil,
 			nil,
@@ -343,7 +378,6 @@ type ParkrunEventData struct {
 
 func getParkrunEventData(cols map[string]int, row []string) (ParkrunEventData, error) {
 	var data ParkrunEventData
-	var err error
 	fields := []struct {
 		name string
 		dest *string
@@ -359,11 +393,8 @@ func getParkrunEventData(cols map[string]int, row []string) (ParkrunEventData, e
 		{"AUTHOR", &data.Author},
 		{"PHOTOS", &data.Photos},
 	}
-	for _, f := range fields {
-		*f.dest, err = getVal(cols, f.name, row)
-		if err != nil {
-			return ParkrunEventData{}, err
-		}
+	if err := extractFields(cols, row, fields); err != nil {
+		return ParkrunEventData{}, err
 	}
 	return data, nil
 }
@@ -432,7 +463,6 @@ type TagData struct {
 
 func getTagData(cols map[string]int, row []string) (TagData, error) {
 	var data TagData
-	var err error
 	fields := []struct {
 		name string
 		dest *string
@@ -441,11 +471,8 @@ func getTagData(cols map[string]int, row []string) (TagData, error) {
 		{"NAME", &data.Name},
 		{"DESCRIPTION", &data.Description},
 	}
-	for _, f := range fields {
-		*f.dest, err = getVal(cols, f.name, row)
-		if err != nil {
-			return TagData{}, err
-		}
+	if err := extractFields(cols, row, fields); err != nil {
+		return TagData{}, err
 	}
 	return data, nil
 }
@@ -491,7 +518,6 @@ type SerieData struct {
 
 func getSerieData(cols map[string]int, row []string) (SerieData, error) {
 	var data SerieData
-	var err error
 	fields := []struct {
 		name string
 		dest *string
@@ -499,11 +525,8 @@ func getSerieData(cols map[string]int, row []string) (SerieData, error) {
 		{"NAME", &data.Name},
 		{"DESCRIPTION", &data.Description},
 	}
-	for _, f := range fields {
-		*f.dest, err = getVal(cols, f.name, row)
-		if err != nil {
-			return SerieData{}, err
-		}
+	if err := extractFields(cols, row, fields); err != nil {
+		return SerieData{}, err
 	}
 	data.Links = getLinks(cols, row)
 	return data, nil
@@ -527,7 +550,7 @@ func fetchSeries(config utils.Config, tableName string, tables map[string][][]st
 		if err != nil {
 			return nil, fmt.Errorf("table '%s': %v", table, err)
 		}
-		links, err := parseLinks(data.Links, "")
+		links, err := parseLinks(data.Links)
 		if err != nil {
 			return nil, fmt.Errorf("parsing links of series '%s': %w", data.Name, err)
 		}
@@ -537,12 +560,8 @@ func fetchSeries(config utils.Config, tableName string, tables map[string][][]st
 	return series, nil
 }
 
-func parseLinks(ss []string, registration string) ([]*utils.Link, error) {
+func parseLinks(ss []string) ([]*utils.Link, error) {
 	links := make([]*utils.Link, 0, len(ss))
-	hasRegistration := registration != ""
-	if hasRegistration {
-		links = append(links, utils.CreateLink("Anmeldung", registration))
-	}
 	for _, s := range ss {
 		if s == "" {
 			continue
@@ -551,9 +570,7 @@ func parseLinks(ss []string, registration string) ([]*utils.Link, error) {
 		if len(a) != 2 {
 			return nil, fmt.Errorf("bad link: <%s>", s)
 		}
-		if !hasRegistration || a[0] != "Anmeldung" {
-			links = append(links, utils.CreateLink(a[0], a[1]))
-		}
+		links = append(links, utils.CreateLink(a[0], a[1]))
 	}
 	return links, nil
 }

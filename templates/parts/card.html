@@ -44,16 +44,15 @@
                         </td>
                     </tr>
                     {{if .Details}}<tr><th class="w-2em no-border" title="Details">ℹ️</th><td class="no-border">{{.Details}}</td></tr>{{end}}
-                    {{if .Links}}<tr>
+                    {{if or .RegistrationLink .Links}}<tr>
                         <th class="w-2em no-border" title="Infos">🔗</th>
                         <td class="no-border">
                             <div class="tags">
-                            {{range .Links}}
-                                {{if .IsRegistration}}
-                                <a class="tag is-primary" href="{{.Url}}" title="{{$.Name.Orig}}: {{.Name}}" target="_blank">{{.Name}}</a>
-                                {{else}}
-                                <a class="tag is-link is-light" href="{{.Url}}" title="{{$.Name.Orig}}: {{.Name}}" target="_blank">{{.Name}}</a>
+                                {{if .RegistrationLink}}
+                                <a class="tag is-primary" href="{{.RegistrationLink.Url}}" title="{{$.Name.Orig}}: {{.RegistrationLink.Name}}" target="_blank">{{.RegistrationLink.Name}}</a>
                                 {{end}}
+                            {{range .Links}}
+                                <a class="tag is-link is-light" href="{{.Url}}" title="{{$.Name.Orig}}: {{.Name}}" target="_blank">{{.Name}}</a>
                             {{end}}
                             </div>
                         </td>
