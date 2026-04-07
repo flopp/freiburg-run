@@ -1,8 +1,10 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"time"
@@ -12,6 +14,8 @@ import (
 	"github.com/flopp/freiburg-run/internal/resources"
 	"github.com/flopp/freiburg-run/internal/utils"
 	"github.com/flopp/go-googlesheetswrapper"
+	"google.golang.org/api/drive/v3"
+	"google.golang.org/api/option"
 )
 
 const (
@@ -26,6 +30,7 @@ type CommandLineOptions struct {
 	outDir     string
 	hashFile   string
 	checkLinks bool
+	backup     string
 	basePath   string
 }
 
@@ -34,6 +39,7 @@ func parseCommandLine() CommandLineOptions {
 	outDir := flag.String("out", ".out", "output directory")
 	hashFile := flag.String("hashfile", ".hashes", "file storing file hashes (for sitemap)")
 	checkLinks := flag.Bool("checklinks", false, "check links in the generated files")
+	backup := flag.String("backup", "", "download and backup sheets data to the specified file")
 	basePath := flag.String("basepath", "", "base path")
 
 	flag.Usage = func() {
@@ -51,6 +57,7 @@ func parseCommandLine() CommandLineOptions {
 		*outDir,
 		*hashFile,
 		*checkLinks,
+		*backup,
 		*basePath,
 	}
 }
@@ -60,12 +67,50 @@ type ConfigData struct {
 	SheetId string `json:"sheet_id"`
 }
 
+func createBackup(config utils.Config, outputFile string) error {
+	fmt.Println("-- connecting to Google Drive service...")
+	ctx := context.Background()
+	service, err := drive.NewService(ctx, option.WithAPIKey(config.Google.ApiKey))
+	if err != nil {
+		return fmt.Errorf("unable to connect to Google Drive: %w", err)
+	}
+
+	fmt.Printf("-- requesting file %s...\n", config.Google.SheetId)
+	response, err := service.Files.Export(config.Google.SheetId, "application/vnd.oasis.opendocument.spreadsheet").Download()
+	if err != nil {
+		return fmt.Errorf("unable to download file: %w", err)
+	}
+	defer response.Body.Close()
+
+	fmt.Printf("-- saving to %s...\n", outputFile)
+	file, err := os.Create(outputFile)
+	if err != nil {
+		return fmt.Errorf("unable to create output file: %w", err)
+	}
+	defer file.Close()
+
+	_, err = io.Copy(file, response.Body)
+	if err != nil {
+		return fmt.Errorf("unable to write to output file: %w", err)
+	}
+
+	fmt.Println("-- done")
+	return nil
+}
+
 func main() {
 	options := parseCommandLine()
 
 	config_data, err := utils.LoadConfig(options.configFile)
 	if err != nil {
 		log.Fatalf("failed to load config file: %v", err)
+		return
+	}
+
+	if options.backup != "" {
+		if err := createBackup(config_data, options.backup); err != nil {
+			log.Fatalf("failed to backup data: %v", err)
+		}
 		return
 	}
 
