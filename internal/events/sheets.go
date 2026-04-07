@@ -22,6 +22,7 @@ type SheetsData struct {
 	Series  []*Serie
 }
 
+// LoadSheets loads all data from the given sheets client and returns it structured in a SheetsData struct.
 func LoadSheets(config utils.Config, today time.Time, client googlesheetswrapper.Client) (SheetsData, error) {
 	ctx := context.Background()
 	sheets, err := client.ReadAll(ctx)
@@ -72,51 +73,64 @@ func LoadSheets(config utils.Config, today time.Time, client googlesheetswrapper
 	}, nil
 }
 
+// getYearFromEventSheetName extracts the year from an event sheet name in the format "EventsYYYY" and validates the format.
+func getYearFromEventSheetName(sheetName string) (int, error) {
+	if !strings.HasPrefix(sheetName, "Events") {
+		return 0, fmt.Errorf("unexpected event sheet name '%s' (no 'Events' prefix)", sheetName)
+	}
+	if len(sheetName) != 10 {
+		return 0, fmt.Errorf("unexpected event sheet name '%s' (bad length %d, expected 10)", sheetName, len(sheetName))
+	}
+	yearStr := sheetName[6:]
+	date, err := time.Parse("2006", yearStr)
+	if err != nil {
+		return 0, fmt.Errorf("unexpected event sheet name '%s' (yearStr='%s'): %v", sheetName, yearStr, err)
+	}
+	return date.Year(), nil
+}
+
+// findSheetNames identifies the relevant sheet names for events, groups, shops, parkrun, tags and series based on their names and validates them.
 func findSheetNames(config utils.Config, sheets map[string][][]string) (eventSheets []string, groupsSheet, shopsSheet, parkrunSheet, tagsSheet, seriesSheet string, err error) {
 	for sheetName := range sheets {
+		name := strings.ToLower(sheetName)
 		switch {
-		case strings.HasPrefix(sheetName, "Events"):
+		case strings.HasPrefix(name, "events"):
 			eventSheets = append(eventSheets, sheetName)
-		case sheetName == "Groups":
+		case name == "groups":
 			groupsSheet = sheetName
-		case sheetName == "Shops":
+		case name == "shops":
 			shopsSheet = sheetName
-		case sheetName == "Parkrun":
+		case name == "parkrun":
 			parkrunSheet = sheetName
-		case sheetName == "Tags":
+		case name == "tags":
 			tagsSheet = sheetName
-		case sheetName == "Series":
+		case name == "series":
 			seriesSheet = sheetName
-		case strings.Contains(sheetName, "ignore"):
+		case strings.Contains(name, "ignore"):
 			// ignore
 		default:
 			log.Printf("ignoring unknown sheet: '%s'", sheetName)
 		}
 	}
 
+	// we require at least 2 event sheets, so that we have some old events to show on the "Vergangene Events" page and to test the old/new logic
 	if len(eventSheets) < 2 {
 		return nil, "", "", "", "", "", fmt.Errorf("fetching sheets: unable to find enough 'Events' sheets")
 	}
+
 	// sort eventSheets by name, so that they are always in the same order (e.g. for testing)
 	sort.Slice(eventSheets, func(i, j int) bool { return eventSheets[i] < eventSheets[j] })
 	// validate eventSheets names ("EventsYYYY" format, YYYY=year), order and consecutiveness (no missing years)
 	lastYear := -1
 	for _, sheetName := range eventSheets {
-		if !strings.HasPrefix(sheetName, "Events") {
-			return nil, "", "", "", "", "", fmt.Errorf("fetching sheets: unexpected event sheet name '%s' (no 'Events' prefix)", sheetName)
+		year, err := getYearFromEventSheetName(sheetName)
+		if err != nil {
+			return nil, "", "", "", "", "", fmt.Errorf("fetching sheets: %v", err)
 		}
-		if len(sheetName) != 10 {
-			return nil, "", "", "", "", "", fmt.Errorf("fetching sheets: unexpected event sheet name '%s' (bad length %d, expected 10)", sheetName, len(sheetName))
+		if lastYear != -1 && year != lastYear+1 {
+			return nil, "", "", "", "", "", fmt.Errorf("fetching sheets: unexpected event sheet name '%s': missing year %d", sheetName, lastYear+1)
 		}
-		yearStr := sheetName[6:]
-		if date, err := time.Parse("2006", yearStr); err != nil {
-			return nil, "", "", "", "", "", fmt.Errorf("fetching sheets: unexpected event sheet name '%s' (yearStr='%s'): %v", sheetName, yearStr, err)
-		} else {
-			if lastYear != -1 && date.Year() != lastYear+1 {
-				return nil, "", "", "", "", "", fmt.Errorf("fetching sheets: unexpected event sheet name '%s': missing year %d", sheetName, lastYear+1)
-			}
-			lastYear = date.Year()
-		}
+		lastYear = year
 	}
 
 	if groupsSheet == "" {
@@ -137,6 +151,8 @@ func findSheetNames(config utils.Config, sheets map[string][][]string) (eventShe
 	return eventSheets, groupsSheet, shopsSheet, parkrunSheet, tagsSheet, seriesSheet, nil
 }
 
+// loadEvents loads event data from the given event sheets and returns a list of Event structs.
+// It uses the provided sheets data and validates the format of the event sheets.
 func loadEvents(config utils.Config, today time.Time, eventSheets []string, sheets map[string][][]string) ([]*Event, error) {
 	eventList := make([]*Event, 0)
 	for _, sheet := range eventSheets {
@@ -149,6 +165,8 @@ func loadEvents(config utils.Config, today time.Time, eventSheets []string, shee
 	return eventList, nil
 }
 
+// getVal is a helper to extract a value from a cols map and row slice.
+// It returns the value as a string or an error if the column is missing.
 func getVal(cols map[string]int, col string, row []string) (string, error) {
 	colIndex, ok := cols[col]
 	if !ok {
@@ -160,22 +178,8 @@ func getVal(cols map[string]int, col string, row []string) (string, error) {
 	return row[colIndex], nil
 }
 
-// LoadSheets loads all relevant sheets from Google Sheets and parses them into SheetsData.
-// It orchestrates the loading of events, groups, shops, parkrun, tags, and series.
-// findSheetNames identifies and validates the required sheet names from the available sheets.
-// loadEvents loads all event entries from the given event sheets and returns a combined list.
-// getVal retrieves the value for a given column name from a row, returning an error if missing.
 // extractFields is a helper to fill struct fields from a cols map and row slice.
 // It takes a slice of field definitions (name and pointer to string) and fills them using getVal.
-// getEventData extracts all event-related fields from a row into an EventData struct.
-// fetchEvents loads and parses all events (or groups/shops) from the specified sheet.
-// getParkrunEventData extracts all parkrun-related fields from a row into a ParkrunEventData struct.
-// fetchParkrunEvents loads and parses all parkrun events from the specified sheet.
-// getTagData extracts all tag-related fields from a row into a TagData struct.
-// fetchTags loads and parses all tags from the specified sheet.
-// getSerieData extracts all series-related fields from a row into a SerieData struct.
-// fetchSeries loads and parses all series from the specified sheet.
-// parseLinks parses a slice of link strings (Label|URL) into a slice of Link objects.
 func extractFields(cols map[string]int, row []string, fields []struct {
 	name string
 	dest *string
@@ -239,23 +243,32 @@ func getEventData(cols map[string]int, row []string) (EventData, error) {
 	return data, nil
 }
 
-func fetchEvents(config utils.Config, today time.Time, eventType string, tableName string, tables map[string][][]string) ([]*Event, error) {
-	table, ok := tables[tableName]
+// fetchEvents extracts event data from the given sheet and returns a list of Event structs.
+func fetchEvents(config utils.Config, today time.Time, eventType string, sheetName string, sheetsData map[string][][]string) ([]*Event, error) {
+	sheet, ok := sheetsData[sheetName]
 	if !ok {
-		return nil, fmt.Errorf("table '%s' not found", tableName)
+		return nil, fmt.Errorf("sheet '%s' not found", sheetName)
 	}
 
 	requiredHeaders := []string{"DATE", "ADDED", "NAME", "NAME2", "STATUS", "URL", "DESCRIPTION", "LOCATION", "COORDINATES", "REGISTRATION", "TAGS"}
-	cols, err := googlesheetswrapper.ExtractHeader(table, requiredHeaders, true)
+	cols, err := googlesheetswrapper.ExtractHeader(sheet, requiredHeaders, true)
 	if err != nil {
-		return nil, fmt.Errorf("fetching table '%s': %v", tableName, err)
+		return nil, fmt.Errorf("fetching sheet '%s': %v", sheetName, err)
+	}
+
+	sheetYear := -1
+	if eventType == "event" {
+		sheetYear, err = getYearFromEventSheetName(sheetName)
+		if err != nil {
+			return nil, fmt.Errorf("fetching events: %v", err)
+		}
 	}
 
 	eventsList := make([]*Event, 0)
-	for line, row := range table[1:] {
+	for line, row := range sheet[1:] {
 		data, err := getEventData(cols, row)
 		if err != nil {
-			return nil, fmt.Errorf("table '%s', line '%d': %v", tableName, line+1, err)
+			return nil, fmt.Errorf("sheet '%s', line '%d': %v", sheetName, line+1, err)
 		}
 
 		// process status
@@ -269,36 +282,42 @@ func fetchEvents(config utils.Config, today time.Time, eventType string, tableNa
 			data.Status = ""
 		}
 		if data.Status == "temp" {
-			log.Printf("table '%s', line '%d': skipping row with temp status", table, line)
+			log.Printf("sheet '%s', line '%d': skipping row with temp status", sheetName, line)
 			continue
 		}
 
 		// process names
 		name, nameOld := utils.SplitPair(data.Name)
 		if data.Name == "" {
-			log.Printf("table '%s', line '%d': skipping row with empty name", table, line)
+			log.Printf("sheet '%s', line '%d': skipping row with empty name", sheetName, line)
 			continue
 		}
 		if !strings.Contains(data.Name, data.Name2) {
-			log.Printf("table '%s', line '%d': name '%s' does not contain name2 '%s'", table, line, data.Name, data.Name2)
+			log.Printf("sheet '%s', line '%d': name '%s' does not contain name2 '%s'", sheetName, line, data.Name, data.Name2)
 		}
 
 		// process date
 		if eventType == "event" {
 			if data.Date == "" {
-				log.Printf("table '%s', line '%d': skipping row with empty date", table, line)
+				log.Printf("sheet '%s', line '%d': skipping row with empty date", sheetName, line)
 				continue
 			}
 		}
 		timeRange, err := utils.CreateTimeRange(data.Date)
 		if err != nil {
-			log.Printf("event '%s': %v", name, err)
+			log.Printf("sheet '%s', line '%d': %v", sheetName, line, err)
 		}
+		if !timeRange.IsZero() && sheetYear >= 0 {
+			if timeRange.From.Year() != sheetYear && timeRange.To.Year() != sheetYear {
+				log.Printf("sheet '%s', line '%d': warning: event date '%s' does not match sheet year %d", sheetName, line, data.Date, sheetYear)
+			}
+		}
+
 		isOld := timeRange.Before(today)
 
 		// process url
 		if data.Url == "" {
-			log.Printf("table '%s', line '%d': skipping row with empty url", table, line)
+			log.Printf("sheet '%s', line '%d': skipping row with empty url", sheetName, line)
 			continue
 		}
 		url := data.Url
@@ -331,7 +350,7 @@ func fetchEvents(config utils.Config, today time.Time, eventType string, tableNa
 		// process links
 		links, err := parseLinks(data.Links)
 		if err != nil {
-			return nil, fmt.Errorf("parsing links of event '%s': %w", name, err)
+			return nil, fmt.Errorf("sheet '%s', line '%d': parsing links of event '%s': %w", sheetName, line, name, err)
 		}
 
 		eventsList = append(eventsList, &Event{
@@ -408,23 +427,24 @@ func getParkrunEventData(cols map[string]int, row []string) (ParkrunEventData, e
 	return data, nil
 }
 
-func fetchParkrunEvents(config utils.Config, today time.Time, tableName string, tables map[string][][]string) ([]*ParkrunEvent, error) {
-	table, ok := tables[tableName]
+// fetchParkrunEvents extracts parkrun event data from the given sheet and returns a list of ParkrunEvent structs.
+func fetchParkrunEvents(config utils.Config, today time.Time, sheetName string, sheetsData map[string][][]string) ([]*ParkrunEvent, error) {
+	sheet, ok := sheetsData[sheetName]
 	if !ok {
-		return nil, fmt.Errorf("table '%s' not found", tableName)
+		return nil, fmt.Errorf("sheet '%s' not found", sheetName)
 	}
 	requiredHeaders := []string{"DATE", "INDEX", "RUNNERS", "TEMP", "SPECIAL", "CAFE", "RESULTS", "REPORT", "AUTHOR", "PHOTOS"}
-	cols, err := googlesheetswrapper.ExtractHeader(table, requiredHeaders, true)
+	cols, err := googlesheetswrapper.ExtractHeader(sheet, requiredHeaders, true)
 	if err != nil {
-		return nil, fmt.Errorf("fetching table '%s': %v", tableName, err)
+		return nil, fmt.Errorf("fetching sheet '%s': %v", sheetName, err)
 	}
-	rows := table[1:]
+	rows := sheet[1:]
 
 	eventsList := make([]*ParkrunEvent, 0)
 	for _, row := range rows {
 		data, err := getParkrunEventData(cols, row)
 		if err != nil {
-			return nil, fmt.Errorf("table '%s': %v", table, err)
+			return nil, fmt.Errorf("sheet '%s': %v", sheetName, err)
 		}
 
 		if data.Temp != "" {
@@ -486,24 +506,25 @@ func getTagData(cols map[string]int, row []string) (TagData, error) {
 	return data, nil
 }
 
-func fetchTags(config utils.Config, tableName string, tables map[string][][]string) ([]*Tag, error) {
-	table, ok := tables[tableName]
+// fetchTags extracts tag data from the given sheet and returns a list of Tag structs.
+func fetchTags(config utils.Config, sheetName string, sheetsData map[string][][]string) ([]*Tag, error) {
+	sheet, ok := sheetsData[sheetName]
 	if !ok {
-		return nil, fmt.Errorf("table '%s' not found", tableName)
+		return nil, fmt.Errorf("sheet '%s' not found", sheetName)
 	}
 
 	requiredHeaders := []string{"TAG", "NAME", "DESCRIPTION"}
-	cols, err := googlesheetswrapper.ExtractHeader(table, requiredHeaders, true)
+	cols, err := googlesheetswrapper.ExtractHeader(sheet, requiredHeaders, true)
 	if err != nil {
-		return nil, fmt.Errorf("fetching table '%s': %v", tableName, err)
+		return nil, fmt.Errorf("fetching sheet '%s': %v", sheetName, err)
 	}
-	rows := table[1:]
+	rows := sheet[1:]
 
 	tags := make([]*Tag, 0)
 	for _, row := range rows {
 		data, err := getTagData(cols, row)
 		if err != nil {
-			return nil, fmt.Errorf("table '%s': %v", tableName, err)
+			return nil, fmt.Errorf("sheet '%s': %v", sheetName, err)
 		}
 
 		tag := utils.SanitizeName(data.Tag)
@@ -551,27 +572,29 @@ func getSerieData(cols map[string]int, row []string) (SerieData, error) {
 	return data, nil
 }
 
-func fetchSeries(config utils.Config, tableName string, tables map[string][][]string) ([]*Serie, error) {
-	table, ok := tables[tableName]
+// fetchSeries extracts run event series data from the given sheet.
+// It expects columns "NAME", "DESCRIPTION" and optional "LINK1", "LINK2", ...
+func fetchSeries(config utils.Config, sheetName string, sheetsData map[string][][]string) ([]*Serie, error) {
+	sheet, ok := sheetsData[sheetName]
 	if !ok {
-		return nil, fmt.Errorf("table '%s' not found", tableName)
+		return nil, fmt.Errorf("sheet '%s' not found", sheetName)
 	}
 	requiredHeaders := []string{"NAME", "DESCRIPTION"}
-	cols, err := googlesheetswrapper.ExtractHeader(table, requiredHeaders, true)
+	cols, err := googlesheetswrapper.ExtractHeader(sheet, requiredHeaders, true)
 	if err != nil {
-		return nil, fmt.Errorf("fetching table '%s': %v", tableName, err)
+		return nil, fmt.Errorf("fetching sheet '%s': %v", sheetName, err)
 	}
-	rows := table[1:]
+	rows := sheet[1:]
 
 	series := make([]*Serie, 0)
-	for _, row := range rows {
+	for line, row := range rows {
 		data, err := getSerieData(cols, row)
 		if err != nil {
-			return nil, fmt.Errorf("table '%s': %v", table, err)
+			return nil, fmt.Errorf("sheet '%s', line '%d': %v", sheetName, line+2, err)
 		}
 		links, err := parseLinks(data.Links)
 		if err != nil {
-			return nil, fmt.Errorf("parsing links of series '%s': %w", data.Name, err)
+			return nil, fmt.Errorf("sheet '%s', line '%d': parsing links of series '%s': %w", sheetName, line+2, data.Name, err)
 		}
 		series = append(series, &Serie{utils.NewName(data.Name), template.HTML(data.Description), links, make([]*Event, 0), make([]*Event, 0), make([]*Event, 0), make([]*Event, 0)})
 	}
