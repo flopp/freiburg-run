@@ -160,8 +160,22 @@ func getVal(cols map[string]int, col string, row []string) (string, error) {
 	return row[colIndex], nil
 }
 
+// LoadSheets loads all relevant sheets from Google Sheets and parses them into SheetsData.
+// It orchestrates the loading of events, groups, shops, parkrun, tags, and series.
+// findSheetNames identifies and validates the required sheet names from the available sheets.
+// loadEvents loads all event entries from the given event sheets and returns a combined list.
+// getVal retrieves the value for a given column name from a row, returning an error if missing.
 // extractFields is a helper to fill struct fields from a cols map and row slice.
 // It takes a slice of field definitions (name and pointer to string) and fills them using getVal.
+// getEventData extracts all event-related fields from a row into an EventData struct.
+// fetchEvents loads and parses all events (or groups/shops) from the specified sheet.
+// getParkrunEventData extracts all parkrun-related fields from a row into a ParkrunEventData struct.
+// fetchParkrunEvents loads and parses all parkrun events from the specified sheet.
+// getTagData extracts all tag-related fields from a row into a TagData struct.
+// fetchTags loads and parses all tags from the specified sheet.
+// getSerieData extracts all series-related fields from a row into a SerieData struct.
+// fetchSeries loads and parses all series from the specified sheet.
+// parseLinks parses a slice of link strings (Label|URL) into a slice of Link objects.
 func extractFields(cols map[string]int, row []string, fields []struct {
 	name string
 	dest *string
@@ -174,20 +188,6 @@ func extractFields(cols map[string]int, row []string, fields []struct {
 		*f.dest = val
 	}
 	return nil
-}
-
-func getLinks(cols map[string]int, row []string) []string {
-	links := make([]string, 0)
-
-	for i := 1; true; i += 1 {
-		link, err := getVal(cols, fmt.Sprintf("LINK%d", i), row)
-		if err != nil {
-			break
-		}
-		links = append(links, link)
-	}
-
-	return links
 }
 
 type EventData struct {
@@ -226,7 +226,16 @@ func getEventData(cols map[string]int, row []string) (EventData, error) {
 	if err := extractFields(cols, row, fields); err != nil {
 		return EventData{}, err
 	}
-	data.Links = getLinks(cols, row)
+	// Inline getLinks logic
+	links := make([]string, 0)
+	for i := 1; true; i++ {
+		link, err := getVal(cols, fmt.Sprintf("LINK%d", i), row)
+		if err != nil {
+			break
+		}
+		links = append(links, link)
+	}
+	data.Links = links
 	return data, nil
 }
 
@@ -528,7 +537,17 @@ func getSerieData(cols map[string]int, row []string) (SerieData, error) {
 	if err := extractFields(cols, row, fields); err != nil {
 		return SerieData{}, err
 	}
-	data.Links = getLinks(cols, row)
+
+	// Inline getLinks logic
+	data.Links = make([]string, 0)
+	for i := 1; true; i++ {
+		link, err := getVal(cols, fmt.Sprintf("LINK%d", i), row)
+		if err != nil {
+			break
+		}
+		data.Links = append(data.Links, link)
+	}
+
 	return data, nil
 }
 
