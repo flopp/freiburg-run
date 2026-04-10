@@ -275,7 +275,7 @@ func createLlmsTxt(config utils.Config, outDir utils.Path) error {
 
 	destination.WriteString("# " + config.Website.Name + "\n")
 	destination.WriteString("\n")
-	destination.WriteString("> " + config.Website.Name + " is a website listing running events, running groups, and running shops in and around " + config.City.Name + ".\n")
+	destination.WriteString("> " + config.Website.Name + " is a website listing running events, running groups, and running shops in and around " + config.City.Name + ". It strives to provide a complete and up-to-date overview of the running scene in the region.\n")
 	destination.WriteString("\n")
 	destination.WriteString("## Key Pages\n")
 	destination.WriteString("\n")
@@ -283,9 +283,14 @@ func createLlmsTxt(config utils.Config, outDir utils.Path) error {
 	destination.WriteString("- [Lauftreffs (Running Groups)](" + baseUrl + "/lauftreffs.html): Running groups and clubs in and around " + config.City.Name + "\n")
 	destination.WriteString("- [Lauf-Shops (Running Shops)](" + baseUrl + "/shops.html): Running shops in and around " + config.City.Name + "\n")
 	destination.WriteString("- [Kategorien (Categories)](" + baseUrl + "/tags.html): Event categories\n")
-	destination.WriteString("- [Serien (Series)](" + baseUrl + "/series.html): Running event series\n")
-	destination.WriteString("- [Karte (Map)](" + baseUrl + "/map.html): Map of all running events\n")
-	destination.WriteString("- [Info](" + baseUrl + "/info.html): Contact and technical information\n")
+	// also link some important categories: marathon, halbmarathon, 10km, traillauf:
+	destination.WriteString("	- [Marathon](" + baseUrl + "/tags/marathon.html): Marathon events\n")
+	destination.WriteString("	- [Halbmarathon](" + baseUrl + "/tags/halbmarathon.html): Half marathon events\n")
+	destination.WriteString("	- [10km](" + baseUrl + "/tags/10km.html): 10km events\n")
+	destination.WriteString("	- [Traillauf](" + baseUrl + "/tags/traillauf.html): Trail running events\n")
+	if config.Pages.Parkrun {
+		destination.WriteString("- [Dietenbach parkrun](" + baseUrl + "/dietenbach-parkrun.html): Complementary information about the weekly, free 5km run in Freiburg's Dietenbachpark\n")
+	}
 	destination.WriteString("- [Sitemap](" + baseUrl + "/sitemap.html): Full sitemap\n")
 	destination.WriteString("\n")
 	destination.WriteString("## Technical\n")
