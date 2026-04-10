@@ -258,6 +258,44 @@ func createRobotsTxt(config utils.Config, outDir utils.Path) error {
 	return nil
 }
 
+func createLlmsTxt(config utils.Config, outDir utils.Path) error {
+	if err := utils.MakeDir(outDir.String()); err != nil {
+		return err
+	}
+
+	fileName := outDir.Join("llms.txt")
+
+	destination, err := os.Create(fileName)
+	if err != nil {
+		return err
+	}
+	defer destination.Close()
+
+	baseUrl := config.Website.Url
+
+	destination.WriteString("# " + config.Website.Name + "\n")
+	destination.WriteString("\n")
+	destination.WriteString("> " + config.Website.Name + " is a website listing running events, running groups, and running shops in and around " + config.City.Name + ".\n")
+	destination.WriteString("\n")
+	destination.WriteString("## Key Pages\n")
+	destination.WriteString("\n")
+	destination.WriteString("- [Laufkalender (Running Events)](" + baseUrl + "/): Upcoming running events in and around " + config.City.Name + "\n")
+	destination.WriteString("- [Lauftreffs (Running Groups)](" + baseUrl + "/lauftreffs.html): Running groups and clubs in and around " + config.City.Name + "\n")
+	destination.WriteString("- [Lauf-Shops (Running Shops)](" + baseUrl + "/shops.html): Running shops in and around " + config.City.Name + "\n")
+	destination.WriteString("- [Kategorien (Categories)](" + baseUrl + "/tags.html): Event categories\n")
+	destination.WriteString("- [Serien (Series)](" + baseUrl + "/series.html): Running event series\n")
+	destination.WriteString("- [Karte (Map)](" + baseUrl + "/map.html): Map of all running events\n")
+	destination.WriteString("- [Info](" + baseUrl + "/info.html): Contact and technical information\n")
+	destination.WriteString("- [Sitemap](" + baseUrl + "/sitemap.html): Full sitemap\n")
+	destination.WriteString("\n")
+	destination.WriteString("## Technical\n")
+	destination.WriteString("\n")
+	destination.WriteString("- [sitemap.xml](" + baseUrl + "/sitemap.xml): XML sitemap for crawlers\n")
+	destination.WriteString("- [events.ics](" + baseUrl + "/events.ics): iCalendar feed of upcoming events\n")
+
+	return nil
+}
+
 func createIndexNowFile(config utils.Config, outDir utils.Path) error {
 	if config.IndexNow.Key == "" {
 		return nil
@@ -782,6 +820,11 @@ func (g Generator) Generate(eventsData events.Data) error {
 	// Render $indexnow.txt
 	if err := createIndexNowFile(g.config, g.out); err != nil {
 		return fmt.Errorf("create $indexnow.txt: %v", err)
+	}
+
+	// Render llms.txt
+	if err := createLlmsTxt(g.config, g.out); err != nil {
+		return fmt.Errorf("create llms.txt: %v", err)
 	}
 
 	return nil
