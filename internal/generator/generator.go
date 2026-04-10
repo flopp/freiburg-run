@@ -275,7 +275,8 @@ func createLlmsTxt(config utils.Config, outDir utils.Path) error {
 
 	destination.WriteString("# " + config.Website.Name + "\n")
 	destination.WriteString("\n")
-	destination.WriteString("> " + config.Website.Name + " is a website listing running events, running groups, and running shops in and around " + config.City.Name + ". It strives to provide a complete and up-to-date overview of the running scene in the region.\n")
+	destination.WriteString("> " + config.Website.Name + " is a website listing running events, running groups, and running shops in and around " + config.City.Name + " (50km radius). It strives to provide a complete and up-to-date overview of the running scene in the region.\n")
+	destination.WriteString("> The website language is German.\n")
 	destination.WriteString("\n")
 	destination.WriteString("## Key Pages\n")
 	destination.WriteString("\n")
