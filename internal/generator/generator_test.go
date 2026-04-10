@@ -3,6 +3,7 @@ package generator
 import (
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 
@@ -301,6 +302,54 @@ func TestCreateIndexNowFileWithKey(t *testing.T) {
 	expectedContent := "test-indexnow-key"
 	if string(content) != expectedContent {
 		t.Errorf("File content = %s, want %s", string(content), expectedContent)
+	}
+}
+
+func TestCreateLlmsTxt(t *testing.T) {
+	tempDir, err := os.MkdirTemp("", "llmstxt-test-")
+	if err != nil {
+		t.Fatalf("Failed to create temp directory: %v", err)
+	}
+	defer os.RemoveAll(tempDir)
+
+	config := utils.Config{}
+	config.Website.Url = "https://freiburg.run"
+	config.Website.Name = "freiburg.run"
+	config.City.Name = "Freiburg"
+
+	outDir := utils.NewPath(tempDir)
+
+	err = createLlmsTxt(config, outDir)
+	if err != nil {
+		t.Fatalf("createLlmsTxt() error = %v, want nil", err)
+	}
+
+	expectedFilePath := filepath.Join(tempDir, "llms.txt")
+	_, err = os.Stat(expectedFilePath)
+	if os.IsNotExist(err) {
+		t.Errorf("Expected file %s was not created", expectedFilePath)
+	}
+
+	content, err := os.ReadFile(expectedFilePath)
+	if err != nil {
+		t.Fatalf("Failed to read file: %v", err)
+	}
+
+	contentStr := string(content)
+	checks := []string{
+		"# freiburg.run",
+		"freiburg.run",
+		"Freiburg",
+		"https://freiburg.run/",
+		"https://freiburg.run/lauftreffs.html",
+		"https://freiburg.run/shops.html",
+		"https://freiburg.run/sitemap.xml",
+		"https://freiburg.run/events.ics",
+	}
+	for _, check := range checks {
+		if !strings.Contains(contentStr, check) {
+			t.Errorf("llms.txt missing expected content %q", check)
+		}
 	}
 }
 
