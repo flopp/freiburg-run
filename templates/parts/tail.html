@@ -4,7 +4,7 @@
     </a>
 </div>{{end}}
 {{template "calendar-modal.html" .}}
-{{if Config.Notification.Enabled}}<div id="notification-data" class="is-hidden" data-id="{{Config.Notification.Id}}" data-class="{{Config.Notification.Class}}" data-content="{{Config.Notification.Content}}"></div>{{end}}
+{{if Config.Notification.Enabled}}<div id="notification-data" class="is-hidden" data-messages="{{NotificationMessagesJSON}}"></div>{{end}}
 {{range .JsFiles}}
 <script src="{{BasePath .}}"></script>
 {{end}}

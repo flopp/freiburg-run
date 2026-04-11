@@ -715,15 +715,37 @@ const main = () => {
             return;
         }
 
-        const notification = {
-            id: parseInt(notificationDataEl.getAttribute("data-id")),
-            content: notificationDataEl.getAttribute("data-content"),
-            class: notificationDataEl.getAttribute("data-class"),
-        };
+        let messages;
+        try {
+            messages = JSON.parse(notificationDataEl.getAttribute("data-messages"));
+        } catch (e) {
+            console.error("Failed to parse notification messages.", e);
+            return;
+        }
 
-        if (!notificationGuard(`${notification.id}`)) {
+        if (!Array.isArray(messages) || messages.length === 0) {
+            return;
+        }
+
+        // find the first message with an active start date (start <= today)
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const activeMessage = messages.find(m => {
+            if (m.start) {
+                const start = new Date(m.start);
+                if (!isNaN(start.getTime())) {
+                    start.setHours(0, 0, 0, 0);
+                    if (today < start) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        });
+
+        if (activeMessage && !notificationGuard(`${activeMessage.id}`)) {
             setTimeout(() => {
-                showNotification(notification);
+                showNotification(activeMessage);
             }, 2000);
         }
     }
