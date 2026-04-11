@@ -46,10 +46,14 @@ type Config struct {
 		Key string `json:"key"`
 	} `json:"index_now"`
 	Notification struct {
-		Enabled bool   `json:"enabled"`
-		Id      int    `json:"id"`
-		Content string `json:"content"`
-		Class   string `json:"class"`
+		Enabled  bool `json:"enabled"`
+		Messages []struct {
+			Id      int    `json:"id"`
+			Start   string `json:"start"`
+			End     string `json:"end"`
+			Content string `json:"content"`
+			Class   string `json:"class"`
+		} `json:"messages"`
 	} `json:"notification"`
 }
 

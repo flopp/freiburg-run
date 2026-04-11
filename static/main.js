@@ -715,15 +715,55 @@ const main = () => {
             return;
         }
 
-        const notification = {
-            id: parseInt(notificationDataEl.getAttribute("data-id")),
-            content: notificationDataEl.getAttribute("data-content"),
-            class: notificationDataEl.getAttribute("data-class"),
-        };
+        let messages;
+        try {
+            messages = JSON.parse(notificationDataEl.getAttribute("data-messages"));
+        } catch (e) {
+            console.error("Failed to parse notification messages.", e);
+            return;
+        }
 
-        if (!notificationGuard(`${notification.id}`)) {
+        if (!Array.isArray(messages) || messages.length === 0) {
+            return;
+        }
+
+        // sort by id ascending (lowest id first)
+        messages.sort((a, b) => a.id - b.id);
+
+        // find the first message with an active date range (start <= today <= end)
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const activeMessage = messages.find(m => {
+            let start = null;
+            if (m.start) {
+                start = new Date(m.start);
+                if (isNaN(start.getTime())) {
+                    start = null;
+                } else {
+                    start.setHours(0, 0, 0, 0);
+                }
+            }
+            let end = null;
+            if (m.end) {
+                end = new Date(m.end);
+                if (isNaN(end.getTime())) {
+                    end = null;
+                } else {
+                    end.setHours(0, 0, 0, 0);
+                }
+            }
+            if (start !== null && today < start) {
+                return false;
+            }
+            if (end !== null && today > end) {
+                return false;
+            }
+            return true;
+        });
+
+        if (activeMessage && !notificationGuard(`${activeMessage.id}`)) {
             setTimeout(() => {
-                showNotification(notification);
+                showNotification(activeMessage);
             }, 2000);
         }
     }

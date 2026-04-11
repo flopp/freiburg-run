@@ -2,6 +2,7 @@ package utils
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"html/template"
 	"os"
@@ -59,6 +60,13 @@ func loadTemplate(conf Config, name string, basePath string) (*template.Template
 		},
 		"Config": func() Config {
 			return conf
+		},
+		"NotificationMessagesJSON": func() (string, error) {
+			data, err := json.Marshal(conf.Notification.Messages)
+			if err != nil {
+				return "", err
+			}
+			return string(data), nil
 		},
 	}).ParseFiles(files...)
 	if err != nil {
