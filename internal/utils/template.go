@@ -7,7 +7,9 @@ import (
 	"html/template"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
+	"time"
 
 	"github.com/tdewolff/minify/v2"
 	"github.com/tdewolff/minify/v2/html"
@@ -62,7 +64,35 @@ func loadTemplate(conf Config, name string, basePath string) (*template.Template
 			return conf
 		},
 		"NotificationMessagesJSON": func() (string, error) {
-			data, err := json.Marshal(conf.Notification.Messages)
+			today := time.Now()
+			today = time.Date(today.Year(), today.Month(), today.Day(), 0, 0, 0, 0, today.Location())
+
+			type message struct {
+				Id      int    `json:"id"`
+				Start   string `json:"start"`
+				End     string `json:"end"`
+				Content string `json:"content"`
+				Class   string `json:"class"`
+			}
+
+			filtered := make([]message, 0, len(conf.Notification.Messages))
+			for _, m := range conf.Notification.Messages {
+				// filter out messages whose end date is in the past
+				if m.End != "" {
+					end, err := ParseDate(m.End)
+					if err == nil && end.Before(today) {
+						continue
+					}
+				}
+				filtered = append(filtered, message{m.Id, m.Start, m.End, m.Content, m.Class})
+			}
+
+			// sort by id ascending
+			sort.Slice(filtered, func(i, j int) bool {
+				return filtered[i].Id < filtered[j].Id
+			})
+
+			data, err := json.Marshal(filtered)
 			if err != nil {
 				return "", err
 			}

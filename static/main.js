@@ -727,36 +727,18 @@ const main = () => {
             return;
         }
 
-        // sort by id ascending (lowest id first)
-        messages.sort((a, b) => a.id - b.id);
-
-        // find the first message with an active date range (start <= today <= end)
+        // find the first message with an active start date (start <= today)
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         const activeMessage = messages.find(m => {
-            let start = null;
             if (m.start) {
-                start = new Date(m.start);
-                if (isNaN(start.getTime())) {
-                    start = null;
-                } else {
+                const start = new Date(m.start);
+                if (!isNaN(start.getTime())) {
                     start.setHours(0, 0, 0, 0);
+                    if (today < start) {
+                        return false;
+                    }
                 }
-            }
-            let end = null;
-            if (m.end) {
-                end = new Date(m.end);
-                if (isNaN(end.getTime())) {
-                    end = null;
-                } else {
-                    end.setHours(0, 0, 0, 0);
-                }
-            }
-            if (start !== null && today < start) {
-                return false;
-            }
-            if (end !== null && today > end) {
-                return false;
             }
             return true;
         });
