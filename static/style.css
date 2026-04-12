@@ -373,6 +373,19 @@ a.no-external::after
     font-size: 0.9rem;
     color: #666;
 }
+
+.watchlist-category-heading {
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #888;
+    margin-top: 1rem;
+    margin-bottom: 0.25rem;
+}
+.watchlist-category-heading:first-child {
+    margin-top: 0;
+}
 .card-fr {
     background-image: url("data:image/svg+xml,%0A%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='white' d='M0 0h512v512H0z'/%3E%3Cpath fill='%23000091' d='M0 0h170.7v512H0z'/%3E%3Cpath fill='%23e1000f' d='M341.3 0H512v512H341.3z'/%3E%3C/svg%3E");
 }

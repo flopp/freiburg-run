@@ -462,9 +462,22 @@ const normalizeWatchlistItem = function(item) {
 
     const addedAtNum = Number(item.addedAt);
 
+    // Explicit category, or fall back to the slug prefix (e.g. "group/…" → "group")
+    let category = (item.category || "").toString().trim();
+    if (category === "") {
+        const slashIdx = id.indexOf("/");
+        if (slashIdx > 0) {
+            category = id.substring(0, slashIdx);
+        }
+    }
+    if (category !== "event" && category !== "group" && category !== "shop") {
+        category = "event";
+    }
+
     return {
         id: id,
         slug: slug,
+        category: category,
         url: (item.url || "").toString().trim(),
         name: (item.name || "").toString().trim(),
         time: (item.time || "").toString().trim(),
@@ -609,6 +622,45 @@ const initWatchlist = function(storage) {
         });
     };
 
+    const makeWatchlistItem = function(item) {
+        const li = createEl("li", null, "watchlist-item");
+        const textWrap = createEl("div", null, "watchlist-item-text");
+
+        const link = createEl("a", null, "watchlist-link");
+        if (item.url !== "") {
+            link.href = item.url;
+        } else {
+            link.href = `/${item.slug}`;
+        }
+        link.textContent = item.name !== "" ? item.name : item.slug;
+        link.addEventListener("click", () => {
+            umami_track_event("watchlist-open-item", {id: item.id, slug: item.slug});
+        });
+        textWrap.appendChild(link);
+
+        const meta = [];
+        if (item.time !== "") {
+            meta.push(item.time);
+        }
+        if (item.location !== "") {
+            meta.push(item.location);
+        }
+        if (meta.length > 0) {
+            const metaEl = createEl("div", null, "watchlist-meta");
+            metaEl.textContent = meta.join(" | ");
+            textWrap.appendChild(metaEl);
+        }
+
+        const removeBtn = createEl("button", null, "button is-small is-light is-danger watchlist-remove");
+        removeBtn.type = "button";
+        removeBtn.textContent = "Entfernen";
+        removeBtn.dataset.watchlistRemove = item.id;
+
+        li.appendChild(textWrap);
+        li.appendChild(removeBtn);
+        return li;
+    };
+
     const renderWatchlist = function() {
         if (listEl === null || emptyEl === null) {
             return;
@@ -621,46 +673,27 @@ const initWatchlist = function(storage) {
         }
         emptyEl.classList.add("is-hidden");
 
-        const ul = createEl("ul", null, "watchlist-items");
-        watchlist.forEach(item => {
-            const li = createEl("li", null, "watchlist-item");
-            const textWrap = createEl("div", null, "watchlist-item-text");
+        const sections = [
+            {key: "event", label: "Veranstaltungen"},
+            {key: "group", label: "Lauftreffs"},
+            {key: "shop",  label: "Lauf-Shops"},
+        ];
+        const multipleCategories = sections.filter(s => watchlist.some(i => i.category === s.key)).length > 1;
 
-            const link = createEl("a", null, "watchlist-link");
-            if (item.url !== "") {
-                link.href = item.url;
-            } else {
-                link.href = `/${item.slug}`;
+        sections.forEach(({key, label}) => {
+            const items = watchlist.filter(i => i.category === key);
+            if (items.length === 0) {
+                return;
             }
-            link.textContent = item.name !== "" ? item.name : item.slug;
-            link.addEventListener("click", () => {
-                umami_track_event("watchlist-open-item", {id: item.id, slug: item.slug});
-            });
-            textWrap.appendChild(link);
-
-            const meta = [];
-            if (item.time !== "") {
-                meta.push(item.time);
+            if (multipleCategories) {
+                const heading = createEl("p", null, "watchlist-category-heading");
+                heading.textContent = label;
+                listEl.appendChild(heading);
             }
-            if (item.location !== "") {
-                meta.push(item.location);
-            }
-            if (meta.length > 0) {
-                const metaEl = createEl("div", null, "watchlist-meta");
-                metaEl.textContent = meta.join(" | ");
-                textWrap.appendChild(metaEl);
-            }
-
-            const removeBtn = createEl("button", null, "button is-small is-light is-danger watchlist-remove");
-            removeBtn.type = "button";
-            removeBtn.textContent = "Entfernen";
-            removeBtn.dataset.watchlistRemove = item.id;
-
-            li.appendChild(textWrap);
-            li.appendChild(removeBtn);
-            ul.appendChild(li);
+            const ul = createEl("ul", null, "watchlist-items");
+            items.forEach(item => ul.appendChild(makeWatchlistItem(item)));
+            listEl.appendChild(ul);
         });
-        listEl.appendChild(ul);
     };
 
     const refresh = function(save) {
@@ -695,6 +728,7 @@ const initWatchlist = function(storage) {
             watchlist.push(normalizeWatchlistItem({
                 id: id,
                 slug: (toggle.dataset.slug || "").trim(),
+                category: (toggle.dataset.watchlistCategory || "").trim(),
                 url: (toggle.dataset.url || "").trim(),
                 name: (toggle.dataset.name || "").trim(),
                 time: (toggle.dataset.time || "").trim(),
