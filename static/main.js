@@ -708,6 +708,15 @@ const initWatchlist = function(storage) {
         }
         syncToggleButtons();
         renderWatchlist();
+
+        document.querySelectorAll(".watchlist-count").forEach(el => {
+            if (watchlist.length > 0) {
+                el.textContent = watchlist.length;
+                el.classList.remove("is-hidden");
+            } else {
+                el.classList.add("is-hidden");
+            }
+        });
     };
 
     toggles.forEach(toggle => {
