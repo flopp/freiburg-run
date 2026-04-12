@@ -399,6 +399,30 @@ a.no-external::after
     display: none;
 }
 
+.watchlist-mobile-trigger {
+    display: none;
+}
+
+@media screen and (max-width: 1023px) {
+    .watchlist-mobile-trigger {
+        display: flex;
+        margin-left: auto;
+        margin-right: 0.25rem;
+        min-width: 3rem;
+        justify-content: center;
+    }
+
+    .watchlist-mobile-trigger .icon {
+        margin: 0;
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    .watchlist-mobile-trigger {
+        display: none !important;
+    }
+}
+
 #notificationDiv {
     position: fixed;
     z-index: 2000;
