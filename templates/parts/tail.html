@@ -3,6 +3,7 @@
         <span class="icon" style="width: 24px; height: 24px;"><i class="heart-icon-big"></i></span>    
     </a>
 </div>{{end}}
+{{if Config.Pages.Watchlist}}{{template "watchlist-modal.html" .}}{{end}}
 {{template "calendar-modal.html" .}}
 {{if Config.Notification.Enabled}}<div id="notification-data" class="is-hidden" data-messages="{{NotificationMessagesJSON}}"></div>{{end}}
 {{range .JsFiles}}

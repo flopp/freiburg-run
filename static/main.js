@@ -427,6 +427,359 @@ function createEl(tag, id, classes) {
     return el;
 }
 
+const WATCHLIST_STORAGE_KEY = "watchlist.v1";
+const WATCHLIST_MAX_ITEMS = 100;
+
+const todayDateKey = function() {
+    const now = new Date();
+    const yyyy = `${now.getFullYear()}`;
+    const mm = `${now.getMonth() + 1}`.padStart(2, "0");
+    const dd = `${now.getDate()}`.padStart(2, "0");
+    return `${yyyy}-${mm}-${dd}`;
+};
+
+const normalizeDateKey = function(s) {
+    if (typeof s !== "string") {
+        return "";
+    }
+    const cleaned = s.trim();
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(cleaned)) {
+        return "";
+    }
+    return cleaned;
+};
+
+const normalizeWatchlistItem = function(item) {
+    if (item === null || typeof item !== "object") {
+        return null;
+    }
+
+    const id = (item.id || "").toString().trim();
+    const slug = (item.slug || "").toString().trim();
+    if (id === "" || slug === "") {
+        return null;
+    }
+
+    const addedAtNum = Number(item.addedAt);
+
+    // Explicit category, or fall back to the slug prefix (e.g. "group/…" → "group")
+    let category = (item.category || "").toString().trim();
+    if (category === "") {
+        const slashIdx = id.indexOf("/");
+        if (slashIdx > 0) {
+            category = id.substring(0, slashIdx);
+        }
+    }
+    if (category !== "event" && category !== "group" && category !== "shop") {
+        category = "event";
+    }
+
+    return {
+        id: id,
+        slug: slug,
+        category: category,
+        url: (item.url || "").toString().trim(),
+        name: (item.name || "").toString().trim(),
+        time: (item.time || "").toString().trim(),
+        timeFrom: normalizeDateKey(item.timeFrom),
+        timeTo: normalizeDateKey(item.timeTo),
+        location: (item.location || "").toString().trim(),
+        addedAt: Number.isFinite(addedAtNum) ? addedAtNum : Date.now(),
+    };
+};
+
+const watchlistItemScore = function(item) {
+    let score = 0;
+    if (item.name !== "") score += 1;
+    if (item.time !== "") score += 1;
+    if (item.timeFrom !== "") score += 1;
+    if (item.timeTo !== "") score += 1;
+    if (item.location !== "") score += 1;
+    if (item.url !== "") score += 1;
+    return score;
+};
+
+const dedupeWatchlist = function(items) {
+    const byId = new Map();
+    items.forEach(item => {
+        if (!byId.has(item.id)) {
+            byId.set(item.id, item);
+            return;
+        }
+        const existing = byId.get(item.id);
+        if (watchlistItemScore(item) > watchlistItemScore(existing)) {
+            byId.set(item.id, item);
+        }
+    });
+    return Array.from(byId.values());
+};
+
+const sortWatchlist = function(items) {
+    const sorted = [...items];
+    sorted.sort((a, b) => {
+        const aDate = a.timeFrom || a.timeTo;
+        const bDate = b.timeFrom || b.timeTo;
+        if (aDate === "" && bDate === "") {
+            return a.name.localeCompare(b.name, "de", {sensitivity: "base"});
+        }
+        if (aDate === "") return 1;
+        if (bDate === "") return -1;
+        if (aDate < bDate) return -1;
+        if (aDate > bDate) return 1;
+        return a.name.localeCompare(b.name, "de", {sensitivity: "base"});
+    });
+    return sorted;
+};
+
+const prunePastWatchlistItems = function(items, todayKey) {
+    return items.filter(item => {
+        if (item.timeTo === "") {
+            return true;
+        }
+        return item.timeTo >= todayKey;
+    });
+};
+
+const getWatchlist = function(storage) {
+    if (storage === null) {
+        return [];
+    }
+    let raw;
+    try {
+        raw = storage.getItem(WATCHLIST_STORAGE_KEY);
+    } catch (error) {
+        return [];
+    }
+    if (raw === null || raw.trim() === "") {
+        return [];
+    }
+    try {
+        const parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed)) {
+            return [];
+        }
+        const items = parsed
+            .map(normalizeWatchlistItem)
+            .filter(item => item !== null);
+        return dedupeWatchlist(items);
+    } catch (error) {
+        return [];
+    }
+};
+
+const saveWatchlist = function(storage, items) {
+    if (storage === null) {
+        return false;
+    }
+    try {
+        storage.setItem(WATCHLIST_STORAGE_KEY, JSON.stringify(items));
+        return true;
+    } catch (error) {
+        console.error("Saving watchlist failed", error);
+        return false;
+    }
+};
+
+const initWatchlist = function(storage) {
+    const toggles = Array.from(document.querySelectorAll("[data-watchlist-toggle]"));
+    const modal = document.getElementById("watchlist-modal");
+    if (toggles.length === 0 && modal === null) {
+        return;
+    }
+
+    const listEl = document.getElementById("watchlist-list");
+    const emptyEl = document.getElementById("watchlist-empty");
+    const warningEl = document.getElementById("watchlist-storage-warning");
+    const todayKey = todayDateKey();
+
+    if (storage === null) {
+        toggles.forEach(toggle => {
+            toggle.disabled = true;
+            toggle.classList.add("is-disabled");
+        });
+        if (warningEl !== null) {
+            warningEl.classList.remove("is-hidden");
+        }
+        return;
+    }
+
+    let watchlist = sortWatchlist(prunePastWatchlistItems(getWatchlist(storage), todayKey));
+    saveWatchlist(storage, watchlist);
+
+    const watchlistById = function() {
+        const ids = new Set();
+        watchlist.forEach(item => ids.add(item.id));
+        return ids;
+    };
+
+    const syncToggleButtons = function() {
+        const ids = watchlistById();
+        toggles.forEach(toggle => {
+            const id = (toggle.dataset.watchlistId || "").trim();
+            const selected = id !== "" && ids.has(id);
+            toggle.setAttribute("aria-pressed", selected ? "true" : "false");
+            toggle.classList.toggle("is-watchlisted", selected);
+        });
+    };
+
+    const makeWatchlistItem = function(item) {
+        const li = createEl("li", null, "watchlist-item");
+        const textWrap = createEl("div", null, "watchlist-item-text");
+
+        const link = createEl("a", null, "watchlist-link");
+        if (item.url !== "") {
+            link.href = item.url;
+        } else {
+            link.href = `/${item.slug}`;
+        }
+        link.textContent = item.name !== "" ? item.name : item.slug;
+        link.addEventListener("click", () => {
+            umami_track_event("watchlist-open-item", {id: item.id, slug: item.slug});
+        });
+        textWrap.appendChild(link);
+
+        const meta = [];
+        if (item.time !== "") {
+            meta.push(item.time);
+        }
+        if (item.location !== "") {
+            meta.push(item.location);
+        }
+        if (meta.length > 0) {
+            const metaEl = createEl("div", null, "watchlist-meta");
+            metaEl.textContent = meta.join(" | ");
+            textWrap.appendChild(metaEl);
+        }
+
+        const removeBtn = createEl("button", null, "button is-small is-light is-danger watchlist-remove");
+        removeBtn.type = "button";
+        removeBtn.textContent = "Entfernen";
+        removeBtn.dataset.watchlistRemove = item.id;
+
+        li.appendChild(textWrap);
+        li.appendChild(removeBtn);
+        return li;
+    };
+
+    const renderWatchlist = function() {
+        if (listEl === null || emptyEl === null) {
+            return;
+        }
+
+        listEl.innerHTML = "";
+        if (watchlist.length === 0) {
+            emptyEl.classList.remove("is-hidden");
+            return;
+        }
+        emptyEl.classList.add("is-hidden");
+
+        const sections = [
+            {key: "event", label: "Veranstaltungen"},
+            {key: "group", label: "Lauftreffs"},
+            {key: "shop",  label: "Lauf-Shops"},
+        ];
+        const multipleCategories = sections.filter(s => watchlist.some(i => i.category === s.key)).length > 1;
+
+        sections.forEach(({key, label}) => {
+            const items = watchlist.filter(i => i.category === key);
+            if (items.length === 0) {
+                return;
+            }
+            if (multipleCategories) {
+                const heading = createEl("p", null, "watchlist-category-heading");
+                heading.textContent = label;
+                listEl.appendChild(heading);
+            }
+            const ul = createEl("ul", null, "watchlist-items");
+            items.forEach(item => ul.appendChild(makeWatchlistItem(item)));
+            listEl.appendChild(ul);
+        });
+    };
+
+    const refresh = function(save) {
+        watchlist = dedupeWatchlist(watchlist);
+        watchlist = prunePastWatchlistItems(watchlist, todayDateKey());
+        watchlist = sortWatchlist(watchlist);
+        if (watchlist.length > WATCHLIST_MAX_ITEMS) {
+            watchlist = watchlist.slice(0, WATCHLIST_MAX_ITEMS);
+        }
+        if (save) {
+            saveWatchlist(storage, watchlist);
+        }
+        syncToggleButtons();
+        renderWatchlist();
+
+        document.querySelectorAll(".watchlist-count").forEach(el => {
+            if (watchlist.length > 0) {
+                el.textContent = watchlist.length;
+                el.classList.remove("is-hidden");
+            } else {
+                el.classList.add("is-hidden");
+            }
+        });
+    };
+
+    toggles.forEach(toggle => {
+        toggle.addEventListener("click", () => {
+            const id = (toggle.dataset.watchlistId || "").trim();
+            if (id === "") {
+                return;
+            }
+
+            const existing = watchlist.some(item => item.id === id);
+            if (existing) {
+                watchlist = watchlist.filter(item => item.id !== id);
+                umami_track_event("watchlist-remove", {id: id});
+                refresh(true);
+                return;
+            }
+
+            watchlist.push(normalizeWatchlistItem({
+                id: id,
+                slug: (toggle.dataset.slug || "").trim(),
+                category: (toggle.dataset.watchlistCategory || "").trim(),
+                url: (toggle.dataset.url || "").trim(),
+                name: (toggle.dataset.name || "").trim(),
+                time: (toggle.dataset.time || "").trim(),
+                timeFrom: (toggle.dataset.timeFrom || "").trim(),
+                timeTo: (toggle.dataset.timeTo || "").trim(),
+                location: (toggle.dataset.location || "").trim(),
+                addedAt: Date.now(),
+            }));
+            watchlist = watchlist.filter(item => item !== null);
+            umami_track_event("watchlist-add", {id: id});
+            refresh(true);
+        });
+    });
+
+    if (listEl !== null) {
+        listEl.addEventListener("click", (event) => {
+            const target = event.target;
+            if (!(target instanceof HTMLElement)) {
+                return;
+            }
+            const id = target.dataset.watchlistRemove;
+            if (id === undefined || id.trim() === "") {
+                return;
+            }
+
+            watchlist = watchlist.filter(item => item.id !== id);
+            umami_track_event("watchlist-remove", {id: id});
+            refresh(true);
+        });
+    }
+
+    onEach('.modal-trigger', ($trigger) => {
+        if ($trigger.dataset.target === "watchlist-modal") {
+            $trigger.addEventListener('click', () => {
+                umami_track_event('watchlist-open', {url: document.location.href});
+            });
+        }
+    });
+
+    refresh(false);
+};
+
 const main = () => {
     // TAG FILTER, LOCAL STORAGE
     const storage = getLocalStorage();
@@ -475,6 +828,9 @@ const main = () => {
         });
         filter("", hiddenTags);
     }
+
+    // WATCHLIST
+    initWatchlist(storage);
 
     // SHARE BUTTONS
     onEach("[data-share]", shareButton => {
@@ -613,7 +969,13 @@ const main = () => {
         const modal = $trigger.dataset.target;
         const $target = document.getElementById(modal);
 
-        $trigger.addEventListener('click', () => {
+        $trigger.addEventListener('click', (event) => {
+            if ($trigger.tagName === "A") {
+                event.preventDefault();
+            }
+            if ($target === null) {
+                return;
+            }
             openModal($target);
         });
     });

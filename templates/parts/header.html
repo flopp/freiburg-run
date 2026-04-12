@@ -46,7 +46,15 @@
             <img style="height: 48px; max-height:48px" src="{{BasePath "images/freiburg-run-new.svg"}}" alt="{{Config.Website.Name}} logo">
         </a>
 
-        <a role="button" class="navbar-burger has-text-white" data-target="navbarMain">
+        {{if Config.Pages.Watchlist}}
+        <a class="navbar-item watchlist-mobile-trigger modal-trigger" data-target="watchlist-modal" href="#" aria-label="Merkliste öffnen" title="Merkliste">
+            <span class="icon"><i class="star-icon has-background-white"></i></span>
+            <span class="text-label">Merkliste</span>
+            <span class="watchlist-count tag is-rounded mb-2 is-hidden"></span>
+        </a>
+        {{end}}
+
+        <a role="button" class="navbar-burger has-text-white" data-target="navbarMain" style="margin-inline-start: 0;">
             <span aria-hidden="true"></span>
             <span aria-hidden="true"></span>
             <span aria-hidden="true"></span>
@@ -92,11 +100,9 @@
             <a class="navbar-item {{if eq .Nav "shops"}}is-active{{end}}" href="{{BasePath "shops.html"}}">
                 Shops
             </a>
-            {{if Config.Pages.Parkrun}}
-            <a class="navbar-item {{if eq .Nav "parkrun"}}is-active{{end}}" href="{{BasePath "dietenbach-parkrun.html"}}">
+            {{if Config.Pages.Parkrun}}<a class="navbar-item {{if eq .Nav "parkrun"}}is-active{{end}}" href="{{BasePath "dietenbach-parkrun.html"}}">
                 parkrun
-            </a>
-            {{end}}
+            </a>{{end}}
             <div class="navbar-item has-dropdown is-hoverable">
                 <a class="navbar-link {{if eq .Nav "info"}}is-active{{end}}" href="{{BasePath "info.html"}}">
                     Infos
@@ -115,6 +121,14 @@
                     </a>
                 </div>
             </div>
+            {{if Config.Pages.Watchlist}}
+            <a class="navbar-item modal-trigger" data-target="watchlist-modal" href="#">
+                <span class="icon"><i class="star-icon has-background-white"></i></span>
+                <span class="text-label">Merkliste</span>
+                <span class="watchlist-count tag is-rounded mb-2 is-hidden"></span>
+            </a>
+            {{end}}
+
             <div class="navbar-icons">
                 {{if Config.Contact.Whatsapp}}<a class="navbar-item no-external" href="{{Config.Contact.Whatsapp}}" target="_blank" title="WhatsApp-Community">
                     <span class="icon"><i class="whatsapp-icon"></i></span>

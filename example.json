@@ -12,7 +12,8 @@
     "pages": {
         "club": false,
         "parkrun": false,
-        "support": true
+        "support": true,
+        "watchlist": false
     },
     "contact": {
         "email": "YOUR_MAIL_ADDRESS_HERE",

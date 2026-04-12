@@ -15,8 +15,13 @@
 
             <div class="buttons">
                 <a class="button is-link" data-share data-url="{{FullPath .Event.Slug}}" data-name="{{.Event.Name.Orig}}"><span class="share-icon has-background-white mr-1"></span> Teilen</a>
+                {{if not .Event.Old}}
                 {{if .Event.Calendar}}<a class="button is-link calendar-button" data-name="{{.Event.Name.Orig}}" data-calendarfile="{{.Event.Calendar}}" data-calendar="{{.Event.CalendarDataICS}}" data-googlecal="{{.Event.CalendarGoogle}}"><span class="calendar-icon has-background-white mr-1"></span> Kalender</a>{{end}}
+                {{end}}
                 <a class="button is-link" href="{{ReportFormUrl .Event.Name.Orig .Canonical}}" target="_blank"><span class="warning-icon has-background-white mr-1"></span> Fehler melden</a>
+                {{if not .Event.Old}}
+                {{if Config.Pages.Watchlist}}<button class="button is-link watchlist-toggle" type="button" data-watchlist-toggle data-watchlist-id="{{.Event.WatchlistID}}" data-watchlist-category="{{.Event.Type}}" data-slug="{{.Event.Slug}}" data-url="{{BasePath .Event.Slug}}" data-name="{{.Event.Name.Orig}}" data-time="{{.Event.Time.Formatted}}" data-time-from="{{.Event.TimeFromYMD}}" data-time-to="{{.Event.TimeToYMD}}" data-location="{{.Event.Location.Name}}" aria-pressed="false"><span class="star-icon has-background-white mr-1"></span> <span class="text-label">Merkliste</span></button>{{end}}
+                {{end}}
             </div>
 
             <table class="table is-fullwidth is-narrow">
