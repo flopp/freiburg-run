@@ -91,13 +91,7 @@
 
             <a class="navbar-item {{if eq .Nav "shops"}}is-active{{end}}" href="{{BasePath "shops.html"}}">
                 Shops
-            </a>
-            {{if Config.Pages.Watchlist}}
-            <a class="navbar-item modal-trigger" data-target="watchlist-modal" href="#">
-                Merkliste
-            </a>
-            {{end}}
-            {{if Config.Pages.Parkrun}}
+            </a>            {{if Config.Pages.Parkrun}}
             <a class="navbar-item {{if eq .Nav "parkrun"}}is-active{{end}}" href="{{BasePath "dietenbach-parkrun.html"}}">
                 parkrun
             </a>
@@ -120,6 +114,13 @@
                     </a>
                 </div>
             </div>
+            {{if Config.Pages.Watchlist}}
+            <a class="navbar-item modal-trigger" data-target="watchlist-modal" href="#">
+                <span class="icon"><i class="star-icon has-background-white mr-1"></i></span>
+                Merkliste
+            </a>
+            {{end}}
+
             <div class="navbar-icons">
                 {{if Config.Contact.Whatsapp}}<a class="navbar-item no-external" href="{{Config.Contact.Whatsapp}}" target="_blank" title="WhatsApp-Community">
                     <span class="icon"><i class="whatsapp-icon"></i></span>
