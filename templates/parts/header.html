@@ -92,6 +92,11 @@
             <a class="navbar-item {{if eq .Nav "shops"}}is-active{{end}}" href="{{BasePath "shops.html"}}">
                 Shops
             </a>
+            {{if Config.Pages.Watchlist}}
+            <a class="navbar-item modal-trigger" data-target="watchlist-modal" href="#">
+                Merkliste
+            </a>
+            {{end}}
             {{if Config.Pages.Parkrun}}
             <a class="navbar-item {{if eq .Nav "parkrun"}}is-active{{end}}" href="{{BasePath "dietenbach-parkrun.html"}}">
                 parkrun

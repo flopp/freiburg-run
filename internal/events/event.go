@@ -207,6 +207,24 @@ func (event *Event) SlugNoBase() string {
 	return event.slug("html")
 }
 
+func (event *Event) WatchlistID() string {
+	return event.SlugNoBase()
+}
+
+func (event *Event) TimeFromYMD() string {
+	if event.Time.From.IsZero() {
+		return ""
+	}
+	return event.Time.From.Format("2006-01-02")
+}
+
+func (event *Event) TimeToYMD() string {
+	if event.Time.To.IsZero() {
+		return ""
+	}
+	return event.Time.To.Format("2006-01-02")
+}
+
 func (event *Event) CalendarSlug() string {
 	return event.slug("ics")
 }

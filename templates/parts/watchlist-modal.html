@@ -1,0 +1,22 @@
+<div id="watchlist-modal" class="modal">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">Merkliste</p>
+            <button class="delete" aria-label="close"></button>
+        </header>
+        <section class="modal-card-body">
+            <div class="notification is-warning is-light">
+                Die Merkliste wird in den Einstellungen deines Browsers gespeichert. Sie kann verloren gehen, wenn du z.B. Cookies löschst oder den Browser im Inkognito-Modus verwendest.
+            </div>
+            <div id="watchlist-storage-warning" class="notification is-warning is-light is-hidden">
+                Merkliste ist in diesem Browsermodus nicht verfügbar.
+            </div>
+            <p id="watchlist-empty" class="is-hidden">Du hast noch keine Veranstaltungen auf deiner Merkliste.</p>
+            <div id="watchlist-list" class="content"></div>
+        </section>
+        <footer class="modal-card-foot">
+            <button class="button">Schließen</button>
+        </footer>
+    </div>
+</div>

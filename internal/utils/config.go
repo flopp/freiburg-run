@@ -18,9 +18,10 @@ type Config struct {
 		Lon  float64 `json:"lon"`
 	} `json:"city"`
 	Pages struct {
-		Club    bool `json:"club"`
-		Parkrun bool `json:"parkrun"`
-		Support bool `json:"support"`
+		Club      bool `json:"club"`
+		Parkrun   bool `json:"parkrun"`
+		Support   bool `json:"support"`
+		Watchlist bool `json:"watchlist"`
 	}
 	Contact struct {
 		Email              string `json:"email"`
