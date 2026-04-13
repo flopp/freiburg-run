@@ -402,6 +402,15 @@ a.no-external::after
     background-clip: text;
 }
 
+.event-separator div {
+    background: linear-gradient(to right, rgb(255, 38, 108.5), rgb(66, 88, 255));
+    color: white;
+    display: flex;
+    justify-content: center;
+    padding: 0.5rem;
+    font-size: 1.5rem; 
+}
+
 .navbar-burger .menulabel {
     font-size: xx-small;
     text-transform: uppercase;
