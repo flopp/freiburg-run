@@ -7,12 +7,16 @@
         </header>
         <section class="modal-card-body">
             <div class="notification is-warning is-light">
-                Die Merkliste wird in den Einstellungen deines Browsers gespeichert. Sie kann verloren gehen, wenn du z.B. Cookies löschst oder den Browser im Inkognito-Modus verwendest.
+                Die Merkliste wird in den Einstellungen deines Browsers gespeichert.
+                Sie kann verloren gehen, wenn du z.B. Cookies löschst oder den Browser im Inkognito-Modus verwendest.
             </div>
             <div id="watchlist-storage-warning" class="notification is-warning is-light is-hidden">
                 Merkliste ist in diesem Browsermodus nicht verfügbar.
             </div>
-            <p id="watchlist-empty" class="is-hidden">Du hast noch keine Veranstaltungen auf deiner Merkliste.</p>
+            <p id="watchlist-empty" class="is-hidden">
+                Du hast noch keine Veranstaltungen auf deiner Merkliste.<br>
+                Benutze <button class="button is-small is-flex-direction-column"><span class="star-icon has-background-link"></span><span class="text-label has-text-link">Merkliste</span></button>, um Veranstaltungen hinzuzufügen.
+            </p>
             <div id="watchlist-list" class="content"></div>
         </section>
         <footer class="modal-card-foot">
