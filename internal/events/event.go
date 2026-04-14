@@ -235,16 +235,16 @@ func (event *Event) LinkTitle() string {
 		if event.MainLink.IsEmail() {
 			return "Mail an Veranstalter"
 		}
-		return "Zur Veranstaltung"
+		return "Zur Webseite der Veranstaltung"
 	case "group":
 		if event.MainLink.IsEmail() {
 			return "Mail an Organisator"
 		}
-		return "Zum Lauftreff"
+		return "Zur Webseite des Lauftreffs"
 	case "shop":
-		return "Zum Lauf-Shop"
+		return "Zur Webseite des Lauf-Shops"
 	default:
-		return "Zur Veranstaltung"
+		return "Zur Webseite der Veranstaltung"
 	}
 }
 
