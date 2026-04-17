@@ -696,7 +696,7 @@ const initWatchlist = function(storage) {
         });
     };
 
-    const refresh = function(save) {
+    const refreshWatchlist = function(save) {
         watchlist = dedupeWatchlist(watchlist);
         watchlist = prunePastWatchlistItems(watchlist, todayDateKey());
         watchlist = sortWatchlist(watchlist);
@@ -719,6 +719,82 @@ const initWatchlist = function(storage) {
         });
     };
 
+    const isElementVisible = function(el) {
+        if (!(el instanceof HTMLElement)) {
+            return false;
+        }
+        if (el.getClientRects().length === 0) {
+            return false;
+        }
+        const style = window.getComputedStyle(el);
+        return style.display !== "none" && style.visibility !== "hidden";
+    };
+
+    const findVisibleWatchlistTrigger = function(excludeEl) {
+        const candidates = Array.from(document.querySelectorAll("[data-target='watchlist-modal']"));
+        for (const candidate of candidates) {
+            if (candidate === excludeEl) {
+                continue;
+            }
+            if (isElementVisible(candidate)) {
+                return candidate;
+            }
+        }
+        return null;
+    };
+
+    const animateWatchlistAdd = function(sourceToggle) {
+        if (!(sourceToggle instanceof HTMLElement)) {
+            return;
+        }
+        if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+            return;
+        }
+
+        const target = findVisibleWatchlistTrigger(sourceToggle);
+        if (!(target instanceof HTMLElement)) {
+            return;
+        }
+
+        const startRect = sourceToggle.getBoundingClientRect();
+        const targetRect = target.getBoundingClientRect();
+        if (startRect.width === 0 || startRect.height === 0 || targetRect.width === 0 || targetRect.height === 0) {
+            return;
+        }
+
+        const startX = startRect.left + startRect.width / 2;
+        const startY = startRect.top + startRect.height / 2;
+        const endX = targetRect.left + targetRect.width / 2;
+        const endY = targetRect.top + targetRect.height / 2;
+
+        const flyer = createEl("div", null, "watchlist-flyer");
+        const star = document.createElement("span");
+        star.classList.add("star-icon");
+        flyer.appendChild(star);
+        flyer.classList.add("watchlist-flyer");
+        flyer.style.left = `${startX - 16}px`;
+        flyer.style.top = `${startY - 16}px`;
+        document.body.appendChild(flyer);
+
+        const dx = endX - startX;
+        const dy = endY - startY;
+        const travel = flyer.animate([
+            {transform: "translate(0, 0)", opacity: 0.95, offset: 0},
+            {transform: `translate(${dx * 0.7}px, ${dy * 0.7}px)`, opacity: 0.9, offset: 0.65},
+            {transform: `translate(${dx}px, ${dy}px)`, opacity: 0.1, offset: 1},
+        ], {
+            duration: 1000,
+            easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+            fill: "forwards",
+        });
+
+        const cleanup = () => {
+            flyer.remove();
+        };
+        travel.addEventListener("finish", cleanup, {once: true});
+        travel.addEventListener("cancel", cleanup, {once: true});
+    };
+
     toggles.forEach(toggle => {
         toggle.addEventListener("click", () => {
             const id = (toggle.dataset.watchlistId || "").trim();
@@ -730,7 +806,7 @@ const initWatchlist = function(storage) {
             if (existing) {
                 watchlist = watchlist.filter(item => item.id !== id);
                 umami_track_event("watchlist-remove", {id: id});
-                refresh(true);
+                refreshWatchlist(true);
                 return;
             }
 
@@ -748,7 +824,9 @@ const initWatchlist = function(storage) {
             }));
             watchlist = watchlist.filter(item => item !== null);
             umami_track_event("watchlist-add", {id: id});
-            refresh(true);
+            refreshWatchlist(true);
+
+            animateWatchlistAdd(toggle);
         });
     });
 
@@ -765,7 +843,7 @@ const initWatchlist = function(storage) {
 
             watchlist = watchlist.filter(item => item.id !== id);
             umami_track_event("watchlist-remove", {id: id});
-            refresh(true);
+            refreshWatchlist(true);
         });
     }
 
@@ -777,7 +855,7 @@ const initWatchlist = function(storage) {
         }
     });
 
-    refresh(false);
+    refreshWatchlist(false);
 };
 
 const main = () => {

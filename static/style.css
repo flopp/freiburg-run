@@ -197,6 +197,7 @@ a.no-external::after
     width: 1.125em;
     height: 1em;
     vertical-align: -0.125em;
+    background-color: currentColor;
     background-position: center;
     background-repeat: no-repeat;
     background-size: contain;
@@ -338,7 +339,7 @@ a.no-external::after
 }
 
 .watchlist-toggle.is-watchlisted {
-    background-color: #f14668;
+    background-color: rgb(255, 102, 133);
     color: #fff;
 }
 
@@ -439,6 +440,22 @@ a.no-external::after
     }
 }
 
+.watchlist-flyer {
+    position: fixed;
+    width: 32px;
+    height: 32px;
+    border-radius: 9999px;
+    background: #f14668;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 32px;
+    text-align: center;
+    pointer-events: none;
+    user-select: none;
+    z-index: 9999;    
+}
+
 @media screen and (min-width: 1024px) {
     .watchlist-mobile-trigger {
         display: none !important;
@@ -457,3 +474,4 @@ a.no-external::after
 #notificationDiv.active {
     transform: translate(-50%, 0);
 }
+
