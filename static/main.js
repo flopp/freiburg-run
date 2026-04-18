@@ -626,7 +626,7 @@ const initWatchlist = function(storage) {
         const li = createEl("li", null, "watchlist-item");
         const textWrap = createEl("div", null, "watchlist-item-text");
 
-        const link = createEl("a", null, "watchlist-link");
+        const link = createEl("a", null, "has-text-weight-bold");
         if (item.url !== "") {
             link.href = item.url;
         } else {
@@ -646,12 +646,12 @@ const initWatchlist = function(storage) {
             meta.push(item.location);
         }
         if (meta.length > 0) {
-            const metaEl = createEl("div", null, "watchlist-meta");
+            const metaEl = createEl("div", null, "is-size-7 has-text-grey");
             metaEl.textContent = meta.join(" | ");
             textWrap.appendChild(metaEl);
         }
 
-        const removeBtn = createEl("button", null, "button is-small is-light is-danger watchlist-remove");
+        const removeBtn = createEl("button", null, "button is-small is-light is-danger");
         removeBtn.type = "button";
         removeBtn.textContent = "Entfernen";
         removeBtn.dataset.watchlistRemove = item.id;
@@ -678,18 +678,17 @@ const initWatchlist = function(storage) {
             {key: "group", label: "Lauftreffs"},
             {key: "shop",  label: "Lauf-Shops"},
         ];
-        const multipleCategories = sections.filter(s => watchlist.some(i => i.category === s.key)).length > 1;
 
         sections.forEach(({key, label}) => {
             const items = watchlist.filter(i => i.category === key);
             if (items.length === 0) {
                 return;
             }
-            if (multipleCategories) {
-                const heading = createEl("p", null, "watchlist-category-heading");
-                heading.textContent = label;
-                listEl.appendChild(heading);
-            }
+
+            const heading = createEl("p", null, "watchlist-category-heading");
+            heading.textContent = label;
+            listEl.appendChild(heading);
+
             const ul = createEl("ul", null, "watchlist-items");
             items.forEach(item => ul.appendChild(makeWatchlistItem(item)));
             listEl.appendChild(ul);
