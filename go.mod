@@ -12,7 +12,7 @@ require (
 	github.com/flopp/go-googlesheetswrapper v0.0.0-20260406112809-7c5a6afecd10
 	github.com/google/uuid v1.6.0
 	github.com/tdewolff/minify/v2 v2.24.13
-	golang.org/x/text v0.36.0
+	golang.org/x/text v0.37.0
 	google.golang.org/api v0.278.0
 )
 
