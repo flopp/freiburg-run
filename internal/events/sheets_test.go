@@ -36,6 +36,10 @@ func TestLoadSheets_Mock(t *testing.T) {
 			{"NAME", "DESCRIPTION"},
 			{"Serie A", "desc"},
 		},
+		"Redirects": {
+			{"ORIGINAL", "NEW"},
+			{"/old-url", "/new-url"},
+		},
 	}
 
 	config := utils.Config{}
@@ -60,5 +64,13 @@ func TestLoadSheets_Mock(t *testing.T) {
 	}
 	if len(sheetsData.Series) != 1 {
 		t.Errorf("Expected 1 series, got %d", len(sheetsData.Series))
+	}
+
+	// Check Redirects
+	if len(sheetsData.Redirects) != 1 {
+		t.Errorf("Expected 1 redirect, got %d", len(sheetsData.Redirects))
+	}
+	if sheetsData.Redirects["/old-url"] != "/new-url" {
+		t.Errorf("Redirects mapping incorrect: got %v", sheetsData.Redirects)
 	}
 }
