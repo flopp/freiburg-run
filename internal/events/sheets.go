@@ -14,12 +14,13 @@ import (
 )
 
 type SheetsData struct {
-	Events  []*Event
-	Groups  []*Event
-	Shops   []*Event
-	Parkrun []*ParkrunEvent
-	Tags    []*Tag
-	Series  []*Serie
+	Events    []*Event
+	Groups    []*Event
+	Shops     []*Event
+	Parkrun   []*ParkrunEvent
+	Tags      []*Tag
+	Series    []*Serie
+	Redirects map[string]string // map from original to new URL
 }
 
 // LoadSheets loads all data from the given sheets client and returns it structured in a SheetsData struct.
@@ -30,7 +31,7 @@ func LoadSheets(config utils.Config, today time.Time, client googlesheetswrapper
 		return SheetsData{}, fmt.Errorf("fetching all sheets: %w", err)
 	}
 
-	eventSheets, groupsSheet, shopsSheet, parkrunSheet, tagsSheet, seriesSheet, err := findSheetNames(config, sheets)
+	eventSheets, groupsSheet, shopsSheet, parkrunSheet, tagsSheet, seriesSheet, redirectsSheet, err := findSheetNames(config, sheets)
 	if err != nil {
 		return SheetsData{}, err
 	}
@@ -63,13 +64,19 @@ func LoadSheets(config utils.Config, today time.Time, client googlesheetswrapper
 		return SheetsData{}, fmt.Errorf("fetching series: %w", err)
 	}
 
+	redirects, err := fetchRedirects(config, redirectsSheet, sheets)
+	if err != nil {
+		return SheetsData{}, fmt.Errorf("fetching redirects: %w", err)
+	}
+
 	return SheetsData{
-		Events:  events,
-		Groups:  groups,
-		Shops:   shops,
-		Parkrun: parkrun,
-		Tags:    tags,
-		Series:  series,
+		Events:    events,
+		Groups:    groups,
+		Shops:     shops,
+		Parkrun:   parkrun,
+		Tags:      tags,
+		Series:    series,
+		Redirects: redirects,
 	}, nil
 }
 
@@ -89,8 +96,8 @@ func getYearFromEventSheetName(sheetName string) (int, error) {
 	return date.Year(), nil
 }
 
-// findSheetNames identifies the relevant sheet names for events, groups, shops, parkrun, tags and series based on their names and validates them.
-func findSheetNames(config utils.Config, sheets map[string][][]string) (eventSheets []string, groupsSheet, shopsSheet, parkrunSheet, tagsSheet, seriesSheet string, err error) {
+// findSheetNames identifies the relevant sheet names for events, groups, shops, parkrun, tags, series, and redirects based on their names and validates them.
+func findSheetNames(config utils.Config, sheets map[string][][]string) (eventSheets []string, groupsSheet, shopsSheet, parkrunSheet, tagsSheet, seriesSheet, redirectsSheet string, err error) {
 	for sheetName := range sheets {
 		name := strings.ToLower(sheetName)
 		switch {
@@ -106,6 +113,8 @@ func findSheetNames(config utils.Config, sheets map[string][][]string) (eventShe
 			tagsSheet = sheetName
 		case name == "series":
 			seriesSheet = sheetName
+		case name == "redirects":
+			redirectsSheet = sheetName
 		case strings.Contains(name, "ignore"):
 			// ignore
 		default:
@@ -115,7 +124,7 @@ func findSheetNames(config utils.Config, sheets map[string][][]string) (eventShe
 
 	// we require at least 2 event sheets, so that we have some old events to show on the "Vergangene Events" page and to test the old/new logic
 	if len(eventSheets) < 2 {
-		return nil, "", "", "", "", "", fmt.Errorf("fetching sheets: unable to find enough 'Events' sheets")
+		return nil, "", "", "", "", "", "", fmt.Errorf("fetching sheets: unable to find enough 'Events' sheets")
 	}
 
 	// sort eventSheets by name, so that they are always in the same order (e.g. for testing)
@@ -125,30 +134,33 @@ func findSheetNames(config utils.Config, sheets map[string][][]string) (eventShe
 	for _, sheetName := range eventSheets {
 		year, err := getYearFromEventSheetName(sheetName)
 		if err != nil {
-			return nil, "", "", "", "", "", fmt.Errorf("fetching sheets: %v", err)
+			return nil, "", "", "", "", "", "", fmt.Errorf("fetching sheets: %v", err)
 		}
 		if lastYear != -1 && year != lastYear+1 {
-			return nil, "", "", "", "", "", fmt.Errorf("fetching sheets: unexpected event sheet name '%s': missing year %d", sheetName, lastYear+1)
+			return nil, "", "", "", "", "", "", fmt.Errorf("fetching sheets: unexpected event sheet name '%s': missing year %d", sheetName, lastYear+1)
 		}
 		lastYear = year
 	}
 
 	if groupsSheet == "" {
-		return nil, "", "", "", "", "", fmt.Errorf("fetching sheets: unable to find 'Groups' sheet")
+		return nil, "", "", "", "", "", "", fmt.Errorf("fetching sheets: unable to find 'Groups' sheet")
 	}
 	if shopsSheet == "" {
-		return nil, "", "", "", "", "", fmt.Errorf("fetching sheets: unable to find 'Shops' sheet")
+		return nil, "", "", "", "", "", "", fmt.Errorf("fetching sheets: unable to find 'Shops' sheet")
 	}
 	if config.Pages.Parkrun && parkrunSheet == "" {
-		return nil, "", "", "", "", "", fmt.Errorf("fetching sheets: unable to find 'Parkrun' sheet")
+		return nil, "", "", "", "", "", "", fmt.Errorf("fetching sheets: unable to find 'Parkrun' sheet")
 	}
 	if tagsSheet == "" {
-		return nil, "", "", "", "", "", fmt.Errorf("fetching sheets: unable to find 'Tags' sheet")
+		return nil, "", "", "", "", "", "", fmt.Errorf("fetching sheets: unable to find 'Tags' sheet")
 	}
 	if seriesSheet == "" {
-		return nil, "", "", "", "", "", fmt.Errorf("fetching sheets: unable to find 'Series' sheet")
+		return nil, "", "", "", "", "", "", fmt.Errorf("fetching sheets: unable to find 'Series' sheet")
 	}
-	return eventSheets, groupsSheet, shopsSheet, parkrunSheet, tagsSheet, seriesSheet, nil
+	if redirectsSheet == "" {
+		return nil, "", "", "", "", "", "", fmt.Errorf("fetching sheets: unable to find 'Redirects' sheet")
+	}
+	return eventSheets, groupsSheet, shopsSheet, parkrunSheet, tagsSheet, seriesSheet, redirectsSheet, nil
 }
 
 // loadEvents loads event data from the given event sheets and returns a list of Event structs.
@@ -600,6 +612,45 @@ func fetchSeries(config utils.Config, sheetName string, sheetsData map[string][]
 	}
 
 	return series, nil
+}
+
+func fetchRedirects(config utils.Config, sheetName string, sheetsData map[string][][]string) (map[string]string, error) {
+	sheet, ok := sheetsData[sheetName]
+	if !ok {
+		return nil, fmt.Errorf("sheet '%s' not found", sheetName)
+	}
+	requiredHeaders := []string{"ORIGINAL", "NEW"}
+	cols, err := googlesheetswrapper.ExtractHeader(sheet, requiredHeaders, true)
+	if err != nil {
+		return nil, fmt.Errorf("fetching sheet '%s': %v", sheetName, err)
+	}
+	rows := sheet[1:]
+
+	redirects := make(map[string]string)
+	for _, row := range rows {
+		originalUrl, err := getVal(cols, "ORIGINAL", row)
+		if err != nil {
+			return nil, fmt.Errorf("fetching redirects: %v", err)
+		}
+		newUrl, err := getVal(cols, "NEW", row)
+		if err != nil {
+			return nil, fmt.Errorf("fetching redirects: %v", err)
+		}
+
+		// trim
+		originalUrl = strings.TrimSpace(originalUrl)
+		newUrl = strings.TrimSpace(newUrl)
+
+		// validate (non-empty, not identical, must start with /)
+		if originalUrl == "" || newUrl == "" || originalUrl == newUrl || (!strings.HasPrefix(originalUrl, "/")) || (!strings.HasPrefix(newUrl, "/")) {
+			log.Printf("skipping invalid redirect from '%s' to '%s'", originalUrl, newUrl)
+			continue
+		}
+
+		redirects[originalUrl] = newUrl
+	}
+
+	return redirects, nil
 }
 
 func parseLinks(ss []string) ([]*utils.Link, error) {

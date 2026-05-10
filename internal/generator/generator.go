@@ -141,27 +141,13 @@ func createHtaccess(config utils.Config, data events.Data, outDir utils.Path) er
 	destination.WriteString("RewriteRule ^(.*)$ https://" + config.Website.Domain + "/$1 [L,R=301]\n")
 
 	destination.WriteString("ErrorDocument 404 /404.html\n")
-	destination.WriteString("Redirect /parkrun /dietenbach-parkrun.html\n")
-	destination.WriteString("Redirect /groups.html /lauftreffs.html\n")
-	destination.WriteString("Redirect /tag/socialrunclub.html /lauftreffs.html\n")
-	destination.WriteString("Redirect /club /community-run\n")
-	destination.WriteString("Redirect /club/ /community-run\n")
-	destination.WriteString("Redirect /club/index.html /community-run\n")
 
-	// fix some past issues
-	destination.WriteString("Redirect /event/2024-32-teninger-allmendlauf.html?back=event /event/2024-32-teninger-allmendlauf.html\n")
-	destination.WriteString("Redirect /event/dietenbach-parkrun.html /group/dietenbach-parkrun.html\n")
-	destination.WriteString("Redirect /event/dreilaendergarten-parkrun.html /group/dreilaendergarten-parkrun.html\n")
-	destination.WriteString("Redirect /tag/serie-intersport-denzer-cup-2024.html /serie/intersport-denzer-cup-2024.html\n")
-	destination.WriteString("Redirect /event/2023-4-crosslauf-am-opfinger-see.html /event/2024-4-crosslauf-am-opfinger-see.html\n")
-	destination.WriteString("Redirect /serie/ryzon-coffee-run.html /event/ryzon-coffee-run/\n")
-	destination.WriteString("Redirect /serie/ryzon-trailrun.html /event/ryzon-trailrun/\n")
-	destination.WriteString("Redirect /serie/parkrun.html /dietenbach-parkrun.html\n")
-	destination.WriteString("Redirect /tag/2023.html /events-old-2023.html\n")
-	destination.WriteString("Redirect /tag/2024.html /events-old-2024.html\n")
-	destination.WriteString("Redirect /tag/2025.html /events-old.html\n")
-	destination.WriteString("Redirect /tag/2026.html /\n")
+	destination.WriteString("\n# redirects from Google Sheets\n")
+	for original, new := range data.Redirects {
+		destination.WriteString(fmt.Sprintf("Redirect %s %s\n", original, new))
+	}
 
+	destination.WriteString("\n# redirect renamed items\n")
 	for _, e := range data.Events {
 		slug := e.Slug()
 		if old := e.SlugOld(); old != "" {
@@ -191,6 +177,7 @@ func createHtaccess(config utils.Config, data events.Data, outDir utils.Path) er
 		}
 	}
 
+	destination.WriteString("\n# redirect obsolete items\n")
 	for _, e := range data.EventsObsolete {
 		destination.WriteString(fmt.Sprintf("Redirect /%s /\n", e.Slug()))
 	}

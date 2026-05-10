@@ -65,3 +65,17 @@
 | NAME        | Series name. |
 | DESCRIPTION | Description of the series. |
 | LINK1, LINK2, ... | Additional links in the format `Label|URL`. Any number of LINK columns can be added. |
+
+---
+
+### Redirects Sheet
+
+| Column    | Description |
+|-----------|-------------|
+| ORIGINAL  | The original URL or identifier to be redirected. |
+| NEW       | The new URL or identifier to redirect to. |
+
+- Each row defines a redirect from the value in the ORIGINAL column to the value in the NEW column.
+- Both columns are required for each redirect entry.
+- Used to maintain working links when URLs or identifiers change.
+- Each row produces a `Redirect <ORIGINAL> <NEW>` line in `.htaccess`
