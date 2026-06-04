@@ -3,16 +3,16 @@ Hier sind die Fotoalben, Ergebnislisten und Laufberichte aller Events des Dieten
 <table id="results">
     <thead>
         <tr>
-            <th>Datum</th>
-            <th>#</th>
+            <th># / Datum</th>
+            <th>Special</th>
             <th>Links</th>
         </tr>
     </thead>
     <tbody>{{range .Data.ParkrunEvents}}
         <tr>
-            <td>{{.Date}}</td>
-            <td>{{if .Index}}#{{.Index}}{{end}}{{if .Special}}{{if .Index}} - {{end}}{{.Special}}{{end}}</td>
-            <td>{{if .Results}}<a href="{{.Results}}">Ergebnisse</a>{{end}}{{if .Report}}{{if .Results}}, {{end}}<a href="{{.Report}}">Bericht{{if .Author}} ({{.Author}}){{end}}</a>{{end}}{{if .Photos}}{{if .Results}}, {{end}}<a href="{{.Photos}}">Fotos</a>{{end}}</td>
+            <td>{{if .Index}}#{{.Index}} / {{end}}{{.Date}}</td>
+            <td>{{.Special}}</td>
+            <td>{{if .Results}}<a href="{{.Results}}" class="button apricotButton">Ergebnisse</a>{{end}}{{if .Report}}{{if .Results}}, {{end}}<a href="{{.Report}}" class="button tealButton">Bericht{{if .Author}} ({{.Author}}){{end}}</a>{{end}}{{if .Photos}}{{if .Results}}, {{end}}<a href="{{.Photos}}" class="button apricotButton">Fotos</a>{{end}}</td>
         </tr>{{end}}
     </tbody>
 </table>
