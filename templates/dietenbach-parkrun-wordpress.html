@@ -14,9 +14,9 @@ Hier sind die Fotoalben, Ergebnislisten und Laufberichte aller Events des Dieten
             <td>{{.Special}}</td>
             <td>
                 <ul>
-                {{if .Results}}<li><a href="{{.Results}}" class="button tealButton margintandb">Ergebnisse</a></li>{{end}}
-                {{if .Report}}<li><a href="{{.Report}}" class="button tealButton margintandb">Bericht{{if .Author}} ({{.Author}}){{end}}</a></li>{{end}}
-                {{if .Photos}}<li><a href="{{.Photos}}" class="button tealButton margintandb">Fotos</a></li>{{end}}
+                {{if .Results}}<li class="margintandb"><a href="{{.Results}}" class="button tealButton paddedl paddedr">Ergebnisse</a></li>{{end}}
+                {{if .Report}}<li class="margintandb"><a href="{{.Report}}" class="button tealButton paddedl paddedr">Bericht{{if .Author}} ({{.Author}}){{end}}</a></li>{{end}}
+                {{if .Photos}}<li class="margintandb"><a href="{{.Photos}}" class="button tealButton paddedl paddedr">Fotos</a></li>{{end}}
                 </ul>
             </td>
         </tr>{{end}}
