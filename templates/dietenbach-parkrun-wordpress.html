@@ -12,7 +12,11 @@ Hier sind die Fotoalben, Ergebnislisten und Laufberichte aller Events des Dieten
         <tr>
             <td>{{if .Index}}#{{.Index}} / {{end}}{{.Date}}</td>
             <td>{{.Special}}</td>
-            <td>{{if .Results}}<a href="{{.Results}}" class="button apricotButton">Ergebnisse</a>{{end}}{{if .Report}}{{if .Results}}, {{end}}<a href="{{.Report}}" class="button tealButton">Bericht{{if .Author}} ({{.Author}}){{end}}</a>{{end}}{{if .Photos}}{{if .Results}}, {{end}}<a href="{{.Photos}}" class="button apricotButton">Fotos</a>{{end}}</td>
+            <td>
+                {{if .Results}}<a href="{{.Results}}" class="button apricotButton margintandb">Ergebnisse</a>{{end}}
+                {{if .Report}}{{if .Results}}, {{end}}<a href="{{.Report}}" class="button apricotButton margintandb">Bericht{{if .Author}} ({{.Author}}){{end}}</a>{{end}}
+                {{if .Photos}}{{if .Results}}, {{end}}<a href="{{.Photos}}" class="button apricotButton margintandb">Fotos</a>{{end}}
+            </td>
         </tr>{{end}}
     </tbody>
 </table>
