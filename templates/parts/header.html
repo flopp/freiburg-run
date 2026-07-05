@@ -147,7 +147,7 @@
         {{if ne .Nav "map"}}{{if .Breadcrumbs}}
         <section class="section pt-0 pb-0">
             <div class="container is-max-desktop">
-                <div class="box pt-2 pb-2">
+                <div class="box pt-2 pb-2 {{if .HasFilter}}is-radiusless{{else}}no-top-radius{{end}}">
                     <nav class="breadcrumb">
                         <ul itemscope itemtype="https://schema.org/BreadcrumbList">
                             {{range .Breadcrumbs}}
@@ -164,3 +164,14 @@
             </div>
         </section>
         {{end}}{{end}}
+
+        {{if .HasFilter}}
+        <section class="section pt-0 pb-0">
+            <div class="container is-max-desktop">
+                <div class="box pt-2 pb-1 no-top-radius">
+                    {{template "controls.html" .}}
+                </div>
+            </div>
+        </section>
+        {{end}}
+<main>

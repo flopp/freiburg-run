@@ -2,6 +2,15 @@ body, .section {
     background-color: #eeeeff;
 }
 
+main {
+    overflow-y: auto;
+}
+
+.no-top-radius {
+    border-top-left-radius: 0 !important;
+    border-top-right-radius: 0 !important;
+}
+
 .navbar {
     --bulma-navbar-z: 1100 !important;
     --bulma-navbar-fixed-z: 1100 !important;

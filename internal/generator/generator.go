@@ -32,6 +32,7 @@ type TemplateData struct {
 	SlugOther   string
 	Breadcrumbs utils.Breadcrumbs
 	Main        string
+	HasFilter   bool
 }
 
 func (t *TemplateData) SetNameLink(name, link string, baseBreakcrumbs utils.Breadcrumbs, baseUrl utils.Url) {
@@ -473,6 +474,11 @@ func (g Generator) Generate(eventsData events.Data) error {
 
 	// Render general pages
 	renderPage := func(slug, slugFile, template, nav, sitemapCategory, title, description string, breadcrumbs utils.Breadcrumbs) error {
+		hasFilter := false
+		if template == "events" || template == "groups" || template == "shops" {
+			hasFilter = true
+		}
+
 		data := TemplateData{
 			commondata,
 			title,
@@ -482,6 +488,7 @@ func (g Generator) Generate(eventsData events.Data) error {
 			slug,
 			breadcrumbs,
 			"/",
+			hasFilter,
 		}
 		if err := utils.ExecuteTemplate(g.config, template, g.out.Join(slugFile), data.BasePath, data); err != nil {
 			return fmt.Errorf("render template %q to %q: %w", template, g.out.Join(slugFile), err)
@@ -594,7 +601,7 @@ func (g Generator) Generate(eventsData events.Data) error {
 	}
 
 	// Special rendering of parkrun page for wordpress
-	data := TemplateData{commondata, "", "", "", "", "", breadcrumbsBase, "/"}
+	data := TemplateData{commondata, "", "", "", "", "", breadcrumbsBase, "/", false /*HasFilter*/}
 	if err := utils.ExecuteTemplateNoMinify(g.config, "dietenbach-parkrun-wordpress", g.out.Join("dietenbach-parkrun-wordpress.html"), data.BasePath, data); err != nil {
 		return fmt.Errorf("render wordpress template: %w", err)
 	}
@@ -632,6 +639,7 @@ func (g Generator) Generate(eventsData events.Data) error {
 				"",
 				breadcrumbsEvents,
 				"/",
+				true, /*HasFilter */
 			},
 			Year:   oldEvents.Year,
 			Years:  oldYears,
@@ -657,6 +665,7 @@ func (g Generator) Generate(eventsData events.Data) error {
 				"",
 				breadcrumbs,
 				main,
+				false, /*HasFilter*/
 			},
 			nil,
 		}
@@ -711,6 +720,7 @@ func (g Generator) Generate(eventsData events.Data) error {
 			"",
 			breadcrumbsTags,
 			"/tags.html",
+			true, /*HasFilter*/
 		},
 		nil,
 	}
@@ -757,6 +767,7 @@ func (g Generator) Generate(eventsData events.Data) error {
 				"",
 				breadcrumbsSeries,
 				"/series.html",
+				true, /*HasFilter*/
 			},
 			nil,
 		}
@@ -791,6 +802,7 @@ func (g Generator) Generate(eventsData events.Data) error {
 			"/sitemap.html",
 			breadcrumbsBase.Push(utils.CreateLink("Sitemap", "/sitemap.html")),
 			"/",
+			false, /*HasFilter*/
 		},
 		sitemap.GenHTML(),
 	}
