@@ -7,21 +7,32 @@
 {{else}}
 <div class="column is-full event" data-type="{{.NiceType}}" data-name="{{.Name.Orig}}" data-time="{{.Time.Formatted}}" data-geo="{{.Location.Geo}}" data-location="{{.Location.Name}}" data-slug="{{.Slug}}" data-distances="{{.Distances}}">
     <div class="card" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-        <header class="card-header is-flex-direction-column">
-            {{if .Cancelled}}
-            <a class="button is-danger has-text-white is-fullwidth is-radiusless button-wrap" href="{{BasePath .Slug}}" itemprop="item">
-                <span class="icon"><i class="info-icon has-background-white mr-1"></i></span>
-                <span itemprop="name">{{.Name.Orig}}</span>
+        <header class="card-header is-flex-direction-column {{if .Cancelled}}has-background-danger{{else}}has-background-link{{end}} has-text-white">
+            <a class="h-normal" href="{{BasePath .Slug}}" itemprop="item">
+                {{if not .Time.IsZero}}
+                <div class="h-date-container">
+                    <div class="h-date">
+                        <span class="h-date-month">{{.Time.FromMonth}}</span>
+                        <span class="h-date-day">{{.Time.FromDay}}</span>
+                        <span class="h-date-dow">{{.Time.FromDow}}</span>
+                    </div>
+                    {{if .Time.HasTwo}}
+                    <div class="h-date-separator">
+                        <span>-</span>
+                    </div>
+                    <div class="h-date">
+                        <span class="h-date-month">{{.Time.ToMonth}}</span>
+                        <span class="h-date-day">{{.Time.ToDay}}</span>
+                        <span class="h-date-dow">{{.Time.ToDow}}</span>
+                    </div>
+                    {{end}}
+                </div>
+                {{end}}
+                <div class="h-title has-text-white">
+                    <p class="h-main-title">{{.Name.Orig}}</p>
+                    <p class="h-sub-title">{{.Location.Name}}</p>
+                </div>
             </a>
-            <a class="button is-danger has-text-white is-small is-fullwidth is-radiusless" href="{{BasePath .Slug}}">
-                <span>(abgesagt)</span>
-            </a>
-            {{else}}
-            <a class="button is-link is-fullwidth is-radiusless button-wrap" href="{{BasePath .Slug}}" itemprop="item">
-                <span class="icon"><i class="info-icon has-background-white mr-1 has-background-white mr-1"></i></span>
-                <span itemprop="name">{{.Name.Orig}}</span>
-            </a>
-            {{end}}
         </header>
         <div class="card-content">
             <div class="content">
@@ -32,24 +43,24 @@
                 </div>
                 <table class="table is-narrow is-fullwidth">
                     {{if .Status}}<tr class="has-background-warning-light"><th class="w-2em no-border" title="Status">⚠️</th><td class="no-border">{{.Status}}</td></tr>{{end}}
-                    {{if .Time.Formatted}}<tr><th class="w-2em no-border" title="Datum">📅</th><td class="no-border">{{.Time.Formatted}}{{if .Old}} <span class="has-text-danger">(Vergangenes Event)</span>{{end}}</td></tr>{{end}}
+                    {{if .Old}}<tr class="has-background-warning-light"><th class="w-2em no-border" title="Status">⚠️</th><td class="no-border">vergangenes Event</td></tr>{{end}}
+                    {{if .Time.Formatted}}{{if .Time.IsZero}}<tr><th class="w-2em no-border" title="Datum">📅</th><td class="no-border">{{.Time.Formatted}}</td></tr>{{end}}{{end}}
+                    <!--
+                    {{if .Location}}
                     <tr>
                         <th class="w-2em no-border" title="Ort">🗺</th>
                         <td class="no-border">
                         {{if .Location.HasGeo}}<a href="{{.Location.GoogleMaps}}" title="{{$.Name.Orig}}: {{.Location.Name}}" target="_blank">{{.Location.Name}}</a>{{if .Location.ShowDistDir}} (<span title="Distanz und Richtung von {{Config.City.Name}}">{{.Location.DistDirFancy}}</span>){{end}}{{else}}{{.Location.Name}}{{end}}
                         </td>
                     </tr>
-                    <tr>
-                        <th class="w-2em no-border" title="Webseite">👉</th>
-                        <td class="no-border">
-                        <a class="tag is-primary" href="{{.MainLink.Url}}" title="{{.Name.Orig}}: {{.LinkTitle}}" target="_blank">{{.LinkTitle}}</a>
-                        </td>
-                    </tr>
+                    {{end}}
+                    -->
                     {{if .Details}}<tr><th class="w-2em no-border" title="Details">ℹ️</th><td class="no-border">{{.Details}}</td></tr>{{end}}
-                    {{if or .RegistrationLink .Links}}<tr>
+                    <tr>
                         <th class="w-2em no-border" title="Infos">🔗</th>
                         <td class="no-border">
                             <div class="tags">
+                                <a class="tag is-primary" href="{{.MainLink.Url}}" title="{{.Name.Orig}}: {{.LinkTitle}}" target="_blank">{{.LinkTitle}}</a>
                                 {{if .RegistrationLink}}
                                 <a class="tag is-primary" href="{{.RegistrationLink.Url}}" title="{{$.Name.Orig}}: {{.RegistrationLink.Name}}" target="_blank">{{.RegistrationLink.Name}}</a>
                                 {{end}}
@@ -58,7 +69,7 @@
                             {{end}}
                             </div>
                         </td>
-                    </tr>{{end}}
+                    </tr>
                     {{if .Series}}<tr>
                         <th class="w-2em no-border" title="Serien">🔢</th>
                         <td class="no-border">

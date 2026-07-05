@@ -49,6 +49,48 @@ func (tr TimeRange) IsZero() bool {
 	return tr.From.IsZero()
 }
 
+func (tr TimeRange) HasTwo() bool {
+	return !tr.From.IsZero() && !tr.To.IsZero() && !tr.From.Equal(tr.To)
+}
+
+func (tr TimeRange) FromDay() string {
+	if tr.From.IsZero() {
+		return ""
+	}
+	return fmt.Sprintf("%02d", tr.From.Day())
+}
+func (tr TimeRange) FromDow() string {
+	if tr.From.IsZero() {
+		return ""
+	}
+	return WeekdayStr(tr.From.Weekday())
+}
+func (tr TimeRange) FromMonth() string {
+	if tr.From.IsZero() {
+		return ""
+	}
+	return MonthStrShort(tr.From.Month())
+}
+
+func (tr TimeRange) ToDay() string {
+	if tr.To.IsZero() {
+		return ""
+	}
+	return fmt.Sprintf("%02d", tr.To.Day())
+}
+func (tr TimeRange) ToDow() string {
+	if tr.To.IsZero() {
+		return ""
+	}
+	return WeekdayStr(tr.To.Weekday())
+}
+func (tr TimeRange) ToMonth() string {
+	if tr.To.IsZero() {
+		return ""
+	}
+	return MonthStrShort(tr.To.Month())
+}
+
 func (tr TimeRange) Year() int {
 	if tr.IsZero() {
 		return 0
@@ -162,4 +204,26 @@ func MonthStr(m time.Month) string {
 		return name
 	}
 	return "Dezember"
+}
+
+var germanMonthsShort = map[time.Month]string{
+	time.January:   "Jan",
+	time.February:  "Feb",
+	time.March:     "Mär",
+	time.April:     "Apr",
+	time.May:       "Mai",
+	time.June:      "Jun",
+	time.July:      "Jul",
+	time.August:    "Aug",
+	time.September: "Sep",
+	time.October:   "Okt",
+	time.November:  "Nov",
+	time.December:  "Dez",
+}
+
+func MonthStrShort(m time.Month) string {
+	if name, ok := germanMonthsShort[m]; ok {
+		return name
+	}
+	return "Dez"
 }

@@ -476,3 +476,71 @@ a.no-external::after
     transform: translate(-50%, 0);
 }
 
+.h-normal {
+    display: flex;
+    align-items: flex-start;
+}
+.h-title {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 1rem;
+}
+
+.h-main-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: white;
+}
+.h-sub-title {
+    font-size: 0.9rem;
+    color: white;
+}
+
+.h-date-separator {
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.2rem;
+}
+.h-date-container {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: center;
+}
+
+.h-date {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+    background-color: white;
+    margin: 0.2rem;
+    min-width: 4rem;
+    border-radius: .3em;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 1px 5px #0003;
+    color: white;
+    text-align: center;
+}
+
+.h-date-month {
+    font-size: 0.8rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    background-color: red;
+    padding: 0.1rem;
+}
+.h-date-day {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: black;
+}
+.h-date-dow {
+    font-size: 0.6rem;
+    padding: 0.1rem;
+    color: black;
+}
