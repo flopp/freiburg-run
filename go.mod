@@ -2,7 +2,7 @@ module github.com/flopp/freiburg-run
 
 go 1.25.8
 
-toolchain go1.26.4
+toolchain go1.26.5
 
 require (
 	github.com/arran4/golang-ical v0.3.5
