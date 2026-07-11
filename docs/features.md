@@ -207,6 +207,8 @@ This document lists implemented features of the freiburg.run project (website + 
 	- `Shops`
 	- `Tags`
 	- `Series`
+	- `Notifications`
+	- `Redirects`
 	- optional `Parkrun` (if enabled)
 - Validation and normalization include:
 	- date ordering checks,
@@ -313,8 +315,7 @@ This document lists implemented features of the freiburg.run project (website + 
 	- footer links,
 	- Google API/sheet ids,
 	- analytics id,
-	- IndexNow key,
-	- notification messages.
+	- IndexNow key.
 
 ## 8. Non-Functional Characteristics
 

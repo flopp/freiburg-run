@@ -29,6 +29,7 @@ type Data struct {
 	SeriesOld      []*Serie
 	ParkrunEvents  []*ParkrunEvent
 	Redirects      map[string]string // map from original to new URL
+	Notifications  []*Notification
 }
 
 type CheckUrl struct {
@@ -111,6 +112,7 @@ func FetchData(config utils.Config, today time.Time, client googlesheetswrapper.
 	data.Series = sheetsData.Series
 	data.ParkrunEvents = sheetsData.Parkrun
 	data.Redirects = sheetsData.Redirects
+	data.Notifications = sheetsData.Notifications
 
 	FindPrevNextEvents(data.Events)
 	FindSiblings(data.Events, today)

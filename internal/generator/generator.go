@@ -1,8 +1,10 @@
 package generator
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
+	"sort"
 	"strings"
 	"time"
 
@@ -12,15 +14,16 @@ import (
 )
 
 type CommonData struct {
-	Config        utils.Config
-	Timestamp     string
-	TimestampFull string
-	BaseUrl       string
-	BasePath      string
-	Data          *events.Data
-	JsFiles       []string
-	CssFiles      []string
-	UmamiScript   string
+	Config                   utils.Config
+	Timestamp                string
+	TimestampFull            string
+	BaseUrl                  string
+	BasePath                 string
+	Data                     *events.Data
+	JsFiles                  []string
+	CssFiles                 []string
+	UmamiScript              string
+	NotificationMessagesJSON string
 }
 
 type TemplateData struct {
@@ -408,6 +411,43 @@ func NewGenerator(
 	}
 }
 
+func (g Generator) PrepareNotificationMessagesJSON(notifications []*events.Notification) (string, error) {
+	// filter
+	today := g.now
+	today = time.Date(today.Year(), today.Month(), today.Day(), 0, 0, 0, 0, today.Location())
+
+	type message struct {
+		Id      int    `json:"id"`
+		Start   string `json:"start"`
+		End     string `json:"end"`
+		Content string `json:"content"`
+		Class   string `json:"class"`
+	}
+
+	filtered := make([]message, 0, len(notifications))
+	for _, m := range notifications {
+		// filter out messages whose end date is in the past
+		if m.End != "" {
+			end, err := utils.ParseDate(m.End)
+			if err == nil && end.Before(today) {
+				continue
+			}
+		}
+		filtered = append(filtered, message{m.Id, m.Start, m.End, m.Content, m.Class})
+	}
+
+	// sort by id ascending
+	sort.Slice(filtered, func(i, j int) bool {
+		return filtered[i].Id < filtered[j].Id
+	})
+
+	data, err := json.Marshal(filtered)
+	if err != nil {
+		return "", err
+	}
+	return string(data), nil
+}
+
 func (g Generator) Generate(eventsData events.Data) error {
 	// Prepare assets
 	resourceManager := resources.NewResourceManager(".", string(g.out))
@@ -460,6 +500,11 @@ func (g Generator) Generate(eventsData events.Data) error {
 	breadcrumbsShops := breadcrumbsBase.Push(utils.CreateLink("Lauf-Shops", "/shops.html"))
 	breadcrumbsInfo := breadcrumbsBase.Push(utils.CreateLink("Info", "/info.html"))
 
+	notificationMessagesJSON, err := g.PrepareNotificationMessagesJSON(eventsData.Notifications)
+	if err != nil {
+		return fmt.Errorf("prepare notification messages JSON: %w", err)
+	}
+
 	commondata := CommonData{
 		g.config,
 		g.timestamp,
@@ -470,6 +515,7 @@ func (g Generator) Generate(eventsData events.Data) error {
 		resourceManager.JsFiles,
 		resourceManager.CssFiles,
 		resourceManager.UmamiScript,
+		notificationMessagesJSON,
 	}
 
 	// Render general pages

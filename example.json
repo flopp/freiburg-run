@@ -45,15 +45,6 @@
         "website_id": "YOUR_UMAMI_WEBSITE_ID (OPTIONAL)"
     },
     "notification": {
-        "enabled": true,
-        "messages": [
-            {
-                "id": 1,
-                "start": "2024-01-01",
-                "end": "2024-12-31",
-                "content": "This is a <b>notification</b> message.",
-                "class": "is-info"
-            }
-        ]
+        "enabled": true
     }
 }

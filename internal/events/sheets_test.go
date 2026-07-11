@@ -40,6 +40,10 @@ func TestLoadSheets_Mock(t *testing.T) {
 			{"ORIGINAL", "NEW"},
 			{"/old-url", "/new-url"},
 		},
+		"Notifications": {
+			{"ID", "START", "END", "CONTENT", "CLASS"},
+			{"1", "2021-01-01", "2021-12-31", "Important update", "info"},
+		},
 	}
 
 	config := utils.Config{}
@@ -65,6 +69,9 @@ func TestLoadSheets_Mock(t *testing.T) {
 	if len(sheetsData.Series) != 1 {
 		t.Errorf("Expected 1 series, got %d", len(sheetsData.Series))
 	}
+	if len(sheetsData.Notifications) != 1 {
+		t.Errorf("Expected 1 notification, got %d", len(sheetsData.Notifications))
+	}
 
 	// Check Redirects
 	if len(sheetsData.Redirects) != 1 {
@@ -72,5 +79,11 @@ func TestLoadSheets_Mock(t *testing.T) {
 	}
 	if sheetsData.Redirects["/old-url"] != "/new-url" {
 		t.Errorf("Redirects mapping incorrect: got %v", sheetsData.Redirects)
+	}
+
+	// Check Notifications
+	n := sheetsData.Notifications[0]
+	if n.Id != 1 || n.Start != "2021-01-01" || n.End != "2021-12-31" || n.Content != "Important update" || n.Class != "info" {
+		t.Errorf("Notification mapping incorrect: got %+v", n)
 	}
 }
