@@ -270,6 +270,9 @@ func (event *Event) TagImages() []string {
 		if tag.Name.Sanitized == "orientierungslauf" {
 			images = append(images, "orienteering")
 		}
+		if tag.Name.Sanitized == "bike" {
+			images = append(images, "bike")
+		}
 	}
 	if event.Location.IsFrance() {
 		images = append(images, "fr")
