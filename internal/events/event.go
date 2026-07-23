@@ -90,7 +90,11 @@ func (event Event) GenerateDescription() string {
 
 	switch event.Type {
 	case "event":
-		description = fmt.Sprintf("Informationen zur Laufveranstaltung '%s' %s %s", event.Name.Orig, location, time)
+		if event.IsBikeEvent() {
+			description = fmt.Sprintf("Informationen zur Radveranstaltung '%s' %s %s", event.Name.Orig, location, time)
+		} else {
+			description = fmt.Sprintf("Informationen zur Laufveranstaltung '%s' %s %s", event.Name.Orig, location, time)
+		}
 	case "group":
 		description = fmt.Sprintf("Informationen zur Laufgruppe / zum Lauftreff '%s' %s %s", event.Name.Orig, location, time)
 	case "shop":
@@ -280,6 +284,15 @@ func (event *Event) TagImages() []string {
 		images = append(images, "ch")
 	}
 	return images
+}
+
+func (event *Event) IsBikeEvent() bool {
+	for _, tag := range event.Tags {
+		if tag.Name.Sanitized == "bike" {
+			return true
+		}
+	}
+	return false
 }
 
 func SplitEvents(eventList []*Event) ([]*Event, []*Event) {
