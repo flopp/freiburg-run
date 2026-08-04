@@ -96,9 +96,9 @@ func (r *ResourceManager) CopyExternalAssets() {
 	r.CssFiles = append(r.CssFiles, r.CopyHashErr(static.Join("style.css"), "style-HASH.css"))
 
 	// Images
-	r.CopyHashErr(vendor.Join("leaflet", "marker-icon.png"), filepath.Join(r.TargetDir, "images/marker-icon.png"))
-	r.CopyHashErr(vendor.Join("leaflet", "marker-icon-2x.png"), filepath.Join(r.TargetDir, "images/marker-icon-2x.png"))
-	r.CopyHashErr(vendor.Join("leaflet", "marker-shadow.png"), filepath.Join(r.TargetDir, "images/marker-shadow.png"))
+	r.CopyHashErr(vendor.Join("leaflet", "marker-icon.png"), "images/marker-icon.png")
+	r.CopyHashErr(vendor.Join("leaflet", "marker-icon-2x.png"), "images/marker-icon-2x.png")
+	r.CopyHashErr(vendor.Join("leaflet", "marker-shadow.png"), "images/marker-shadow.png")
 }
 
 func (r *ResourceManager) CopyStaticAssets() {
