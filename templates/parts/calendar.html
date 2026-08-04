@@ -1,0 +1,19 @@
+<div class="h-date-container">
+    {{if not .HasTwo}}
+    <div class="h-date">
+        <span class="h-date-month">{{.FromMonth}}</span>
+        <span class="h-date-day">{{.FromDay}}</span>
+        <span class="h-date-dow">{{.FromDow}}</span>
+    </div>
+    {{else}}
+    <div class="h-date">
+        {{if eq .FromMonth .ToMonth}}
+            <span class="h-date-month">{{.FromMonth}}</span>
+        {{else}}
+            <span class="h-date-month">{{.FromMonth}} - {{.ToMonth}}</span>
+        {{end}}
+        <span class="h-date-day">{{.FromDay}} - {{.ToDay}}</span>
+        <span class="h-date-dow">{{.FromDow}} - {{.ToDow}}</span>
+    </div>
+    {{end}}
+</div>

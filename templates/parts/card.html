@@ -10,23 +10,7 @@
         <header class="card-header is-flex-direction-column {{if .Cancelled}}has-background-danger{{else}}has-background-link{{end}} has-text-white">
             <a class="h-normal" href="{{BasePath .Slug}}" itemprop="item">
                 {{if not .Time.IsZero}}
-                <div class="h-date-container">
-                    <div class="h-date">
-                        <span class="h-date-month">{{.Time.FromMonth}}</span>
-                        <span class="h-date-day">{{.Time.FromDay}}</span>
-                        <span class="h-date-dow">{{.Time.FromDow}}</span>
-                    </div>
-                    {{if .Time.HasTwo}}
-                    <div class="h-date-separator">
-                        <span>-</span>
-                    </div>
-                    <div class="h-date">
-                        <span class="h-date-month">{{.Time.ToMonth}}</span>
-                        <span class="h-date-day">{{.Time.ToDay}}</span>
-                        <span class="h-date-dow">{{.Time.ToDow}}</span>
-                    </div>
-                    {{end}}
-                </div>
+                {{template "calendar.html" .Time}}
                 {{end}}
                 <div class="h-title has-text-white">
                     <p class="h-main-title">{{.Name.Orig}}</p>
