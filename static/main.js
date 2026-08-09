@@ -978,13 +978,15 @@ const main = () => {
 
     }
 
-    const eventMap = document.querySelector("#event-map");
-    if (eventMap !== null) {
+    // iterate over all elements with class "event-map" and load a map for each
+    
+    document.querySelectorAll(".event-map").forEach(eventMap => {
+        console.log(eventMap);
         const geo = parseGeo(eventMap.dataset.geo);
         const track = parsePolyline(eventMap.dataset.track);
 
         if (geo !== null) {
-            const map = L.map('event-map', {gestureHandling: true}).setView(geo, 15);
+            const map = L.map(eventMap, {gestureHandling: true}).setView(geo, 15);
 
             L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -998,7 +1000,7 @@ const main = () => {
                 map.fitBounds(polyline.getBounds());
             }   
         }
-    }
+    });
 
     // NAVBAR
     const burgersByTarget = new Map();

@@ -32,7 +32,7 @@ main {
 #map-container {
     margin-bottom: 1.5rem;
 }
-#event-map, #small-map  {
+.event-map, #small-map  {
     height: 400px;
     width: 100%;
 }
