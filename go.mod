@@ -5,7 +5,7 @@ go 1.25.8
 toolchain go1.26.5
 
 require (
-	github.com/arran4/golang-ical v0.3.5
+	github.com/arran4/golang-ical v0.3.6
 	github.com/flopp/go-compass v0.0.0-20250313113037-3252802e46f4
 	github.com/flopp/go-coordsparser v0.0.0-20250311184423-61a7ff62d17c
 	github.com/flopp/go-filehash v0.0.0-20250313113005-e3e8650a2258
