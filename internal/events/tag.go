@@ -13,11 +13,10 @@ type Tag struct {
 	Events      []*Event
 	EventsOld   []*Event
 	Groups      []*Event
-	Shops       []*Event
 }
 
 func CreateTag(name string) *Tag {
-	return &Tag{utils.NewName(name), "", make([]*Event, 0), make([]*Event, 0), make([]*Event, 0), make([]*Event, 0)}
+	return &Tag{utils.NewName(name), "", make([]*Event, 0), make([]*Event, 0), make([]*Event, 0)}
 }
 
 func (tag *Tag) Slug() string {
@@ -38,10 +37,6 @@ func (tag *Tag) NumOldEvents() int {
 
 func (tag *Tag) NumGroups() int {
 	return NonSeparators(tag.Groups)
-}
-
-func (tag *Tag) NumShops() int {
-	return NonSeparators(tag.Shops)
 }
 
 func GetTag(tags map[string]*Tag, name string) *Tag {

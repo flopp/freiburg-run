@@ -175,11 +175,6 @@ func createHtaccess(config utils.Config, data events.Data, outDir utils.Path) er
 			destination.WriteString(fmt.Sprintf("Redirect /%s /%s\n", old, e.Slug()))
 		}
 	}
-	for _, e := range data.Shops {
-		if old := e.SlugOld(); old != "" {
-			destination.WriteString(fmt.Sprintf("Redirect /%s /%s\n", old, e.Slug()))
-		}
-	}
 
 	destination.WriteString("\n# redirect obsolete items\n")
 	for _, e := range data.EventsObsolete {
@@ -187,9 +182,6 @@ func createHtaccess(config utils.Config, data events.Data, outDir utils.Path) er
 	}
 	for _, e := range data.GroupsObsolete {
 		destination.WriteString(fmt.Sprintf("Redirect /%s /lauftreffs.html\n", e.Slug()))
-	}
-	for _, e := range data.ShopsObsolete {
-		destination.WriteString(fmt.Sprintf("Redirect /%s /shops.html\n", e.Slug()))
 	}
 
 	return nil
@@ -269,14 +261,13 @@ func createLlmsTxt(config utils.Config, outDir utils.Path) error {
 
 	destination.WriteString("# " + config.Website.Name + "\n")
 	destination.WriteString("\n")
-	destination.WriteString("> " + config.Website.Name + " is a website listing running events, running groups, and running shops in and around " + config.City.Name + " (50km radius). It strives to provide a complete and up-to-date overview of the running scene in the region.\n")
+	destination.WriteString("> " + config.Website.Name + " is a website listing running events and running groups in and around " + config.City.Name + " (50km radius). It strives to provide a complete and up-to-date overview of the running scene in the region.\n")
 	destination.WriteString("> The website language is German.\n")
 	destination.WriteString("\n")
 	destination.WriteString("## Key Pages\n")
 	destination.WriteString("\n")
 	destination.WriteString("- [Laufkalender (Running Events)](" + baseUrl + "/): Upcoming running events in and around " + config.City.Name + "\n")
 	destination.WriteString("- [Lauftreffs (Running Groups)](" + baseUrl + "/lauftreffs.html): Running groups and clubs in and around " + config.City.Name + "\n")
-	destination.WriteString("- [Lauf-Shops (Running Shops)](" + baseUrl + "/shops.html): Running shops in and around " + config.City.Name + "\n")
 	destination.WriteString("- [Kategorien (Categories)](" + baseUrl + "/tags.html): Event categories\n")
 	// also link some important categories: marathon, halbmarathon, 10km, traillauf:
 	destination.WriteString("	- [Marathon](" + baseUrl + "/tags/marathon.html): Marathon events\n")
@@ -490,14 +481,12 @@ func (g Generator) Generate(eventsData events.Data) error {
 	sitemap.AddCategory("Kategorien")
 	sitemap.AddCategory("Serien")
 	sitemap.AddCategory("Lauftreffs")
-	sitemap.AddCategory("Lauf-Shops")
 
 	breadcrumbsBase := utils.InitBreadcrumbs(utils.CreateLink(g.config.Website.Name, "/"))
 	breadcrumbsEvents := breadcrumbsBase.Push(utils.CreateLink("Laufveranstaltungen", "/"))
 	breadcrumbsTags := breadcrumbsEvents.Push(utils.CreateLink("Kategorien", "/tags.html"))
 	breadcrumbsSeries := breadcrumbsEvents.Push(utils.CreateLink("Serien", "/series.html"))
 	breadcrumbsGroups := breadcrumbsBase.Push(utils.CreateLink("Lauftreffs", "/lauftreffs.html"))
-	breadcrumbsShops := breadcrumbsBase.Push(utils.CreateLink("Lauf-Shops", "/shops.html"))
 	breadcrumbsInfo := breadcrumbsBase.Push(utils.CreateLink("Info", "/info.html"))
 
 	notificationMessagesJSON, err := g.PrepareNotificationMessagesJSON(eventsData.Notifications)
@@ -521,7 +510,7 @@ func (g Generator) Generate(eventsData events.Data) error {
 	// Render general pages
 	renderPage := func(slug, slugFile, template, nav, sitemapCategory, title, description string, breadcrumbs utils.Breadcrumbs) error {
 		hasFilter := false
-		if template == "events" || template == "groups" || template == "shops" {
+		if template == "events" || template == "groups" {
 			hasFilter = true
 		}
 
@@ -570,13 +559,6 @@ func (g Generator) Generate(eventsData events.Data) error {
 		return fmt.Errorf("render groups page: %w", err)
 	}
 
-	if err := renderPage("shops.html", "shops.html", "shops", "shops", "Lauf-Shops",
-		fmt.Sprintf("Lauf-Shops im Raum %s", g.config.City.Name),
-		fmt.Sprintf("Liste von Lauf-Shops und Einzelhandelsgeschäften mit Laufschuh-Auswahl im Raum %s", g.config.City.Name),
-		breadcrumbsShops); err != nil {
-		return fmt.Errorf("render shops page: %w", err)
-	}
-
 	if g.config.Pages.Parkrun {
 		if err := renderSubPage("dietenbach-parkrun.html", "dietenbach-parkrun.html", "dietenbach-parkrun", "parkrun", "Allgemein",
 			"Dietenbach parkrun",
@@ -591,13 +573,6 @@ func (g Generator) Generate(eventsData events.Data) error {
 		fmt.Sprintf("Liste aller Serien von Laufveranstaltungen, Lauf-Wettkämpfen, Volksläufen im Raum %s", g.config.City.Name),
 		breadcrumbsSeries); err != nil {
 		return fmt.Errorf("render series page: %w", err)
-	}
-
-	if err := renderSubPage("map.html", "map.html", "map", "map", "Allgemein",
-		"Karte aller Laufveranstaltungen",
-		"Karte",
-		breadcrumbsBase); err != nil {
-		return fmt.Errorf("render subpage %q: %w", "map.html", err)
 	}
 
 	if err := renderPage("info.html", "info.html", "info", "info", "Allgemein",
@@ -699,7 +674,7 @@ func (g Generator) Generate(eventsData events.Data) error {
 		sitemap.Add(fname, fname, name, "Vergangene Laufveranstaltungen")
 	}
 
-	// Render events, groups, shops lists
+	// Render events, groups lists
 	renderEventList := func(eventList []*events.Event, nav, main, sitemapCategory string, breadcrumbs utils.Breadcrumbs) error {
 		eventdata := EventTemplateData{
 			TemplateData{
@@ -750,9 +725,6 @@ func (g Generator) Generate(eventsData events.Data) error {
 	}
 	if err := renderEventList(eventsData.Groups, "groups", "/lauftreffs.html", "Lauftreffs", breadcrumbsGroups); err != nil {
 		return fmt.Errorf("render group event list: %w", err)
-	}
-	if err := renderEventList(eventsData.Shops, "shops", "/shops.html", "Lauf-Shops", breadcrumbsShops); err != nil {
-		return fmt.Errorf("render shop event list: %w", err)
 	}
 
 	// Render tags

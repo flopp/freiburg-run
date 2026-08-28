@@ -22,8 +22,6 @@ type Data struct {
 	EventsObsolete []*Event
 	Groups         []*Event
 	GroupsObsolete []*Event
-	Shops          []*Event
-	ShopsObsolete  []*Event
 	Tags           []*Tag
 	Series         []*Serie
 	SeriesOld      []*Serie
@@ -103,11 +101,9 @@ func FetchData(config utils.Config, today time.Time, client googlesheetswrapper.
 
 	ValidateDateOrder(sheetsData.Events)
 	ValidateNameOrder(sheetsData.Groups)
-	ValidateNameOrder(sheetsData.Shops)
 
 	data.Events, data.EventsObsolete = SplitObsolete(sheetsData.Events)
 	data.Groups, data.GroupsObsolete = SplitObsolete(sheetsData.Groups)
-	data.Shops, data.ShopsObsolete = SplitObsolete(sheetsData.Shops)
 	data.Tags = sheetsData.Tags
 	data.Series = sheetsData.Series
 	data.ParkrunEvents = sheetsData.Parkrun
@@ -186,8 +182,6 @@ func collectEventTags(tags map[string]*Tag, eventList []*Event) error {
 				}
 			case "group":
 				tag.Groups = append(tag.Groups, event)
-			case "shop":
-				tag.Shops = append(tag.Shops, event)
 			default:
 				return fmt.Errorf("unexpected event.Type for '%s': %s", event.Name.Orig, event.Type)
 			}
@@ -209,7 +203,6 @@ func (data *Data) collectTags(today time.Time) error {
 		{"Events", data.Events},
 		{"EventsOld", data.EventsOld},
 		{"Groups", data.Groups},
-		{"Shops", data.Shops},
 	}
 	for _, l := range lists {
 		if err := collectEventTags(tags, l.list); err != nil {
@@ -250,8 +243,6 @@ func collectEventSeries(seriesMap map[string]*Serie, eventList []*Event) error {
 				}
 			case "group":
 				serie.Groups = append(serie.Groups, event)
-			case "shop":
-				serie.Shops = append(serie.Shops, event)
 			default:
 				return fmt.Errorf("unexpected event.Type for '%s': %s", event.Name.Orig, event.Type)
 			}
@@ -273,7 +264,6 @@ func (data *Data) collectSeries(today time.Time) error {
 		{"Events", data.Events},
 		{"EventsOld", data.EventsOld},
 		{"Groups", data.Groups},
-		{"Shops", data.Shops},
 	}
 	for _, l := range lists {
 		if err := collectEventSeries(seriesMap, l.list); err != nil {

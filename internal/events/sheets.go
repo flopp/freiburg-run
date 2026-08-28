@@ -17,7 +17,6 @@ import (
 type SheetsData struct {
 	Events        []*Event
 	Groups        []*Event
-	Shops         []*Event
 	Parkrun       []*ParkrunEvent
 	Tags          []*Tag
 	Series        []*Serie
@@ -33,7 +32,7 @@ func LoadSheets(config utils.Config, today time.Time, client googlesheetswrapper
 		return SheetsData{}, fmt.Errorf("fetching all sheets: %w", err)
 	}
 
-	eventSheets, groupsSheet, shopsSheet, parkrunSheet, tagsSheet, seriesSheet, redirectsSheet, notificationsSheet, err := findSheetNames(config, sheets)
+	eventSheets, groupsSheet, parkrunSheet, tagsSheet, seriesSheet, redirectsSheet, notificationsSheet, err := findSheetNames(config, sheets)
 	if err != nil {
 		return SheetsData{}, err
 	}
@@ -45,10 +44,6 @@ func LoadSheets(config utils.Config, today time.Time, client googlesheetswrapper
 	groups, err := fetchEvents(config, today, "group", groupsSheet, sheets)
 	if err != nil {
 		return SheetsData{}, fmt.Errorf("fetching groups: %w", err)
-	}
-	shops, err := fetchEvents(config, today, "shop", shopsSheet, sheets)
-	if err != nil {
-		return SheetsData{}, fmt.Errorf("fetching shops: %w", err)
 	}
 	var parkrun []*ParkrunEvent
 	if config.Pages.Parkrun {
@@ -79,7 +74,6 @@ func LoadSheets(config utils.Config, today time.Time, client googlesheetswrapper
 	return SheetsData{
 		Events:        events,
 		Groups:        groups,
-		Shops:         shops,
 		Parkrun:       parkrun,
 		Tags:          tags,
 		Series:        series,
@@ -104,8 +98,8 @@ func getYearFromEventSheetName(sheetName string) (int, error) {
 	return date.Year(), nil
 }
 
-// findSheetNames identifies the relevant sheet names for events, groups, shops, parkrun, tags, series, redirects, and notifications based on their names and validates them.
-func findSheetNames(config utils.Config, sheets map[string][][]string) (eventSheets []string, groupsSheet, shopsSheet, parkrunSheet, tagsSheet, seriesSheet, redirectsSheet, notificationsSheet string, err error) {
+// findSheetNames identifies the relevant sheet names for events, groups, parkrun, tags, series, redirects, and notifications based on their names and validates them.
+func findSheetNames(config utils.Config, sheets map[string][][]string) (eventSheets []string, groupsSheet, parkrunSheet, tagsSheet, seriesSheet, redirectsSheet, notificationsSheet string, err error) {
 	for sheetName := range sheets {
 		name := strings.ToLower(sheetName)
 		switch {
@@ -114,7 +108,7 @@ func findSheetNames(config utils.Config, sheets map[string][][]string) (eventShe
 		case name == "groups":
 			groupsSheet = sheetName
 		case name == "shops":
-			shopsSheet = sheetName
+			// ignore shops sheet for now
 		case name == "parkrun":
 			parkrunSheet = sheetName
 		case name == "tags":
@@ -134,7 +128,7 @@ func findSheetNames(config utils.Config, sheets map[string][][]string) (eventShe
 
 	// we require at least 2 event sheets, so that we have some old events to show on the "Vergangene Events" page and to test the old/new logic
 	if len(eventSheets) < 2 {
-		return nil, "", "", "", "", "", "", "", fmt.Errorf("fetching sheets: unable to find enough 'Events' sheets")
+		return nil, "", "", "", "", "", "", fmt.Errorf("fetching sheets: unable to find enough 'Events' sheets")
 	}
 
 	// sort eventSheets by name, so that they are always in the same order (e.g. for testing)
@@ -144,36 +138,33 @@ func findSheetNames(config utils.Config, sheets map[string][][]string) (eventShe
 	for _, sheetName := range eventSheets {
 		year, err := getYearFromEventSheetName(sheetName)
 		if err != nil {
-			return nil, "", "", "", "", "", "", "", fmt.Errorf("fetching sheets: %v", err)
+			return nil, "", "", "", "", "", "", fmt.Errorf("fetching sheets: %v", err)
 		}
 		if lastYear != -1 && year != lastYear+1 {
-			return nil, "", "", "", "", "", "", "", fmt.Errorf("fetching sheets: unexpected event sheet name '%s': missing year %d", sheetName, lastYear+1)
+			return nil, "", "", "", "", "", "", fmt.Errorf("fetching sheets: unexpected event sheet name '%s': missing year %d", sheetName, lastYear+1)
 		}
 		lastYear = year
 	}
 
 	if groupsSheet == "" {
-		return nil, "", "", "", "", "", "", "", fmt.Errorf("fetching sheets: unable to find 'Groups' sheet")
-	}
-	if shopsSheet == "" {
-		return nil, "", "", "", "", "", "", "", fmt.Errorf("fetching sheets: unable to find 'Shops' sheet")
+		return nil, "", "", "", "", "", "", fmt.Errorf("fetching sheets: unable to find 'Groups' sheet")
 	}
 	if config.Pages.Parkrun && parkrunSheet == "" {
-		return nil, "", "", "", "", "", "", "", fmt.Errorf("fetching sheets: unable to find 'Parkrun' sheet")
+		return nil, "", "", "", "", "", "", fmt.Errorf("fetching sheets: unable to find 'Parkrun' sheet")
 	}
 	if tagsSheet == "" {
-		return nil, "", "", "", "", "", "", "", fmt.Errorf("fetching sheets: unable to find 'Tags' sheet")
+		return nil, "", "", "", "", "", "", fmt.Errorf("fetching sheets: unable to find 'Tags' sheet")
 	}
 	if seriesSheet == "" {
-		return nil, "", "", "", "", "", "", "", fmt.Errorf("fetching sheets: unable to find 'Series' sheet")
+		return nil, "", "", "", "", "", "", fmt.Errorf("fetching sheets: unable to find 'Series' sheet")
 	}
 	if redirectsSheet == "" {
-		return nil, "", "", "", "", "", "", "", fmt.Errorf("fetching sheets: unable to find 'Redirects' sheet")
+		return nil, "", "", "", "", "", "", fmt.Errorf("fetching sheets: unable to find 'Redirects' sheet")
 	}
 	if notificationsSheet == "" {
-		return nil, "", "", "", "", "", "", "", fmt.Errorf("fetching sheets: unable to find 'Notifications' sheet")
+		return nil, "", "", "", "", "", "", fmt.Errorf("fetching sheets: unable to find 'Notifications' sheet")
 	}
-	return eventSheets, groupsSheet, shopsSheet, parkrunSheet, tagsSheet, seriesSheet, redirectsSheet, notificationsSheet, nil
+	return eventSheets, groupsSheet, parkrunSheet, tagsSheet, seriesSheet, redirectsSheet, notificationsSheet, nil
 }
 
 // loadEvents loads event data from the given event sheets and returns a list of Event structs.
@@ -621,7 +612,7 @@ func fetchSeries(config utils.Config, sheetName string, sheetsData map[string][]
 		if err != nil {
 			return nil, fmt.Errorf("sheet '%s', line '%d': parsing links of series '%s': %w", sheetName, line+2, data.Name, err)
 		}
-		series = append(series, &Serie{utils.NewName(data.Name), template.HTML(data.Description), links, make([]*Event, 0), make([]*Event, 0), make([]*Event, 0), make([]*Event, 0)})
+		series = append(series, &Serie{utils.NewName(data.Name), template.HTML(data.Description), links, make([]*Event, 0), make([]*Event, 0), make([]*Event, 0)})
 	}
 
 	return series, nil

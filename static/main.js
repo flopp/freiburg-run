@@ -140,10 +140,6 @@ const loadMap = function (id) {
                     zOffset = 1000;
                     icon = redIcon;
                     break;
-                case "Lauf-Shop":
-                    zOffset = 1000;
-                    icon = greenIcon;
-                    break;
                 case "vergangene Veranstaltung":
                     zOffset = -1000;
                     icon = greyIcon;
@@ -178,10 +174,6 @@ const loadMap = function (id) {
         label: "Lauftreff",
         type: "image",
         url: "/images/marker-red-icon.png",
-    },{
-        label: "Lauf-Shop",
-        type: "image",
-        url: "/images/marker-green-icon.png",
     }];
     items.push(
         {
@@ -481,7 +473,7 @@ const normalizeWatchlistItem = function(item) {
             category = id.substring(0, slashIdx);
         }
     }
-    if (category !== "event" && category !== "group" && category !== "shop") {
+    if (category !== "event" && category !== "group") {
         category = "event";
     }
 
@@ -687,7 +679,6 @@ const initWatchlist = function(storage) {
         const sections = [
             {key: "event", label: "Veranstaltungen"},
             {key: "group", label: "Lauftreffs"},
-            {key: "shop",  label: "Lauf-Shops"},
         ];
 
         sections.forEach(({key, label}) => {
@@ -962,10 +953,6 @@ const main = () => {
     });
 
     // MAPS
-    if (document.querySelector("#big-map") !== null) {
-        loadMap("big-map");
-    }
-
     const mapShowBtn = document.querySelector("#map-show-btn");
     const mapHideBtn = document.querySelector("#map-hide-btn");
     if (mapShowBtn !== null && mapHideBtn !== null) {

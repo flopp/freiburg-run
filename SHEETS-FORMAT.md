@@ -4,7 +4,6 @@
 
 - **(required)** Running events lists, split by year: `Events$YEAR`, e.g. `Events2025`, `Events2026`, ...
 - **(required)** Running groups list: `Groups`
-- **(required)** Running shops list: `Shops`
 - **(required)** Tag definitions: `Tags`
 - **(required)** Running series definitions: `Series`
 - **(required if config.pages.parkrun=true)** Parkrun data: `Parkrun`
@@ -12,13 +11,13 @@
 
 ---
 
-### Events / Groups / Shops Sheets
+### Events / Groups Sheets
 
 | Column        | Description |
 |---------------|-------------|
 | NAME          | Event name, or `name|oldname`. Used for URLs. If `oldname` is given, a redirect is created from the old to the new name. |
 | NAME2         | Basename for grouping similar events. Events with the same basename are linked. The current event is available as `url(basename)`. |
-| DATE          | Date or date range of the event (required for Events, optional for Groups/Shops). |
+| DATE          | Date or date range of the event (required for Events, optional for Groups). |
 | ADDED         | Date when the event was added to the sheet. |
 | STATUS        | Status string. If non-empty, displayed in the event card. If `obsolete`, the event is hidden. If contains `abgesagt` or `geschlossen`, the event is marked as cancelled. If `temp`, the row is ignored. |
 | URL           | Main website or info URL for the event (required). |

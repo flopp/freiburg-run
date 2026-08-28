@@ -83,9 +83,6 @@
                     <a class="navbar-item has-background-link has-text-white {{if eq .Nav "events-old"}}is-active{{end}}" href="{{BasePath "events-old.html"}}">
                         Archiv
                     </a>
-                    <a class="navbar-item has-background-link has-text-white {{if eq .Nav "map"}}is-active{{end}}" href="{{BasePath "map.html"}}">
-                        Karte
-                    </a>
                     <hr class="navbar-divider has-background-link has-text-white">
                     <a class="navbar-item has-background-link has-text-white" href="{{Config.Contact.FeedbackForm}}" target="_blank">
                         Neue Veranstaltung melden
@@ -97,9 +94,6 @@
                 Lauftreffs
             </a>
 
-            <a class="navbar-item {{if eq .Nav "shops"}}is-active{{end}}" href="{{BasePath "shops.html"}}">
-                Shops
-            </a>
             {{if Config.Pages.Parkrun}}<a class="navbar-item {{if eq .Nav "parkrun"}}is-active{{end}}" href="{{BasePath "dietenbach-parkrun.html"}}">
                 parkrun
             </a>{{end}}

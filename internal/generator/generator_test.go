@@ -30,7 +30,6 @@ func createFakeData() *events.Data {
 		},
 		EventsOld: []*events.Event{},
 		Groups:    []*events.Event{},
-		Shops:     []*events.Event{},
 		Tags:      []*events.Tag{},
 		Series:    []*events.Serie{},
 	}
@@ -342,7 +341,6 @@ func TestCreateLlmsTxt(t *testing.T) {
 		"Freiburg",
 		"https://freiburg.run/",
 		"https://freiburg.run/lauftreffs.html",
-		"https://freiburg.run/shops.html",
 		"https://freiburg.run/sitemap.xml",
 		"https://freiburg.run/events.ics",
 	}

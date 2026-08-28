@@ -37,15 +37,6 @@ main {
     width: 100%;
 }
 
-#big-map {
-    position: fixed;
-    overflow: hidden;
-    left: 0;
-    right: 0;
-    top: 3.25rem;
-    bottom: 0;
-}
-
 .navbar.z-top {
     z-index: 9999;
 }

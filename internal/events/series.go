@@ -14,19 +14,18 @@ type Serie struct {
 	Events      []*Event
 	EventsOld   []*Event
 	Groups      []*Event
-	Shops       []*Event
 }
 
 func (s Serie) IsOld() bool {
-	return len(s.Events) == 0 && len(s.Groups) == 0 && len(s.Shops) == 0
+	return len(s.Events) == 0 && len(s.Groups) == 0
 }
 
 func (s Serie) Num() int {
-	return NonSeparators(s.Events) + NonSeparators(s.EventsOld) + NonSeparators(s.Groups) + NonSeparators(s.Shops)
+	return NonSeparators(s.Events) + NonSeparators(s.EventsOld) + NonSeparators(s.Groups)
 }
 
 func CreateSerie(id string, name string) *Serie {
-	return &Serie{utils.NewName2(name, id), "", make([]*utils.Link, 0), make([]*Event, 0), make([]*Event, 0), make([]*Event, 0), make([]*Event, 0)}
+	return &Serie{utils.NewName2(name, id), "", make([]*utils.Link, 0), make([]*Event, 0), make([]*Event, 0), make([]*Event, 0)}
 }
 
 func (serie *Serie) Slug() string {

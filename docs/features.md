@@ -8,7 +8,6 @@ This document lists implemented features of the freiburg.run project (website + 
 - Main content types:
 	- Laufveranstaltungen (events)
 	- Lauftreffs (running groups)
-	- Lauf-Shops (shops)
 	- Tags/Kategorien
 	- Serien
 	- Optional: Dietenbach parkrun page
@@ -19,8 +18,8 @@ This document lists implemented features of the freiburg.run project (website + 
 ### 2.1 Navigation and Information Architecture
 
 - Fixed top navigation with desktop + mobile behavior.
-- Dropdown navigation for event sub-areas (Kategorien, Serien, Archiv, Karte).
-- Separate pages for events, groups, shops, info, legal pages, sitemap.
+- Dropdown navigation for event sub-areas (Kategorien, Serien, Archiv).
+- Separate pages for events, groups, info, legal pages, sitemap.
 - Config-gated pages/menu entries:
 	- `pages.club`
 	- `pages.parkrun`
@@ -38,7 +37,6 @@ This document lists implemented features of the freiburg.run project (website + 
 	- current events,
 	- past events archive,
 	- groups,
-	- shops,
 	- tag pages,
 	- series pages.
 - Month separator cards to structure long lists.
@@ -67,14 +65,6 @@ This document lists implemented features of the freiburg.run project (website + 
 
 ### 2.4 Maps
 
-- Full map page showing all geocoded entities:
-	- current events,
-	- old events,
-	- groups,
-	- shops.
-- Map legend and marker color coding by item type.
-- Radius circles around configured city center (25 km and 50 km).
-- Fit-to-markers behavior.
 - Embedded/toggleable map on list pages.
 - Event detail map (single marker + optional route polyline).
 - Parkrun map with course polyline + special POI markers.
@@ -82,7 +72,7 @@ This document lists implemented features of the freiburg.run project (website + 
 
 ### 2.5 Event Detail Page Features
 
-- Dedicated detail page per entity (event/group/shop).
+- Dedicated detail page per entity (event/group).
 - Action buttons:
 	- Share (Web Share API when supported)
 	- Calendar (for upcoming events)
@@ -114,7 +104,7 @@ This document lists implemented features of the freiburg.run project (website + 
 - Sorting by earliest date first (fallback by name for undated entries).
 - Deduplication by id with best-metadata retention.
 - Hard cap of 100 items.
-- Grouped display by category (Veranstaltungen/Lauftreffs/Lauf-Shops) in modal.
+- Grouped display by category (Veranstaltungen/Lauftreffs) in modal.
 - Count badges in navbar.
 - Local Storage unavailability fallback:
 	- controls disabled,
@@ -131,11 +121,11 @@ This document lists implemented features of the freiburg.run project (website + 
 	- link to each tag page,
 	- current/archive counters,
 	- hide toggle checkbox per tag.
-- Tag detail page includes current events plus matching groups/shops.
+- Tag detail page includes current events plus matching groups.
 - Tag archive page for old events.
 - Cross-link between current and archive views.
 - Series index page with current + old series tables.
-- Series detail page with description, custom links, and associated events/groups/shops.
+- Series detail page with description, custom links, and associated events/groups.
 
 ### 2.9 Parkrun Page
 
@@ -204,7 +194,6 @@ This document lists implemented features of the freiburg.run project (website + 
 - Required sheets:
 	- `EventsYYYY` (multiple, consecutive years)
 	- `Groups`
-	- `Shops`
 	- `Tags`
 	- `Series`
 	- `Notifications`

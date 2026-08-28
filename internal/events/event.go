@@ -97,8 +97,6 @@ func (event Event) GenerateDescription() string {
 		}
 	case "group":
 		description = fmt.Sprintf("Informationen zur Laufgruppe / zum Lauftreff '%s' %s %s", event.Name.Orig, location, time)
-	case "shop":
-		description = fmt.Sprintf("Informationen zum Lauf-Shop '%s' %s", event.Name.Orig, location)
 	}
 
 	if len(description) >= min {
@@ -245,8 +243,6 @@ func (event *Event) LinkTitle() string {
 			return "Mail an Organisator"
 		}
 		return "Zur Webseite des Lauftreffs"
-	case "shop":
-		return "Zur Webseite des Lauf-Shops"
 	default:
 		return "Zur Webseite der Veranstaltung"
 	}
@@ -261,8 +257,6 @@ func (event *Event) NiceType() string {
 		return "Veranstaltung"
 	case "group":
 		return "Lauftreff"
-	case "shop":
-		return "Lauf-Shop"
 	default:
 		return "Veranstaltung"
 	}

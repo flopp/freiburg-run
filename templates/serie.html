@@ -43,16 +43,6 @@
         </div>
 {{end}}
 
-{{if .Serie.Shops}}
-        <h2 class="title">Lauf-Shops</h2>
-
-        <div class="columns is-multiline">
-            {{range .Serie.Shops}}
-            {{template "card.html" .}}
-            {{end}}
-        </div>
-{{end}}
-
 {{if .Serie.EventsOld}}
         <h2 class="title">Vergangene Laufveranstaltungen</h2>
         <div class="notification is-link is-light">
