@@ -2,7 +2,7 @@
 
 <section class="section">
     <div class="container is-max-desktop" itemscope itemtype="https://schema.org/ItemList">
-        <div class="box">
+        <div class="box collapsible">
             <h1 class="title gradient" itemprop="name">{{.Title}}</h1>
 
             <div class="notification is-light is-danger">
@@ -20,13 +20,7 @@
                 </p>
             </div>
         </div>
-
 {{if .Tag.EventsOld}}
-        <h2 class="title">Vergangene Laufveranstaltungen</h2>
-        <div class="notification is-link is-light">
-            In umgekehrt chronologischer Reihenfolge.
-        </div>
-
         <div class="columns is-multiline">
             {{range .Tag.EventsOld}}
             {{template "card.html" .}}

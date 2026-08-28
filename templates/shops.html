@@ -2,14 +2,12 @@
 
 <section class="section">
     <div class="container is-max-desktop" itemscope itemtype="https://schema.org/ItemList">
-        <div class="box">
+        <div class="box collapsible">
             <h1 class="title gradient" itemprop="name">{{.Title}}</h1>
 
             <div class="notification is-link is-light">
                 Liste von Sportgeschäften mit Laufschuhauswahl im Raum {{Config.City.Name}} (~50km Umkreis).
             </div>
-
-            {{template "controls.html" .}}
         </div>
 
         <div class="columns is-multiline">   

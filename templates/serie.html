@@ -2,25 +2,27 @@
 
 <section class="section">
     <div class="container is-max-desktop" itemscope itemtype="https://schema.org/ItemList">
-        <h1 class="title gradient" itemprop="name">{{.Title}}</h1>
+        <div class="box collapsible">
+            <h1 class="title gradient" itemprop="name">{{.Title}}</h1>
 
-        <div class="notification is-link is-light">
+            <div class="notification is-link is-light">
 {{if .Serie.Description}}
-            <p class="block is-italic">
-                {{.Serie.Description}}
-            </p>
+                <p class="block is-italic">
+                    {{.Serie.Description}}
+                </p>
 {{else}}
-            <p class="block">
-                Lauf-Serie <b>{{.Serie.Name.Orig}}</b>
-            </p>
+                <p class="block">
+                    Lauf-Serie <b>{{.Serie.Name.Orig}}</b>
+                </p>
 {{end}}
 {{if .Serie.Links}}
-            <p class="block">
-                {{range .Serie.Links}}
-                <a class="tag is-white" href="{{.Url}}" title="{{$.Serie.Name.Orig}}: {{.Name}}" target="_blank">{{.Name}}</a>
-                {{end}}
-            </p>
+                <p class="block">
+                    {{range .Serie.Links}}
+                    <a class="tag is-white" href="{{.Url}}" title="{{$.Serie.Name.Orig}}: {{.Name}}" target="_blank">{{.Name}}</a>
+                    {{end}}
+                </p>
 {{end}}
+            </div>
         </div>
 
 {{if .Serie.Events}}

@@ -266,6 +266,17 @@ const filter = (s, hiddenTags) => {
     const info = document.querySelector("#filter-info");
     const needle = s.toLowerCase().trim();
 
+    // hide all collapsible boxes when a search is active
+    if (needle !== "") {
+        document.querySelectorAll(".collapsible").forEach(box => {
+            box.classList.add("is-hidden");
+        });
+    } else {
+        document.querySelectorAll(".collapsible").forEach(box => {
+            box.classList.remove("is-hidden");
+        });
+    }
+
     // check if needle is a number (e.g. "10", "10.5", "10,5") and if so, use it as a distance filter
     let needleDistance = -1;
     if (needle !== "") {
