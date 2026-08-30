@@ -138,10 +138,10 @@
     </div>
 </nav>
 
-        {{if ne .Nav "map"}}{{if .Breadcrumbs}}
+        {{if .Breadcrumbs}}
         <section class="section pt-0 pb-0">
             <div class="container is-max-desktop">
-                <div class="box pt-2 pb-2 {{if .HasFilter}}is-radiusless{{else}}no-top-radius{{end}}">
+                <div class="box pt-2 pb-0 {{if .HasFilter}}is-radiusless is-flex is-justify-content-space-between is-align-items-start{{else}}no-top-radius{{end}}">
                     <nav class="breadcrumb">
                         <ul itemscope itemtype="https://schema.org/BreadcrumbList">
                             {{range .Breadcrumbs}}
@@ -154,13 +154,14 @@
                             {{end}}
                         </ul>
                     </nav>
+                    {{if .HasFilter}}<button class="button is-small" type="button" id="toggle-filter">Filter</button>{{end}}
                 </div>
             </div>
         </section>
-        {{end}}{{end}}
+        {{end}}
 
         {{if .HasFilter}}
-        <section class="section pt-0 pb-0">
+        <section class="section pt-0 pb-0 is-hidden" id="section-filter">
             <div class="container is-max-desktop">
                 <div class="box pt-2 pb-1 no-top-radius">
                     {{template "controls.html" .}}

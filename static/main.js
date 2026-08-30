@@ -907,6 +907,13 @@ const main = () => {
         });
         filter("", hiddenTags);
     }
+    const filterToggle = document.querySelector("#toggle-filter");
+    const sectionFilter = document.querySelector("#section-filter");
+    if (filterToggle !== null && sectionFilter !== null) {
+        filterToggle.addEventListener('click', () => {
+            sectionFilter.classList.toggle('is-hidden');
+        });
+    }
 
     // WATCHLIST
     initWatchlist(storage);
