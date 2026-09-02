@@ -1,6 +1,6 @@
 module github.com/flopp/freiburg-run
 
-go 1.25.8
+go 1.26.0
 
 toolchain go1.27.0
 
@@ -13,7 +13,7 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/tdewolff/minify/v2 v2.24.17
 	golang.org/x/text v0.41.0
-	google.golang.org/api v0.295.0
+	google.golang.org/api v0.297.0
 )
 
 require (
