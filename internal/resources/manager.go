@@ -107,7 +107,7 @@ func (r *ResourceManager) CopyStaticAssets() {
 		Source      string
 		Destination string
 	}{
-		{"static/512.png", "favicon.png"},
+		{"static/favicon.png", "favicon.png"},
 		{"static/favicon.ico", "favicon.ico"},
 		{"static/180.png", "apple-touch-icon.png"},
 		{"static/192.png", "android-chrome-192x192.png"},
