@@ -192,14 +192,14 @@ func (event *Event) SlugOld() string {
 }
 
 func (event *Event) SlugFile() string {
-	if event.Type == "event" && event.Meta.BaseName.Sanitized != "" && event.Meta.Current {
+	if event.Meta.BaseName.Sanitized != "" && event.Meta.Current {
 		return fmt.Sprintf("%s/%s/index.html", event.Type, event.Meta.BaseName.Sanitized)
 	}
 	return event.slug("html")
 }
 
 func (event *Event) Slug() string {
-	if event.Type == "event" && event.Meta.BaseName.Sanitized != "" && event.Meta.Current {
+	if event.Meta.BaseName.Sanitized != "" && event.Meta.Current {
 		return fmt.Sprintf("%s/%s/", event.Type, event.Meta.BaseName.Sanitized)
 	}
 	return event.slug("html")
