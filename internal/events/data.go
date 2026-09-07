@@ -127,6 +127,10 @@ func FetchData(config utils.Config, today time.Time, client googlesheetswrapper.
 	for _, event := range data.EventsOld {
 		event.DetectDistances()
 	}
+	// mark all group "events" as current
+	for _, group := range data.Groups {
+		group.Meta.Current = true
+	}
 
 	// Collect old events by year
 	maxYear := 0
