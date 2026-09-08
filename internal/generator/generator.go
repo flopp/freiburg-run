@@ -171,8 +171,12 @@ func createHtaccess(config utils.Config, data events.Data, outDir utils.Path) er
 		}
 	}
 	for _, e := range data.Groups {
+		slug := e.Slug()
 		if old := e.SlugOld(); old != "" {
-			destination.WriteString(fmt.Sprintf("Redirect /%s /%s\n", old, e.Slug()))
+			destination.WriteString(fmt.Sprintf("Redirect /%s /%s\n", old, slug))
+		}
+		if slugNoBase := e.SlugNoBase(); slugNoBase != slug {
+			destination.WriteString(fmt.Sprintf("Redirect /%s /%s\n", slugNoBase, slug))
 		}
 	}
 
