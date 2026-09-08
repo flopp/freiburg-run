@@ -28,12 +28,12 @@ func TestParseDate(t *testing.T) {
 		result, err := ParseDate(tc.input)
 		if err != nil {
 			if !tc.expectedError {
-				t.Errorf("ParseDate(%q); unexpected error: %q", tc.input, err)
+				t.Errorf("ParseDate(%v); unexpected error: %v", tc.input, err)
 			}
 		} else if tc.expectedError {
-			t.Errorf("ParseDate(%q) = %q; but expected an error", tc.input, result)
+			t.Errorf("ParseDate(%v) = %v; but expected an error", tc.input, result)
 		} else if result.Year() != tc.expectedY || result.Month() != tc.expectedM || result.Day() != tc.expectedD {
-			t.Errorf("ParseDate(%q) = %q; but expected Y=%q M=%q D=%q", tc.input, result, tc.expectedY, tc.expectedM.String(), tc.expectedD)
+			t.Errorf("ParseDate(%v) = %v; but expected Y=%v M=%v D=%v", tc.input, result, tc.expectedY, tc.expectedM.String(), tc.expectedD)
 		}
 	}
 }
@@ -61,16 +61,16 @@ func TestTimeRangeParse(t *testing.T) {
 		result, err := CreateTimeRange(tc.input)
 		if err != nil {
 			if !tc.expectedError {
-				t.Errorf("CreateTimeRange(%q); unexpected error: %q", tc.input, err)
+				t.Errorf("CreateTimeRange(%v); unexpected error: %v", tc.input, err)
 			}
 		} else if tc.expectedError {
-			t.Errorf("CreateTimeRange(%q) = %q; but expected an error", tc.input, result)
+			t.Errorf("CreateTimeRange(%v) = %v; but expected an error", tc.input, result)
 		} else {
 			if result.From.Year() != tc.expectedFromY || result.From.Month() != tc.expectedFromM || result.From.Day() != tc.expectedFromD {
-				t.Errorf("CreateTimeRange(%q).From = %q; but expected Y=%q M=%q D=%q", tc.input, result.From, tc.expectedFromY, tc.expectedFromM.String(), tc.expectedFromD)
+				t.Errorf("CreateTimeRange(%v).From = %v; but expected Y=%v M=%v D=%v", tc.input, result.From, tc.expectedFromY, tc.expectedFromM.String(), tc.expectedFromD)
 			}
 			if result.To.Year() != tc.expectedToY || result.To.Month() != tc.expectedToM || result.To.Day() != tc.expectedToD {
-				t.Errorf("CreateTimeRange(%q).To = %q; but expected Y=%q M=%q D=%q", tc.input, result.To, tc.expectedToY, tc.expectedToM.String(), tc.expectedToD)
+				t.Errorf("CreateTimeRange(%v).To = %v; but expected Y=%v M=%v D=%v", tc.input, result.To, tc.expectedToY, tc.expectedToM.String(), tc.expectedToD)
 			}
 		}
 	}
