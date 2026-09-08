@@ -1,6 +1,6 @@
 module github.com/flopp/freiburg-run
 
-go 1.25.8
+go 1.26.0
 
 toolchain go1.27.0
 
@@ -12,7 +12,7 @@ require (
 	github.com/flopp/go-googlesheetswrapper v0.0.0-20260406112809-7c5a6afecd10
 	github.com/google/uuid v1.6.0
 	github.com/tdewolff/minify/v2 v2.24.17
-	golang.org/x/text v0.41.0
+	golang.org/x/text v0.42.0
 	google.golang.org/api v0.295.0
 )
 
