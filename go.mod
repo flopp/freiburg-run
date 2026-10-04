@@ -11,7 +11,7 @@ require (
 	github.com/flopp/go-filehash v0.0.0-20250313113005-e3e8650a2258
 	github.com/flopp/go-googlesheetswrapper v0.0.0-20260406112809-7c5a6afecd10
 	github.com/google/uuid v1.6.0
-	github.com/tdewolff/minify/v2 v2.24.17
+	github.com/tdewolff/minify/v2 v2.24.19
 	golang.org/x/text v0.42.0
 	google.golang.org/api v0.299.0
 )
