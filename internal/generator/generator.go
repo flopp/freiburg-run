@@ -658,7 +658,7 @@ func (g Generator) Generate(eventsData events.Data) error {
 			TemplateData: TemplateData{
 				commondata,
 				name,
-				"BLUBB",
+				fmt.Sprintf("Vergangene Laufveranstaltungen, Lauf-Wettkämpfe und Volksläufe im Raum %s (%s) mit Terminen und Details.", g.config.City.Name, oldEvents.Year),
 				"events",
 				"",
 				"",
