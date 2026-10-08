@@ -717,7 +717,9 @@ func (g Generator) Generate(eventsData events.Data) error {
 			if err := utils.ExecuteTemplate(g.config, "event", g.out.Join(fileSlug), eventdata.BasePath, eventdata); err != nil {
 				return fmt.Errorf("render event template to %q: %w", g.out.Join(fileSlug), err)
 			}
-			sitemap.Add(slug, fileSlug, event.Name.Orig, sitemapCategory)
+			if !event.Old {
+				sitemap.Add(slug, fileSlug, event.Name.Orig, sitemapCategory)
+			}
 		}
 		return nil
 	}
