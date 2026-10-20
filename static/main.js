@@ -860,6 +860,42 @@ const initWatchlist = function(storage) {
 };
 
 const main = () => {
+    // COUNTER
+    const visitorCounts = {
+        daily: document.querySelector("#visitor-count-daily"),
+        monthly: document.querySelector("#visitor-count-monthly"),
+        yearly: document.querySelector("#visitor-count-yearly"),
+        total: document.querySelector("#visitor-count-total")
+    };
+    if (visitorCounts.total) {
+    fetch("/counter.php", { cache: "no-store" })
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error(`Besucherzähler konnte nicht geladen werden (HTTP ${response.status}).`);
+            }
+            return response.json();
+        })
+        .then((counts) => {
+            if (Object.entries(visitorCounts).some(([key, element]) =>
+                !element || !Number.isSafeInteger(counts[key]) || counts[key] < 0
+            )) {
+                throw new Error("Der Besucherzähler hat eine ungültige Antwort geliefert.");
+            }
+            Object.entries(visitorCounts).forEach(([key, element]) => {
+                element.textContent = counts[key].toLocaleString("de-DE");
+            });
+        })
+        .catch((error) => {
+            console.error(error);
+            Object.values(visitorCounts).forEach((element) => {
+                if (element) {
+                    element.textContent = "nicht verfügbar";
+                }
+            });
+        });
+    }
+
+
     // TAG FILTER, LOCAL STORAGE
     const storage = getLocalStorage();
     const hiddenTags = new Set();

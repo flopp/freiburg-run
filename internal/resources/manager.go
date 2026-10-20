@@ -107,6 +107,7 @@ func (r *ResourceManager) CopyStaticAssets() {
 		Source      string
 		Destination string
 	}{
+		{"static/counter.php", "counter.php"},
 		{"static/favicon.png", "favicon.png"},
 		{"static/favicon.ico", "favicon.ico"},
 		{"static/180.png", "apple-touch-icon.png"},
