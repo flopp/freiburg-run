@@ -646,7 +646,7 @@ func fetchRedirects(config utils.Config, sheetName string, sheetsData map[string
 		newUrl = strings.TrimSpace(newUrl)
 
 		// validate (non-empty, not identical, must start with /)
-		if originalUrl == "" || newUrl == "" || originalUrl == newUrl || (!strings.HasPrefix(originalUrl, "/")) || (!strings.HasPrefix(newUrl, "/")) {
+		if originalUrl == "" || newUrl == "" || originalUrl == newUrl || (!strings.HasPrefix(originalUrl, "/")) || (!strings.HasPrefix(newUrl, "/") && !strings.HasPrefix(newUrl, "http")) {
 			log.Printf("skipping invalid redirect from '%s' to '%s'", originalUrl, newUrl)
 			continue
 		}
