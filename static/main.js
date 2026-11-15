@@ -201,32 +201,6 @@ const loadMap = function (id) {
     map.fitBounds(group.getBounds(), {padding: L.point(40, 40)});
 };
 
-const loadParkrunMap = function (id, encodedTrack) {
-    const map = L.map(id, {gestureHandling: true}).setView([48.000548, 7.804842], 15);
-
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map);
-
-    const course = L.polyline(parsePolyline(encodedTrack));
-    course.addTo(map);
-
-    const blueIcon = load_marker("");
-    const greyIcon = load_marker("grey");
-
-    const parking = L.marker([48.000993,7.808887], {icon: greyIcon});
-    parking.addTo(map);
-    parking.bindPopup("Parkplatz");
-
-    const tram = L.marker([47.999420,7.810088], {icon: greyIcon});
-    tram.addTo(map);
-    tram.bindPopup("Straßenbahn (Linie 3, Rohrgraben)");
-
-    const meetingpoint = L.marker([48.001294,7.806489], {icon: blueIcon});
-    meetingpoint.addTo(map);
-    meetingpoint.bindPopup("Treffpunkt / Zielbereich");
-};
-
 const load_marker = function (color) {
     let url = "/images/marker-icon.png";
     let url2x = "/images/marker-icon-2x.png";
@@ -1005,11 +979,7 @@ const main = () => {
             const container = document.querySelector("#map-container");
             const mapDiv = createEl("div", "small-map", "");
             container.appendChild(mapDiv);
-            if (container.dataset.type === "parkrun") {
-                loadParkrunMap("small-map", container.dataset.track);
-            } else {
-                loadMap("small-map");
-            }
+            loadMap("small-map");
         });
         mapHideBtn.addEventListener('click', () => {
             mapShowBtn.classList.remove("is-hidden");

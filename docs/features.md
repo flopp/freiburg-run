@@ -10,7 +10,6 @@ This document lists implemented features of the freiburg.run project (website + 
 	- Lauftreffs (running groups)
 	- Tags/Kategorien
 	- Serien
-	- Optional: Dietenbach parkrun page
 	- Optional: Community Run page
 
 ## 2. Main Website Features
@@ -67,7 +66,6 @@ This document lists implemented features of the freiburg.run project (website + 
 
 - Embedded/toggleable map on list pages.
 - Event detail map (single marker + optional route polyline).
-- Parkrun map with course polyline + special POI markers.
 - Gesture handling support for better mobile map usability.
 
 ### 2.5 Event Detail Page Features
@@ -127,22 +125,6 @@ This document lists implemented features of the freiburg.run project (website + 
 - Series index page with current + old series tables.
 - Series detail page with description, custom links, and associated events/groups.
 
-### 2.9 Parkrun Page
-
-- Optional dedicated Dietenbach parkrun page.
-- Parkrun-specific table with:
-	- event index,
-	- date,
-	- runners,
-	- temperature,
-	- cafe,
-	- special notes,
-	- links (results/report/photos).
-- Current-week highlighting.
-- Responsive mobile/desktop table formatting.
-- Additional static links and explanatory content.
-- Separate WordPress-compatible export template for parkrun content.
-
 ### 2.10 Community/Support/Info/Legal
 
 - Optional `community-run` page with schedule, route details, map, and terms.
@@ -198,7 +180,6 @@ This document lists implemented features of the freiburg.run project (website + 
 	- `Series`
 	- `Notifications`
 	- `Redirects`
-	- optional `Parkrun` (if enabled)
 - Validation and normalization include:
 	- date ordering checks,
 	- name ordering checks,

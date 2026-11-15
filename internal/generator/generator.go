@@ -45,9 +45,6 @@ func (t *TemplateData) SetNameLink(name, link string, baseBreakcrumbs utils.Brea
 }
 
 func (t TemplateData) Image() string {
-	if t.Nav == "parkrun" {
-		return t.Config.BaseUrl().Join("images/parkrun.png")
-	}
 	return t.Config.BaseUrl().Join("images/512.png")
 }
 
@@ -278,9 +275,6 @@ func createLlmsTxt(config utils.Config, outDir utils.Path) error {
 	destination.WriteString("	- [Halbmarathon](" + baseUrl + "/tags/halbmarathon.html): Half marathon events\n")
 	destination.WriteString("	- [10km](" + baseUrl + "/tags/10km.html): 10km events\n")
 	destination.WriteString("	- [Traillauf](" + baseUrl + "/tags/traillauf.html): Trail running events\n")
-	if config.Pages.Parkrun {
-		destination.WriteString("- [Dietenbach parkrun](" + baseUrl + "/dietenbach-parkrun.html): Complementary information about the weekly, free 5km run in Freiburg's Dietenbachpark\n")
-	}
 	destination.WriteString("- [Sitemap](" + baseUrl + "/sitemap.html): Full sitemap\n")
 	destination.WriteString("\n")
 	destination.WriteString("## Technical\n")
@@ -563,15 +557,6 @@ func (g Generator) Generate(eventsData events.Data) error {
 		return fmt.Errorf("render groups page: %w", err)
 	}
 
-	if g.config.Pages.Parkrun {
-		if err := renderSubPage("dietenbach-parkrun.html", "dietenbach-parkrun.html", "dietenbach-parkrun", "parkrun", "Allgemein",
-			"Dietenbach parkrun",
-			"Vollständige Liste aller Ergebnisse, Laufberichte und Fotogalerien des 'Dietenbach parkrun' im Freiburger Dietenbachpark.",
-			breadcrumbsBase); err != nil {
-			return fmt.Errorf("render subpage %q: %w", "dietenbach-parkrun.html", err)
-		}
-	}
-
 	if err := renderPage("series.html", "series.html", "series", "series", "Serien",
 		"Lauf-Serien",
 		fmt.Sprintf("Liste aller Serien von Laufveranstaltungen, Lauf-Wettkämpfen, Volksläufen im Raum %s", g.config.City.Name),
@@ -623,12 +608,6 @@ func (g Generator) Generate(eventsData events.Data) error {
 			breadcrumbsBase); err != nil {
 			return fmt.Errorf("render subpage %q: %w", "club.html", err)
 		}
-	}
-
-	// Special rendering of parkrun page for wordpress
-	data := TemplateData{commondata, "", "", "", "", "", breadcrumbsBase, "/", false /*HasFilter*/}
-	if err := utils.ExecuteTemplateNoMinify(g.config, "dietenbach-parkrun-wordpress", g.out.Join("dietenbach-parkrun-wordpress.html"), data.BasePath, data); err != nil {
-		return fmt.Errorf("render wordpress template: %w", err)
 	}
 
 	// Render old events lists
@@ -773,6 +752,7 @@ func (g Generator) Generate(eventsData events.Data) error {
 	}
 
 	// Special rendering of the "traillauf" (+ related) tag
+	data := TemplateData{commondata, "", "", "", "", "", breadcrumbsBase, "/", false /*HasFilter*/}
 	var tags []string
 	tags = append(tags, "traillauf", "berglauf", "crosslauf", "orientierungslauf")
 	if err := renderEmbedList(g.config, g.baseUrl, g.out, data, tags); err != nil {

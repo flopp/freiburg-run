@@ -117,7 +117,6 @@ func (r *ResourceManager) CopyStaticAssets() {
 		{"static/freiburg-run-new.svg", "images/freiburg-run-new.svg"},
 		{"static/freiburg-run-new-blue.svg", "images/freiburg-run-new-blue.svg"},
 		{"static/512.png", "images/512.png"},
-		{"static/parkrun.png", "images/parkrun.png"},
 		{"static/marker-grey-icon.png", "images/marker-grey-icon.png"},
 		{"static/marker-grey-icon-2x.png", "images/marker-grey-icon-2x.png"},
 		{"static/marker-green-icon.png", "images/marker-green-icon.png"},

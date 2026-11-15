@@ -25,7 +25,6 @@ type Data struct {
 	Tags           []*Tag
 	Series         []*Serie
 	SeriesOld      []*Serie
-	ParkrunEvents  []*ParkrunEvent
 	Redirects      map[string]string // map from original to new URL
 	Notifications  []*Notification
 }
@@ -106,7 +105,6 @@ func FetchData(config utils.Config, today time.Time, client googlesheetswrapper.
 	data.Groups, data.GroupsObsolete = SplitObsolete(sheetsData.Groups)
 	data.Tags = sheetsData.Tags
 	data.Series = sheetsData.Series
-	data.ParkrunEvents = sheetsData.Parkrun
 	data.Redirects = sheetsData.Redirects
 	data.Notifications = sheetsData.Notifications
 

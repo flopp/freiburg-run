@@ -17,7 +17,6 @@ import (
 type SheetsData struct {
 	Events        []*Event
 	Groups        []*Event
-	Parkrun       []*ParkrunEvent
 	Tags          []*Tag
 	Series        []*Serie
 	Redirects     map[string]string // map from original to new URL
@@ -32,7 +31,7 @@ func LoadSheets(config utils.Config, today time.Time, client googlesheetswrapper
 		return SheetsData{}, fmt.Errorf("fetching all sheets: %w", err)
 	}
 
-	eventSheets, groupsSheet, parkrunSheet, tagsSheet, seriesSheet, redirectsSheet, notificationsSheet, err := findSheetNames(config, sheets)
+	eventSheets, groupsSheet, tagsSheet, seriesSheet, redirectsSheet, notificationsSheet, err := findSheetNames(config, sheets)
 	if err != nil {
 		return SheetsData{}, err
 	}
@@ -44,13 +43,6 @@ func LoadSheets(config utils.Config, today time.Time, client googlesheetswrapper
 	groups, err := fetchEvents(config, today, "group", groupsSheet, sheets)
 	if err != nil {
 		return SheetsData{}, fmt.Errorf("fetching groups: %w", err)
-	}
-	var parkrun []*ParkrunEvent
-	if config.Pages.Parkrun {
-		parkrun, err = fetchParkrunEvents(config, today, parkrunSheet, sheets)
-		if err != nil {
-			return SheetsData{}, fmt.Errorf("fetching parkrun events: %w", err)
-		}
 	}
 	tags, err := fetchTags(config, tagsSheet, sheets)
 	if err != nil {
@@ -74,7 +66,6 @@ func LoadSheets(config utils.Config, today time.Time, client googlesheetswrapper
 	return SheetsData{
 		Events:        events,
 		Groups:        groups,
-		Parkrun:       parkrun,
 		Tags:          tags,
 		Series:        series,
 		Redirects:     redirects,
@@ -98,8 +89,8 @@ func getYearFromEventSheetName(sheetName string) (int, error) {
 	return date.Year(), nil
 }
 
-// findSheetNames identifies the relevant sheet names for events, groups, parkrun, tags, series, redirects, and notifications based on their names and validates them.
-func findSheetNames(config utils.Config, sheets map[string][][]string) (eventSheets []string, groupsSheet, parkrunSheet, tagsSheet, seriesSheet, redirectsSheet, notificationsSheet string, err error) {
+// findSheetNames identifies the relevant sheet names for events, groups, tags, series, redirects, and notifications based on their names and validates them.
+func findSheetNames(config utils.Config, sheets map[string][][]string) (eventSheets []string, groupsSheet, tagsSheet, seriesSheet, redirectsSheet, notificationsSheet string, err error) {
 	for sheetName := range sheets {
 		name := strings.ToLower(sheetName)
 		switch {
@@ -107,10 +98,6 @@ func findSheetNames(config utils.Config, sheets map[string][][]string) (eventShe
 			eventSheets = append(eventSheets, sheetName)
 		case name == "groups":
 			groupsSheet = sheetName
-		case name == "shops":
-			// ignore shops sheet for now
-		case name == "parkrun":
-			parkrunSheet = sheetName
 		case name == "tags":
 			tagsSheet = sheetName
 		case name == "series":
@@ -119,7 +106,7 @@ func findSheetNames(config utils.Config, sheets map[string][][]string) (eventShe
 			redirectsSheet = sheetName
 		case name == "notifications":
 			notificationsSheet = sheetName
-		case strings.Contains(name, "ignore"):
+		case strings.Contains(name, "ignore") || name == "parkrun" || name == "shops":
 			// ignore
 		default:
 			log.Printf("ignoring unknown sheet: '%s'", sheetName)
@@ -128,7 +115,7 @@ func findSheetNames(config utils.Config, sheets map[string][][]string) (eventShe
 
 	// we require at least 2 event sheets, so that we have some old events to show on the "Vergangene Events" page and to test the old/new logic
 	if len(eventSheets) < 2 {
-		return nil, "", "", "", "", "", "", fmt.Errorf("fetching sheets: unable to find enough 'Events' sheets")
+		return nil, "", "", "", "", "", fmt.Errorf("fetching sheets: unable to find enough 'Events' sheets")
 	}
 
 	// sort eventSheets by name, so that they are always in the same order (e.g. for testing)
@@ -138,33 +125,30 @@ func findSheetNames(config utils.Config, sheets map[string][][]string) (eventShe
 	for _, sheetName := range eventSheets {
 		year, err := getYearFromEventSheetName(sheetName)
 		if err != nil {
-			return nil, "", "", "", "", "", "", fmt.Errorf("fetching sheets: %v", err)
+			return nil, "", "", "", "", "", fmt.Errorf("fetching sheets: %v", err)
 		}
 		if lastYear != -1 && year != lastYear+1 {
-			return nil, "", "", "", "", "", "", fmt.Errorf("fetching sheets: unexpected event sheet name '%s': missing year %d", sheetName, lastYear+1)
+			return nil, "", "", "", "", "", fmt.Errorf("fetching sheets: unexpected event sheet name '%s': missing year %d", sheetName, lastYear+1)
 		}
 		lastYear = year
 	}
 
 	if groupsSheet == "" {
-		return nil, "", "", "", "", "", "", fmt.Errorf("fetching sheets: unable to find 'Groups' sheet")
-	}
-	if config.Pages.Parkrun && parkrunSheet == "" {
-		return nil, "", "", "", "", "", "", fmt.Errorf("fetching sheets: unable to find 'Parkrun' sheet")
+		return nil, "", "", "", "", "", fmt.Errorf("fetching sheets: unable to find 'Groups' sheet")
 	}
 	if tagsSheet == "" {
-		return nil, "", "", "", "", "", "", fmt.Errorf("fetching sheets: unable to find 'Tags' sheet")
+		return nil, "", "", "", "", "", fmt.Errorf("fetching sheets: unable to find 'Tags' sheet")
 	}
 	if seriesSheet == "" {
-		return nil, "", "", "", "", "", "", fmt.Errorf("fetching sheets: unable to find 'Series' sheet")
+		return nil, "", "", "", "", "", fmt.Errorf("fetching sheets: unable to find 'Series' sheet")
 	}
 	if redirectsSheet == "" {
-		return nil, "", "", "", "", "", "", fmt.Errorf("fetching sheets: unable to find 'Redirects' sheet")
+		return nil, "", "", "", "", "", fmt.Errorf("fetching sheets: unable to find 'Redirects' sheet")
 	}
 	if notificationsSheet == "" {
-		return nil, "", "", "", "", "", "", fmt.Errorf("fetching sheets: unable to find 'Notifications' sheet")
+		return nil, "", "", "", "", "", fmt.Errorf("fetching sheets: unable to find 'Notifications' sheet")
 	}
-	return eventSheets, groupsSheet, parkrunSheet, tagsSheet, seriesSheet, redirectsSheet, notificationsSheet, nil
+	return eventSheets, groupsSheet, tagsSheet, seriesSheet, redirectsSheet, notificationsSheet, nil
 }
 
 // loadEvents loads event data from the given event sheets and returns a list of Event structs.
@@ -401,99 +385,6 @@ func fetchEvents(config utils.Config, today time.Time, eventType string, sheetNa
 				nil,
 				nil,
 			},
-		})
-	}
-
-	return eventsList, nil
-}
-
-type ParkrunEventData struct {
-	Index   string
-	Date    string
-	Runners string
-	Temp    string
-	Special string
-	Cafe    string
-	Results string
-	Report  string
-	Author  string
-	Photos  string
-}
-
-func getParkrunEventData(cols map[string]int, row []string) (ParkrunEventData, error) {
-	var data ParkrunEventData
-	fields := []struct {
-		name string
-		dest *string
-	}{
-		{"DATE", &data.Date},
-		{"INDEX", &data.Index},
-		{"RUNNERS", &data.Runners},
-		{"TEMP", &data.Temp},
-		{"SPECIAL", &data.Special},
-		{"CAFE", &data.Cafe},
-		{"RESULTS", &data.Results},
-		{"REPORT", &data.Report},
-		{"AUTHOR", &data.Author},
-		{"PHOTOS", &data.Photos},
-	}
-	if err := extractFields(cols, row, fields); err != nil {
-		return ParkrunEventData{}, err
-	}
-	return data, nil
-}
-
-// fetchParkrunEvents extracts parkrun event data from the given sheet and returns a list of ParkrunEvent structs.
-func fetchParkrunEvents(config utils.Config, today time.Time, sheetName string, sheetsData map[string][][]string) ([]*ParkrunEvent, error) {
-	sheet, ok := sheetsData[sheetName]
-	if !ok {
-		return nil, fmt.Errorf("sheet '%s' not found", sheetName)
-	}
-	requiredHeaders := []string{"DATE", "INDEX", "RUNNERS", "TEMP", "SPECIAL", "CAFE", "RESULTS", "REPORT", "AUTHOR", "PHOTOS"}
-	cols, err := googlesheetswrapper.ExtractHeader(sheet, requiredHeaders, true)
-	if err != nil {
-		return nil, fmt.Errorf("fetching sheet '%s': %v", sheetName, err)
-	}
-	rows := sheet[1:]
-
-	eventsList := make([]*ParkrunEvent, 0)
-	for _, row := range rows {
-		data, err := getParkrunEventData(cols, row)
-		if err != nil {
-			return nil, fmt.Errorf("sheet '%s': %v", sheetName, err)
-		}
-
-		if data.Temp != "" {
-			data.Temp = fmt.Sprintf("%s°C", data.Temp)
-		}
-
-		if data.Results != "" {
-			data.Results = fmt.Sprintf("https://www.parkrun.com.de/dietenbach/results/%s", data.Results)
-		}
-
-		// determine is this is for the current week (but only for "real" parkrun events with index)
-		currentWeek := false
-		if data.Index != "" {
-			d, err := utils.ParseDate(data.Date)
-			if err == nil {
-				today_y, today_m, today_d := today.Date()
-				d_y, d_m, d_d := d.Date()
-				currentWeek = (today_y == d_y && today_m == d_m && today_d == d_d) || (today.After(d) && today.Before(d.AddDate(0, 0, 7)))
-			}
-		}
-
-		eventsList = append(eventsList, &ParkrunEvent{
-			currentWeek,
-			data.Index,
-			data.Date,
-			data.Runners,
-			data.Temp,
-			data.Special,
-			data.Cafe,
-			data.Results,
-			data.Report,
-			data.Author,
-			data.Photos,
 		})
 	}
 

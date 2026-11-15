@@ -10,12 +10,8 @@
         <link rel="manifest" href="{{BasePath "/manifest.json"}}" />
         <meta name="theme-color" content="#4455F6">
 
-        {{if eq .Nav "parkrun"}}
-        <link rel="me" href="https://freiburg.social/@dietenbachparkrun" />
-        {{else}}
         <link rel="me" href="https://freiburg.social/@flopp" />
         {{if Config.Contact.Mastodon}}<link rel="me" href="{{Config.Contact.Mastodon}}"/>{{end}}
-        {{end}}
 
         <!-- Open Graph / Facebook -->
         <meta property="og:type" content="website">
@@ -94,7 +90,7 @@
                 Lauftreffs
             </a>
 
-            {{if Config.Pages.Parkrun}}<a class="navbar-item {{if eq .Nav "parkrun"}}is-active{{end}}" href="{{BasePath "dietenbach-parkrun.html"}}">
+            {{if Config.Pages.Parkrun}}<a class="navbar-item" href="{{Config.Pages.Parkrun}}" target="_blank">
                 parkrun
             </a>{{end}}
             <div class="navbar-item has-dropdown is-hoverable">

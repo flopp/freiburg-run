@@ -6,7 +6,7 @@
 - **(required)** Running groups list: `Groups`
 - **(required)** Tag definitions: `Tags`
 - **(required)** Running series definitions: `Series`
-- **(required if config.pages.parkrun=true)** Parkrun data: `Parkrun`
+- **(is ignored)** Parkrun data: `Parkrun`
 - **(optional)** Ignored tabs/sheets: name contains `(ignored)`
 
 ---
@@ -27,23 +27,6 @@
 | REGISTRATION  | Registration URL (optional, used as a special link). |
 | TAGS          | Comma-separated list of tags. Tags starting with `serie:` are used for series assignment. |
 | LINK1, LINK2, ... | Additional links in the format `Label|URL`. Any number of LINK columns can be added. |
-
----
-
-### Parkrun Sheet
-
-| Column    | Description |
-|-----------|-------------|
-| DATE      | Date of the parkrun event. |
-| INDEX     | Event index/number. |
-| RUNNERS   | Number of runners. |
-| TEMP      | Temperature (°C, will be suffixed with `°C`). |
-| SPECIAL   | Special notes (optional). |
-| CAFE      | Cafe information (optional). |
-| RESULTS   | Results page suffix (will be expanded to full URL). |
-| REPORT    | Report link or info. |
-| AUTHOR    | Author of the report. |
-| PHOTOS    | Photos link. |
 
 ---
 

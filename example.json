@@ -11,7 +11,7 @@
     },
     "pages": {
         "club": false,
-        "parkrun": false,
+        "parkrun": "",
         "support": true,
         "watchlist": false
     },

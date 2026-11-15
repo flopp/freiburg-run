@@ -21,7 +21,6 @@ https://freiburg.run/
   * Dynamic filtering/search by name, location, run track length
   * Map sbhowing all events of the list
 * Calendar support (for Google Calendar + .ics)
-* Special parkrun page (showing data for the local Dietenbach parkrun)
  
 # Technical
 

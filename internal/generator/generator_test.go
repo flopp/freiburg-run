@@ -81,24 +81,6 @@ func TestTemplateDataCountEventsWithSeparators(t *testing.T) {
 	}
 }
 
-func TestTemplateDataImageParkrun(t *testing.T) {
-	config := utils.Config{}
-	config.Website.Url = "https://example.com"
-
-	templateData := TemplateData{
-		CommonData: CommonData{
-			Config: config,
-		},
-		Nav: "parkrun",
-	}
-
-	image := templateData.Image()
-	expected := "https://example.com/images/parkrun.png"
-	if image != expected {
-		t.Errorf("Image() = %s, want %s", image, expected)
-	}
-}
-
 func TestTemplateDataImageDefault(t *testing.T) {
 	config := utils.Config{}
 	config.Website.Url = "https://example.com"
