@@ -292,10 +292,11 @@ func fetchEvents(config utils.Config, today time.Time, eventType string, sheetNa
 			log.Printf("sheet '%s', line '%d': skipping row with empty name", sheetName, line)
 			continue
 		}
-		if !strings.Contains(data.Name, data.Name2) {
-			log.Printf("sheet '%s', line '%d': name '%s' does not contain name2 '%s'", sheetName, line, data.Name, data.Name2)
-		}
-
+		/*
+			if !strings.Contains(data.Name, data.Name2) {
+				log.Printf("sheet '%s', line '%d': name '%s' does not contain name2 '%s'", sheetName, line, data.Name, data.Name2)
+			}
+		*/
 		// process date
 		if eventType == "event" {
 			if data.Date == "" {
