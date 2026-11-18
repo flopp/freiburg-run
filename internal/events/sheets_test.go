@@ -80,3 +80,35 @@ func TestLoadSheets_Mock(t *testing.T) {
 		t.Errorf("Notification mapping incorrect: got %+v", n)
 	}
 }
+
+func TestFetchEventsValidatesAddedDate(t *testing.T) {
+	headers := []string{"DATE", "ADDED", "NAME", "NAME2", "STATUS", "URL", "DESCRIPTION", "LOCATION", "COORDINATES", "REGISTRATION", "TAGS"}
+	row := []string{"2027-01-01", "", "Event A", "EventA", "", "http://eventa", "desc", "loc", "1,2", "", "tagA"}
+	sheets := map[string][][]string{"Events2027": {headers, row}}
+
+	_, err := fetchEvents(utils.Config{}, time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC), "event", "Events2027", sheets)
+	if err == nil {
+		t.Fatal("fetchEvents() returned nil error for missing ADDED date")
+	}
+}
+
+func TestFetchEventsRejectsInvalidAddedDate(t *testing.T) {
+	headers := []string{"DATE", "ADDED", "NAME", "NAME2", "STATUS", "URL", "DESCRIPTION", "LOCATION", "COORDINATES", "REGISTRATION", "TAGS"}
+	row := []string{"2027-01-01", "2027-02-30", "Event A", "EventA", "", "http://eventa", "desc", "loc", "1,2", "", "tagA"}
+	sheets := map[string][][]string{"Events2027": {headers, row}}
+
+	_, err := fetchEvents(utils.Config{}, time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC), "event", "Events2027", sheets)
+	if err == nil {
+		t.Fatal("fetchEvents() returned nil error for invalid ADDED date")
+	}
+}
+
+func TestFetchEventsAllowsMissingAddedDateBefore2027(t *testing.T) {
+	headers := []string{"DATE", "ADDED", "NAME", "NAME2", "STATUS", "URL", "DESCRIPTION", "LOCATION", "COORDINATES", "REGISTRATION", "TAGS"}
+	row := []string{"2026-01-01", "", "Event A", "EventA", "", "http://eventa", "desc", "loc", "1,2", "", "tagA"}
+	sheets := map[string][][]string{"Events2026": {headers, row}}
+
+	if _, err := fetchEvents(utils.Config{}, time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC), "event", "Events2026", sheets); err != nil {
+		t.Fatalf("fetchEvents() rejected missing ADDED date before 2027: %v", err)
+	}
+}

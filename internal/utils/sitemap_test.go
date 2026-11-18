@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+	"time"
 )
 
 func TestCreateSitemap(t *testing.T) {
@@ -167,5 +168,38 @@ func TestGen(t *testing.T) {
 	hashData := readHashFile(hashFile)
 	if len(hashData) != 1 {
 		t.Errorf("Expected 1 hash entry, got %d", len(hashData))
+	}
+}
+
+func TestGenUsesExplicitLastmod(t *testing.T) {
+	tempDir := t.TempDir()
+	sitemapFile := filepath.Join(tempDir, "sitemap.xml")
+	hashFile := filepath.Join(tempDir, "hashes.txt")
+	outDir := Path(tempDir)
+
+	htmlFile := filepath.Join(tempDir, "event1.html")
+	if err := os.WriteFile(htmlFile, []byte("<html></html>"), 0644); err != nil {
+		t.Fatalf("Failed to create HTML file: %v", err)
+	}
+
+	sitemap := CreateSitemap(Url("https://example.com"))
+	sitemap.AddWithLastmod(
+		"event1",
+		"event1.html",
+		"Event 1",
+		"events",
+		time.Date(2026, 2, 15, 0, 0, 0, 0, time.UTC),
+	)
+
+	if err := sitemap.Gen(sitemapFile, hashFile, outDir); err != nil {
+		t.Fatalf("Gen failed: %v", err)
+	}
+
+	content, err := os.ReadFile(sitemapFile)
+	if err != nil {
+		t.Fatalf("Failed to read sitemap: %v", err)
+	}
+	if !strings.Contains(string(content), "<lastmod>2026-02-15</lastmod>") {
+		t.Errorf("Sitemap does not contain explicit lastmod date:\n%s", content)
 	}
 }

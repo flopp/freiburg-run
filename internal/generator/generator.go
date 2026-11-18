@@ -472,6 +472,24 @@ func (g Generator) Generate(eventsData events.Data) error {
 	}
 
 	sitemap := utils.CreateSitemap(g.baseUrl)
+	latestLastmod := func(eventLists ...[]*events.Event) (time.Time, error) {
+		var latest time.Time
+		for _, eventList := range eventLists {
+			for _, event := range eventList {
+				if event.IsSeparator() {
+					continue
+				}
+				lastmod, err := event.Lastmod()
+				if err != nil {
+					return time.Time{}, err
+				}
+				if lastmod.After(latest) {
+					latest = lastmod
+				}
+			}
+		}
+		return latest, nil
+	}
 	sitemap.AddCategory("Allgemein")
 	sitemap.AddCategory("Club")
 	sitemap.AddCategory("Laufveranstaltungen")
@@ -697,7 +715,11 @@ func (g Generator) Generate(eventsData events.Data) error {
 				return fmt.Errorf("render event template to %q: %w", g.out.Join(fileSlug), err)
 			}
 			if !event.Old {
-				sitemap.Add(slug, fileSlug, event.Name.Orig, sitemapCategory)
+				lastmod, err := event.Lastmod()
+				if err != nil {
+					return fmt.Errorf("get lastmod for event %q: %w", event.Name.Orig, err)
+				}
+				sitemap.AddWithLastmod(slug, fileSlug, event.Name.Orig, sitemapCategory, lastmod)
 			}
 		}
 		return nil
@@ -737,7 +759,11 @@ func (g Generator) Generate(eventsData events.Data) error {
 		if err := utils.ExecuteTemplate(g.config, "tag", g.out.Join(slug), tagdata.BasePath, tagdata); err != nil {
 			return fmt.Errorf("render tag template to %q: %w", g.out.Join(slug), err)
 		}
-		sitemap.Add(slug, slug, tag.Name.Orig, "Kategorien")
+		lastmod, err := latestLastmod(tag.Events, tag.Groups)
+		if err != nil {
+			return fmt.Errorf("get lastmod for tag %q: %w", tag.Name.Orig, err)
+		}
+		sitemap.AddWithLastmod(slug, slug, tag.Name.Orig, "Kategorien", lastmod)
 
 		tagdata.Description = fmt.Sprintf("Vergangene Laufveranstaltungen der Kategorie '%s' im Raum %s; Vollständige Übersicht mit Terminen, Details und Anmeldelinks für alle Events dieser Kategorie.", tag.Name.Orig, g.config.City.Name)
 		slug = tag.SlugArchive()
@@ -748,7 +774,11 @@ func (g Generator) Generate(eventsData events.Data) error {
 		if err := utils.ExecuteTemplate(g.config, "tag-archive", g.out.Join(slug), tagdata.BasePath, tagdata); err != nil {
 			return fmt.Errorf("render tag template to %q: %w", g.out.Join(slug), err)
 		}
-		sitemap.Add(slug, slug, tag.Name.Orig+" (Archiv)", "Kategorien")
+		lastmod, err = latestLastmod(tag.EventsOld)
+		if err != nil {
+			return fmt.Errorf("get lastmod for archived tag %q: %w", tag.Name.Orig, err)
+		}
+		sitemap.AddWithLastmod(slug, slug, tag.Name.Orig+" (Archiv)", "Kategorien", lastmod)
 	}
 
 	// Special rendering of the "traillauf" (+ related) tag
@@ -783,7 +813,11 @@ func (g Generator) Generate(eventsData events.Data) error {
 			if err := utils.ExecuteTemplate(g.config, "serie", g.out.Join(slug), seriedata.BasePath, seriedata); err != nil {
 				return fmt.Errorf("render serie template to %q: %w", g.out.Join(slug), err)
 			}
-			sitemap.Add(slug, slug, s.Name.Orig, "Serien")
+			lastmod, err := latestLastmod(s.Events, s.EventsOld, s.Groups)
+			if err != nil {
+				return fmt.Errorf("get lastmod for series %q: %w", s.Name.Orig, err)
+			}
+			sitemap.AddWithLastmod(slug, slug, s.Name.Orig, "Serien", lastmod)
 		}
 		return nil
 	}

@@ -286,6 +286,15 @@ func fetchEvents(config utils.Config, today time.Time, eventType string, sheetNa
 			continue
 		}
 
+		data.Added = strings.TrimSpace(data.Added)
+		if data.Added == "" {
+			if eventType == "event" && sheetYear >= 2027 {
+				return nil, fmt.Errorf("sheet '%s', line '%d': missing ADDED date for event from %d", sheetName, line+1, sheetYear)
+			}
+		} else if _, err := utils.ParseDate(data.Added); err != nil {
+			return nil, fmt.Errorf("sheet '%s', line '%d': invalid ADDED date '%s': %w", sheetName, line+1, data.Added, err)
+		}
+
 		// process names
 		name, nameOld := utils.SplitPair(data.Name)
 		if data.Name == "" {

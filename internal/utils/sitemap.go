@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"time"
 )
 
 type FileHashDate struct {
@@ -21,6 +22,7 @@ type SitemapEntry struct {
 	SlugFile string
 	Name     string
 	Category string
+	Lastmod  time.Time
 }
 
 type Sitemap struct {
@@ -38,7 +40,17 @@ func (sitemap *Sitemap) AddCategory(name string) {
 }
 
 func (sitemap *Sitemap) Add(slug string, slugfile string, name string, category string) {
-	sitemap.Entries = append(sitemap.Entries, &SitemapEntry{slug, slugfile, name, category})
+	sitemap.Entries = append(sitemap.Entries, &SitemapEntry{Slug: slug, SlugFile: slugfile, Name: name, Category: category})
+}
+
+func (sitemap *Sitemap) AddWithLastmod(slug string, slugfile string, name string, category string, lastmod time.Time) {
+	sitemap.Entries = append(sitemap.Entries, &SitemapEntry{
+		Slug:     slug,
+		SlugFile: slugfile,
+		Name:     name,
+		Category: category,
+		Lastmod:  lastmod,
+	})
 }
 
 func writeSitemapEntry(f *os.File, url string, timeStamp string) {
@@ -140,7 +152,10 @@ func (sitemap Sitemap) Gen(fileName string, hashFileName string, outDir Path) er
 
 	for _, entry := range sitemap.Entries {
 		fileName := outDir.Join(entry.SlugFile)
-		timeStamp := getMtimeYMD(fileName)
+		timeStamp := entry.Lastmod.Format("2006-01-02")
+		if entry.Lastmod.IsZero() {
+			timeStamp = getMtimeYMD(fileName)
+		}
 		if timeStamp == "" {
 			log.Printf("cannot get mtime '%s'", fileName)
 		}

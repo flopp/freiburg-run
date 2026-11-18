@@ -227,6 +227,17 @@ func (event *Event) TimeToYMD() string {
 	return event.Time.To.Format("2006-01-02")
 }
 
+func (event Event) Lastmod() (time.Time, error) {
+	if strings.TrimSpace(event.Added) != "" {
+		lastmod, err := utils.ParseDate(strings.TrimSpace(event.Added))
+		if err != nil {
+			return time.Time{}, fmt.Errorf("invalid added date for event %q: %w", event.Name.Orig, err)
+		}
+		return lastmod, nil
+	}
+	return event.Time.From, nil
+}
+
 func (event *Event) CalendarSlug() string {
 	return event.slug("ics")
 }
