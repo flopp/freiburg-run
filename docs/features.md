@@ -154,6 +154,7 @@ This document lists implemented features of the freiburg.run project (website + 
 - Canonical URLs and OpenGraph/Twitter metadata.
 - Dynamic page descriptions and titles.
 - XML sitemap generation + human-readable sitemap page.
+- Sitemap dates use event dates where available and generated file modification dates for other pages.
 - `robots.txt` generation with sitemap reference.
 - `llms.txt` generation with key page links and technical endpoints.
 - `manifest.json` generation for app-like metadata.
@@ -242,10 +243,9 @@ This document lists implemented features of the freiburg.run project (website + 
 ### 6.1 `cmd/generate`
 
 - Configurable flags:
-	- `-config`
-	- `-out`
-	- `-hashfile`
-	- `-checklinks`
+- `-config`
+- `-out`
+- `-checklinks`
 	- `-backup`
 	- `-basepath`
 - Retry-based data fetch for transient API issues.

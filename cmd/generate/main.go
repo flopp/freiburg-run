@@ -24,7 +24,6 @@ OPTIONS:
 type CommandLineOptions struct {
 	configFile string
 	outDir     string
-	hashFile   string
 	checkLinks bool
 	backup     string
 	basePath   string
@@ -33,7 +32,6 @@ type CommandLineOptions struct {
 func parseCommandLine() CommandLineOptions {
 	configFile := flag.String("config", "", "select config file")
 	outDir := flag.String("out", ".out", "output directory")
-	hashFile := flag.String("hashfile", ".hashes", "file storing file hashes (for sitemap)")
 	checkLinks := flag.Bool("checklinks", false, "check links in the generated files")
 	backup := flag.String("backup", "", "download and backup sheets data to the specified file")
 	basePath := flag.String("basepath", "", "base path")
@@ -51,7 +49,6 @@ func parseCommandLine() CommandLineOptions {
 	return CommandLineOptions{
 		*configFile,
 		*outDir,
-		*hashFile,
 		*checkLinks,
 		*backup,
 		*basePath,
@@ -135,8 +132,7 @@ func main() {
 		basePath,
 		now,
 		resourceManager.JsFiles, resourceManager.CssFiles,
-		resourceManager.UmamiScript,
-		options.hashFile)
+		resourceManager.UmamiScript)
 	if err := gen.Generate(eventsData); err != nil {
 		log.Fatalf("failed to generate: %v", err)
 	}

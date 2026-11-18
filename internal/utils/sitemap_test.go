@@ -84,55 +84,9 @@ func TestGenHTML(t *testing.T) {
 	}
 }
 
-func TestDetermineHash(t *testing.T) {
-	// Create a temp file
-	content := `<html><body><span class="timestamp">2023-01-01</span><script src="app.js"></script><link rel="stylesheet" href="style.css">Content</body></html>`
-	tempDir := t.TempDir()
-	filePath := filepath.Join(tempDir, "test.html")
-	err := os.WriteFile(filePath, []byte(content), 0644)
-	if err != nil {
-		t.Fatalf("Failed to create temp file: %v", err)
-	}
-
-	hash, err := determineHash(filePath)
-	if err != nil {
-		t.Errorf("determineHash failed: %v", err)
-	}
-
-	// The hash should be consistent and ignore the removed parts
-	expectedHash := "ec766c35d08e05df" // Actual output from current code
-	if hash != expectedHash {
-		t.Errorf("Expected hash %s, got %s", expectedHash, hash)
-	}
-}
-
-func TestReadWriteHashFile(t *testing.T) {
-	tempDir := t.TempDir()
-	hashFile := filepath.Join(tempDir, "hashes.txt")
-
-	// Write some data
-	data := map[string]*FileHashDate{
-		"file1.html": {"file1.html", "hash1", "2023-01-01"},
-		"file2.html": {"file2.html", "hash2", "2023-01-02"},
-	}
-	writeHashFile(hashFile, data)
-
-	// Read it back
-	readData := readHashFile(hashFile)
-
-	if len(readData) != 2 {
-		t.Errorf("Expected 2 entries, got %d", len(readData))
-	}
-
-	if readData["file1.html"].hash != "hash1" || readData["file1.html"].date != "2023-01-01" {
-		t.Errorf("Data mismatch for file1: %+v", readData["file1.html"])
-	}
-}
-
 func TestGen(t *testing.T) {
 	tempDir := t.TempDir()
 	sitemapFile := filepath.Join(tempDir, "sitemap.xml")
-	hashFile := filepath.Join(tempDir, "hashes.txt")
 	outDir := Path(tempDir)
 
 	// Create a dummy HTML file
@@ -142,11 +96,15 @@ func TestGen(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create HTML file: %v", err)
 	}
+	mtime := time.Date(2025, 4, 12, 12, 0, 0, 0, time.Local)
+	if err := os.Chtimes(htmlFile, mtime, mtime); err != nil {
+		t.Fatalf("Failed to set HTML file mtime: %v", err)
+	}
 
 	sitemap := CreateSitemap(Url("https://example.com"))
 	sitemap.Add("event1", "event1.html", "Event 1", "events")
 
-	err = sitemap.Gen(sitemapFile, hashFile, outDir)
+	err = sitemap.Gen(sitemapFile, outDir)
 	if err != nil {
 		t.Errorf("Gen failed: %v", err)
 	}
@@ -159,22 +117,16 @@ func TestGen(t *testing.T) {
 
 	expected := `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-<url><loc>https://example.com/event1</loc><lastmod>`
+<url><loc>https://example.com/event1</loc><lastmod>2025-04-12</lastmod></url>`
 	if !strings.Contains(string(content), expected) {
 		t.Errorf("Sitemap content mismatch. Got:\n%s", string(content))
 	}
 
-	// Check hash file
-	hashData := readHashFile(hashFile)
-	if len(hashData) != 1 {
-		t.Errorf("Expected 1 hash entry, got %d", len(hashData))
-	}
 }
 
 func TestGenUsesExplicitLastmod(t *testing.T) {
 	tempDir := t.TempDir()
 	sitemapFile := filepath.Join(tempDir, "sitemap.xml")
-	hashFile := filepath.Join(tempDir, "hashes.txt")
 	outDir := Path(tempDir)
 
 	htmlFile := filepath.Join(tempDir, "event1.html")
@@ -191,7 +143,7 @@ func TestGenUsesExplicitLastmod(t *testing.T) {
 		time.Date(2026, 2, 15, 0, 0, 0, 0, time.UTC),
 	)
 
-	if err := sitemap.Gen(sitemapFile, hashFile, outDir); err != nil {
+	if err := sitemap.Gen(sitemapFile, outDir); err != nil {
 		t.Fatalf("Gen failed: %v", err)
 	}
 
@@ -201,5 +153,28 @@ func TestGenUsesExplicitLastmod(t *testing.T) {
 	}
 	if !strings.Contains(string(content), "<lastmod>2026-02-15</lastmod>") {
 		t.Errorf("Sitemap does not contain explicit lastmod date:\n%s", content)
+	}
+
+	sitemap.Entries[0].Lastmod = time.Date(2026, 3, 5, 0, 0, 0, 0, time.UTC)
+	if err := sitemap.Gen(sitemapFile, outDir); err != nil {
+		t.Fatalf("Second Gen failed: %v", err)
+	}
+	content, err = os.ReadFile(sitemapFile)
+	if err != nil {
+		t.Fatalf("Failed to read sitemap: %v", err)
+	}
+	if !strings.Contains(string(content), "<lastmod>2026-03-05</lastmod>") {
+		t.Errorf("Sitemap does not contain updated lastmod date:\n%s", content)
+	}
+}
+
+func TestGenFailsWhenFileMtimeUnavailable(t *testing.T) {
+	tempDir := t.TempDir()
+	sitemap := CreateSitemap(Url("https://example.com"))
+	sitemap.Add("missing", "missing.html", "Missing", "events")
+
+	err := sitemap.Gen(filepath.Join(tempDir, "sitemap.xml"), Path(tempDir))
+	if err == nil || !strings.Contains(err.Error(), "missing.html") {
+		t.Fatalf("Gen error = %v, want an error identifying the missing file", err)
 	}
 }

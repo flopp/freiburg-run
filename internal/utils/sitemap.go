@@ -1,21 +1,11 @@
 package utils
 
 import (
-	"bufio"
-	"crypto/sha256"
 	"fmt"
-	"log"
 	"os"
 	"path/filepath"
-	"regexp"
 	"time"
 )
-
-type FileHashDate struct {
-	name string
-	hash string
-	date string
-}
 
 type SitemapEntry struct {
 	Slug     string
@@ -57,83 +47,9 @@ func writeSitemapEntry(f *os.File, url string, timeStamp string) {
 	f.WriteString(fmt.Sprintf("<url><loc>%s</loc><lastmod>%s</lastmod></url>\n", url, timeStamp))
 }
 
-func readHashFile(fileName string) map[string]*FileHashDate {
-	m := make(map[string]*FileHashDate)
-	if _, err := os.Stat(fileName); err != nil {
-		return m
-	}
-
-	f, err := os.Open(fileName)
-	if err != nil {
-		return m
-	}
-	defer f.Close()
-
-	fileScanner := bufio.NewScanner(f)
-	fileScanner.Split(bufio.ScanLines)
-
-	r := regexp.MustCompile(`^([^\t]+)\t([^\t]+)\t([^\t]+)\s*$`)
-	for fileScanner.Scan() {
-		line := fileScanner.Text()
-		if match := r.FindStringSubmatch(line); match != nil {
-			m[match[1]] = &FileHashDate{match[1], match[2], match[3]}
-		} else {
-			log.Printf("%s: cannot parse line <%s>", fileName, line)
-		}
-	}
-	return m
-}
-
-func writeHashFile(fileName string, m map[string]*FileHashDate) {
-	f, err := os.Create(fileName)
-	if err != nil {
-		log.Printf("cannot create hash file: %s, %v", fileName, err)
-		return
-	}
-	defer f.Close()
-
-	for _, data := range m {
-		f.WriteString(fmt.Sprintf("%s\t%s\t%s\n", data.name, data.hash, data.date))
-	}
-}
-
-var reTimestamp = regexp.MustCompile(`<span class="timestamp">[^<]*</span>`)
-var reScript = regexp.MustCompile(`<script [^>]*>`)
-var reStyle = regexp.MustCompile(`<link [^>]*>`)
-
 const dirPerms = 0770
 
-func replaceRegexp(s []byte, r regexp.Regexp) []byte {
-	return r.ReplaceAll(s, []byte{})
-}
-
-// determineHash calculates a normalized SHA256 hash of the file content,
-// ignoring timestamps and scripts/styles for consistent hashing.
-func determineHash(fileName string) (string, error) {
-	buf, err := os.ReadFile(fileName)
-	if err != nil {
-		return "", err
-	}
-
-	buf = replaceRegexp(buf, *reTimestamp)
-	buf = replaceRegexp(buf, *reScript)
-	buf = replaceRegexp(buf, *reStyle)
-
-	h := sha256.New()
-	h.Write(buf)
-
-	return fmt.Sprintf("%.8x", h.Sum(nil)), nil
-}
-
-func getMtimeYMD(filePath string) string {
-	if t, err := GetMtime(filePath); err != nil {
-		return ""
-	} else {
-		return t.Format("2006-01-02")
-	}
-}
-
-func (sitemap Sitemap) Gen(fileName string, hashFileName string, outDir Path) error {
+func (sitemap Sitemap) Gen(fileName string, outDir Path) error {
 	if err := os.MkdirAll(filepath.Dir(fileName), dirPerms); err != nil {
 		return err
 	}
@@ -144,42 +60,24 @@ func (sitemap Sitemap) Gen(fileName string, hashFileName string, outDir Path) er
 	}
 	defer f.Close()
 
-	oldHashes := readHashFile(hashFileName)
-	newHashes := make(map[string]*FileHashDate)
-
 	f.WriteString("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
 	f.WriteString("<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n")
 
 	for _, entry := range sitemap.Entries {
-		fileName := outDir.Join(entry.SlugFile)
-		timeStamp := entry.Lastmod.Format("2006-01-02")
-		if entry.Lastmod.IsZero() {
-			timeStamp = getMtimeYMD(fileName)
-		}
-		if timeStamp == "" {
-			log.Printf("cannot get mtime '%s'", fileName)
-		}
-		currentHash, err := determineHash(fileName)
-		if err != nil {
-			log.Printf("cannot create hash for '%s': %v", fileName, err)
-		}
-
-		oldHash, ok := oldHashes[fileName]
-		if ok {
-			if currentHash == oldHash.hash {
-				timeStamp = oldHash.date
+		lastmod := entry.Lastmod
+		if lastmod.IsZero() {
+			path := outDir.Join(entry.SlugFile)
+			var err error
+			lastmod, err = GetMtime(path)
+			if err != nil {
+				return fmt.Errorf("get mtime for sitemap entry %q: %w", path, err)
 			}
-		} else {
-			log.Printf("initial hash for: %s", fileName)
 		}
-		newHashes[fileName] = &FileHashDate{fileName, currentHash, timeStamp}
 
-		writeSitemapEntry(f, sitemap.BaseUrl.Join(entry.Slug), timeStamp)
+		writeSitemapEntry(f, sitemap.BaseUrl.Join(entry.Slug), lastmod.Format("2006-01-02"))
 	}
 
 	f.WriteString("</urlset>")
-
-	writeHashFile(hashFileName, newHashes)
 
 	return nil
 }

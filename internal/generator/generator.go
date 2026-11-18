@@ -373,7 +373,6 @@ type Generator struct {
 	jsFiles       []string
 	cssFiles      []string
 	umamiScript   string
-	hashFile      string
 }
 
 func NewGenerator(
@@ -383,7 +382,6 @@ func NewGenerator(
 	now time.Time,
 	jsFiles []string, cssFiles []string,
 	umamiScript string,
-	hashFile string,
 ) Generator {
 	return Generator{
 		config:        config,
@@ -396,7 +394,6 @@ func NewGenerator(
 		jsFiles:       jsFiles,
 		cssFiles:      cssFiles,
 		umamiScript:   umamiScript,
-		hashFile:      hashFile,
 	}
 }
 
@@ -829,7 +826,9 @@ func (g Generator) Generate(eventsData events.Data) error {
 	}
 
 	// Render sitemap
-	sitemap.Gen(g.out.Join("sitemap.xml"), g.hashFile, g.out)
+	if err := sitemap.Gen(g.out.Join("sitemap.xml"), g.out); err != nil {
+		return fmt.Errorf("generate sitemap: %w", err)
+	}
 	sitemapTemplate := SitemapTemplateData{
 		TemplateData{
 			commondata,
