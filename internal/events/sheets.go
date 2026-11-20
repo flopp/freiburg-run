@@ -106,7 +106,7 @@ func findSheetNames(config utils.Config, sheets map[string][][]string) (eventShe
 			redirectsSheet = sheetName
 		case name == "notifications":
 			notificationsSheet = sheetName
-		case strings.Contains(name, "ignore") || name == "parkrun" || name == "shops":
+		case strings.Contains(name, "ignore"):
 			// ignore
 		default:
 			log.Printf("ignoring unknown sheet: '%s'", sheetName)
