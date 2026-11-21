@@ -6,7 +6,6 @@
 - **(required)** Running groups list: `Groups`
 - **(required)** Tag definitions: `Tags`
 - **(required)** Running series definitions: `Series`
-- **(is ignored)** Parkrun data: `Parkrun`
 - **(optional)** Ignored tabs/sheets: name contains `(ignored)`
 
 ---
